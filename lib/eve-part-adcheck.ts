@@ -19,16 +19,16 @@ const LABEL = /(PR|広告|プロモーション)/u;
 export type EveAdProblem = { document: string; rule: 'label' | 'claim' | 'effect'; detail: string };
 export type EveAdCheck = { ok: boolean; problems: EveAdProblem[]; documents: number };
 
+const ENTITIES: Readonly<Record<string, string>> = { nbsp: ' ', amp: '&', lt: '<', gt: '>', quot: '"', '#39': "'" };
+
 /** HTML から文字だけを取り出す（script・style は捨てる）。 */
 export function eveHtmlText(html: string) {
   return html
     .replace(/<(script|style)[\s\S]*?<\/\1>/giu, ' ')
     .replace(/<br\s*\/?>|<\/(p|div|h[1-6]|li|section|article|header)>/giu, '\n')
     .replace(/<[^>]+>/gu, ' ')
-    .replace(/&nbsp;/gu, ' ')
-    .replace(/&amp;/gu, '&')
-    .replace(/&lt;/gu, '<')
-    .replace(/&gt;/gu, '>')
+    // 文字参照は 1 回で戻す（&amp;lt; を < まで 2 回戻さない）。
+    .replace(/&(nbsp|amp|lt|gt|quot|#39);/gu, (_, name: string) => ENTITIES[name])
     .replace(/[ \t]+/gu, ' ')
     .replace(/\n\s+/gu, '\n')
     .trim();

@@ -73,7 +73,7 @@ Eve（自動）は、需要の台帳から見込みの利益が高い道を探�
 | 5. 採点と作り直し | `lib/eve-combination-score.ts`、`lib/eve-combination-rebuild.ts`、画面 `/os/eve/combinations`、API `/api/eve/combinations` | Jev の合格条件 8 つ。段ごとに数えてよい記録の元を決め、本人の申告は数えない。一番数が落ちた段は (次+1)÷(前+2) で見て、同じ型の他の成績表があれば中央値と比べる |
 | 6. 作者の受け取り | `eveAuthorShare`（`lib/eve-combination-score.ts`） | 外部の入金の記録がある時だけ計算する。元は「入金 − 費用」、割合は 20%（`EVE_AUTHOR_SHARE_BPS`） |
 | 部品（Eve が作る。2026-11-24） | `lib/eve-part-terms.ts`（規約を読む）、`lib/eve-part-research.ts`（検索の言葉）、`lib/eve-part-writer.ts`（台本）、`lib/eve-part-adcheck.ts`（広告の表示・表現の点検）、`lib/eve-part-results.ts`（成果・売上を読む）、`scripts/eve-verify-parts.mjs` | Noah の候補が 0 件だった能力を Eve が作り、候補と同じ見本の仕事と Jev の判定で 1 回ずつ確かめた（5 部品すべて通過。落ちた版も `data/eve-verifications/2026-11-24-parts.json` に残す）。LLM を使う部品は手元の Qwen（Qwen2.5-3B-Instruct Q4_K_M、sha256 626b4a66…）で確かめた。規約を読む部品は、引用が規約に文字どおり入っている項目だけを出す。検索の言葉は、ウィキペディアの全文検索の件数で裏付けた物だけを出す。台本と点検は、広告の表示・言い切り・効き目の表現を決まった式で守る |
-| 最初の組み合わせ 版 2 | `data/eve-combinations/affiliate-ai-tools-blog.v2.json` | レントラックスと登録済みの媒体に変え、Eve の部品を 5 工程に当てた（規約 2・調べ・点検の門・成果を読む）。ASP の売上一覧の CSV を書き出す工程（本人）を足した。版 1 は消さない。まだ試運転だけ（需要の台帳が空・記事・画像・LP・置き場・公開・案件を比べる、の部品が無い） |
+| レントラックスの組み合わせ（`affiliate:ai-tools:blog:rentracks`） | `data/eve-combinations/affiliate-ai-tools-blog-rentracks.json` | 最初の組み合わせ（`affiliate:ai-tools:blog`）から、ASP をレントラックス、媒体を登録済みの物に変えた別の組み合わせ。収益の記録は組み合わせの id と版に結び付くので、運用中の組み合わせの版が黙って変わらないよう、新しい版ではなく別の id にした（元の組み合わせはそのまま）。Eve の部品を 5 工程に当てた（規約 2・調べ・点検の門・成果を読む）。ASP の売上一覧の CSV を書き出す工程（本人）を足した。まだ試運転だけ（需要の台帳が空・記事・画像・LP・置き場・公開・案件を比べる、の部品が無い） |
 
 段の数が落ちた時に責めを負う能力（`EVE_FUNNEL_BLAME`）: 作った → 出した は出す工程と出す前の点検、出した → 見られた は調べ方と出す場所、見られた → 押された は中身（記事・台本・画像・動画）、押された → 申し込まれた は受け皿（LP・案件の選び方）、申し込まれた → 承認された は案件の条件と納品の質。入金は相手の支払い待ちで、作り直す工程は無い。
 

@@ -33,19 +33,19 @@ void test('catalog: the first combination is listed with its status, owner steps
   assert.equal(EVE_DEMAND_LEDGER.length, 0);
   assert.deepEqual(eveTemplateShapeCount(), { blueprints: 470, shapes: 19 });
   assert.deepEqual(eveCombinationCatalog(), items, 'deterministic');
-  // 版 2（2026-11-24。レントラックスと登録済みのブログ。Eve が作った部品 3 つを当てた）。一覧は一番新しい版を出す。
-  const latest = items.filter((x) => x.id === 'affiliate:ai-tools:blog');
-  assert.equal(latest.length, 1, 'one row per combination');
-  const v2 = latest[0];
-  assert.equal(v2.version, 2);
-  assert.equal(v2.status, 'paper', 'still no demand in the ledger, and article / LP / hosting have no part yet');
-  assert.deepEqual(v2.problems.filter((p) => p.level === 'block'), []);
-  assert.deepEqual(v2.steps.filter((s) => s.part === 'agent').map((s) => [s.id, s.agent]), [
+  // レントラックスと登録済みの媒体を使う組み合わせ（2026-11-24）。ASP と媒体を変えたので、元の組み合わせとは別の id にした。
+  assert.deepEqual(items.map((x) => x.id).sort(), ['affiliate:ai-tools:blog', 'affiliate:ai-tools:blog:rentracks'], 'one row per combination');
+  const r = items.find((x) => x.id === 'affiliate:ai-tools:blog:rentracks');
+  assert.equal(r.version, 1);
+  assert.equal(r.status, 'paper', 'still no demand in the ledger, and article / LP / hosting have no part yet');
+  assert.deepEqual(r.problems.filter((p) => p.level === 'block'), []);
+  assert.deepEqual(r.steps.filter((s) => s.part === 'agent').map((s) => [s.id, s.agent]), [
     ['rules:hosting', 'eve-part:terms-reader'], ['rules:asp-rentracks', 'eve-part:terms-reader'], ['research', 'eve-part:keyword-research'], ['disclose', 'eve-part:ad-check'], ['track', 'eve-part:results-csv'],
   ]);
-  assert.equal(v2.steps.find((s) => s.id === 'export:asp-rentracks').part, 'owner', 'logging in to the ASP and exporting the CSV is the owner’s step');
-  assert.equal(v2.ownerMinutesPerRun, 14);
-  assert.deepEqual(v2.counts, { steps: 19, owner: 6, missing: 6, outward: 8 });
+  assert.equal(r.steps.find((s) => s.id === 'export:asp-rentracks').part, 'owner', 'logging in to the ASP and exporting the CSV is the owner’s step');
+  assert.equal(r.ownerMinutesPerRun, 14);
+  assert.deepEqual(r.counts, { steps: 19, owner: 6, missing: 6, outward: 8 });
+  assert.equal(items.find((x) => x.id === 'affiliate:ai-tools:blog').version, 1, 'the original combination is unchanged — revenue records bound to it keep their version');
 });
 
 void test('API GET: list, one by id, and 404', () => {
@@ -54,9 +54,10 @@ void test('API GET: list, one by id, and 404', () => {
   assert.ok(list.body.combinations.length >= 1);
   const one = eveCombinationGet('affiliate:ai-tools:blog');
   assert.equal(one.status, 200);
-  assert.equal(one.body.combination.version, 2, 'the newest version by default');
-  assert.deepEqual(one.body.versions, [1, 2]);
-  assert.equal(eveCombinationGet('affiliate:ai-tools:blog', '1').body.combination.version, 1, 'old versions stay readable');
+  assert.equal(one.body.combination.version, 1);
+  assert.deepEqual(one.body.versions, [1]);
+  assert.equal(eveCombinationGet('affiliate:ai-tools:blog', '1').body.combination.version, 1, 'a version can be asked for');
+  assert.equal(eveCombinationGet('affiliate:ai-tools:blog:rentracks').body.combination.title.includes('レントラックス'), true);
   assert.equal(eveCombinationGet('affiliate:ai-tools:blog', '9').status, 404);
   assert.equal(eveCombinationGet('affiliate:ai-tools:blog', 'x').status, 400);
   assert.equal(eveCombinationGet('nope').status, 404);

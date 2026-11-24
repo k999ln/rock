@@ -5,7 +5,7 @@
  */
 
 import firstCombination from '../data/eve-combinations/affiliate-ai-tools-blog.json' with { type: 'json' };
-import firstCombinationV2 from '../data/eve-combinations/affiliate-ai-tools-blog.v2.json' with { type: 'json' };
+import rentracksCombination from '../data/eve-combinations/affiliate-ai-tools-blog-rentracks.json' with { type: 'json' };
 import capabilities from '../data/noah-business-capabilities.json' with { type: 'json' };
 import { NOAH_BUILTIN_CAPABILITIES, NOAH_CAPABILITIES } from './noah-business.ts';
 import {
@@ -22,10 +22,14 @@ export const EVE_VERIFIED: Readonly<Partial<Record<string, readonly string[]>>> 
 /** 需要の台帳。出典付きの物だけ（eveDemandLedger を通した物）。今は空。 */
 export const EVE_DEMAND_LEDGER: readonly EveDemand[] = [];
 
-/** 組み合わせファイル。直す時は新しい版のファイルを足し、元の版は消さない（同じ id の、版の違う物が並ぶ）。 */
+/**
+ * 組み合わせファイル。直す時は新しい版のファイルを足し、元の版は消さない（同じ id の、版の違う物が並ぶ）。
+ * ASP や媒体を変えた物は、別の組み合わせ（別の id）にする。収益の記録（lib/noah-revenue-operation.ts）は id と版に結び付くので、
+ * 運用中の組み合わせの版が、足したファイルで黙って変わらないようにする（2026-11-24）。
+ */
 const FILES: readonly EveCombination[] = [
   defineCombination(firstCombination as unknown as EveCombination),
-  defineCombination(firstCombinationV2 as unknown as EveCombination),
+  defineCombination(rentracksCombination as unknown as EveCombination),
 ];
 
 export type EveStepView = {

@@ -456,6 +456,101 @@
           }
         }
       ]
+    },
+    {
+      "at": "2026-11-24T12:09:21.153Z",
+      "model": "qwen2.5-3b-instruct-q4_k_m.gguf#626b4a6678b86442",
+      "parts": [
+        {
+          "capability": "compliance.check",
+          "ref": "eve-part:ad-check",
+          "version": "9adeb66c1564003d176ba00836add4953bae714f0df84b988bf1884f9402aecc",
+          "files": [
+            "lib/eve-part-adcheck.ts",
+            "lib/eve-part-writer.ts",
+            "lib/eve-part-llm.ts"
+          ],
+          "model": null,
+          "ms": 14,
+          "verification": {
+            "capability": "compliance.check",
+            "ref": "eve-part:ad-check",
+            "version": "9adeb66c1564003d176ba00836add4953bae714f0df84b988bf1884f9402aecc",
+            "ok": true,
+            "reason": "形が合っています。",
+            "inputHash": "8474f1d3bae21d0d42fd8f13a8d5866416a67b52e9203a065b151fd39c396074",
+            "outputHash": "f17a4a330f87f4bd5da5e88ff09128197cc18a9416446e54810a9aad9cfa5b03",
+            "at": "2026-11-24T12:09:21.156Z"
+          },
+          "sample": {
+            "ok": true,
+            "problems": [],
+            "documents": 2
+          }
+        },
+        {
+          "capability": "research.terms",
+          "ref": "eve-part:terms-reader",
+          "version": "f70f5dd6b3bdafda850ec636e46de2e355b732a56d619ca951646437d831c37c",
+          "files": [
+            "lib/eve-part-terms.ts",
+            "lib/eve-part-adcheck.ts",
+            "lib/eve-part-writer.ts",
+            "lib/eve-part-llm.ts"
+          ],
+          "model": "qwen2.5-3b-instruct-q4_k_m.gguf#626b4a6678b86442",
+          "ms": 42867,
+          "verification": {
+            "capability": "research.terms",
+            "ref": "eve-part:terms-reader",
+            "version": "f70f5dd6b3bdafda850ec636e46de2e355b732a56d619ca951646437d831c37c",
+            "ok": true,
+            "reason": "形が合っています。",
+            "inputHash": "f3c5690dd2085b0f54be2da38a91b92e7a83ab756f636850335ca6b73033a9fb",
+            "outputHash": "9c36fcfd6815ec4943003af6542af5b34f7b0d81009cb6c87a97cc555ed2089b",
+            "at": "2026-11-24T12:09:21.168Z"
+          },
+          "sample": {
+            "account": "asp-sample",
+            "requirements": [
+              {
+                "kind": "登録の条件",
+                "item": "18歳以上",
+                "quote": "満18歳以上の個人"
+              },
+              {
+                "kind": "登録の条件",
+                "item": "法人",
+                "quote": "日本国内に所在する法人"
+              },
+              {
+                "kind": "禁止",
+                "item": "広告主の商品申し込む行為",
+                "quote": "自ら広告主の商品を申し込む行為"
+              },
+              {
+                "kind": "禁止",
+                "item": "商標使用",
+                "quote": "広告主の商標を含む語句で"
+              },
+              {
+                "kind": "禁止",
+                "item": "不正確な効果表示",
+                "quote": "事実と異なる効果や"
+              },
+              {
+                "kind": "支払い",
+                "item": "成果報酬",
+                "quote": "広告主が成果を承認した月の翌々月末日に"
+              }
+            ],
+            "source": "input",
+            "dropped": 0,
+            "model": "qwen2.5-3b-instruct-q4_k_m.gguf#626b4a6678b86442",
+            "checkedAt": "2026-11-24T12:10:04.034Z"
+          }
+        }
+      ]
     }
   ]
 }

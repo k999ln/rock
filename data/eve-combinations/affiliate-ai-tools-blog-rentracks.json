@@ -1,7 +1,7 @@
 {
   "schema": "eve-combination/1",
-  "id": "affiliate:ai-tools:blog",
-  "version": 2,
+  "id": "affiliate:ai-tools:blog:rentracks",
+  "version": 1,
   "title": "AI の道具の紹介 × 登録済みのブログ（金融以外・レントラックス）",
   "blueprint": "affiliate:ai-tools:blog",
   "origin": "template",
@@ -34,7 +34,7 @@
       },
       "agent": {
         "ref": "eve-part:terms-reader",
-        "version": "c28d302a8de8a009dac872a40e1674a39810b91963cc56941aacb4f0feadbc9b",
+        "version": "f70f5dd6b3bdafda850ec636e46de2e355b732a56d619ca951646437d831c37c",
         "tool": "run",
         "args": {
           "account": "hosting"
@@ -90,7 +90,7 @@
       },
       "agent": {
         "ref": "eve-part:terms-reader",
-        "version": "c28d302a8de8a009dac872a40e1674a39810b91963cc56941aacb4f0feadbc9b",
+        "version": "f70f5dd6b3bdafda850ec636e46de2e355b732a56d619ca951646437d831c37c",
         "tool": "run",
         "args": {
           "account": "asp-rentracks"
@@ -520,7 +520,7 @@
       },
       "agent": {
         "ref": "eve-part:ad-check",
-        "version": "a7da67d88d756c00bc10a3f563779323f16e042d1c27eb9238c6dd7b8bcc8a75",
+        "version": "9adeb66c1564003d176ba00836add4953bae714f0df84b988bf1884f9402aecc",
         "tool": "run"
       }
     },

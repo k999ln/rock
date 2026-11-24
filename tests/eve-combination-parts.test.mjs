@@ -104,6 +104,7 @@ void test('部品 広告の点検: the sample passes; a missing label, absolute 
     ['制作物[1].html', 'label'], ['制作物[1].html', 'claim'],
   ]);
   assert.equal(eveHtmlText('<style>.a{}</style><p>広告&amp;PR</p><br>次'), '広告&PR\n次');
+  assert.equal(eveHtmlText('<p>&amp;lt;b&amp;gt; と &quot;PR&quot;</p>'), '&lt;b&gt; と "PR"', 'entities are decoded once, never twice');
   assert.throws(() => eveCheckAd({}), /文字がありません/u);
   assert.equal(eveCheckAccept(t.accept, ok).ok, true);
   const gate = { type: 'json', required: ['ok', 'problems'], mustBeTrue: ['ok'] };
@@ -144,7 +145,7 @@ void test('部品の版: every Eve part pinned in a combination file matches its
   const read = (f) => readFileSync(new URL(`../${f}`, import.meta.url), 'utf8');
   const record = JSON.parse(read('data/eve-verifications/2026-11-24-parts.json'));
   const passed = record.runs.flatMap((r) => r.parts.filter((p) => p.verification.ok));
-  const v2 = JSON.parse(read('data/eve-combinations/affiliate-ai-tools-blog.v2.json'));
+  const v2 = JSON.parse(read('data/eve-combinations/affiliate-ai-tools-blog-rentracks.json'));
   const pinned = v2.steps.filter((s) => s.agent?.ref.startsWith('eve-part:'));
   assert.ok(pinned.length >= 5);
   for (const s of pinned) {
