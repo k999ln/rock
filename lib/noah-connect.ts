@@ -29,6 +29,7 @@ import { createNoahUserHandshake, type NoahUserHandshake, type NoahUserHandshake
 import { ownerScopeFor, OWNER_SCOPE_HEADER } from './owner-intent.ts';
 
 export type NoahConnectDependencies = IntakeDependencies & {
+  revenueConfig?: import('./noah-revenue-operation.ts').NoahRevenueConfig;
   flags: NoahFlags;
   authorizeAction?: (owner:string,target:string,action:string,digest:string,confirmed:boolean)=>Promise<void>;
   /** つなげる数を、料金ごとのカードの数にする（task 113。切り替え NOAH_PLAN_LIMITS と、本人の料金の読み方）。無ければ、今の上限のまま。 */

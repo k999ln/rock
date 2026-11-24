@@ -240,6 +240,10 @@
 .content :global([data-noah-embedded] .sky-feed-layout) {
   grid-template-columns: minmax(0, 1fr);
 }
+@media (min-width: 1001px) {
+  .secondary nav a { padding-inline: 6px; column-gap: 8px; }
+  .secondary nav a span { min-width: 0; text-wrap: balance; }
+}
 @media (min-width: 601px) and (max-width: 1000px) {
   .body {
     grid-template-columns: 76px minmax(0, 1fr);
@@ -273,7 +277,7 @@
   }
   .content {
     border: 0;
-    padding-bottom: 24px;
+    padding-bottom: calc(24px + env(safe-area-inset-bottom));
   }
   .content[data-main-page] {
     padding-bottom: calc(82px + env(safe-area-inset-bottom));
@@ -380,4 +384,30 @@
 }
 @media(max-width:355px) { .gridBrand strong { display:none; } }
 
-.shell[data-noah-surface="public"] .bottomNav { grid-template-columns:repeat(2,minmax(0,1fr)); }
+.mobileStoreSearch { display: none; }
+.storeSearchPanel {
+  inset: 78px 16px auto auto;
+  width: min(24rem, calc(100% - 32px));
+  margin: 0;
+  padding: 8px;
+  border: 1px solid var(--sky-line);
+  background: white;
+  border-radius: 18px;
+  box-shadow: 0 10px 35px #14121824;
+}
+.storeSearchPanel:popover-open { display: block; }
+.gridTopbar[data-store-header] .gridSearchSlot { max-width: 340px; }
+@media (max-width: 600px) {
+  .shell:has(.gridTopbar[data-store-header]) { position: relative; }
+  .gridTopbar[data-store-header] {
+    position: absolute; inset-inline-end: 15px; top: 27px; width: auto;
+    min-height: 44px; padding: 0; gap: 2px; background: transparent; backdrop-filter: none; border: 0;
+  }
+  .gridTopbar[data-store-header] :is(.gridBrand,.gridSearchSlot,.gridMenuButton span) { display: none; }
+  .gridTopbar[data-store-header] :is(.mobileStoreSearch,.gridMenuButton,.gridAccount) {
+    display: inline-grid; place-items: center; width: 44px; height: 44px; min-width: 44px; padding: 0; border: 0;
+    border-radius: 50%; background: transparent; color: var(--noah-action); cursor: pointer;
+  }
+  .gridTopbar[data-store-header] .gridAccount { background: var(--noah-soft); }
+  .gridTopbar[data-store-header] + .gridBody { padding: 22px 20px calc(24px + env(safe-area-inset-bottom)); }
+}

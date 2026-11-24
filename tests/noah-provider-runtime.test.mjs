@@ -1,6 +1,7 @@
 import test from 'node:test';
 import { noahBrowserRequestAllowed } from '../lib/noah-browser-session.ts';
 import assert from 'node:assert/strict';
+import { revenueConfigFor, checkRevenueDispatch } from './fixtures/noah/revenue-dispatch.mjs';
 import { fixture } from './fixtures/noah/intake.mjs';
 import { parseNoahFlags } from '../lib/noah-flags.ts';
 import { createNoahProviderRuntime } from '../lib/noah-provider-runtime.ts';
@@ -72,7 +73,7 @@ function setup(t, overrides = {}) {
     if (url === origin + '/gradio_api/call/predict') {
       assert.equal(init.method, 'POST');
       state.posts.push(JSON.parse(init.body));
-      if (state.onPost) await state.onPost();
+      if (state.onPost) await state.onPost(init);
       if (state.lost) throw Error('network lost');
       return Response.json({ event_id: 'event_1' });
     }
@@ -529,4 +530,36 @@ void test('the owned streaming HTTP response remains open until the result has b
     ).status,
     404,
   );
+});
+
+void test('Gradio dispatch headers bind the signed receipts to the saved inference result without another POST', async t => {
+  let headers;
+  const w = setup(t, { onPost: init => { headers = new Headers(init.headers); } });
+  w.deps.revenueConfig = revenueConfigFor(projectId, origin, 'predict');
+  const api = createNoahProviderApi(w.deps), input = await w.input();
+  const response = await api(new Request('https://noah.test/api/noah/provider', { method: 'POST', headers: {
+    origin: 'https://noah.test', 'content-type': 'application/json', 'X-Rock-Owner-Scope': await ownerScopeFor('owner-a'),
+  }, body: JSON.stringify(input) }));
+  assert.equal(response.status, 202);
+  await response.json();
+  await w.drain();
+  const meta = { workId: headers.get('X-Noah-Revenue-Work'), combinationId: headers.get('X-Noah-Revenue-Combination'),
+    version: Number(headers.get('X-Noah-Revenue-Version')), dispatchProof: headers.get('X-Noah-Revenue-Proof') };
+  await w.runtime.poll('owner-a', input.id);
+  const job = await w.runtime.get('owner-a', input.id);
+  assert.equal(job.noahRemote.provider.eventId, 'event_1');
+  const ask = createNoahAskApi(w.deps);
+  const request = () => new Request('https://noah.test/api/noah/ask/' + input.id);
+  const privateDetail = async () => {
+    const detail = await ask.item(request(), input.id);
+    assert.equal(detail.status, 200);
+    const body = await detail.json();
+    assert.equal(body.result.text, 'Hello from the Agent');
+    return body;
+  };
+  await checkRevenueDispatch({ deps: w.deps, job, meta, privateDetail });
+  const other = createNoahAskApi({ ...w.deps, authenticate: async () => 'another-owner' });
+  assert.equal((await other.item(request(), input.id)).status, 404);
+  assert.deepEqual(w.state.posts, [{ data: ['Hello'] }]);
+  assert.equal(w.state.reads, 1);
 });

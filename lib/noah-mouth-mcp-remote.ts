@@ -110,6 +110,7 @@ export function createNoahGuardedFetch(
       const location = response.headers.get('location');
       if (response.status < 300 || response.status >= 400 || !location) return response;
       await response.body?.cancel();
+      if (init?.redirect === 'error') throw new NoahMouthError('blocked', 'この実行先からの転送には従いません。');
       if (hop >= (options.redirects ?? NOAH_MOUTH_LIMITS.redirects)) throw new NoahMouthError('blocked', '転送が多すぎます。');
       const next = await inspect(new URL(location, url).toString());
       if (options.sameHost && next.host !== url.host) throw new NoahMouthError('blocked', '別の接続先への転送には従いません。', { redirectedTo: next.host });
@@ -201,7 +202,7 @@ async function readRpc(response: Response, id: number, maxBytes: number): Promis
   return message;
 }
 
-async function rpc(session: NoahMcpSession, ctx: NoahMouthContext, method: string, params: unknown, timeoutMs: number, notify = false): Promise<unknown> {
+async function rpc(session: NoahMcpSession, ctx: NoahMouthContext, method: string, params: unknown, timeoutMs: number, notify = false, exactEndpoint = false): Promise<unknown> {
   const id = notify ? null : session.nextId++;
   const headers: Record<string, string> = {
     ...(ctx.headers ? await ctx.headers() : {}),
@@ -214,7 +215,7 @@ async function rpc(session: NoahMcpSession, ctx: NoahMouthContext, method: strin
   let response: Response;
   try {
     response = await ctx.fetch(session.url, {
-      method: 'POST', headers, cache: 'no-store',
+      method: 'POST', headers, cache: 'no-store', ...(exactEndpoint && { redirect: 'error' }),
       signal: ctx.signal ? AbortSignal.any([ctx.signal, timeout]) : timeout,
       body: JSON.stringify({ jsonrpc: '2.0', ...(id === null ? {} : { id }), method, ...(params === undefined ? {} : { params }) }),
     });
@@ -333,8 +334,10 @@ export async function noahMcpHandshake(rawUrl: string, ctx: NoahMouthContext): P
  */
 export async function noahMcpCall(
   session: NoahMcpSession, name: string, args: unknown, ctx: NoahMouthContext, timeoutMs: number = NOAH_MOUTH_LIMITS.callMs,
+  revenue?: { workId: string; combinationId: string; version: number; dispatchProof: string },
 ): Promise<{ ok: boolean; content: unknown; blocks: unknown[] }> {
-  const result = (await rpc(session, ctx, 'tools/call', { name, arguments: args ?? {} }, timeoutMs)) as {
+  const params = { name, arguments: args ?? {}, ...(revenue && { _meta: { 'avoado.si/revenue-work': revenue } }) };
+  const result = (await rpc(session, ctx, 'tools/call', params, timeoutMs, false, !!revenue)) as {
     isError?: unknown; structuredContent?: unknown; content?: unknown;
   };
   return { ok: result?.isError !== true, content: result?.structuredContent ?? result?.content ?? null, blocks: Array.isArray(result?.content) ? result.content : [] };

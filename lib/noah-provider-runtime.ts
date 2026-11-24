@@ -1,3 +1,4 @@
+import { bindRevenueExecution, revenueDispatchMeta, revenueDispatchHash } from './noah-revenue-operation.ts';
 import { NoahAgentError, noahSha256 } from './noah-agent-upload.ts';
 import type { NoahConnectApiDependencies } from './noah-connect.ts';
 import type { DirectoryEntry } from './noah-agent-directory.ts';
@@ -22,6 +23,7 @@ import {
 } from './noah-remote-work.ts';
 import type { WorkJob } from './workflow.ts';
 import type { NoahAskItem } from './noah-ask-view.ts';
+import { noahRemoteUsageReceipt } from './noah-work-usage-receipt.ts';
 import { workStore } from './work-store.ts';
 export type ProviderDependencies = NoahConnectApiDependencies & {
   providerDirectory?: () => Promise<DirectoryEntry[]>;
@@ -67,6 +69,7 @@ export function providerWorkView(
       ? { finishedAt: r.completedAt ?? Date.parse(job.updatedAt) }
       : {}),
     ...(r.error ? { error: r.error } : {}),
+    ...(includeResult ? { usageReceipt: noahRemoteUsageReceipt('provider', r) } : {}),
     ...(includeResult && r.result ? { result: r.result, note: r.note } : {}),
   };
 }
@@ -319,14 +322,15 @@ export function createNoahProviderRuntime(deps: ProviderDependencies) {
         current.noahRemote!.state !== 'running'
       )
         return;
+      const revenue = await revenueDispatchMeta(job, deps.revenueConfig, p.origin, p.api);
       if (p.protocol === 'mcp') {
         const result = await callProviderMcp(p.origin, endpoint, p.data[0], fetcher, deps.probeCheck, async () => {
           if (!noahAllowed(deps.flags, 'ask', reviewer)) return false;
           await deps.authorizeAction?.(owner, p.projectId, p.api, r.toolSha256!, true);
           const latest = await get(owner, id);
           return !!latest && latest.revision === job!.revision && latest.noahRemote!.state === 'running';
-        }, () => { sent = true; });
-        if (result) await finish(owner, job, { state: 'returned', result, used: [p.api], note: '提供元から届いた成果をNoahに保存しました。' });
+        }, () => { sent = true; }, revenue);
+        if (result) await finish(owner, job, { state: 'returned', result, ...(revenue && { revenueDispatchSha256: await revenueDispatchHash(revenue.dispatchProof) }), used: [p.api], note: '提供元から届いた成果をNoahに保存しました。' });
         return;
       }
       sent = true;
@@ -339,6 +343,12 @@ export function createNoahProviderRuntime(deps: ProviderDependencies) {
           headers: {
             'Content-Type': 'application/json',
             Accept: 'application/json',
+            ...(revenue && {
+              'X-Noah-Revenue-Work': revenue.workId,
+              'X-Noah-Revenue-Combination': revenue.combinationId,
+              'X-Noah-Revenue-Version': String(revenue.version),
+              'X-Noah-Revenue-Proof': revenue.dispatchProof,
+            }),
           },
           body: JSON.stringify({ data: p.data }),
         },
@@ -361,6 +371,7 @@ export function createNoahProviderRuntime(deps: ProviderDependencies) {
         updatedAt: new Date(now()).toISOString(),
         noahRemote: {
           ...job.noahRemote!,
+          ...(revenue && { revenueDispatchSha256: await revenueDispatchHash(revenue.dispatchProof) }),
           toolCalls: 1,
           used: [p.api],
           provider: {
@@ -465,6 +476,7 @@ export function createNoahProviderRuntime(deps: ProviderDependencies) {
       deadline: at + 1800000,
       availabilityManifest: prepared.availabilityManifest,
     };
+    bindRevenueExecution(job, owner, deps.revenueConfig, prepared.host, input.api);
     // Atomic limits also cover simultaneous browser requests. No schema migration is needed.
     const created = await db
       .prepare(`INSERT INTO work_jobs (id,user_id,payload,revision,updated_at) SELECT ?,?,?,?,?

@@ -6,6 +6,8 @@ import { NOAH_ACCOUNT_MESSAGES } from './noah-i18n-account.ts';
 import { NOAH_EXTRA_MESSAGES } from './noah-i18n-extra.ts';
 import { NOAH_TEIKIBIN_MESSAGES } from './noah-i18n-teikibin.ts';
 import { NOAH_EXPLANATION_MESSAGES } from './noah-i18n-explanation.ts';
+import { NOAH_THEATER_MESSAGES } from './noah-i18n-theater.ts';
+import { NOAH_ENGINEERING_EVE_MESSAGES } from './noah-i18n-engineering-eve.ts';
 /** UI strings only: user input, provider descriptions and results are never translated. */
 export const NOAH_LOCALES = ['ja', 'en', 'zh-CN', 'ko', 'es', 'ar'] as const;
 export type NoahLocale = (typeof NOAH_LOCALES)[number];
@@ -40,10 +42,20 @@ export const NOAH_MESSAGES: Record<
   ...NOAH_ACCESS_MESSAGES,
   ...NOAH_TEIKIBIN_MESSAGES,
   ...NOAH_EXPLANATION_MESSAGES,
+  ...NOAH_THEATER_MESSAGES,
+  ...NOAH_ENGINEERING_EVE_MESSAGES,
   '使った量: モデル {calls} 回・{neurons} neuron（無料の枠の中。有料プランの値段なら 約 {yen} 円）': ['Used: {calls} model calls, {neurons} neurons (within the free allowance; about ¥{yen} at paid-plan prices)', '用量：模型 {calls} 次、{neurons} neuron（在免费额度内；按付费方案约 {yen} 日元）', '사용량: 모델 {calls}회, {neurons} neuron(무료 한도 내. 유료 요금으로는 약 {yen}엔)', 'Uso: {calls} llamadas al modelo, {neurons} neuronas (dentro del cupo gratuito; unos {yen} ¥ con precios del plan de pago)', 'الاستخدام: {calls} من استدعاءات النموذج، {neurons} نيورون (ضمن الحصة المجانية؛ نحو {yen} ين بأسعار الخطة المدفوعة)'],
   '今日の無料のクラウドの枠を使い切りました。日本時間の朝 9 時に戻ります。': ['Today\'s free cloud allowance is used up. It resets at 9:00 Japan time.', '今天的免费云端额度已用完，将于日本时间上午 9 点恢复。', '오늘의 무료 클라우드 한도를 모두 사용했습니다. 일본 시간 오전 9시에 다시 채워집니다.', 'Se agotó el cupo gratuito de la nube de hoy. Se renueva a las 9:00, hora de Japón.', 'نفدت حصة السحابة المجانية لليوم. تتجدد في الساعة 9:00 بتوقيت اليابان.'],
   '今日のあなたの無料のクラウドの枠を使い切りました。日本時間の朝 9 時に戻ります。': ['You have used your free cloud allowance for today. It resets at 9:00 Japan time.', '您今天的免费云端额度已用完，将于日本时间上午 9 点恢复。', '오늘 내 무료 클라우드 한도를 모두 사용했습니다. 일본 시간 오전 9시에 다시 채워집니다.', 'Usaste tu cupo gratuito de la nube de hoy. Se renueva a las 9:00, hora de Japón.', 'لقد استخدمت حصتك المجانية من السحابة لهذا اليوم. تتجدد في الساعة 9:00 بتوقيت اليابان.'],
   'この依頼は、無料のクラウドの 1 件の上限を超えます。依頼を短くするか、小さく分けてください。': ['This request exceeds the free cloud limit for one job. Shorten it or split it into smaller requests.', '此请求超出免费云端单个任务的上限。请缩短请求或拆分成更小的请求。', '이 요청은 무료 클라우드의 1건 한도를 넘습니다. 요청을 줄이거나 작게 나눠 주세요.', 'Esta solicitud supera el límite gratuito de la nube para un trabajo. Acórtala o divídela en partes más pequeñas.', 'يتجاوز هذا الطلب حد السحابة المجانية لمهمة واحدة. اختصره أو قسّمه إلى طلبات أصغر.'],
+  'Noahでの確認': ['Verified by Noah', 'Noah 的验证', 'Noah 확인 상태', 'Comprobación de Noah', 'تحقق Noah'],
+  '接続先の応答を確認済みです。Noahでの実通話は未確認です。': ['The service responded to a connection check. Noah has yet to verify a live call.', '服务已响应连接检查。Noah 尚未验证实际通话。', '연결 확인에 서비스가 응답했습니다. Noah에서 실제 통화는 아직 확인되지 않았습니다.', 'El servicio respondió a la comprobación de conexión. Noah aún no ha verificado una llamada real.', 'استجابت الخدمة لفحص الاتصال. لم يتحقق Noah بعد من مكالمة فعلية.'],
+  '通話メモの見本': ['Sample call note', '通话记录示例', '통화 메모 예시', 'Ejemplo de nota de llamada', 'مثال على مذكرة مكالمة'],
+  '依頼例': ['Example request', '请求示例', '요청 예시', 'Ejemplo de solicitud', 'مثال على الطلب'],
+  '返答の例': ['Example result', '回复示例', '응답 예시', 'Ejemplo de resultado', 'مثال على النتيجة'],
+  'ほかの使い方': ['More ways to use it', '其他用法', '다른 활용 방법', 'Otros usos', 'استخدامات أخرى'],
+  '準備と料金': ['Setup and pricing', '准备与费用', '준비 및 요금', 'Preparación y precios', 'الإعداد والأسعار'],
+  '登録情報はOfficial MCP Registryの掲載内容です。': ['Listing information comes from the Official MCP Registry.', '登记信息来自 Official MCP Registry。', '등록 정보의 출처는 Official MCP Registry입니다.', 'La información de registro procede del Official MCP Registry.', 'مصدر معلومات التسجيل هو Official MCP Registry.'],
   '画面を閉じてもクラウドで処理が続きます。': ['Processing continues in the cloud when you close this page.', '关闭此页面后，云端处理仍会继续。', '이 화면을 닫아도 클라우드에서 처리가 계속됩니다.', 'El procesamiento continúa en la nube aunque cierres esta página.', 'تستمر المعالجة في السحابة حتى عند إغلاق هذه الصفحة.'],
   '登録先の受付が混み合っています。': ['The service is temporarily limiting registrations.', '注册服务暂时限制请求。', '서비스에서 일시적으로 등록을 제한하고 있습니다.', 'El servicio está limitando temporalmente los registros.', 'تحدّ الخدمة مؤقتًا من عمليات التسجيل.'],
   '受付再開の目安: {time}': ['Registration may resume at {time}', '预计可再次注册的时间：{time}', '등록 재개 예상: {time}', 'Hora prevista para volver a registrarse: {time}', 'الوقت المتوقع لاستئناف التسجيل: {time}'],

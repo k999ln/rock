@@ -48,15 +48,20 @@ export default function NoahSaved({ params }: { params: NoahPageParams }) {
           <NoahBoardsPage embedded />
         )
       ) : tab === 'roles' ? (
-        <SkyAgentLibrary embedded />
+        <SkyAgentLibrary embedded pinView />
       ) : tab === 'files' ? (
         <SkyOutputCenter key={job} initialWorkJobId={job} embedded />
       ) : (
-        <NoahWorkPage
-          results
-          embedded
-          legacyResults={<NoahResultData embedded />}
-        />
+        <>
+          <div className={styles.libraryActions}>
+            <Link href="/noah/my/cloud-results">{t('専用クラウドの成果と利用明細')}</Link>
+          </div>
+          <NoahWorkPage
+            results
+            embedded
+            legacyResults={<NoahResultData embedded />}
+          />
+        </>
       )}
     </section>
   );

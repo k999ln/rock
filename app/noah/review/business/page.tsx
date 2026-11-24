@@ -18,8 +18,7 @@ export const metadata = { title: '稼ぎ方の設計図 — Noah', robots: { ind
 const MODELS: Record<NoahBlueprint['model'], string> = { affiliate: '紹介（アフィリエイト）', gig: '受注', digital: 'デジタル商品', ads: '広告収益', commerce: '物販', app: 'アプリ', oshi: '推し活' };
 const HREF = '/noah/review/business';
 
-async function reviewer(): Promise<boolean> {
-  const deps = noahIntakeDependencies();
+async function reviewer(deps: ReturnType<typeof noahIntakeDependencies>): Promise<boolean> {
   try {
     const owner = await deps.authenticate(new Request(`https://avoado.si${HREF}`, { headers: await headers() }));
     return deps.reviewers.includes(owner);
@@ -27,16 +26,17 @@ async function reviewer(): Promise<boolean> {
 }
 
 export default async function Page({ searchParams }: { searchParams: Promise<{ id?: string | string[] }> }) {
-  if (!(await reviewer())) {
+  const deps = noahIntakeDependencies();
+  if (!(await reviewer(deps))) {
     return <main className={styles.page}><h1>稼ぎ方の設計図</h1><p>審査担当のアカウントで開いてください。<Link href={`/noah/account?returnTo=${encodeURIComponent(HREF)}`}>ログイン</Link></p></main>;
   }
   const { id } = await searchParams;
   const plans = noahPlanBlueprints(capabilities.verified as NoahVerifiedCapabilities);
   const plan = typeof id === 'string' ? plans.find((p) => p.id === id) : undefined;
-  return plan ? <Detail plan={plan} /> : <List plans={plans} />;
+  return plan ? <Detail plan={plan} showMaterials={deps.explainLabels} /> : <List plans={plans} />;
 }
 
-function Detail({ plan }: { plan: NoahBlueprintPlan }) {
+function Detail({ plan, showMaterials }: { plan: NoahBlueprintPlan; showMaterials: boolean }) {
   const levels = noahBlueprintLevels(plan.steps).length, people = plan.humanSteps + plan.tapSteps + plan.reviewSteps;
   const notes = [...new Set(plan.steps.flatMap((s) => (s.waitNote ? [s.waitNote] : [])))];
   return (
@@ -46,7 +46,7 @@ function Detail({ plan }: { plan: NoahBlueprintPlan }) {
       <p className={own.summary}>工程 {plan.steps.length} を {levels} 段で進めます。本人の工程は {people}（登録・押す・確かめる）。横に並んだ工程は同時に進み、本人の工程は、その結果を使う工程だけを止めます。</p>
       <p className={own.legend}><span className={own.legendAuto}>自動の工程</span><span className={own.legendPerson}>本人の工程</span><span>押すと、理由と待つ物が開きます</span></p>
       {plan.hold && <p className={own.hold}>{plan.hold}</p>}
-      <NoahBlueprintLevels steps={plan.steps} />
+      <NoahBlueprintLevels steps={plan.steps} showMaterials={showMaterials} />
       {notes.length > 0 && (
         <section className={own.notes} aria-labelledby="waits">
           <h2 id="waits">待つ相手の前提</h2>

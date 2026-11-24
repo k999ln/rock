@@ -2,7 +2,9 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import {existsSync,readFileSync} from 'node:fs';
 import {noahPageHref,noahPageTab,NOAH_EXPLORE_TABS} from '../lib/noah-page-routes.ts';
-import {noahPageRedirect} from '../services/sky-web/noah-page-routes.mjs';
+import {noahPageRedirect,noahRedirectURL} from '../services/sky-web/noah-page-routes.mjs';
+import * as agentLibrary from '../lib/sky-agent-library.ts';
+import * as providers from '../lib/llm-providers.ts';
 import * as myRoutes from '../lib/noah-my-routes.ts';
 import {screen} from './fixtures/noah/screen.mjs';
 
@@ -21,6 +23,9 @@ void test('saved board and work references survive old entry redirects without c
  assert.equal(noahPageRedirect('/sky/agents'),'/noah/saved?tab=roles');
  assert.equal(noahPageRedirect('/zema/library'),'/noah/saved?tab=roles');
  assert.equal(noahPageRedirect('/noah/library'),null,'page redirect must not be overridden by the old Mac redirect');
+ const oldMy = new URL('https://avoado.si/noah/public/my?view=saved&tab=files&job=work-one');
+ const canonical = noahRedirectURL(oldMy, noahPageRedirect(oldMy.pathname));
+ assert.equal(canonical.pathname + canonical.search, '/noah/my?view=saved&tab=files&job=work-one');
 });
 void test('each saved type still renders its existing store-backed reader from one page',()=>{
  const child=name=>({default:props=>({type:'section',props:{children:name,...props}})});
@@ -35,20 +40,82 @@ void test('each saved type still renders its existing store-backed reader from o
  }
  const ui=screen({modules});assert.match(ui.mount('components/noah-saved.tsx',{params:{tab:'boards',board:'board-one'}}).text(),/BOARD board-one/);
 });
-void test('the three My Agent sections restore from their URLs and old library and saved links select the correct personal reader',()=>{
+void test('personal library pin faces open the owned upload, shared invitation and entitled release; search only filters uploads', async () => {
+ const modules = {
+  './workspace-shell': {default: ({children}) => children},
+  './noah-instances': {NoahInstancesList: () => null},
+  './noah-managed-installation': {NoahInstallationsList: () => null},
+  './noah-agent-catalog': {adapterLabels: {web: '専用Web画面'}},
+ };
+ const manifest = {name:'Calendar Agent', summary:'Meetings', version:'1.1', adapter:'web'};
+ const library = {ownerScope:'owner', uploads:[{id:'upload', manifest, uploadState:'ready'}],
+  releases:[{packageKey:'package@1', manifestSha256:'release', name:'Market Agent', version:'1.0'}],
+  roles:[{id:'role', name:'Writing Agent', model:'local', enabled:false}]};
+ const invite = {inviteId:'invitation', uploadId:'shared', manifest:{...manifest,name:'Shared Agent'}, expiresAt:1000, access:'source'};
+ const ui = screen({modules, fetch:async ({url}) => {
+  if (url === '/api/noah/library') return {body:library};
+  assert.equal(url, '/api/noah/invites?received=1');
+  return {body:{ownerScope:'owner',shared:[invite]}};
+ }});
+ const view = ui.mount('components/noah-library.tsx', {embedded:true}); await view.flush();
+ const ids = () => view.find('li').map(node => node.props['data-agent-pin-id']);
+ assert.deepEqual(ids(), ['package@1', 'upload', 'shared', 'role']);
+ for (const [name,href] of [['Calendar Agent','/noah/agents/upload'],['Shared Agent','/noah/invites/invitation'],['Market Agent','/noah/releases/release']]) {
+  assert.equal(view.find('a',name)[0].props.href, href);
+ }
+ assert.match(view.text(), /閲覧・コード取得/);
+ assert.match(view.text(), /利用停止中/);
+ await view.type('no match');
+ assert.deepEqual(ids(), ['package@1', 'shared', 'role']);
+ assert.ok(ui.calls.every(call => call.method === 'GET'));
+});
+void test('selecting a saved Agent pin opens settings and protects an unsaved edit', async () => {
+ const empty = {default:() => null};
+ const modules = {
+  './noah-navigation':empty, '@/components/workspace-shell':empty, '@/components/sky-agent-capability-review':empty,
+  '@/components/sky-owned-agents':empty, '@/components/sky-device-agent-connections':empty,
+  '@/components/sky-commerce':{SkyPurchases:() => null}, '@/components/sky-feedback':{SkyNotice:() => null},
+  '@/lib/sky-agent-library':agentLibrary, '@/lib/llm-providers':providers,
+ };
+ const agents = ['Writing Agent','Coding Agent'].map((name, index) => ({
+  ...agentLibrary.defaultSkyAgentSettings(name, name), name, source:'personal', id:'agent-' + index, revision:1,
+ }));
+ const ui = screen({modules, fetch:async ({url}) => {
+  assert.equal(url, '/api/sky/agents'); return {body:{agents,ownerUserId:'owner'}};
+ }});
+ const view = ui.mount('components/sky-agent-library.tsx', {embedded:true,pinView:true}); await view.tick(0);
+ assert.deepEqual(view.find('li').map(node => node.props['data-agent-pin-id']), agents.map(agent => agent.id));
+ await view.click(agents[0].name);
+ assert.equal(view.find('button', agents[0].name)[0].props['aria-pressed'], true);
+ await view.change(view.find('input').find(node => node.props.value === agents[0].name), 'Edited');
+ assert.equal(view.find('button', agents[1].name)[0].props.disabled, true);
+ await view.click('変更を破棄');
+ assert.equal(view.find('button', agents[1].name)[0].props.disabled, false);
+ assert.ok(ui.calls.every(call => call.method === 'GET'));
+});
+void test('old links keep the theater and personal readers while the section menu shows only work utilities',()=>{
  const child=name=>({default:props=>({type:'section',props:{...props,children:name}})});
- const modules={'@/lib/noah-my-routes':myRoutes, './noah-work-page':child('WORK'), './noah-library':child('LIBRARY'), './noah-saved':child('SAVED')};
+ const modules={'@/lib/noah-my-routes':myRoutes, './noah-work-page':child('WORK'), './noah-library':child('LIBRARY'), './noah-saved':child('SAVED'),
+  './noah-theater':child('THEATER')};
  const cases=[
-  [{},undefined,'LIBRARY'],[{view:'activity'},undefined,'WORK'],[{view:'saved',tab:'files',job:'job-one'},undefined,'SAVED'],
+  [{},undefined,'THEATER'],[{view:'agents'},undefined,'LIBRARY'],[{view:'activity'},undefined,'WORK'],[{view:'saved',tab:'files',job:'job-one'},undefined,'SAVED'],
   [{tab:'agents'},'saved','LIBRARY'],[{view:'agents'},'activity','WORK'],[{},'saved','SAVED'],
-  [{view:['saved'],action:'delete'},undefined,'LIBRARY'],
+  [{view:['saved'],action:'delete'},undefined,'THEATER'],[{view:'saved',tab:'agents'},undefined,'LIBRARY'],
  ];
  for(const [params,legacy,reader] of cases){
   const ui=screen({modules}); const page=ui.mount('components/noah-my.tsx',{params,legacy});
-  assert.match(page.text(),new RegExp(reader)); assert.equal(page.find('h1').length,1); assert.equal(page.find('a').length,3);
-  assert.equal(page.find('a').filter(a=>a.props['aria-current']==='page').length,1); assert.equal(ui.calls.length,0);
+  const title={THEATER:'シアター',LIBRARY:'自分のAgent',WORK:'実行中',SAVED:'保存したもの'}[reader];
+  assert.match(page.text(),new RegExp(reader)); assert.deepEqual(page.find('h1').map(node=>page.text(node)),[title]);
+  assert.equal(page.text().includes('THEATER'),reader==='THEATER');
+  const nav=page.nodes(page.find('nav')[0]).filter(node=>node.type==='a');
+  assert.equal(page.find('nav')[0].props['aria-label'],'Agentと仕事');
+  assert.deepEqual(nav.map(link=>page.text(link)),['自分のAgent','実行中','保存したもの']);
+  assert.deepEqual(nav.filter(link=>link.props['aria-current']==='page').map(link=>page.text(link)),reader==='THEATER'?[]:[title]);
+  assert.equal(ui.calls.length,0);
  }
  assert.deepEqual(myRoutes.noahMySelection({},'saved'),{view:'saved',saved:'boards'});
+ assert.equal(myRoutes.noahMyHref('theater'),'/noah/my');
+ assert.equal(myRoutes.noahMyHref('agents'),'/noah/my?view=agents');
  assert.equal(myRoutes.noahMyHref('saved','files',{job:'saved-one',owner:'another',board:'wrong'}),'/noah/my?view=saved&tab=files&job=saved-one');
  assert.equal(myRoutes.noahMyHref('saved','boards',{board:'ボード 1',run:'yes'}),'/noah/my?view=saved&tab=boards&board=%E3%83%9C%E3%83%BC%E3%83%89+1');
 });

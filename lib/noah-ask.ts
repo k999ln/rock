@@ -1,5 +1,8 @@
+import { bindRevenueExecution, revenueDispatchMeta, revenueDispatchHash, isNoahRevenueOperation, noahRevenueOperationWorkView } from './noah-revenue-operation.ts';
+import { noahWorkRevenueDetail } from './noah-work-revenue-receipt.ts';
+import { noahRemoteUsageReceipt } from './noah-work-usage-receipt.ts';
 import { createNoahProviderRuntime, providerWorkView, type ProviderDependencies } from './noah-provider-runtime.ts';
-import { isNoahManagedWork, noahManagedWorkView, listNoahManagedWork } from './noah-managed-work.ts';
+import { isNoahManagedWork, noahManagedWorkDetail, listNoahManagedWork } from './noah-managed-work.ts';
 /**
  * 頼む（入力欄から、つないだ相手の道具を 1 回呼ぶ）。受け付け・実行・読む・止める。
  *
@@ -92,9 +95,13 @@ export function createNoahAskService(deps: NoahAskDependencies) {
 
   /** 依頼 1 件の応答。終わって成果がある依頼は、Work から成果の文を読んで添える（正本は Work）。 */
   async function detail(row: NoahAskRow): Promise<Record<string, unknown>> {
-    const view = noahAskView(row);
+    const job = await jobs.get(row.owner_id, row.work_id);
+    const remote = job?.noahRemote;
+    const view = {
+      ...noahAskView(row), usageReceipt: noahRemoteUsageReceipt('form', remote, row.tool_calls),
+      ...noahWorkRevenueDetail(job, row.owner_id, deps.revenueConfig),
+    };
     if (row.state !== 'succeeded') return view;
-    const remote = (await jobs.get(row.owner_id, row.work_id))?.noahRemote;
     return remote?.result ? { ...view, delivery:noahDelivery(row.host,row.tool,remote.result), result: {...remote.result,delivery:noahDelivery(row.host,row.tool,remote.result)}, ...(remote.note ? { note: remote.note } : {}) } : view;
   }
 
@@ -134,6 +141,7 @@ export function createNoahAskService(deps: NoahAskDependencies) {
       connectionId: input.connectionId, familyKey, digest, agentName: connection.name, host: target.host,
       tool: input.tool, toolSha256: input.toolSha256, toolsSha256, args: input.input, inputSha256: requestSha256,
     }, at);
+    bindRevenueExecution(job, owner, deps.revenueConfig, target.url, input.tool);
     const results = await db.batch([
       prepare(`INSERT INTO work_jobs (id,user_id,payload,revision,updated_at) SELECT ?,?,?,?,?
         WHERE (SELECT COUNT(*) FROM noah_asks WHERE owner_id=? AND finished_at IS NULL) < ? AND NOT EXISTS (SELECT 1 FROM noah_asks WHERE id=?)`,
@@ -261,8 +269,11 @@ export function createNoahAskService(deps: NoahAskDependencies) {
       // 道具を 1 回呼ぶ。失敗しても、呼び直さない。
       sent = true;
       let called: Awaited<ReturnType<typeof noahMcpCall>>;
+      let revenueDispatchSha256: string | undefined;
       try {
-        called = await noahMcpCall(shaken.handshake.session, tool.name, args.args, shaken.ctx, NOAH_ASK_RUN_LIMITS.callMs);
+        const revenue = job ? await revenueDispatchMeta(job, deps.revenueConfig, again.target.url, tool.name) : undefined;
+        called = await noahMcpCall(shaken.handshake.session, tool.name, args.args, shaken.ctx, NOAH_ASK_RUN_LIMITS.callMs, revenue);
+        if (revenue && called.ok) revenueDispatchSha256 = await revenueDispatchHash(revenue.dispatchProof);
       } catch (error) {
         const outcome = await callFailure(again.target, error);
         return await end(outcome.state, { state: outcome.state, error: outcome.error, used: [tool.name] });
@@ -273,7 +284,7 @@ export function createNoahAskService(deps: NoahAskDependencies) {
         return await end('failed', { state: 'failed', error: clip(text.text.trim() || NOAH_ASK_MESSAGES.toolFailed, NOAH_ASK_RUN_LIMITS.errorChars), used: [tool.name] });
       }
       // 成果を書けた時だけ（止められた依頼・後始末が先に終わらせた依頼では、書けない）: 使った時刻を書き、その系列を「動いた」にする。
-      if (await finish('succeeded', { state: 'returned', result: text, note: `${again.target.host} の ${tool.name} が返した内容です。費用 0。`, used: [tool.name] })) {
+      if (await finish('succeeded', { state: 'returned', revenueDispatchSha256, result: text, note: `${again.target.host} の ${tool.name} が返した内容です。費用 0。`, used: [tool.name] })) {
         const used = now();
         await prepare("UPDATE noah_connections SET last_used_at=? WHERE id=? AND owner_id=? AND state='connected'", used, row.connection_id, owner).run();
         await markRan(again.target, shaken.handshake);
@@ -302,13 +313,28 @@ export function createNoahAskService(deps: NoahAskDependencies) {
    */
   async function list(owner: string, connectionId: string | null, agentId: string | null = null): Promise<NoahAskReply> {
     // 行ごとに、その依頼の Agent（接続の系列）を添える（「実行中」「成果データ」の画面は、Agent をまたいで並べるので、行から詳細へ戻れるように）。
-    const columns = `${NOAH_ASK_COLUMNS},(SELECT family_key FROM noah_connections WHERE noah_connections.id=noah_asks.connection_id) AS family_key`;
-    const rows = (await (connectionId
-      ? prepare(`SELECT ${columns} FROM noah_asks WHERE owner_id=? AND connection_id=? ORDER BY updated_at DESC,id DESC LIMIT ?`, owner, connectionId, NOAH_ASK_RUN_LIMITS.listed)
-      : agentId
-        ? prepare(`SELECT ${columns} FROM noah_asks WHERE owner_id=? AND connection_id IN (SELECT id FROM noah_connections WHERE owner_id=? AND family_key=?) ORDER BY updated_at DESC,id DESC LIMIT ?`, owner, owner, agentId, NOAH_ASK_RUN_LIMITS.listed)
-        : prepare(`SELECT ${columns} FROM noah_asks WHERE owner_id=? ORDER BY updated_at DESC,id DESC LIMIT ?`, owner, NOAH_ASK_RUN_LIMITS.listed)).all<NoahAskRow>()).results;
+    const askFilter = connectionId ? 'AND connection_id=?'
+      : agentId ? 'AND connection_id IN (SELECT id FROM noah_connections WHERE owner_id=? AND family_key=?)' : '';
+    const bindings = [owner, ...(connectionId ? [connectionId] : agentId ? [owner, agentId] : [])];
+    const revenueRows = connectionId ? '' : `UNION ALL
+      SELECT id, CAST(ROUND((julianday(updated_at) - 2440587.5) * 86400000) AS INTEGER), 'revenue'
+      FROM work_jobs WHERE user_id=? AND json_extract(payload,'$.templateId')='noah-revenue-operation'
+      AND json_extract(payload,'$.noahRevenue.schema')='noah-work-revenue/1'
+      ${agentId ? "AND json_extract(payload,'$.noahRevenue.combinationId')=?" : ''}`;
+    if (!connectionId) bindings.push(owner, ...(agentId ? [agentId] : []));
+    // Page both kinds together so My Agent retains its one-read ordering and limit.
+    const rows = (await prepare(`WITH entries(id, at, kind) AS (
+      SELECT id, updated_at, 'ask' FROM noah_asks WHERE owner_id=? ${askFilter}
+      ${revenueRows} ORDER BY 2 DESC, 1 DESC LIMIT ?
+    ) SELECT ${NOAH_ASK_COLUMNS.split(',').map(name => 'a.' + name).join(',')}, c.family_key,
+        json_remove(w.payload, '$.noahRevenue.receipts', '$.noahRevenue.issuer', '$.noahRevenue.target') AS revenue_work FROM entries e
+      LEFT JOIN noah_asks a ON e.kind='ask' AND a.id=e.id
+      LEFT JOIN noah_connections c ON c.id=a.connection_id
+      LEFT JOIN work_jobs w ON e.kind='revenue' AND w.id=e.id AND w.user_id=?
+      ORDER BY e.at DESC,e.id DESC`, ...bindings, NOAH_ASK_RUN_LIMITS.listed, owner)
+      .all<NoahAskRow & { revenue_work: string | null }>()).results;
     return reply(200, { asks: await Promise.all(rows.map(async row=>{
+      if (row.revenue_work) return noahRevenueOperationWorkView(JSON.parse(row.revenue_work));
       const view=noahAskView(row);
       if(row.state!=='succeeded'||!noahExpectsImage(row.host,row.tool))return view;
       const result=(await jobs.get(row.owner_id,row.work_id))?.noahRemote?.result;
@@ -389,11 +415,13 @@ export function createNoahAskApi(deps: NoahAskApiDependencies) {
         if (connection !== null && !UUID.test(connection)) return json({ asks: [] });
         // 系列の ID は、一覧・計画の入口と同じ長さの範囲だけを受ける（それ以外は、何も無い物として答える）。
         if (connection === null && agent !== null && (agent.length < 3 || agent.length > 400)) return json({ asks: [] });
-        const listed=await service.list(owner, connection, connection === null ? agent : null);
-        if(connection===null && deps.providerDirectory){const added=await provider.list(owner,agent);if(added.length)listed.body.asks=[...(listed.body.asks as {updatedAt:number}[]),...added].sort((a,b)=>b.updatedAt-a.updatedAt).slice(0,50);}
-        const managed = deps.cloudApi ? await listNoahManagedWork(deps.db, owner, connection, agent) : [];
-        if (managed.length) listed.body.asks = [...(listed.body.asks as {updatedAt:number}[]), ...managed].sort((a,b) => b.updatedAt-a.updatedAt).slice(0,50);
-        return listed;
+        const [listed, providerWorks, managedWorks] = await Promise.all([
+          service.list(owner, connection, connection === null ? agent : null),
+          connection === null && deps.providerDirectory ? provider.list(owner, agent) : [],
+          deps.cloudApi ? listNoahManagedWork(deps.db, owner, connection, agent) : [],
+        ]);
+        const asks = [...listed.body.asks as { id: string; updatedAt: number }[], ...providerWorks, ...managedWorks];
+        return reply(200, { asks: asks.sort((a, b) => b.updatedAt - a.updatedAt || b.id.localeCompare(a.id)).slice(0, NOAH_ASK_RUN_LIMITS.listed) });
       }
       const value = await body(request);
       // 1 文で頼む（prompt）は、まだ受けない。
@@ -415,13 +443,18 @@ export function createNoahAskApi(deps: NoahAskApiDependencies) {
     }),
     item: (request: Request, id: string) => respond(request, ['GET', 'POST'], async ({ owner }) => {
       if (!UUID.test(id)) return missing();
-      const managed = deps.cloudApi ? await workStore(deps.db).get(owner, id) : null;
+      const job = await workStore(deps.db).get(owner, id);
+      if (isNoahRevenueOperation(job)) {
+        if (request.method !== 'GET') return failed(409, NOAH_ASK_MESSAGES.finished);
+        return reply(200, { ...noahRevenueOperationWorkView(job, true), ...noahWorkRevenueDetail(job, owner, deps.revenueConfig) });
+      }
+      const managed = deps.cloudApi ? job : null;
       if (isNoahManagedWork(managed)) {
-        if (request.method === 'GET') return reply(200, noahManagedWorkView(managed, true) as unknown as Record<string,unknown>);
+        if (request.method === 'GET') return reply(200, await noahManagedWorkDetail(managed) as unknown as Record<string,unknown>);
         const value = await body(request);
         if (Object.keys(value).length !== 2 || value.action !== 'stop' || !Number.isSafeInteger(value.revision) || Number(value.revision) < 1) throw new NoahAgentError('操作と版を確認してください。');
         if (value.revision !== managed.revision) throw new NoahAgentError('仕事の状態が更新されました。読み直してください。', 409);
-        if (!['queued', 'running'].includes(managed.noahRemote!.state)) return reply(200, noahManagedWorkView(managed, true) as unknown as Record<string,unknown>);
+        if (!['queued', 'running'].includes(managed.noahRemote!.state)) return reply(200, await noahManagedWorkDetail(managed) as unknown as Record<string,unknown>);
         if (!deps.cloudApi) throw new NoahAgentError('クラウドに接続できません。時間をおいて再試行してください。', 503);
         const stopped = await deps.cloudApi(new Request(new URL('/api/noah/cloud-agents', request.url), {
           method: 'POST', headers: request.headers,
@@ -430,11 +463,15 @@ export function createNoahAskApi(deps: NoahAskApiDependencies) {
         if (!stopped.ok) return stopped;
         await stopped.body?.cancel();
         const saved = await workStore(deps.db).get(owner, id);
-        return isNoahManagedWork(saved) ? reply(200, noahManagedWorkView(saved, true) as unknown as Record<string,unknown>) : missing();
+        return isNoahManagedWork(saved) ? reply(200, await noahManagedWorkDetail(saved) as unknown as Record<string,unknown>) : missing();
       }
       const providerJob=deps.providerDirectory?await provider.get(owner,id):null;
       if (request.method === 'GET') {
-        if(providerJob){void provider.wake(owner,id);return reply(200,providerWorkView(providerJob,true) as unknown as Record<string,unknown>);}
+        if (providerJob) {
+          const view = providerWorkView(providerJob, true);
+          if (view.state === 'queued' || view.state === 'running') void provider.wake(owner, id);
+          return reply(200, { ...view, ...noahWorkRevenueDetail(providerJob, owner, deps.revenueConfig) });
+        }
         return service.get(owner, id);
       }
       const value = await body(request);

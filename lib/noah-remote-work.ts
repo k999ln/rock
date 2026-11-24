@@ -1,3 +1,4 @@
+import type { EveProposal, EveProposalTargets } from './eve-consultation-proposal.ts';
 import type { NoahProviderRun } from './noah-provider-types.ts';
 import type { NoahReceivedResult } from './noah-result-media.ts';
 import type { NoahCloudFile, NoahCloudProfile, NoahCloudUsage } from './noah-cloud-contract.ts';
@@ -16,6 +17,8 @@ export const NOAH_REMOTE_TEMPLATE = 'noah-agent-remote';
 
 export type NoahRemoteExecution = {
   provider?: NoahProviderRun;
+  /** Hash of the correlation proof Noah sent with this particular successful provider call. */
+  revenueDispatchSha256?: string;
   /** どの接続の、どの版か。 */
   connectionId: string; familyKey: string; digest: string;
   /** agent: 1 文で頼む（出した後）。form: 入力欄から、道具を 1 回呼ぶ。 */
@@ -40,7 +43,7 @@ export type NoahRemoteExecution = {
   note?: string;
   error?: string;
   /** Managed-cloud results keep the existing unverified Work/owner boundary. */
-  cloud?: { projectId: string; profile: NoahCloudProfile; version: string; files?: NoahCloudFile[]; usage?: NoahCloudUsage };
+  cloud?: { projectId: string; profile: NoahCloudProfile; version: string; purpose?: 'eve-engineering'; runtimePurpose?: 'eve-combination-advice'; runtimeModel?: string; proposalBrief?: string; proposalTargets?: EveProposalTargets; proposal?: EveProposal; freeTier?: true; reportedModelCalls?: number; files?: NoahCloudFile[]; usage?: NoahCloudUsage };
 };
 
 const iso = (at: number) => new Date(at).toISOString();
@@ -73,7 +76,7 @@ export function startNoahRemoteWork(job: WorkJob, at: number): WorkJob {
 }
 
 export type NoahRemoteOutcome =
-  | { state: 'returned'; result: NoahReceivedResult; note: string; used: string[] }
+  | { state: 'returned'; result: NoahReceivedResult; note: string; used: string[]; revenueDispatchSha256?: string }
   | { state: 'failed' | 'cancelled' | 'unknown'; error: string; used?: string[] };
 
 /**
@@ -85,6 +88,10 @@ export function finishNoahRemoteWork(job: WorkJob, outcome: NoahRemoteOutcome, a
   if (job.templateId !== NOAH_REMOTE_TEMPLATE || !current || !['queued', 'running'].includes(current.state)) return job;
   const used = outcome.used ?? [];
   const next: NoahRemoteExecution = { ...current, state: outcome.state, used, toolCalls: used.length, completedAt: at };
-  if (outcome.state === 'returned') { next.result = outcome.result; next.note = outcome.note; } else next.error = head(outcome.error, 300);
+  if (outcome.state === 'returned') {
+    next.result = outcome.result;
+    next.note = outcome.note;
+    if (job.noahRevenue?.target && outcome.revenueDispatchSha256) next.revenueDispatchSha256 = outcome.revenueDispatchSha256;
+  } else next.error = head(outcome.error, 300);
   return { ...job, noahRemote: next, status: outcome.state === 'cancelled' ? 'cancelled' : 'review', revision: job.revision + 1, updatedAt: iso(at) };
 }

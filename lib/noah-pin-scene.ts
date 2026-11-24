@@ -6,7 +6,7 @@
  * （バージョン 1 は、人と景色の「場面の絵」だった。ブランチ claude/noah-pins-version-1 に残してある。）
  *
  * 絵は「型（template。図の名前）」と、型ごとの決まった数の「札の言葉（labels）」だけで書く（座標は書かない）。札ごとに、図に収まる字の上限がある。
- * 決まった形の JSON なので、人が書いても、AI（Codex の Luna Max。codex/tasks/130）が説明を読んで書いても、同じ物差しで確かめられる。
+ * 決まった形の JSON なので、人が書いても、AI（Codex の Luna Max。codex/tasks/131）が説明を読んで書いても、同じ物差しで確かめられる。
  * 描くのは lib/noah-pin-diagram.ts（Canvas）と components/noah-pin-scene.tsx。ここは、確かめる関数と表だけ（通信も保存もしない）。
  * 仕様: docs/noah/spec-115-pin-grid.md の 9 章。
  */
@@ -81,13 +81,13 @@ export function parseNoahPinScene(value: unknown): { scene: NoahPinScene; error:
   return { scene: { template, labels: [...labels] as string[], parts: [], variant: null }, error: null };
 }
 
-/** AI への説明（codex/tasks/130 の指示書が、そのまま使う表）。図ごとに 1 行。 */
+/** AI への説明（codex/tasks/131 の指示書が、そのまま使う表）。図ごとに 1 行。 */
 export function noahPinTemplateGuide(): string {
   return (Object.entries(NOAH_PIN_TEMPLATES) as [NoahPinTemplate, Spec][]).map(([name, spec]) =>
     `- ${name}（${String(spec.no).padStart(2, '0')} ${spec.name} / ${spec.en}）: ${spec.summary}。札の字の上限 = [${spec.slots.join(', ')}]`).join('\n');
 }
 
-/** 1 枚のピンの字と絵（題・入れる物・返る物・図解）。Luna Max が 1.7 万件ぶん書く物の形（codex/tasks/130）。 */
+/** 1 枚のピンの字と絵（題・入れる物・返る物・図解）。Luna Max が 1.7 万件ぶん書く物の形（codex/tasks/131）。 */
 export type NoahPin = { title: string; give: string; get: string; scene: NoahPinScene };
 /** 題・入れる物・返る物の長さの上限（字の数。数え方は noahPinLabelWidth と同じ）。 */
 export const NOAH_PIN_TEXT_MAX = { title: 20, give: 30, get: 30 } as const;

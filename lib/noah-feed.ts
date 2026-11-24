@@ -1,11 +1,13 @@
+import type { NoahCover } from './noah-cover.ts';
 import { boundedNoahBody } from './noah-agent-api.ts';
 import { NoahAgentError, noahSha256 } from './noah-agent-upload.ts';
 import { ownerScopeFor, OWNER_SCOPE_HEADER } from './owner-intent.ts';
 import type { SkyToolPackage } from './sky-tool-package.ts';
+import { isNoahAgentPackage } from './noah-agent-package-view.ts';
 import { noahRecommendationContext, noahRecommendationSettings } from './noah-recommendations.ts';
 
 export type NoahFeedPreference = { kind: 'follow' | 'hide' | 'interest' | 'personalize'; subject: string };
-export type NoahFeedEntry = { packageKey: string; toolId: string; version: string; digest: string; name: string; summary: string; authorId: string; author: string; categories: string[]; priceNote: string; publishedAt: number; reason: string };
+export type NoahFeedEntry = { cover?: NoahCover; guideMarkdown?: string; isAgent: boolean; packageKey: string; toolId: string; version: string; digest: string; name: string; summary: string; authorId: string; author: string; categories: string[]; priceNote: string; publishedAt: number; reason: string };
 export type NoahFeedPage = { entries: NoahFeedEntry[]; nextCursor: string | null; preferences: NoahFeedPreference[]; ownerScope: string | null; snapshot: number };
 const json = (value: unknown, status = 200) => Response.json(value, { status, headers: { 'Cache-Control': 'no-store', 'X-Content-Type-Options': 'nosniff' } });
 type FeedRow = { package_key: string; tool_id: string; manifest_sha256: string; manifest: string; published_at: number; score: number; followed: number; interest: number; history: number; compatible: number };
@@ -29,11 +31,12 @@ export function createNoahFeedApi(deps: { db: Pick<D1Database, 'prepare'>; authe
   return {
     get: (request: Request) => handle(request, false, async owner => {
       const params = new URL(request.url).searchParams, order = params.get('order') || 'recommended', query = (params.get('q') || '').trim().toLowerCase();
+      const trailers = params.get('media') === 'video';
       if (!['recommended', 'latest', 'following'].includes(order) || query.length > 200) throw new NoahAgentError('検索条件を確認してください。');
       const pref = await preferences(owner), enabled = pref.some(p => p.kind === 'personalize');
       const following = pref.filter(p => p.kind === 'follow').map(p => p.subject), hidden = pref.filter(p => p.kind === 'hide').map(p => p.subject), interests = pref.filter(p => p.kind === 'interest').map(p => p.subject);
       const settings = await noahRecommendationSettings(deps.db,owner);
-      const fingerprint = await noahSha256(new TextEncoder().encode(JSON.stringify([owner, order, query, pref, settings])));
+      const fingerprint = await noahSha256(new TextEncoder().encode(JSON.stringify([owner, order, query, pref, settings, ...(trailers ? ['video'] : [])])));
       let snapshot = now(), after: [number, number, string] | null = null;
       const raw = params.get('cursor');
       if (raw) {
@@ -57,6 +60,7 @@ export function createNoahFeedApi(deps: { db: Pick<D1Database, 'prepare'>; authe
           EXISTS(SELECT 1 FROM json_each(?) h WHERE EXISTS(SELECT 1 FROM json_each(p.manifest,'$.fund.tags') t WHERE lower(t.value)=h.value)) AS history,
           (json_type(p.manifest,'$.source.artifact.runtime')='object' AND (?='headless' OR (?='local-model' AND json_extract(p.manifest,'$.source.artifact.runtime.model') IN ('qwen2.5:1.5b','qwen3:4b')))) AS compatible
         FROM sky_tool_packages p WHERE p.status='verified' AND p.published_at IS NOT NULL
+          ${trailers ? "AND json_extract(p.manifest,'$.cover.type') IN ('video/mp4','video/webm')" : ''}
           AND EXISTS(SELECT 1 FROM sky_tool_package_reviews r WHERE r.package_key=p.package_key AND r.manifest_sha256=p.manifest_sha256 AND r.decision='verified' AND (r.expires_at IS NULL OR r.expires_at>?))
           AND p.published_at <= ? AND NOT EXISTS(SELECT 1 FROM json_each(?) h WHERE h.value=p.tool_id)
           AND (?='' OR instr(lower(p.manifest),?)>0)
@@ -65,7 +69,7 @@ export function createNoahFeedApi(deps: { db: Pick<D1Database, 'prepare'>; authe
       const page = rows.results.slice(0, 20), last = page.at(-1);
       const entries: NoahFeedEntry[] = page.map(row => {
         const m = JSON.parse(row.manifest) as SkyToolPackage;
-        return { packageKey: row.package_key, toolId: row.tool_id, version: m.version, digest: row.manifest_sha256, name: m.name, summary: m.summary,
+        return { ...(m.cover ? { cover: m.cover } : {}), ...(trailers && m.guideMarkdown ? { guideMarkdown: m.guideMarkdown } : {}), isAgent: isNoahAgentPackage(m), packageKey: row.package_key, toolId: row.tool_id, version: m.version, digest: row.manifest_sha256, name: m.name, summary: m.summary,
           authorId: m.developer.id, author: m.developer.displayName, categories: m.fund.categories, priceNote: m.pricing.note, publishedAt: row.published_at,
           reason: row.followed && (ranked || order === 'following') ? 'フォロー中の提供元' : ranked && row.interest ? '選んだ興味に関連' : ranked && row.history ? '同意後に利用したAgentの公開タグに関連' : ranked && row.compatible ? '選んだMacの実行方法に対応（接続状態は詳細で確認）' : '公開・更新されたAgentとTool' };
       });

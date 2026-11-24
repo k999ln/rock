@@ -1,5 +1,6 @@
+import { noahCloudRecordedToolCalls, noahRemoteUsageReceipt } from './noah-work-usage-receipt.ts';
 import type { NoahAskItem } from './noah-ask-view.ts';
-import { NOAH_CLOUD_PROFILES } from './noah-cloud-contract.ts';
+import { NOAH_CLOUD_PROFILES, NOAH_EVE_ADVICE_PURPOSE } from './noah-cloud-contract.ts';
 import { NOAH_REMOTE_TEMPLATE } from './noah-remote-work.ts';
 import { normalizeWorkJob, type WorkJob } from './workflow.ts';
 
@@ -25,7 +26,7 @@ export function noahManagedWorkView(job: WorkJob, includeResult = false): NoahAs
   return {
     id: job.id, workId: job.id, connectionId: remote.connectionId,
     agentId: remote.cloud!.projectId, mode: 'cloud',
-    tool: NOAH_CLOUD_PROFILES[remote.cloud!.profile]?.name ?? 'Agent', host: remote.host ?? 'Noahクラウド',
+    tool: remote.cloud!.runtimePurpose === NOAH_EVE_ADVICE_PURPOSE ? 'Eve' : NOAH_CLOUD_PROFILES[remote.cloud!.profile]?.name ?? 'Agent', host: remote.host ?? 'Noahクラウド',
     state: remote.state === 'returned' ? 'succeeded' : remote.state === 'cancelled' ? 'stopped' : remote.state,
     revision: job.revision, stopRequested: false,
     createdAt: Date.parse(job.createdAt), updatedAt: Date.parse(job.updatedAt),
@@ -33,4 +34,11 @@ export function noahManagedWorkView(job: WorkJob, includeResult = false): NoahAs
     ...(remote.error ? { error: remote.error } : {}),
     ...(includeResult && remote.result ? { result: remote.result, note: remote.note, cloudFiles: remote.cloud!.files ?? [] } : {}),
   };
+}
+
+export async function noahManagedWorkDetail(job: WorkJob): Promise<NoahAskItem> {
+  const remote = job.noahRemote!;
+  const usageReceipt = noahRemoteUsageReceipt('managed-cloud', remote);
+  usageReceipt.metrics.toolCalls = await noahCloudRecordedToolCalls(remote);
+  return { ...noahManagedWorkView(job, true), usageReceipt };
 }

@@ -1,3 +1,5 @@
+import { isNoahCover, NOAH_COVER_LIMIT } from './noah-cover.ts';
+import { prepareNoahCover, saveNoahCover, serveNoahCover, requireStoredNoahCover } from './noah-cover-storage.ts';
 import { prepareDraftRegistration, finishDraftRegistration } from './noah-draft-registration.ts';
 import type { DraftBucket } from './noah-draft-storage.ts';
 import { noahAgentStore } from './noah-agent-store.ts';
@@ -70,28 +72,46 @@ export function createNoahAgentApi(deps: {
       if (!agent) throw new NoahAgentError('Agentが見つかりません。', 404);
       return json({ agent, ownerScope: await ownerScopeFor(user) });
     }),
+    cover: (request: Request, id: string) => respond(async () => {
+      const user = await owner(request);
+      const agent = await noahAgentStore(deps.db, user).get(noahUploadId(id));
+      if (!isNoahCover(agent?.manifest.cover)) throw new NoahAgentError('カバーが見つかりません。', 404);
+      const response = await serveNoahCover(deps.bucket, user, agent.manifest.cover, request);
+      if (!(await noahAgentStore(deps.db, user).get(id))) { await response.body?.cancel(); throw new NoahAgentError('カバーが見つかりません。', 404); }
+      return response;
+    }),
     create: (request: Request) => respond(async () => {
       const user = await owner(request, true);
       const multipart = request.headers.get('content-type')?.startsWith('multipart/form-data;');
       if (!multipart && !request.headers.get('content-type')?.startsWith('application/json')) throw new NoahAgentError('JSONまたはアップロードフォームを使ってください。', 415);
-      const bytes = await boundedNoahBody(request, multipart ? NOAH_SOURCE_LIMIT + NOAH_MANIFEST_LIMIT + 8192 : NOAH_MANIFEST_LIMIT + NOAH_CODE_LIMIT * 6 + 2048);
-      let input: Record<string, unknown>; let file: File | null = null;
+      const bytes = await boundedNoahBody(request, multipart ? NOAH_SOURCE_LIMIT + NOAH_MANIFEST_LIMIT + NOAH_COVER_LIMIT + 8192 : NOAH_MANIFEST_LIMIT + NOAH_CODE_LIMIT * 6 + 2048);
+      let input: Record<string, unknown>; let file: File | null = null; let coverFile: FormDataEntryValue | null = null;
       if (multipart) {
         let form: FormData;
         try { form = await new Response(bytes, { headers: { 'Content-Type': request.headers.get('content-type')! } }).formData(); }
         catch { throw new NoahAgentError('アップロード形式を確認してください。'); }
-        if ([...form.keys()].some(k => !['id', 'manifest', 'rightsConfirmed', 'source', 'processingReceipt', 'draft'].includes(k) || form.getAll(k).length !== 1)) throw new NoahAgentError('重複または未対応の項目があります。');
-        const raw = form.get('manifest');
-        if (typeof raw !== 'string' || new TextEncoder().encode(raw).length > NOAH_MANIFEST_LIMIT) throw new NoahAgentError('定義JSONは32KiBまでです。', 413);
-        input = { id: form.get('id'), manifest: JSON.parse(raw), rightsConfirmed: form.get('rightsConfirmed') === 'true' };
-        const receipt = form.get('processingReceipt');
-        if (receipt !== null) { if (typeof receipt !== 'string' || receipt.length > 512) throw new NoahAgentError('整理結果の確認情報を確認してください。'); input.processingReceipt = JSON.parse(receipt); }
-        const draft = form.get('draft');
-        if (draft !== null) { if (typeof draft !== 'string' || draft.length > 200) throw new NoahAgentError('下書きの参照を確認してください。'); input.draft = JSON.parse(draft); }
-        const source = form.get('source');
-        if (source !== null) {
-          if (typeof source === 'string') throw new NoahAgentError('コードまたは配布ファイルを選んでください。');
-          file = source;
+        if ([...form.keys()].some(k => form.getAll(k).length !== 1)) throw new NoahAgentError('項目が重複しています。');
+        coverFile = form.get('cover');
+        form.delete('cover');
+        const payload = form.get('payload');
+        if (payload !== null) {
+          if (!coverFile || typeof payload !== 'string' || [...form.keys()].length !== 1 || new TextEncoder().encode(payload).length > NOAH_MANIFEST_LIMIT + NOAH_CODE_LIMIT * 6 + 2048)
+            throw new NoahAgentError('カバーと登録内容を確認してください。');
+          input = JSON.parse(payload);
+        } else {
+          if ([...form.keys()].some(k => !['id', 'manifest', 'rightsConfirmed', 'source', 'processingReceipt', 'draft'].includes(k))) throw new NoahAgentError('重複または未対応の項目があります。');
+          const raw = form.get('manifest');
+          if (typeof raw !== 'string' || new TextEncoder().encode(raw).length > NOAH_MANIFEST_LIMIT) throw new NoahAgentError('定義JSONは32KiBまでです。', 413);
+          input = { id: form.get('id'), manifest: JSON.parse(raw), rightsConfirmed: form.get('rightsConfirmed') === 'true' };
+          const receipt = form.get('processingReceipt');
+          if (receipt !== null) { if (typeof receipt !== 'string' || receipt.length > 512) throw new NoahAgentError('整理結果の確認情報を確認してください。'); input.processingReceipt = JSON.parse(receipt); }
+          const draft = form.get('draft');
+          if (draft !== null) { if (typeof draft !== 'string' || draft.length > 200) throw new NoahAgentError('下書きの参照を確認してください。'); input.draft = JSON.parse(draft); }
+          const source = form.get('source');
+          if (source !== null) {
+            if (typeof source === 'string') throw new NoahAgentError('コードまたは配布ファイルを選んでください。');
+            file = source;
+          }
         }
       } else {
         try { input = JSON.parse(new TextDecoder('utf-8', { fatal: true }).decode(bytes)); }
@@ -110,7 +130,17 @@ export function createNoahAgentApi(deps: {
       const id = noahUploadId(input.id), manifest = parseNoahAgentManifest(input.manifest);
       const processingReference = input.processingReceipt as ProcessingReference | undefined;
       if (processingReference !== undefined && (!processingReference || typeof processingReference !== 'object' || Array.isArray(processingReference) || Object.keys(processingReference).some(k => !['id', 'token'].includes(k)) || processingReference.id !== id || !/^[a-f0-9]{64}$/.test(processingReference.token))) throw new NoahAgentError('整理結果と登録IDを確認してください。');
-      const manifestSha256 = await noahSha256(new TextEncoder().encode(JSON.stringify(manifest)));
+      const cover = await prepareNoahCover(coverFile);
+      if (cover && !deps.bucket) throw new NoahAgentError('カバー保存先を確認できません。', 503);
+      if (manifest.cover) {
+        const existing = await noahAgentStore(deps.db, user).get(id);
+        if (!existing?.manifest.cover || existing.manifest.cover.sha256 !== manifest.cover.sha256 ||
+            existing.manifest.cover.type !== manifest.cover.type || existing.manifest.cover.bytes !== manifest.cover.bytes ||
+            (cover && cover.pin.sha256 !== manifest.cover.sha256)) throw new NoahAgentError('この登録のカバーファイルを添付してください。', 409);
+        if (!cover) await requireStoredNoahCover(deps.bucket, user, manifest.cover);
+      }
+      const storedManifest = cover ? { ...manifest, cover: cover.pin } : manifest;
+      const manifestSha256 = await noahSha256(new TextEncoder().encode(JSON.stringify(storedManifest)));
       let source: { key: string; name: string; bytes: number; sha256: string } | null = null;
       let sourceBytes: Uint8Array | null = null;
       if (file) {
@@ -134,8 +164,10 @@ export function createNoahAgentApi(deps: {
           throw new NoahAgentError(NOAH_BROWSER_QUOTA_MESSAGE, 429);
       }
       const draft = await prepareDraftRegistration(deps.db, deps.bucket, user, input.draft, { id, manifest, source });
-      const reserved = await store.reserve({ id, manifest, manifestSha256, source });
+      const reserved = await store.reserve({ id, manifest: storedManifest, manifestSha256, source });
+      if (cover) await saveNoahCover(deps.bucket, user, cover);
       let agent = reserved.upload;
+      if (agent.uploadState === 'pending' && storedManifest.cover && !source) agent = await store.completeCover(id, manifestSha256);
       if (processingReference && agent.uploadState === 'ready' && agent.processing?.engine !== 'noah-project-refactor/1') throw new NoahAgentError('この登録IDは別の整理方式で保存済みです。新しいIDで登録してください。', 409);
       if (agent.uploadState === 'pending' && source && sourceBytes) {
         // Reserve before R2 so failed uploads remain owned, bounded and retryable.

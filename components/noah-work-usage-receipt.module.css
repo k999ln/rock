@@ -1,0 +1,66 @@
+.receipt {
+  min-width: 0;
+  margin-block: 24px;
+  padding: 18px clamp(14px, 3vw, 24px);
+  border: 1px solid #e5ddd5;
+  border-radius: 14px;
+  color: #28231f;
+  background: #fff;
+}
+.receipt h2 {
+  margin: 0 0 12px;
+  font-size: 1.125rem;
+  line-height: 1.45;
+  letter-spacing: -.02em;
+}
+.rows {
+  margin: 0;
+}
+.rows > div {
+  display: grid;
+  grid-template-columns: minmax(0, 0.93fr) minmax(0, 1.07fr);
+  align-items: baseline;
+  gap: 12px;
+  padding-block: 8px;
+}
+.rows > div + div {
+  border-top: 1px solid #f0ebe7;
+}
+.rows dt {
+  color: #675d55;
+  font-size: .875rem;
+  text-wrap: balance;
+}
+.rows dd {
+  margin: 0;
+  font-size: .9375rem;
+  font-variant-numeric: tabular-nums;
+  text-align: end;
+}
+.rows dt, .rows dd {
+  overflow-wrap: anywhere;
+}
+.primary dd {
+  font-weight: 700;
+}
+.details {
+  margin-top: 8px;
+  border-top: 1px solid #e5ddd5;
+}
+.details summary {
+  display: list-item;
+  padding-block: 12px;
+  color: #814315;
+  cursor: pointer;
+}
+.details summary:focus-visible {
+  outline: 2px solid currentColor;
+  outline-offset: 2px;
+}
+
+.shareNote {
+  margin: 8px 0 0;
+  color: #675d55;
+  line-height: 1.55;
+  font-size: .875rem;
+}

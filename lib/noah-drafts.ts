@@ -20,7 +20,7 @@ function content(value: unknown): NoahDraftContent {
   if (!v || typeof v !== 'object' || Array.isArray(v) || Object.keys(v).some(k => !['manifest','codeMode','codeName','code','rights','validation'].includes(k)) ||
     !v.manifest || typeof v.manifest !== 'object' || Array.isArray(v.manifest) || !['file','paste'].includes(v.codeMode) ||
     typeof v.codeName !== 'string' || v.codeName.length > 120 || typeof v.code !== 'string' || typeof v.rights !== 'boolean') throw new NoahAgentError('下書きの形式を確認してください。');
-  const keys = ['schema','id','version','name','summary','author','license','sourceUrl','adapter','endpointUrl','permissions','priceNote','runtime'];
+  const keys = ['schema','id','version','name','summary','author','license','sourceUrl','adapter','endpointUrl','permissions','priceNote','runtime','guideMarkdown'];
   for (const [key, val] of Object.entries(v.manifest)) {
     if (key === 'runtime') {
       if (!val || typeof val !== 'object' || Array.isArray(val) || Object.keys(val).some(k => !['schema','language','entrypoint','model'].includes(k)) ||

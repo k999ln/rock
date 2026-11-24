@@ -1,6 +1,7 @@
 import * as collection from '../../../lib/noah-collection.ts';
 import * as importParts from '../../../lib/noah-intake-import-parts.ts';
 import * as operationLabels from '../../../lib/noah-operation-labels.ts';
+import * as currencyFormat from '../../../lib/currency-format.ts';
 // 画面の部品（components/*.tsx）を、ブラウザなしで動かす台。
 // 部品のファイルを TypeScript で JS に直し、小さな React の代わり（関数の部品を入れ子で描く・useState・useRef・useEffect を、木の中の場所ごとに持つ）で動かす。
 // fetch・sessionStorage・location・時計（setTimeout・setInterval）は、試験が渡す物。見た目（CSS）は確かめない。確かめるのは、出る文・押せる物・送る要求。
@@ -31,7 +32,8 @@ const jsx = (type, props, key) => ({ type, props: props ?? {}, key: key ?? null 
  */
 export function screen(options = {}) {
   const calls = [], visits = [], storage = new Map(Object.entries(options.storage ?? {}));
-  let clock = options.now ?? Date.UTC(2026, 10, 21, 3), timerId = 0, uuid = 0, inflight = 0;
+  const startTime = options.now ?? Date.UTC(2026, 10, 21, 3);
+  let clock = startTime, timerId = 0, uuid = 0, inflight = 0;
   const timers = new Map();
   // 描いている途中の部品・描いた後に動かす effect・状態が変わった印。画面（mount）ごとの物は、mount の中に持つ。
   let current = null, effects = [], dirty = false, mounts = 0;
@@ -68,10 +70,14 @@ export function screen(options = {}) {
     useContext: (held) => held.value,
   };
 
+  // The harness has no paint phase. Run layout effects in the existing effect queue.
+  hooks.useLayoutEffect = (run, deps) => hooks.useEffect(run, deps);
+
   const context = createContext({
     FormData: class {constructor(form){this.form=form;}get(key){return this.form.values?.[key]??null;}},
     console, queueMicrotask, File, Blob, Uint8Array, atob, navigator: options.navigator ?? {}, URL, URLSearchParams, JSON, Math, Array, Object, Number, String, Boolean, Error, Promise, Symbol, Map, Set, RegExp, Reflect, Proxy, Intl, AbortController, AbortSignal,
     Date: class extends Date { constructor(...args) { if (args.length) super(...args); else super(clock); } static now() { return clock; } },
+    performance: { now: () => clock - startTime },
     crypto: { randomUUID: () => `00000000-0000-4000-8000-${String(++uuid).padStart(12, '0')}` },
     fetch: async (url, init = {}) => {
       const request = { url: String(url), method: init.method ?? 'GET', headers: { ...init.headers }, body: init.body ? JSON.parse(init.body) : undefined };
@@ -101,6 +107,8 @@ export function screen(options = {}) {
     innerWidth: options.width ?? 390,
     setTimeout: context.setTimeout, clearTimeout: context.clearTimeout,
   };
+  if (options.matchMedia) context.window.matchMedia = options.matchMedia;
+  if (options.IntersectionObserver) context.IntersectionObserver = options.IntersectionObserver;
 
   const loaded = new Map();
   function load(file) {
@@ -121,6 +129,7 @@ export function screen(options = {}) {
       if(id.startsWith('./')&&options.modules?.[`@/components/${id.slice(2)}`])return options.modules[`@/components/${id.slice(2)}`];
       if(id==='./noah-locale')return {useNoahLocale:()=>({t:(text,values)=>noahTranslate(options.locale??'ja',text,values),locale:options.locale??'ja'}),NoahLanguageSetting:()=>null};
       if(id==='@/lib/noah-operation-labels')return operationLabels;
+      if(id==='@/lib/currency-format')return currencyFormat;
       if(id==='@/lib/noah-agent-explanation')return explanation;
       if(id==='@/lib/noah-shelf')return shelfContract;
       if(id==='@/lib/noah-steps')return stepGraph;
@@ -139,9 +148,13 @@ export function screen(options = {}) {
       if (id === '@/lib/noah-pin-scenes-shelf') return shelfScenes;
       // ピンの図解を描く式（しょうへいさんの図解パックの書き写し。canvas に描くだけで、通信も保存もしない）。
       if (id === '@/lib/noah-pin-diagram') return load('lib/noah-pin-diagram.ts');
+      if (id === '@/lib/noah-agent-art' || id === './noah-agent-art.ts') return load('lib/noah-agent-art.ts');
+      if (id === '@/lib/noah-cover') return load('lib/noah-cover.ts');
+      if (id === '@/lib/noah-card-video-paint') return load('lib/noah-card-video-paint.ts');
       if (id === '@/lib/noah-intake-import-parts') return importParts;
       // 詳細の頁へのリンクを作るだけの式（集めたAgentのカードの「Noahで開く」。task 121）。
       if (id === '@/lib/noah-ready-view') return readyView;
+      if (id === '@/lib/noah-detail-guide') return load('lib/noah-detail-guide.ts');
       if (id === '@/lib/noah-project-view') return load('lib/noah-project-view.ts');
 
       if (id === '@/lib/noah-agent-share') return agentShare;
@@ -173,6 +186,11 @@ export function screen(options = {}) {
         const output = node.type(node.props);
         current = before;
         return expand(output, id);
+      }
+      // Opt in to host refs only when the test models an element (focus, bounds, or media).
+      const ref = node.props.ref;
+      if (options.hostElement && ref && typeof ref === 'object' && ref.current == null) {
+        ref.current = options.hostElement(node.type, node.props);
       }
       return { ...node, props: { ...node.props, children: expand(node.props.children, `${path}/${typeof node.type === 'symbol' ? 'fragment' : node.type}`) } };
     };

@@ -3,6 +3,7 @@
 import { useEffect, useRef, useState } from 'react';
 import { useNoahLocale } from './noah-locale';
 import NoahAgentVisual from './noah-agent-visual';
+import { NoahAgentPinFace } from './noah-agent-pin';
 import NoahLoading from './noah-loading';
 import Link from 'next/link';
 import {
@@ -244,7 +245,8 @@ export default function NoahTimeline({
           if(item.kind==='remote'){
             const a=item.agent;
             return <article key={item.key} className={styles.agentPost} data-feed-kind="remote"><div className={styles.agentLabel}><Bot size={14}/><span>{t("スマホで使える")}</span><span>{a.section==='ran'?t("成果の受取実績あり"):t("接続確認済み")}</span></div>
-              <Link href={noahReadyDetailHref(a.id)} className={styles.agentPreview}><NoahAgentVisual name={a.name} summary={a.summary}/><div><span className={styles.publisher}>{a.provider}</span><h3>{a.name}</h3><p>{a.summary}</p></div><ArrowUpRight size={20}/></Link>
+              <NoahAgentPinFace id={a.id} name={a.name} summary={a.summary} href={noahReadyDetailHref(a.id)} />
+              <span className={styles.publisher}>{a.provider}</span>
               <footer className={styles.agentFooter}><span>{a.users}{t("人が利用 ·")}{a.tools}{t("個の道具")}</span><Link className={styles.tryAgent} href={noahReadyDetailHref(a.id)}>{t("使う ↗")}</Link></footer>
             </article>;
           }
@@ -284,6 +286,7 @@ export default function NoahTimeline({
             );
           }
           const agent = item.agent;
+          const isAgent = agent.kind === 'agent' || agent.kind === 'candidate';
           return (
             <article
               key={item.key}
@@ -295,7 +298,10 @@ export default function NoahTimeline({
                 <span>{t("Agent紹介")}</span>
                 <span>{t(researchKindLabels[agent.kind])}</span>
               </div>
-              <Link
+              {isAgent ? <>
+                <NoahAgentPinFace id={agent.id} name={agent.name} summary={agent.summary} href={`${base}/agents/${agent.id}`} />
+                <span className={styles.publisher}>{agent.author || t('公開資料からの紹介')}</span>
+              </> : <Link
                 href={`${base}/agents/${agent.id}`}
                 className={styles.agentPreview}
               >
@@ -308,8 +314,8 @@ export default function NoahTimeline({
                   <p>{agent.summary}</p>
                 </div>
                 <ArrowUpRight size={20} />
-              </Link>
-              {(agent.kind === 'agent' || agent.kind === 'candidate') && (
+              </Link>}
+              {isAgent && (
                 <NoahAgentSignals
                   id={agent.id}
                   summary={feedback.rows.find(

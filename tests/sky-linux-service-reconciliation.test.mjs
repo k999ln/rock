@@ -26,7 +26,7 @@ const ack = revision => ({ accepted: true, revision, workspace: null, access: nu
 
 // Actual TSX + actual operations-client compiled, with deterministic React hook
 // scheduling and JSX tree inspection. This is a hook fixture, not a browser DOM.
-function harness(visibility = 'visible') {
+function harness(visibility = 'visible', resultsOnly = false) {
   const slots = [], effects = [], calls = [], events = new Map();
   let cursor = 0, dirty = false, tree, mounted = true, lateWrites = 0, randomIds = 0;
   const same = (a, b) => a && a.length === b.length && a.every((x, i) => Object.is(x, b[i]));
@@ -56,7 +56,19 @@ function harness(visibility = 'visible') {
   const source = process.env.ESIM_ACK_TEST_BASE
     ? execFileSync('git', ['show', process.env.ESIM_ACK_TEST_BASE + ':components/sky-linux-service.tsx'], { encoding: 'utf8' })
     : readFileSync(new URL('../components/sky-linux-service.tsx', import.meta.url), 'utf8');
+  const receiptView = {};
+  runInNewContext(compile(readFileSync(new URL('../components/noah-contract-results.tsx', import.meta.url), 'utf8')), {
+    ...globals, exports: receiptView, require(name) {
+      if (name === 'react/jsx-runtime') return { jsx, jsxs: jsx };
+      if (name === 'next/link') return 'a';
+      if (name.endsWith('.css')) return {};
+      if (name === './noah-locale') return { useNoahLocale: () => ({ locale: 'ja-JP',
+        t: (s, args = {}) => s.replace(/\{(\w+)\}/g, (_, k) => String(args[k])) }) };
+      throw Error('unexpected result view module ' + name);
+    },
+  });
   runInNewContext(compile(source), { ...globals, exports, require(name) {
+    if (name === './noah-contract-results') return receiptView;
     if (name === 'react') return react;
     if (name === 'react/jsx-runtime') return { jsx, jsxs: jsx };
     if (name === 'next/link') return 'a';
@@ -67,7 +79,7 @@ function harness(visibility = 'visible') {
     throw Error('unexpected module ' + name);
   } });
   function render() { if (!mounted) return; for (let n = 0; n < 20; n++) {
-    dirty = false; cursor = 0; tree = exports.default(); while (effects.length) effects.shift()(); if (!dirty) return;
+    dirty = false; cursor = 0; tree = exports.default({ resultsOnly }); if (resultsOnly) tree = tree.type(tree.props); while (effects.length) effects.shift()(); if (!dirty) return;
   } throw Error('render did not settle'); }
   function visit(node, list) { if (!node || typeof node !== 'object') return list;
     if (Array.isArray(node)) { node.forEach(x => visit(x, list)); return list; }
@@ -318,4 +330,30 @@ void test('initial hidden or prerender view waits for visible current authority 
 void test('visibility listener cleanup prevents reads or state writes after unmount', async () => {
   const h = await loaded(); h.setVisibility('hidden'); h.unmount(); h.setVisibility('visible');
   h.fire('focus'); await h.flush(); assert.equal(h.calls.length, 1); assert.equal(h.lateWrites, 0);
+});
+
+void test('My Agent contract results show measured CPU and fees per job, keeping the open reservation and the sandbox receipt separate', async () => {
+  const h = harness('visible', true), sample = view();
+  const w = sample.workspace.payload;
+  w.mode = 'sandbox';
+  w.jobs[0].approvedAt = 12345;
+  w.jobs.push({ ...w.jobs[0], id: 'settled-job', state: 'review', cpuMs: 45, computeMinor: 0,
+    authorMinor: 8, receiptId: 'confirmed-receipt', run: { text: 'Saved paid result' } });
+  h.reply(0, sample);
+  await h.flush();
+  const rows = h.nodes().filter(node => node.type === 'details');
+  assert.equal(rows.length, 2);
+  assert.match(h.text(rows[0]), /予約中の金額/);
+  assert.match(h.text(rows[0]), /確定額の記録はありません/);
+  assert.doesNotMatch(h.text(rows[0]), /45 ミリ秒|confirmed-receipt/);
+  assert.match(h.text(rows[1]), /Saved paid result/);
+  assert.match(h.text(rows[1]), /45 ミリ秒/);
+  assert.match(h.text(rows[1]), /0\.08/);
+  assert.match(h.text(rows[1]), /confirmed-receipt/);
+  assert.doesNotMatch(h.text(rows[1]), /予約中の金額/);
+  assert.match(h.text(), /テスト契約/);
+  h.setVisibility('hidden');
+  await h.flush();
+  assert.doesNotMatch(h.text(), /Saved paid result|confirmed-receipt/);
+  assert.equal(h.calls.filter(call => call.method !== 'GET').length, 0);
 });

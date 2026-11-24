@@ -1,3 +1,5 @@
+import { isNoahCover, type NoahCover } from './noah-cover.ts';
+import { normalizedNoahGuide } from './noah-author-guide.ts';
 import { parseNoahRuntime } from './noah-runtime-contract.mjs';
 export const NOAH_SOURCE_LIMIT = 10 * 1024 * 1024;
 export const NOAH_CODE_LIMIT = 64 * 1024;
@@ -10,6 +12,8 @@ export type NoahAgentManifest = {
   adapter: (typeof NOAH_ADAPTERS)[number]; endpointUrl: string | null;
   permissions: (typeof NOAH_PERMISSIONS)[number][]; priceNote: string;
   runtime?: ReturnType<typeof parseNoahRuntime>;
+  cover?: NoahCover;
+  guideMarkdown?: string;
 };
 export class NoahAgentError extends Error {
   status: number;
@@ -39,8 +43,11 @@ export function parseNoahAgentManifest(value: unknown): NoahAgentManifest {
   if (!value || typeof value !== 'object' || Array.isArray(value)) throw new NoahAgentError('Agent定義のJSONを確認してください。');
   const v = value as Record<string, unknown>;
   const keys = ['schema', 'id', 'version', 'name', 'summary', 'author', 'license', 'sourceUrl', 'adapter', 'endpointUrl', 'permissions', 'priceNote'];
-  if (Object.keys(v).some(k => !keys.includes(k) && k !== 'runtime') || keys.some(k => !(k in v)) || v.schema !== 'noah-agent/1')
+  if (Object.keys(v).some(k => !keys.includes(k) && !['runtime','cover','guideMarkdown'].includes(k)) || keys.some(k => !(k in v)) || v.schema !== 'noah-agent/1')
     throw new NoahAgentError('noah-agent/1のテンプレートを使ってください。');
+  if ('cover' in v && !isNoahCover(v.cover)) throw new NoahAgentError('カバーの固定版を確認してください。');
+  const guideMarkdown = normalizedNoahGuide(v.guideMarkdown);
+  if ('guideMarkdown' in v && !guideMarkdown) throw new NoahAgentError('使い方ガイドは1〜2,000文字で入力してください。');
   const id = text(v.id, '識別名', 80), version = text(v.version, '版', 40);
   if (!/^[a-z][a-z0-9-]{1,79}$/.test(id) || !/^\d{1,6}\.\d{1,6}\.\d{1,6}(?:-[a-zA-Z0-9.-]{1,16})?$/.test(version))
     throw new NoahAgentError('識別名は半角英数字とハイフン、版は1.0.0の形式にしてください。');
@@ -61,9 +68,10 @@ export function parseNoahAgentManifest(value: unknown): NoahAgentManifest {
     try { runtime = parseNoahRuntime(v.runtime); } catch (e) { throw new NoahAgentError((e as Error).message); }
   }
   return { schema: 'noah-agent/1', id, version, name: text(v.name, '名前', 100), summary: text(v.summary, 'できる仕事', 2000),
+    ...(guideMarkdown ? { guideMarkdown } : {}),
     author: text(v.author, '作者', 100), license: text(v.license, 'ライセンス', 100),
     sourceUrl: v.sourceUrl === null ? null : noahPublicUrl(v.sourceUrl), adapter, endpointUrl,
-    permissions: v.permissions as NoahAgentManifest['permissions'], priceNote: text(v.priceNote, '料金・利用条件', 500), ...(runtime ? { runtime } : {}) };
+    permissions: v.permissions as NoahAgentManifest['permissions'], priceNote: text(v.priceNote, '料金・利用条件', 500), ...(runtime ? { runtime } : {}), ...(isNoahCover(v.cover) ? { cover: v.cover } : {}) };
 }
 export async function noahSha256(bytes: Uint8Array) {
   const digest = await crypto.subtle.digest('SHA-256', bytes as Uint8Array<ArrayBuffer>);

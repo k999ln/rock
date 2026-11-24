@@ -1,3 +1,4 @@
+import { noahRevenueConfig } from './noah-revenue-operation';
 import { noahAgentDirectory } from './noah-agent-directory-server';
 import { createNoahCloudApi, noahCloudRuntime } from './noah-cloud-api';
 import { createNoahProviderRuntime } from './noah-provider-runtime';
@@ -17,14 +18,17 @@ import { readNoahAgentExplanation } from './noah-explanation-source';
 export function noahIntakeDependencies() {
   const config = env as unknown as Record<string, string | undefined>;
   const access = noahReviewerAccess(requestUser, config.NOAH_REVIEWER_USER_IDS, config.NOAH_REVIEWER_OWNER_SCOPES);
-  const dependencies = { db: database(), ...access, providerDirectory: noahAgentDirectory,
+  const dependencies = { db: database(), revenueConfig: noahRevenueConfig(config), ...access, providerDirectory: noahAgentDirectory,
     availability: createNoahAvailabilityStore(database()),
     cloudApi: createNoahCloudApi({ authenticate: requestUser, db: database(), directory: noahAgentDirectory,
       authorize: noahProfileStore().authorize, receiptKey: config.NOAH_CLOUD_KEY,
       runtime: noahCloudRuntime({ url: config.NOAH_CLOUD_URL, key: config.NOAH_CLOUD_KEY }) }),
     flags: parseNoahFlags(config), wakeKey: config.NOAH_PATROL_WAKE_KEY,
     explainPublic: config.NOAH_EXPLAIN_PUBLIC === 'true',
-    explainAgent: (input: Parameters<typeof readNoahAgentExplanation>[1]) => readNoahAgentExplanation(database(), input),
+    explainLabels: config.NOAH_EXPLAIN_LABELS === 'true',
+    explainAgent: (input: Parameters<typeof readNoahAgentExplanation>[1]) => readNoahAgentExplanation(database(), input, {
+      labels: config.NOAH_EXPLAIN_LABELS === 'true', connectionFallback: true,
+    }),
     // 収集機（GitHub の定期実行）が、握手の済んだ系列を一覧へ入れる時の鍵（紹介の掲載と同じ。lib/noah-intake-import.ts）。
     collectorKey: config.NOAH_COLLECTION_KEY,
     origin: noahPublicOrigin(config.NOAH_ORIGIN),

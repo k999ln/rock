@@ -1,3 +1,5 @@
+/** Public catalog identity for the official NousResearch/hermes-agent repository. */
+export const NOAH_EVE_HERMES_PROJECT = 'project-a17476e9d7955152138283110c7070bbcee5ac285cd06e6b5165969c461c4cb6';
 /** Operator-reviewed distributions only. Catalog prose never becomes an executable command. */
 export const NOAH_CLOUD_PROFILES = {
   hermes: {
@@ -84,8 +86,9 @@ export function noahCloudProfile(repository: string): NoahCloudProfile | null {
 }
 export const noahCloudId = (value: unknown): value is string => typeof value === 'string' && /^[a-f0-9]{8}-[a-f0-9]{4}-4[a-f0-9]{3}-[89ab][a-f0-9]{3}-[a-f0-9]{12}$/i.test(value);
 export type NoahCloudFile = { name: string; base64: string; bytes: number; sha256: string };
-export type NoahCloudResult = { text: string; files: NoahCloudFile[]; exitCode: number; calls: number };
-export type NoahCloudJob = { id: string; profile: NoahCloudProfile; version: string; distribution: string; mode: 'probe' | 'run'; state: 'queued' | 'running' | 'returned' | 'failed' | 'cancelled' | 'unknown'; createdAt: number; deadlineAt: number; completedAt?: number; result?: NoahCloudResult; error?: string; calls: number; usage?: NoahCloudUsage };
+export const NOAH_EVE_ADVICE_PURPOSE = 'eve-combination-advice' as const;
+export type NoahCloudResult = { text: string; files: NoahCloudFile[]; exitCode: number; calls: number; operationCount?: 0 };
+export type NoahCloudJob = { id: string; profile: NoahCloudProfile; version: string; distribution: string; purpose?: typeof NOAH_EVE_ADVICE_PURPOSE; mode: 'probe' | 'run'; state: 'queued' | 'running' | 'returned' | 'failed' | 'cancelled' | 'unknown'; createdAt: number; deadlineAt: number; completedAt?: number; result?: NoahCloudResult; error?: string; calls: number; usage?: NoahCloudUsage };
 /** 1 件で使ったモデルの量（無料のクラウドで数える。有料の Containers 版はまだ数えない）。 */
 export type NoahCloudUsage = { inputTokens: number; outputTokens: number; neurons: number };
 /** 実行器から届いた usage を確かめる（おかしければ null。結果そのものは捨てない）。 */
@@ -133,5 +136,6 @@ export async function noahCloudResult(value: unknown, calls: number): Promise<No
     if (bytes.length !== file.bytes || bytes.length > NOAH_CLOUD_LIMITS.fileBytes || total > NOAH_CLOUD_LIMITS.totalFileBytes || file.sha256 !== digest) throw Error('成果ファイルが保存記録と一致しません。');
     names.add(file.name); files.push({ name: file.name, base64: file.base64, bytes: file.bytes, sha256: file.sha256 });
   }
-  return { text: v.text, files, exitCode: v.exitCode as number, calls };
+  if (v.operationCount !== undefined && (v.operationCount !== 0 || files.length || calls !== 1 || v.exitCode !== 0)) throw Error('相談の実行記録を確認できません。');
+  return { text: v.text, files, exitCode: v.exitCode as number, calls, ...(v.operationCount === 0 ? { operationCount: 0 as const } : {}) };
 }

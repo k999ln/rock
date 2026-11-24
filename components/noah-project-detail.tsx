@@ -1,6 +1,7 @@
 'use client';
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
+import type { NoahAgentSource } from '@/lib/noah-agent-cards';
 import type { NoahProjectDetail as Detail } from '@/lib/noah-project-view';
 import { NOAH_COLLECTION_LABELS } from '@/lib/noah-collection';
 import NoahAgentSourceRatings from './noah-agent-source-ratings';
@@ -10,8 +11,21 @@ import NoahCloudAgent from './noah-cloud-agent';
 import NoahProviderRunner from './noah-provider-runner';
 import { useNoahLocale } from './noah-locale';
 import styles from './noah-project-detail.module.css';
-import pins from './noah-pins.module.css';
-import { NOAH_PIN_TOPIC_LABELS, noahPinInitials } from '@/lib/noah-pins';
+import { NOAH_PIN_TOPIC_LABELS } from '@/lib/noah-pins';
+import NoahProductHeader from './noah-product-header';
+import { noahTrainingFilm } from '@/lib/noah-theater-films';
+
+function ProjectSources({ sources }: { sources: NoahAgentSource[] }) {
+  const { t, locale } = useNoahLocale();
+  return <section id="ratings" className={styles.provenance} aria-labelledby="project-sources-heading">
+    <h2 id="project-sources-heading">{t('掲載元と確認日')}</h2>
+    <ul>{sources.map(source => <li key={source.sourceUrl}>
+      <a href={source.sourceUrl} target="_blank" rel="noopener noreferrer nofollow">{NOAH_COLLECTION_LABELS[source.source]} <span aria-hidden="true">↗</span></a>
+      <time dateTime={new Date(source.observedAt).toISOString()}>{new Intl.DateTimeFormat(locale, {dateStyle:'medium'}).format(source.observedAt)}</time>
+    </li>)}</ul>
+    <NoahAgentSourceRatings sources={sources} />
+  </section>;
+}
 
 export default function NoahProjectDetail({ id, firstJob }: { id: string; firstJob?: string }) {
   const { t } = useNoahLocale();
@@ -46,6 +60,7 @@ export default function NoahProjectDetail({ id, firstJob }: { id: string; firstJ
     } catch (e) { setError(e instanceof Error ? e.message : '接続できませんでした。'); }
     finally { setOpening(false); }
   }
+  const usageLink = <a href="#noah-project-use">{t('利用条件を見る')}</a>;
   if (firstJob) {
     const job = detail?.firstJob?.id === firstJob ? detail.firstJob : undefined;
     return <main className={styles.page}>
@@ -53,35 +68,58 @@ export default function NoahProjectDetail({ id, firstJob }: { id: string; firstJ
       {!detail && !error && <NoahLoading label={t('仕事の受付を確認しています…')} />}
       {error && <div className={styles.error} role="alert"><p>{t(error)}</p><button type="button" onClick={() => { setError(''); setAttempt(n => n + 1); }}>{t('読み直す')}</button></div>}
       {detail && (!job ? <p><output>{t('この仕事は現在利用できません。別の目的を選んでください。')}</output></p> : <>
-        <header><h1>{t(job.title)}</h1><dl className={styles.jobFacts}>
+        <NoahProductHeader name={detail.card.name || job.id} title={t(job.title)} topic={detail.card.topic}
+          attribution={[detail.card.name, detail.card.provider].filter(Boolean).join(' · ')}
+          action={usageLink} />
+        <dl className={styles.jobFacts} id="noah-project-use" tabIndex={-1}>
           <div><dt>{t('用意するもの')}</dt><dd>{t(job.input)}</dd></div>
           <div><dt>{t('受け取れるもの')}</dt><dd>{t(job.output)}</dd></div>
-        </dl></header>
+        </dl>
         {job.operation && detail.connection.kind === 'setup' && <NoahProviderRunner key={id} projectId={id} operation={job.operation}/>}
         {job.id === 'memory' && detail.connection.kind === 'cloud' && detail.connection.profile === 'memory' && <NoahCloudAgent key={id} projectId={id} profile="memory" providerFamilyId={null}/>}
       </>)}
       <Link className={styles.back} href="/noah/saved?tab=results">{t('保存した成果を見る')}</Link>
     </main>;
   }
+  const sourceNotes = detail?.card.sources?.length ? <ProjectSources sources={detail.card.sources} /> : null;
+  const trailer = detail && id === noahTrainingFilm.projectId ? (
+    <figure className={styles.trailer}>
+      <figcaption>
+        <span>{t('予告編')}</span>
+        <strong id="training-trailer-title">{t(noahTrainingFilm.title)}</strong>
+        <time dateTime="PT15S">0:15</time>
+      </figcaption>
+      <video controls playsInline muted preload="none" aria-labelledby="training-trailer-title"
+        poster={noahTrainingFilm.poster} src={noahTrainingFilm.video} />
+      <details>
+        <summary>{t('使い方を読む')}</summary>
+        <ol>{noahTrainingFilm.scenes.map(scene => <li key={scene.caption}>{t(scene.detail)}</li>)}</ol>
+      </details>
+    </figure>
+  ) : null;
+  if (detail?.connection.kind === 'ready') {
+    return <NoahReadyDetail id={detail.connection.familyId} internalOnly sourceNotes={sourceNotes} trailer={trailer} />;
+  }
   return <div className={styles.page}>
     <Link className={styles.back} href="/noah">← Agentを探す</Link>
     {!detail && !error && <NoahLoading label="Agentを確認しています…" />}
     {error && <div role="alert" className={styles.error}><p>{error}</p>{!detail && <button onClick={() => { setDetail(null); setError(''); setAttempt(n => n + 1); }}>読み直す</button>}</div>}
     {detail && <>
-      {detail.connection.kind !== 'ready' && <header className={styles.productHead}>
-        {detail.card.name && <span className={`${styles.productIcon} ${pins.tone}`} data-topic={detail.card.topic} aria-hidden="true">{noahPinInitials(detail.card.name)}</span>}
-        <div>{detail.card.topic && <p className={styles.eyebrow}>{t(NOAH_PIN_TOPIC_LABELS[detail.card.topic])}</p>}
-          <h1>{detail.card.name}</h1><p className={styles.muted}>{t('提供:')} {detail.card.provider}</p></div>
+      <NoahProductHeader name={detail.card.name} topic={detail.card.topic}
+        attribution={detail.card.provider ? `${t('提供:')} ${detail.card.provider}` : undefined}
+        action={usageLink} />
+      <div className={styles.overview}>
+        {detail.card.topic && <p className={styles.category}>{t('カテゴリ')} · {t(NOAH_PIN_TOPIC_LABELS[detail.card.topic])}</p>}
         {detail.card.summary && <p className={styles.summary}>{detail.card.summary}</p>}
-      </header>}
-      {detail.connection.kind === 'cloud' && <NoahCloudAgent key={id} projectId={id} profile={detail.connection.profile} providerFamilyId={detail.connection.providerFamilyId} />}
-      {(detail.connection.kind === 'space' || detail.connection.kind === 'setup') && <NoahProviderRunner key={id} projectId={id}/>}
-      <section id="ratings" className={styles.ratings} aria-label="出典と外部評価">
-        <h2>外部の評価</h2>
-        <NoahAgentSourceRatings sources={detail.card.sources} />
-        <details><summary>出典・確認日時</summary><ul>{detail.card.sources?.map(source => <li key={source.sourceUrl}><strong>{NOAH_COLLECTION_LABELS[source.source]}</strong><span>{source.sourceUrl}</span><time dateTime={new Date(source.observedAt).toISOString()}>{new Date(source.observedAt).toLocaleString('ja-JP')} 確認</time></li>)}</ul></details>
-      </section>
-      {detail.connection.kind === 'cloud' ? null : detail.connection.kind === 'ready' ? <NoahReadyDetail id={detail.connection.familyId} internalOnly /> : detail.connection.kind === 'space' ? <><details><summary>提供元の画面を開く</summary><section className={styles.connection} aria-label="Noah内で使う">
+      </div>
+      {trailer}
+      <div id="noah-project-use" tabIndex={-1} className={styles.usage}>
+        {detail.connection.kind === 'cloud'
+          ? <NoahCloudAgent key={id} projectId={id} profile={detail.connection.profile} providerFamilyId={detail.connection.providerFamilyId} />
+          : <NoahProviderRunner key={id} projectId={id}/>}
+      </div>
+      {sourceNotes}
+      {detail.connection.kind === 'cloud' ? null : detail.connection.kind === 'space' ? <><details><summary>提供元の画面を開く</summary><section className={styles.connection} aria-label="Noah内で使う">
         <h2>Noahで使う</h2><p>この画面でAgentの利用画面を開きます。入力は提供者のHugging Face Spaceに送られます。</p>
         <button className={styles.primary} hidden={Boolean(url)} disabled={opening} onClick={() => void openSpace()}>{opening ? '接続先を確認しています…' : '利用画面を開く'}</button>
         {error && <p><Link className={styles.back} href={`/noah/agents/new?${new URLSearchParams({ sourceUrl: `https://huggingface.co/spaces/${detail.connection.repository}`, name: detail.card.name })}`}>Noahで取込・設定する</Link></p>}

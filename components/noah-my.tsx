@@ -4,20 +4,17 @@ import Link from 'next/link';
 import {
   noahMyHref,
   noahMySelection,
-  type NoahMyView,
+  noahMyTitles,
 } from '@/lib/noah-my-routes';
 import type { NoahPageParams } from '@/lib/noah-page-routes';
 import { useNoahLocale } from './noah-locale';
 import NoahLibrary from './noah-library';
 import NoahWorkPage from './noah-work-page';
 import NoahSaved from './noah-saved';
+import NoahTheater from './noah-theater';
 import styles from './noah-my.module.css';
 
-const views: readonly [NoahMyView, string][] = [
-  ['agents', '自分のAgent'],
-  ['activity', '実行中'],
-  ['saved', '保存したもの'],
-];
+const utilityViews = ['agents', 'activity', 'saved'] as const;
 
 export default function NoahMy({
   params,
@@ -29,20 +26,24 @@ export default function NoahMy({
   const { t } = useNoahLocale();
   const { view, saved } = noahMySelection(params, legacy);
   return (
-    <div className={styles.hub}>
-      <h1>{t('マイAgent')}</h1>
-      <nav className={styles.segments} aria-label={t('マイAgent')}>
-        {views.map(([key, label]) => (
-          <Link
-            key={key}
-            href={noahMyHref(key, saved, params)}
-            aria-current={key === view ? 'page' : undefined}
-          >
-            {t(label)}
-          </Link>
-        ))}
-      </nav>
-      {view === 'agents' ? (
+    <div className={styles.hub} data-theater={view === 'theater' || undefined}>
+      <header className={styles.hubHeader}>
+        <h1>{t(noahMyTitles[view])}</h1>
+        <nav className={styles.segments} aria-label={t('Agentと仕事')}>
+          {utilityViews.map(key => (
+            <Link
+              key={key}
+              href={noahMyHref(key, saved, params)}
+              aria-current={key === view ? 'page' : undefined}
+            >
+              {t(noahMyTitles[key])}
+            </Link>
+          ))}
+        </nav>
+      </header>
+      {view === 'theater' ? (
+        <NoahTheater />
+      ) : view === 'agents' ? (
         <NoahLibrary embedded />
       ) : view === 'activity' ? (
         <NoahWorkPage embedded />

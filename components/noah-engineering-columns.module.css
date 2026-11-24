@@ -1,0 +1,8 @@
+.container { container: eve-layout / inline-size; }
+.columns { display: grid; grid-template-columns: minmax(0, 1fr); gap: 20px; align-items: start; }
+.primary, .secondary { min-width: 0; }
+@container eve-layout (min-width: 672px) {
+  .columns { grid-template-columns: minmax(0, 1.618fr) minmax(0, 1fr); column-gap: clamp(20px, 3cqw, 32px); }
+  .primary { grid-column: 1; grid-row: 1; }
+  .secondary { grid-column: 2; grid-row: 1; }
+}

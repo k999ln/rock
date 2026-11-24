@@ -9,5 +9,6 @@ export function noahShelfDependencies() {
   // 審査者は、ID と本人の印（NOAH_REVIEWER_OWNER_SCOPES）の両方から読む。本番は印だけが入っていて、ID だけでは運営の操作が使えなかった。
   return { db: database(), now: Date.now, waitUntil,
     ...noahReviewerAccess(requestUser, config.NOAH_REVIEWER_USER_IDS, config.NOAH_REVIEWER_OWNER_SCOPES),
-    flags: parseNoahFlags(config), shelfFlags: parseNoahShelfFlags(config), explainPublic: config.NOAH_EXPLAIN_PUBLIC === 'true' };
+    flags: parseNoahFlags(config), shelfFlags: parseNoahShelfFlags(config), explainPublic: config.NOAH_EXPLAIN_PUBLIC === 'true',
+    explainLabels: config.NOAH_EXPLAIN_LABELS === 'true' };
 }

@@ -1,7 +1,7 @@
 /**
  * 棚の最初のカード 17 枚（data/noah-shelf-first-cards.json）の図解（バージョン TAKE。しょうへいさんの図解パックの書き写し）。人（Claude）が、カードの題・説明・入れる物・返る物を読んで、図を選び札を書いた物。
  * 札の言葉は、カードの題・説明・入れる物・返る物の文にそのままある言葉だけを使う（作り話の数・例は入れない。試験が確かめる）。同じ図は 2 枚まで。
- * Luna Max が 1.7 万件の図解を書く時の見本も兼ねる（codex/tasks/130）。
+ * Luna Max が 1.7 万件の図解を書く時の見本も兼ねる（codex/tasks/131）。
  * 形は lib/noah-pin-scene.ts の parseNoahPinScene で確かめる（tests/noah-pin-scene.test.mjs が全部を確かめる）。
  */
 import { parseNoahPinScene, type NoahPinScene } from './noah-pin-scene.ts';
