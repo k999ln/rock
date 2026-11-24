@@ -1,5 +1,9 @@
 ## 2026-11-24
 - Eve（eve.si）のエージェントエンジニアリングを実装した（Opus / Noelle。本人「最後までやって」。task 130）: 組み合わせファイル `eve-combination/1` と検査の規則 1〜9、宣言型のつなぎ目、試運転（外へ出す工程は動かさない）、出典付きの需要の台帳、型への当てはめと型に無い組み合わせの発見、Jev の成績表（外部の記録だけ）、作り直しの提案（2 割以上良い時だけ。採用は本人）、作者の受け取りの計算（入金の記録だけ。割合は未決）。画面 `/os/eve/combinations` と API `/api/eve/combinations`。最初の 1 本は「AI の道具の紹介 × 自分のブログ（金融以外）」。試験 43 件。 [PR #49](https://github.com/iceiceice999/rock/pull/49)
+- AgentエンジニアリングのEveに相談すると、Noahの無料クラウドが返した設計案を相談文と一緒に読めるようにした（task 129、[PR #56](https://github.com/iceiceice999/rock/pull/56)）。
+- Noahストアの作者向け入口を「Agentエンジニアリング」に統合。Eveと相談しながら作成・接続・試行・掲載申請へ進める（task 129、[PR #56](https://github.com/iceiceice999/rock/pull/56)）。
+- Noahの「法人のsi導入準備」の詳細に、作業時間を準備票にまとめる15秒の予告編を追加。共通ナビゲーションの「シアター」タブを撤去（task 129、[PR #53](https://github.com/iceiceice999/rock/pull/53)）。
+- Noahの「シアター」でAgentごとの短い予告編を上映し、作者の動画と保存した仕事への入口を追加（task 129、[PR #53](https://github.com/iceiceice999/rock/pull/53)）。
 - Noah の 300 人の試行の利益の試算を docs に置いた（Opus / Noelle。Sheets「Noah 300人の利益試算」の revision 14 の写し。式を組み直して表の値 504 個と一致を確かめた）: 今の実例の売上（月 39,500 円）では 1 人あたりの本人の分は月 14 円で、600 円の天引きは始まらず、12 か月の会社の利益は −51,984 円。1 人 600 円には月 約 44 万円の売上が要る（[PR #55](https://github.com/iceiceice999/rock/pull/55)）。
 - Noah の「注目のAgent」の「すべて見る」（スマホ幅で 73×40px）を 44px にした。公開の後の本番で、`/noah` の下の 6 画面のうち小さい押す所はこれだけだった（Opus / Noelle。task 129 の D7。[PR #54](https://github.com/iceiceice999/rock/pull/54)）。
 - エージェントエンジニアリングを定義し、Eve（eve.si）で組み合わせを作る・試す・入金で採点する・作り直す設計を [services/eve-si.md](docs/services/eve-si.md) に置いた。本人の決定 4 つを 07 に記録し、06 の Eve の行と 04 に反映（Opus / Noelle。本人「それ設計して」）。文書だけで、コードは未着手。

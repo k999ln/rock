@@ -1,0 +1,29 @@
+.eve {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 12px 16px;
+  padding: 20px clamp(16px, 3vw, 28px);
+  background: #faf5ed;
+  color: #33251d;
+  border: 1px solid #e7d9c7;
+  border-radius: 16px;
+}
+.monogram {
+  display: grid;
+  place-items: center;
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  background: #35251f;
+  color: #ffdfb5;
+  font: italic 30px/1 Georgia, serif;
+}
+.copy { flex: 1 1 14rem; min-width: 0; }
+.copy h2 { margin: 0 0 4px; font: 600 1.18rem/1.2 Georgia, serif; }
+.copy p { margin: 0; color: #554337; font-size: .92rem; line-height: 1.65; }
+.eve a { display: inline-flex; align-items: center; justify-content: center; gap: 4px; min-height: 44px; color: #874019; font-weight: 650; text-decoration: underline; text-underline-offset: 4px; }
+.eve a:focus-visible { outline: 2px solid currentColor; outline-offset: 3px; border-radius: 2px; }
+.consultation { max-width: 46rem; margin: 0 auto; padding: clamp(18px, 5vw, 48px); color: #32251c; font-family: system-ui, sans-serif; }
+.consultation h1 { margin: 28px 0 0; font: 500 clamp(44px, 8vw, 68px)/1 Georgia, serif; }
+.consultation a { display: inline-flex; min-height: 44px; align-items: center; color: #86401a; text-underline-offset: 4px; }

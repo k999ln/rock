@@ -1,7 +1,7 @@
 import { boundedNoahBody } from './noah-agent-api.ts';
 import { NoahAgentError } from './noah-agent-upload.ts';
 import type { DirectoryEntry } from './noah-agent-directory.ts';
-import { NOAH_CLOUD_PROFILES, NOAH_CLOUD_LIMITS, noahCloudDigest, noahCloudId, noahCloudProfile, noahCloudResult, noahCloudUsageOf, type NoahCloudJob, type NoahCloudProfile } from './noah-cloud-contract.ts';
+import { NOAH_CLOUD_PROFILES, NOAH_CLOUD_LIMITS, NOAH_EVE_HERMES_PROJECT, noahCloudDigest, noahCloudId, noahCloudProfile, noahCloudResult, noahCloudUsageOf, type NoahCloudJob, type NoahCloudProfile } from './noah-cloud-contract.ts';
 import { ownerScopeFor, OWNER_SCOPE_HEADER } from './owner-intent.ts';
 import { createNoahRemoteWork, finishNoahRemoteWork, startNoahRemoteWork } from './noah-remote-work.ts';
 import { workStore } from './work-store.ts';
@@ -90,8 +90,10 @@ export function createNoahCloudApi(deps: Dependencies) {
       if (mutate && request.headers.get(OWNER_SCOPE_HEADER) !== scope) throw new NoahAgentError('利用者が変わりました。読み直してください。', 409);
       if (mutate && !request.headers.get('content-type')?.startsWith('application/json')) throw new NoahAgentError('JSONで操作してください。', 415);
       const input = mutate ? JSON.parse(new TextDecoder().decode(await boundedNoahBody(request, 16000))) as Record<string, unknown> : Object.fromEntries(new URL(request.url).searchParams);
-      if (!input || Array.isArray(input) || Object.keys(input).some(key => !['action', 'projectId', 'id', 'jobId', 'connectionId', 'prompt', 'confirm'].includes(key)) || typeof input.projectId !== 'string' || !/^project-[a-f0-9]{64}$/.test(input.projectId)) throw new NoahAgentError('Agentの指定を確認してください。');
+      if (!input || Array.isArray(input) || Object.keys(input).some(key => !['action', 'projectId', 'id', 'jobId', 'connectionId', 'prompt', 'confirm', 'purpose'].includes(key)) || typeof input.projectId !== 'string' || !/^project-[a-f0-9]{64}$/.test(input.projectId)) throw new NoahAgentError('Agentの指定を確認してください。');
       const project = input.projectId;
+      const consultation = input.purpose === 'eve-engineering';
+      if (input.purpose !== undefined && (!consultation || project !== NOAH_EVE_HERMES_PROJECT)) throw new NoahAgentError('相談の実行先を確認してください。');
       const action = mutate ? input.action : input.jobId ? 'job' : 'status';
       if (!['status', 'connect', 'disconnect', 'start', 'job', 'stop'].includes(String(action)) || !mutate && !['status', 'job'].includes(String(action))) throw new NoahAgentError('操作を確認してください。');
       // Existing owned work remains stoppable/readable after catalog removal or outage.
@@ -99,9 +101,11 @@ export function createNoahCloudApi(deps: Dependencies) {
       const existingCloud = existing?.noahRemote?.cloud;
       const existingAction = ['job', 'stop'].includes(String(action));
       if (existingAction && (!existingCloud || existingCloud.projectId !== project || !Object.hasOwn(NOAH_CLOUD_PROFILES, existingCloud.profile))) throw new NoahAgentError('依頼が見つかりません。', 404);
+      if (consultation && existingAction && existingCloud?.purpose !== 'eve-engineering') throw new NoahAgentError('依頼が見つかりません。', 404);
       const entry = existingAction ? undefined : (await deps.directory()).find(row => row.card.feedbackId === project || row.card.id === project);
       const profile = existingAction ? existingCloud!.profile : entry && noahCloudEntry(entry);
       if (!profile) throw new NoahAgentError('このAgentのクラウド実行は現在利用できません。', 404);
+      if (consultation && !existingAction && (profile !== 'hermes' || !deps.freeRuntime)) throw new NoahAgentError('Eveの相談用の無料クラウドを現在利用できません。', 503);
       if (!existingAction && deps.profiles && !deps.profiles.includes(profile)) throw new NoahAgentError('このAgentは無料クラウドの対応準備中です。', 403);
       const call = async (extra: Record<string, unknown>) => {
         const response = await deps.runtime({ owner: runtimeOwner, project, profile, distribution: NOAH_CLOUD_PROFILES[profile].sha256, ...extra });
@@ -111,7 +115,7 @@ export function createNoahCloudApi(deps: Dependencies) {
       };
       if (action === 'status') {
         const state = await call({ action });
-        const history = (await jobs.list(owner)).filter(job => job.noahRemote?.cloud?.projectId === project).slice(0, 20);
+        const history = (await jobs.list(owner)).filter(job => job.noahRemote?.cloud?.projectId === project && (!consultation || job.noahRemote.cloud.purpose === 'eve-engineering')).slice(0, 20);
         return json({ ...state, ownerScope: scope, jobs: history.map(view), profile: { key: profile, ...NOAH_CLOUD_PROFILES[profile] } });
       }
       if (['connect', 'start'].includes(String(action))) {
@@ -131,11 +135,11 @@ export function createNoahCloudApi(deps: Dependencies) {
       if (action === 'start') {
         if (typeof input.prompt !== 'string' || !input.prompt.trim() || new TextEncoder().encode(input.prompt).length > NOAH_CLOUD_LIMITS.promptBytes || !noahCloudId(input.connectionId)) throw new NoahAgentError('依頼と接続を確認してください。');
         const hash = await noahCloudDigest(JSON.stringify([project, profile, NOAH_CLOUD_PROFILES[profile].sha256, input.connectionId, input.prompt]));
-        if (work && (work.noahRemote?.cloud?.projectId !== project || work.noahRemote?.inputSha256 !== hash)) throw new NoahAgentError('同じ依頼IDの内容は変更できません。', 409);
+        if (work && (work.noahRemote?.cloud?.projectId !== project || work.noahRemote?.inputSha256 !== hash || work.noahRemote.cloud.purpose !== input.purpose)) throw new NoahAgentError('同じ依頼IDの内容は変更できません。', 409);
         if (work && !active(work)) return json({ job: view(work), ownerScope: scope });
         if (!work) {
           const created = createNoahRemoteWork(input.jobId, { connectionId: input.connectionId, familyKey: project, digest: NOAH_CLOUD_PROFILES[profile].sha256, agentName: entry!.card.name, host: 'Noahクラウド', tool: 'cloud-agent', toolSha256: NOAH_CLOUD_PROFILES[profile].sha256, toolsSha256: NOAH_CLOUD_PROFILES[profile].sha256, args: { prompt: input.prompt }, inputSha256: hash }, now());
-          created.noahRemote = { ...created.noahRemote!, prompt: input.prompt, cloud: { projectId: project, profile, version: NOAH_CLOUD_PROFILES[profile].version, ...(deps.freeRuntime ? { freeTier: true } : {}) } };
+          created.noahRemote = { ...created.noahRemote!, prompt: input.prompt, cloud: { projectId: project, profile, version: NOAH_CLOUD_PROFILES[profile].version, ...(consultation ? { purpose: 'eve-engineering' } : {}), ...(deps.freeRuntime ? { freeTier: true } : {}) } };
           work = await jobs.create(owner, created);
           if (!work) throw new NoahAgentError('依頼IDが使用されています。', 409);
         }

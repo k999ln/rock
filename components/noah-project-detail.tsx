@@ -13,6 +13,7 @@ import { useNoahLocale } from './noah-locale';
 import styles from './noah-project-detail.module.css';
 import { NOAH_PIN_TOPIC_LABELS } from '@/lib/noah-pins';
 import NoahProductHeader from './noah-product-header';
+import { noahTrainingFilm } from '@/lib/noah-theater-films';
 
 function ProjectSources({ sources }: { sources: NoahAgentSource[] }) {
   const { t, locale } = useNoahLocale();
@@ -81,8 +82,23 @@ export default function NoahProjectDetail({ id, firstJob }: { id: string; firstJ
     </main>;
   }
   const sourceNotes = detail?.card.sources?.length ? <ProjectSources sources={detail.card.sources} /> : null;
+  const trailer = detail && id === noahTrainingFilm.projectId ? (
+    <figure className={styles.trailer}>
+      <figcaption>
+        <span>{t('予告編')}</span>
+        <strong id="training-trailer-title">{t(noahTrainingFilm.title)}</strong>
+        <time dateTime="PT15S">0:15</time>
+      </figcaption>
+      <video controls playsInline muted preload="none" aria-labelledby="training-trailer-title"
+        poster={noahTrainingFilm.poster} src={noahTrainingFilm.video} />
+      <details>
+        <summary>{t('使い方を読む')}</summary>
+        <ol>{noahTrainingFilm.scenes.map(scene => <li key={scene.caption}>{t(scene.detail)}</li>)}</ol>
+      </details>
+    </figure>
+  ) : null;
   if (detail?.connection.kind === 'ready') {
-    return <NoahReadyDetail id={detail.connection.familyId} internalOnly sourceNotes={sourceNotes} />;
+    return <NoahReadyDetail id={detail.connection.familyId} internalOnly sourceNotes={sourceNotes} trailer={trailer} />;
   }
   return <div className={styles.page}>
     <Link className={styles.back} href="/noah">← Agentを探す</Link>
@@ -96,6 +112,7 @@ export default function NoahProjectDetail({ id, firstJob }: { id: string; firstJ
         {detail.card.topic && <p className={styles.category}>{t('カテゴリ')} · {t(NOAH_PIN_TOPIC_LABELS[detail.card.topic])}</p>}
         {detail.card.summary && <p className={styles.summary}>{detail.card.summary}</p>}
       </div>
+      {trailer}
       <div id="noah-project-use" tabIndex={-1} className={styles.usage}>
         {detail.connection.kind === 'cloud'
           ? <NoahCloudAgent key={id} projectId={id} profile={detail.connection.profile} providerFamilyId={detail.connection.providerFamilyId} />

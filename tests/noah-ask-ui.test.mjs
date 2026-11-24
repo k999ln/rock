@@ -1,3 +1,6 @@
+import { readFileSync } from 'node:fs';
+import { createNoahAgentApi } from '../lib/noah-agent-api.ts';
+import { noahAgentTemplate } from '../lib/noah-agent-upload.ts';
 // 頼む画面（道具を選ぶ・入力欄・確かめ・仕事の一覧と成果）。詳細の画面（/noah/ready/agent）の、つないだ後。
 // 画面の部品を、ブラウザなしで動かす（tests/fixtures/noah/screen.mjs）。画面が送る要求は、本物の入口（接続・道具の一覧・依頼）と、試験用の表・合成の接続先へ通す。
 // 見た目（CSS・幅 390 で、はみ出さない事）は、ここでは確かめない（実ブラウザで確かめる）。
@@ -314,12 +317,12 @@ void test('the work list across agents (the activity and data screens): newest f
   assert.deepEqual(rowsOf(data).map((row) => data.text(row).startsWith('結果を受け取りました情報を検索提供者の説明')), [true]);
   assert.deepEqual(back(data), [detail(1)]);
 
-  await t.test('saved results in My Agent and the original saved entry show the same private remote Work', async () => {
+  await t.test('saved results in the theater and the original saved entry show the same private remote Work', async () => {
     const unused = { default: () => null };
     const modules = {
       ...MODULES, '@/lib/noah-my-routes': myRoutes, '@/lib/noah-page-routes': { noahPageTab },
       './noah-library': unused, './noah-boards': {}, './sky-agent-library': unused, './sky-output-center': unused,
-      './noah-result-data': unused,
+      './noah-result-data': unused, './noah-theater': unused,
     };
     const before = calls(one).length;
     for (const [path, legacy] of [['/noah/my?view=saved&tab=results', undefined], ['/noah/saved?tab=results', 'saved']]) {
@@ -431,4 +434,48 @@ void test('confirm delegation asks for each read-only run without describing it 
  await page.click('確かめて頼む');assert.equal(asksSent(ui).length,1);assert.equal(asksSent(ui)[0].body.form.confirm,true);
  w.f.advance(1000);await page.submit(form());assert.equal(asksSent(ui).length,1);assert.match(page.text(),/頼む前の確かめ/);
  await page.click('任せない');assert.equal(page.find('button','確かめて頼む')[0].props.disabled,true);assert.equal(asksSent(ui).length,1);
+});
+
+
+void test('engineering tests the selected owner upload through its exact listed MCP endpoint and returns real tool output', async t => {
+  const server = mcpServer({ tools: [lookup], call: params => ({ content: [{ type: 'text', text: '試した入力 ' + params.arguments.query }] }) });
+  const w = await world(t, { [hostOf(1)]: server });
+  for (const migration of ['0033_noah_agent_uploads', '0034_noah_upload_refactor']) {
+    w.f.sql.exec(readFileSync(new URL('../drizzle/' + migration + '.sql', import.meta.url), 'utf8'));
+  }
+  const scope = await ownerIntent.ownerScopeFor('owner-a');
+  const api = createNoahAgentApi({ db: w.f.db, authenticate: async () => 'owner-a' });
+  async function save(id, path) {
+    const response = await api.create(new Request('https://noah.test/api/noah/agents', {
+      method: 'POST',
+      headers: { 'Content-Type':'application/json', Origin:'https://noah.test', 'X-Rock-Owner-Scope':scope },
+      body: JSON.stringify({ id, manifest: { ...noahAgentTemplate, name:'同じ名前', adapter:'mcp_http', endpointUrl:'https://' + hostOf(1) + path }, rightsConfirmed:true }),
+    }));
+    assert.equal(response.status, 201, await response.text());
+  }
+  const goodId = uuid(50), otherId = uuid(51);
+  await save(goodId, '/mcp'); await save(otherId, '/a-different-mcp');
+  const session = {user:'owner-a'}, fetch = w.browser(session);
+  const lookupUrl = id => '/api/noah/intake?engineeringAgent=' + id;
+  assert.equal((await fetch({ method:'GET', url:lookupUrl(otherId) })).body.match, null, 'a shared host and name do not select a different path');
+  assert.equal((await w.browser({user:'owner-b'})({method:'GET', url:lookupUrl(goodId)})).status, 404);
+  assert.equal((await w.browser({user:null})({method:'GET', url:lookupUrl(goodId)})).status, 401);
+  const ui = screen({document:{hidden:false,addEventListener(){},removeEventListener(){}}, fetch, modules:MODULES, now:w.f.time()});
+  const page = ui.mount('components/noah-engineering-mcp-trial.tsx', {id:goodId, ownerScope:scope});
+  await page.flush();
+  assert.equal(calls(server).length, 0);
+  assert.equal(w.rows().length, 0);
+  await page.click('接続');
+  const button = page.find('button').find(b => b.props['data-tool-name'] === 'lookup');
+  if (button && !page.find('form').length) await page.press(button);
+  const field = page.nodes().find(node => node.props['data-field-name'] === 'query');
+  assert.ok(field, page.text());
+  await page.change(page.nodes(field).find(node => ['input','textarea'].includes(node.type)), '会議前のメモ');
+  assert.equal(calls(server).length, 0);
+  await page.submit(page.find('form')[0]);
+  assert.equal(calls(server).length, 1);
+  assert.match(page.text(), /試した入力 会議前のメモ/);
+  assert.equal(w.asked()[0].state, 'succeeded');
+  w.f.sql.prepare('UPDATE noah_intake_families SET withdrawn_at=? WHERE id=?').run(w.f.time(),familyId(1));
+  assert.equal((await fetch({ method:'GET', url:lookupUrl(goodId) })).body.match, null);
 });

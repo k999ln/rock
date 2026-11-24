@@ -2,13 +2,14 @@ export type NoahSurfaceMode = 'local' | 'public';
 export type NoahHomeView = 'news' | 'social' | 'communities';
 
 /** Keep only registration state when navigating, never an arbitrary return URL. */
-export function noahUploadPath(search = '', draftId?: string) {
+export function noahUploadPath(search = '', draftId?: string, engineeringMode?: 'create' | 'connect') {
   const current = new URLSearchParams(search), next = new URLSearchParams();
-  if (current.get('launch') === '1') next.set('launch', '1');
+  if (engineeringMode) next.set('step', engineeringMode);
+  else if (current.get('launch') === '1') next.set('launch', '1');
   const draft = draftId ?? current.get('draft');
   if (draft && /^[a-f0-9-]{36}$/i.test(draft)) next.set('draft', draft);
   const query = next.toString();
-  return `/noah/agents/new${query ? `?${query}` : ''}`;
+  return `${engineeringMode ? '/noah/engineering' : '/noah/agents/new'}${query ? `?${query}` : ''}`;
 }
 
 export function noahHomeView(hash: string): NoahHomeView {
@@ -27,7 +28,7 @@ export function noahLegacyHref(hash: string, mode: NoahSurfaceMode, base: string
 /** These are navigation destinations, never authentication or execution grants. */
 export function noahActionHref(mode: NoahSurfaceMode, base: string, target: string, agentId = '') {
   if (target === 'register') return '/noah/agents/new';
-  if (target === 'library') return `${base}/saved?tab=agents`;
+  if (target === 'library') return `${base}/my?view=agents`;
   if (target === 'work') return `${base}/activity`;
   if (target === 'agent' && /^[a-zA-Z0-9_-]{1,160}$/.test(agentId)) return `${base}/agents/${agentId}`;
   return `${base}/explore`;
