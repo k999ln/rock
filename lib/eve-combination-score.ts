@@ -237,8 +237,8 @@ export function eveSaleRecordsFromScores(scores: readonly EveScorecard[]): Recor
   return out;
 }
 
-/** 作者の割合（万分率）。2026-11-24 時点で本人待ち（設計書 13 章 I2）。決まるまでは null。 */
-export const EVE_AUTHOR_SHARE_BPS: number | null = null;
+/** 作者の割合（万分率）。2026-11-24 13:54 の本人回答で 20%（設計書 13 章 I2。Noah の Agent の作者と同じ割合）。元は「入金 − 費用」（I8）。 */
+export const EVE_AUTHOR_SHARE_BPS: number | null = 2_000;
 
 export type EveAuthorShare = {
   combinationId: string;
@@ -256,7 +256,7 @@ export type EveAuthorShare = {
 /**
  * 組み合わせを使ってもらった作者の分（2 つ目のお金の道）。外部の入金の記録で確定した額だけが元。
  * 元は「入金された額 − 費用」（使った人が損をした回は 0）。Eve が作った組み合わせの作者の分は運営に入る。
- * 自分の組み合わせを自分で使った分は計算しない。割合が未決の間は額を出さない。eve.si は送金しない（払うのは Wallet）。
+ * 自分の組み合わせを自分で使った分は計算しない。割合に null を渡した時は額を出さない。eve.si は送金しない（払うのは Wallet）。
  */
 export function eveAuthorShare(score: EveScorecard, userId: string, shareBps: number | null = EVE_AUTHOR_SHARE_BPS): EveAuthorShare {
   const payee: EveAuthorShare['payee'] = score.author.kind === 'eve' ? { kind: 'operator' } : { kind: 'person', id: score.author.id };

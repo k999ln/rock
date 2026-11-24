@@ -159,7 +159,7 @@ export default async function EveCombinationPage(p: Props) {
             <section className={styles.section} aria-labelledby="eve-author">
               <h2 id="eve-author">作る人の受け取り</h2>
               <p>この組み合わせを他の人が使って、外部の入金の記録で確定した額が出た時だけ、作者の分を計算します。Eve が作った組み合わせの分は運営に入ります。払うのは Wallet です。</p>
-              <p className={styles.empty}>{EVE_AUTHOR_SHARE_BPS === null ? '作者に入る割合は、まだ決まっていません。' : `作者の割合: ${EVE_AUTHOR_SHARE_BPS / 100}%`}</p>
+              <p className={styles.empty}>{EVE_AUTHOR_SHARE_BPS === null ? '作者に入る割合は、まだ決まっていません。' : `作者の割合: 入金 − 費用 の ${EVE_AUTHOR_SHARE_BPS / 100}%`}</p>
             </section>
           </aside>
         </div>

@@ -92,10 +92,12 @@ void test('段 5: results go back into the sale rate — sent is offered, approv
   assert.deepEqual(eveSaleRecordsFromScores([noApproval]), {}, 'approval not measured → nothing fed back');
 });
 
-void test('段 6: the author is paid only from external payment records; Eve-made goes to the operator; the rate is pending', () => {
+void test('段 6: the author is paid only from external payment records; Eve-made goes to the operator; the rate is 20%', () => {
   const s = eveScore(C, records, WINDOW);
-  assert.equal(EVE_AUTHOR_SHARE_BPS, null, 'the share is still the owner’s decision (I2)');
-  const pending = eveAuthorShare(s, 'user2');
+  assert.equal(EVE_AUTHOR_SHARE_BPS, 2_000, 'the owner decided 20% on 2026-11-24 (I2)');
+  const byDefault = eveAuthorShare(s, 'user2');
+  assert.deepEqual([byDefault.status, byDefault.baseYen, byDefault.shareYen], ['due', 7_000, 1_400], '20% of (paid 8,000 − cost 1,000)');
+  const pending = eveAuthorShare(s, 'user2', null);
   assert.deepEqual([pending.status, pending.baseYen, pending.shareYen, pending.payee], ['pending-rate', 7_000, null, { kind: 'person', id: 'maker1' }]);
   const due = eveAuthorShare(s, 'user2', 1_000);
   assert.deepEqual([due.status, due.shareYen], ['due', 700], '10% of (paid 8,000 − cost 1,000)');
