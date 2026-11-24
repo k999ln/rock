@@ -1,6 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { createNoahCloudApi, createNoahCloudResultApi, noahCloudRuntime } from '../lib/noah-cloud-api.ts';
+import { eveReturnedProposal } from '../lib/eve-consultation-proposal.ts';
 import { noahProjectDetail } from '../lib/noah-project-api.ts';
 import { noahBrowserRequestAllowed } from '../lib/noah-browser-session.ts';
 import { ownerScopeFor } from '../lib/owner-intent.ts';
@@ -11,14 +12,14 @@ import { NoahAgentError } from '../lib/noah-agent-upload.ts';
 const id = n => `00000000-0000-4000-8000-${String(n).padStart(12, '0')}`;
 const distribution = NOAH_CLOUD_PROFILES.hermes.sha256, version = NOAH_CLOUD_PROFILES.hermes.version;
 const project = NOAH_EVE_HERMES_PROJECT, origin = 'https://noah.test';
-const entry = { card: { id: project, feedbackId: project, href: 'https://github.com/NousResearch/hermes-agent', name: 'Hermes', sources: [] }, families: [] };
+const entry = { cloudProfile: 'hermes', card: { id: project, feedbackId: project, href: 'https://github.com/NousResearch/hermes-agent', name: 'Hermes', sources: [] }, families: [] };
 async function world(t, freeRuntime = false) {
   const f = fixture(t); let owner = 'owner-a', listed = true, denied = false, confirmRequired = false, count = 0, admissionStatus = 200, receipt;
   const secret = crypto.randomUUID() + crypto.randomUUID();
-  const records = new Map();
-  const api = createNoahCloudApi({ db: f.db, now: f.time, receiptKey: secret, freeRuntime, authenticate: async () => owner, directory: async () => listed ? [entry] : [], authorize: async (_owner, _target, _action, _digest, confirmed) => { if (denied) throw Error('DENIED'); if (confirmRequired && !confirmed) throw new NoahAgentError('毎回確認してください', 409); }, runtime: async input => {
+  const records = new Map(), starts = [];
+  const api = createNoahCloudApi({ db: f.db, now: f.time, receiptKey: secret, freeRuntime, authenticate: async () => owner, directory: async () => listed ? [entry, { ...entry, cloudProfile: 'memory', card: { ...entry.card, id: 'project-' + 'b'.repeat(64), feedbackId: 'project-' + 'b'.repeat(64), href: NOAH_CLOUD_PROFILES.memory.repository } }] : [], authorize: async (_owner, _target, _action, _digest, confirmed) => { if (denied) throw Error('DENIED'); if (confirmRequired && !confirmed) throw new NoahAgentError('毎回確認してください', 409); }, runtime: async input => {
     count++;
-    if (input.action === 'start') { receipt = input.receipt; if (admissionStatus !== 200) return Response.json({ error: '利用枠が埋まっています' }, { status: admissionStatus }); const old = records.get(input.jobId); if (!old) records.set(input.jobId, { id: input.jobId, profile: input.profile, version, distribution, mode: 'run', state: 'running', calls: 0 }); return Response.json(records.get(input.jobId)); }
+    if (input.action === 'start') { starts.push(input); receipt = input.receipt; if (admissionStatus !== 200) return Response.json({ error: '利用枠が埋まっています' }, { status: admissionStatus }); const old = records.get(input.jobId); if (!old) records.set(input.jobId, { id: input.jobId, profile: input.profile, version, distribution, mode: 'run', state: 'running', calls: 0 }); return Response.json(records.get(input.jobId)); }
     if (input.action === 'stop' && records.has(input.jobId)) { const stopped = {...records.get(input.jobId),state:'cancelled'}; records.set(input.jobId,stopped); return Response.json(stopped); }
     if (input.action === 'job') return records.has(input.jobId) ? Response.json(records.get(input.jobId)) : Response.json({ error: 'not_found' }, { status: 404 });
     return Response.json({ connection: null });
@@ -26,7 +27,7 @@ async function world(t, freeRuntime = false) {
   const request = async (body, headers = {}) => api(new Request(origin + '/api/noah/cloud-agents', { method: 'POST', headers: { Origin: origin, 'Content-Type': 'application/json', 'X-Rock-Owner-Scope': await ownerScopeFor(owner), ...headers }, body: JSON.stringify({ projectId: project, ...body }) }));
   const resultApi = createNoahCloudResultApi({ db: f.db, receiptKey: secret, now: f.time });
   const deliver = (job, patch = {}, headers = {}) => resultApi(new Request(origin + '/api/noah/cloud-agents/result', { method: 'POST', headers: { Authorization: `Bearer ${secret}`, ...headers }, body: JSON.stringify({ ticket: receipt, job, ...patch }) }));
-  return { f, api, records, request, deliver, requireConfirmation: () => { confirmRequired = true; }, admission: status => { admissionStatus = status; }, calls: () => count, owner: v => { owner = v; }, listed: v => { listed = v; }, deny: () => { denied = true; } };
+  return { f, api, records, starts, request, deliver, requireConfirmation: () => { confirmRequired = true; }, admission: status => { admissionStatus = status; }, calls: () => count, owner: v => { owner = v; }, listed: v => { listed = v; }, deny: () => { denied = true; } };
 }
 void test('cloud capability is only offered for reviewed distributions when deployed, keeping provider choice', () => {
   assert.equal(noahProjectDetail(entry).connection.kind, 'setup');
@@ -131,6 +132,54 @@ void test('Eve consultations use the official free Hermes runtime and return onl
   const paid = await world(t, false);
   assert.equal((await paid.request({ ...start, purpose, confirm: true })).status, 503);
   assert.equal(paid.calls(), 0);
+});
+void test('Eve sends a bounded combination brief with the confirmed goal and saves only a grounded, owned proposal', async t => {
+  const w = await world(t, true), purpose = 'eve-engineering', prompt = '自分のブログで会議の内容を整理したい';
+  const start = { action: 'start', jobId: id(2), connectionId: id(1), purpose, proposalLanguage: 'ja', prompt };
+  w.requireConfirmation();
+  assert.equal((await w.request(start)).status, 409);
+  assert.deepEqual(w.starts, []);
+  assert.equal((await w.request({ ...start, confirm: true, prompt: 'あ'.repeat(3960) })).status, 400);
+  assert.equal((await w.request({ ...start, confirm: true, proposalLanguage: 'invalid' })).status, 400);
+  assert.deepEqual(w.starts, []);
+  assert.equal((await w.request({ ...start, confirm: true })).status, 202);
+  assert.match(w.starts[0].prompt, /A catalog design example passes "記事の指示"/u);
+  assert.match(w.starts[0].prompt, /memory:/u);
+  assert.ok(w.starts[0].prompt.endsWith('\n' + prompt));
+  assert.equal((await w.request({ ...start, confirm: true, proposalLanguage: 'en' })).status, 409);
+  const generated = JSON.stringify({ input: '会議のメモ', steps: [
+    { agent: 'memory', role: '担当者ごとに論点を整理', output: '担当と論点の表' },
+    { agent: null, role: '記事を下書きするAgent', output: '確認用の記事案' },
+  ] });
+  const job = { ...w.records.get(start.jobId), state: 'returned', calls: 2, result: { text: generated, files: [], exitCode: 0 } };
+  assert.equal((await w.deliver(job)).status, 200);
+  const status = () => w.api(new Request(`${origin}/api/noah/cloud-agents?projectId=${project}&purpose=${purpose}`));
+  const { jobs } = await (await status()).json();
+  assert.equal(jobs[0].prompt, prompt);
+  assert.equal(jobs[0].proposal.steps[1].input, jobs[0].proposal.steps[0].output);
+  assert.equal(jobs[0].proposal.steps[1].profile, null);
+  assert.equal(jobs[0].proposal.steps[0].projectId, 'project-' + 'b'.repeat(64));
+  assert.equal(jobs[0].proposal.deliverable, '確認用の記事案');
+  assert.equal(jobs[0].proposalBrief, undefined);
+  assert.equal((await w.request({ ...start, confirm: true })).status, 200);
+  assert.equal(w.starts.length, 1);
+  w.owner('unrelated');
+  assert.deepEqual((await (await status()).json()).jobs, []);
+});
+void test('per-job memory can supply the model design, while unlisted or repeated agents never become store recommendations', () => {
+  const targets = { memory: 'project-' + 'b'.repeat(64) };
+  const shape = { input: 'Notes', steps: [
+    { agent: 'memory', role: 'Group notes', output: 'Groups' },
+    { agent: null, role: 'Draft action items', output: 'Tasks' },
+  ] };
+  const saved = JSON.stringify(shape), note = { name: 'MEMORY.md', base64: Buffer.from('# Memory\n' + saved).toString('base64') };
+  assert.equal(eveReturnedProposal('I saved the plan.', [note], targets).deliverable, 'Tasks');
+  assert.equal(eveReturnedProposal('I saved the plan.', [], targets), null);
+  assert.equal(eveReturnedProposal(saved, [], {}), null);
+  for (const agent of ['unlisted', '__proto__', 'memory']) {
+    const changed = { ...shape, steps: [shape.steps[0], { ...shape.steps[1], agent }] };
+    assert.equal(eveReturnedProposal(JSON.stringify(changed), [], targets), null);
+  }
 });
 void test('a saved per-operation confirmation is required before dispatch', async t => {
   const w = await world(t); w.requireConfirmation();

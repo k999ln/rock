@@ -1,15 +1,18 @@
 'use client';
 /* oxlint-disable next/no-html-link-for-pages -- Stage navigation respects the editor's native unsaved-changes prompt. */
 import { useEffect, useState } from 'react';
-import { ArrowLeft, ArrowRight, Code2, Plug, Play, Store } from 'lucide-react';
+import { ArrowLeft, ArrowRight, BookOpen, ChevronDown, Code2, Monitor, Plug, Play, Store } from 'lucide-react';
 import type { NoahUpload } from '@/lib/noah-agent-store';
 import { noahAccountHref } from '@/lib/noah-navigation';
+import { eveEngineeringNavigation } from '@/lib/eve-engineering-navigation';
 import { noahEngineeringHref, noahEngineeringSteps, type NoahEngineeringStep } from '@/lib/noah-engineering';
 import NoahAgentUploadForm from './noah-agent-upload-form';
 import NoahAgentDetail from './noah-agent-detail';
 import NoahPublisher from './noah-publisher';
 import NoahEngineeringEve from './noah-engineering-eve';
+import type { NoahLocale } from '@/lib/noah-i18n';
 import { useNoahLocale } from './noah-locale';
+import columns from './noah-engineering-columns.module.css';
 import styles from './noah-engineering.module.css';
 
 const actions = {
@@ -83,28 +86,45 @@ function RegisteredAgent({ step, agent }: { step: 'test' | 'publish'; agent: str
   </>;
 }
 
-export default function NoahEngineering({ step, agent }: { step: NoahEngineeringStep | null; agent: string | null }) {
-  const { t } = useNoahLocale();
-  return <div className={styles.page}>
+export default function NoahEngineering({ step, agent, draftLocale }: { step: NoahEngineeringStep | null; agent: string | null; draftLocale?: NoahLocale }) {
+  const { t, locale } = useNoahLocale();
+  const links = eveEngineeringNavigation(step, draftLocale ?? locale);
+  const [actionsOpen, setActionsOpen] = useState(false);
+  return <div className={`${styles.page} ${columns.container}`}>
     <header className={styles.heading}>
       <a className={styles.back} href="/noah"><ArrowLeft size={15} />{t('ストア')}</a>
       <h1>{t('Agentエンジニアリング')}</h1>
     </header>
-    <NoahEngineeringEve stage={step ?? 'create'} />
-    <nav className={styles.actions} aria-label={t('Agentの作業を選ぶ')}>
-      {noahEngineeringSteps.map(key => {
-        const { label, Icon } = actions[key];
-        return <a key={key} href={noahEngineeringHref(key, agent) + '#engineering-work'} aria-current={step === key ? 'step' : undefined}>
-          <Icon className={styles.icon} size={22} strokeWidth={1.7} aria-hidden="true" />
-          <span>{t(label)}</span><ArrowRight className={styles.arrow} size={16} aria-hidden="true" />
-        </a>;
-      })}
-    </nav>
-    {step && <section id="engineering-work" aria-labelledby="engineering-work-title" className={styles.work}>
-      <h2 id="engineering-work-title">{t(actions[step].label)}</h2>
-      {step === 'create' || step === 'connect'
-        ? <NoahAgentUploadForm key={step} engineeringMode={step} onRegistered={id => window.location.assign(noahEngineeringHref('test', id) + '#engineering-work')} />
-        : <RegisteredAgent key={step + (agent ?? '')} step={step} agent={agent} />}
-    </section>}
+    <div className={columns.columns} data-engineering-columns>
+      <div className={`${styles.chooser} ${columns.secondary}`} data-engineering-secondary data-actions-open={actionsOpen}>
+        <button type="button" className={styles.toggle} aria-expanded={actionsOpen} aria-controls="engineering-actions" onClick={() => setActionsOpen(open => !open)}>
+          <span>{t('作業を選ぶ')}</span>{step && <small>{t(actions[step].label)}</small>}<ChevronDown size={18} aria-hidden="true" />
+        </button>
+        <div id="engineering-actions" className={styles.tools}>
+          <nav className={styles.actions} aria-label={t('Agentの作業を選ぶ')}>
+            {noahEngineeringSteps.map(key => {
+              const { label, Icon } = actions[key];
+              return <a key={key} href={noahEngineeringHref(key, agent) + '#engineering-work'} aria-current={step === key ? 'step' : undefined}>
+                <Icon className={styles.icon} size={22} strokeWidth={1.7} aria-hidden="true" />
+                <span>{t(label)}</span><ArrowRight className={styles.arrow} size={16} aria-hidden="true" />
+              </a>;
+            })}
+          </nav>
+          <nav className={styles.resources} aria-label="Eve">
+            <a href={links.catalog}><BookOpen size={17} aria-hidden="true" />{t('組み合わせ例')}</a>
+            <a href={links.device}><Monitor size={17} aria-hidden="true" />{t('自分の端末でEveに相談する')}</a>
+          </nav>
+        </div>
+      </div>
+      <div className={columns.primary} data-engineering-primary>
+        <NoahEngineeringEve stage={step ?? 'create'} emptyDraft={!step} draftLocale={draftLocale} />
+        {step && <section id="engineering-work" aria-labelledby="engineering-work-title" className={styles.work}>
+          <h2 id="engineering-work-title">{t(actions[step].label)}</h2>
+          {step === 'create' || step === 'connect'
+            ? <NoahAgentUploadForm key={step} engineeringMode={step} onRegistered={id => window.location.assign(noahEngineeringHref('test', id) + '#engineering-work')} />
+            : <RegisteredAgent key={step + (agent ?? '')} step={step} agent={agent} />}
+        </section>}
+      </div>
+    </div>
   </div>;
 }

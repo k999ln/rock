@@ -22,8 +22,8 @@ export const engineeringAdvice = {
 
 // Only a known stage and a UI language travel in the URL. Eve receives an editable draft.
 export function engineeringEveHref(stage: NoahEngineeringStep, locale: NoahLocale) {
-  const params = new URLSearchParams({ engineering: stage, lang: locale });
-  return '/os/eve?' + params.toString() + '#eve-compose';
+  const params = new URLSearchParams({ step: stage, lang: locale });
+  return '/noah/engineering?' + params.toString() + '#eve-compose';
 }
 
 export function engineeringEveDraft(stage: unknown, language: unknown) {

@@ -1,6 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import * as engineering from '../lib/noah-engineering.ts';
+import * as eveNavigation from '../lib/eve-engineering-navigation.ts';
 import * as navigation from '../lib/noah-navigation.ts';
 import { screen } from './fixtures/noah/screen.mjs';
 
@@ -9,7 +10,7 @@ const agent = { id, manifest: { name: '研修の準備', version: '1.0.0' }, upl
 const scope = 'engineering-test-owner';
 function browse(stage, selected, fetch) {
   const ui = screen({ fetch, modules: {
-    '@/lib/noah-engineering': engineering, '@/lib/noah-navigation': navigation,
+    '@/lib/eve-engineering-navigation': eveNavigation, '@/lib/noah-engineering': engineering, '@/lib/noah-navigation': navigation,
     './noah-engineering-eve': { default: ({stage}) => 'Eve-' + stage },
     './noah-agent-upload-form': { default: ({ engineeringMode }) => 'upload-' + engineeringMode },
     './noah-agent-detail': { default: ({ id, remote, engineering }) => remote && engineering ? 'trial-' + id : 'wrong' },
@@ -23,6 +24,16 @@ void test('the single entrance presents four actions and Eve without loading or 
   const { ui, page } = browse(null, null, () => { throw Error('landing must not request owner data'); });
   assert.deepEqual(page.find('a').filter(a => a.props.href.includes('?step=')).map(a => a.props.href),
     engineering.noahEngineeringSteps.map(s => engineering.noahEngineeringHref(s) + '#engineering-work'));
+  const toggle = page.find('button', '作業を選ぶ')[0];
+  assert.equal(toggle.props['aria-expanded'], false);
+  assert.ok(page.find('div').some(node => node.props.id === toggle.props['aria-controls']));
+  const links = eveNavigation.eveEngineeringNavigation('create', 'ja');
+  assert.equal(page.find('a', '組み合わせ例')[0].props.href, links.catalog);
+  assert.equal(page.find('a', '自分の端末でEveに相談する')[0].props.href, links.device);
+  await page.click('作業を選ぶ');
+  assert.equal(page.find('button', '作業を選ぶ')[0].props['aria-expanded'], true);
+  await page.click('作業を選ぶ');
+  assert.equal(page.find('button', '作業を選ぶ')[0].props['aria-expanded'], false);
   assert.match(page.text(), /Eve-create/);
   for (const step of ['create','connect']) {
     const { page: selected } = browse(step, null, () => { throw Error('unexpected'); });
