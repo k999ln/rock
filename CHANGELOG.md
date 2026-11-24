@@ -1,3 +1,6 @@
+## 2026-11-25
+- ルートに Claude Code 用の `CLAUDE.md` を追加（Opus / Noelle。本人指示「これ全部とりこんで」）。「Fable 5.2必須プロンプト100選」を作業規則に整理し、冒頭で `AGENTS.md` を読み込み、食い違ったら `AGENTS.md` を優先と明記。このリポジトリでは `progress.txt`・`tests.json`・`init.sh` を作らず、記録は PR 本文と CHANGELOG に残す形に合わせた。コードの変更はなし。（旧リポジトリ k999ln/rock の PR #408 から移した。本人「この3日間の成果ぜんぶgitにあげて」）
+
 ## 2026-11-24
 - マイAgentのブラウザー保存先から、同じ本人の収益記録を作成・再表示できるようにした（[PR #68](https://github.com/iceiceice999/rock/pull/68)）。
 - マイAgentで収益系Agentの成果を開くと、同じ仕事の承認額・実入金・最終費用と作者20%の確定状況を確認できるようにした。証憑の連携前も表示する（[PR #67](https://github.com/iceiceice999/rock/pull/67)）。
