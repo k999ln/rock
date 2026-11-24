@@ -1,4 +1,5 @@
 ## 2026-11-24
+- 稼ぐ設計図 470 件の 1 年目の月の利益を、公開の数字で見積もった（Opus / Noelle。0 円も入れた平均）: 1 件あたり月 −380 円。動画の作る費用（月 3,000 円）が見込みより大きいため。動画と画像をオープンソースで作れば +259 円。あわせて、オープンソースの自分で動く Agent の 2026 年 10 月の一覧と、Noah での組み合わせを docs に置き、目的型の Agent は一旦無料という本人の答えを記録した（[PR #EARNAVG](https://github.com/iceiceice999/rock/pull/EARNAVG)）。
 
 - Eveの相談で、Hermesが組み合わせ案をその仕事のメモに保存できるよう、道具を呼ばずに答えた場合の再試行を修正した（task 130、[PR #57](https://github.com/iceiceice999/rock/pull/57)）。
 - ストアのAgentエンジニアリングでEveに直接相談し、複数Agentの役割と受け渡しを確認できるようにした。組み合わせの日本語の素材照合と予算の判定も修正した（task 130、[PR #49](https://github.com/iceiceice999/rock/pull/49)）。
