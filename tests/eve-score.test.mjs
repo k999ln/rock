@@ -92,10 +92,12 @@ void test('段 5: results go back into the sale rate — sent is offered, approv
   assert.deepEqual(eveSaleRecordsFromScores([noApproval]), {}, 'approval not measured → nothing fed back');
 });
 
-void test('段 6: the author is paid only from external payment records; Eve-made goes to the operator; the rate is pending', () => {
+void test('段 6: the author is paid only from external payment records; Eve-made goes to the operator; the rate is 20%', () => {
   const s = eveScore(C, records, WINDOW);
-  assert.equal(EVE_AUTHOR_SHARE_BPS, null, 'the share is still the owner’s decision (I2)');
-  const pending = eveAuthorShare(s, 'user2');
+  assert.equal(EVE_AUTHOR_SHARE_BPS, 2_000, 'the owner decided 20% on 2026-11-24 (I2)');
+  const byDefault = eveAuthorShare(s, 'user2');
+  assert.deepEqual([byDefault.status, byDefault.baseYen, byDefault.shareYen], ['due', 7_000, 1_400], '20% of (paid 8,000 − cost 1,000)');
+  const pending = eveAuthorShare(s, 'user2', null);
   assert.deepEqual([pending.status, pending.baseYen, pending.shareYen, pending.payee], ['pending-rate', 7_000, null, { kind: 'person', id: 'maker1' }]);
   const due = eveAuthorShare(s, 'user2', 1_000);
   assert.deepEqual([due.status, due.shareYen], ['due', 700], '10% of (paid 8,000 − cost 1,000)');
@@ -108,6 +110,54 @@ void test('段 6: the author is paid only from external payment records; Eve-mad
   const eveMade = eveScore(defineCombination({ ...C, author: { kind: 'eve' } }), records, WINDOW);
   assert.deepEqual(eveAuthorShare(eveMade, 'user2', 1_000).payee, { kind: 'operator' });
   assert.throws(() => eveAuthorShare(s, 'user2', 12_000));
+});
+
+void test('成果承認から後日の入金までを同じ案件の累積で比較し、費用の欠けた期間を確定に使わない', () => {
+  const cost = R('made', 1, 'work', 'work:case-1', { costYen: 1_000 });
+  const approval = R('approved', 1, 'asp', 'asp:case-1', { amountYen: 8_000, at: AT(15) });
+  const payment = R('paid', 1, 'bank', 'bank:case-1', { amountYen: 8_000, at: AT(21) });
+  const history = [cost, approval, payment, payment];
+  const accepted = eveScore(C, history, { from: AT(10), to: AT(15) });
+  assert.deepEqual([accepted.funnel.approved, accepted.funnel.paid, eveAuthorShare(accepted, 'reader').shareYen], [1, null, null]);
+  const settled = eveScore(C, history, WINDOW);
+  assert.deepEqual([settled.funnel.approved, settled.funnel.paid, eveAuthorShare(settled, 'reader').shareYen], [1, 1, 1_400]);
+  const slice = eveScore(C, [...history, { ...cost, reference: 'work:later', at: AT(21), costYen: 50 }], { from: AT(20), to: AT(22) });
+  assert.equal(slice.costYen, 50);
+  assert.equal(eveAuthorShare(slice, 'reader').status, 'pending-cost');
+  const lateCost = { ...cost, reference: 'work:after-payment', costYen: 500, at: AT(23) };
+  const completeHistory = [...history, lateCost];
+  const atPayment = eveScore(C, completeHistory, { from: AT(10), to: AT(21) });
+  const pending = eveAuthorShare(atPayment, 'reader');
+  assert.deepEqual([atPayment.costYen, pending.status, pending.shareYen], [1_000, 'pending-cost', null]);
+  const final = eveAuthorShare(eveScore(C, completeHistory, WINDOW), 'reader');
+  assert.deepEqual([final.status, final.baseYen, final.shareYen], ['due', 6_500, 1_300]);
+  for (const fees of [[], [{ ...cost, costYen: undefined }], [cost, { ...cost, reference: 'work:other', costYen: undefined }],
+    [cost, { ...cost, costYen: 900 }], [cost, { ...cost, reference: 'work:invalid', costYen: -1 }]]) {
+    const share = eveAuthorShare(eveScore(C, [payment, ...fees], WINDOW), 'reader');
+    assert.deepEqual([share.status, share.baseYen, share.shareYen], ['pending-cost', null, null]);
+  }
+  const zeroJobs = eveScore(C, [payment, { ...cost, count: 0, costYen: 0 }], WINDOW);
+  const unknownCost = eveAuthorShare(zeroJobs, 'reader');
+  assert.deepEqual([zeroJobs.costComplete, unknownCost.status, unknownCost.shareYen], [false, 'pending-cost', null]);
+  const free = eveScore(C, [payment, { ...cost, count: 1, costYen: 0 }], WINDOW);
+  const noExpense = eveAuthorShare(free, 'reader');
+  assert.deepEqual([free.costComplete, noExpense.status, noExpense.shareYen], [true, 'due', 1_600]);
+  const { costComplete, ...legacy } = free;
+  assert.equal(costComplete, true);
+  assert.equal(eveAuthorShare(legacy, 'reader').shareYen, null);
+});
+
+void test('0件で正額の記録と矛盾した明細を見分け、円単位の20%を整数で切り捨てる', () => {
+  const cost = R('made', 1, 'work', 'work:cost', { costYen: 0 });
+  const paid = R('paid', 0, 'bank', 'bank:zero', { amountYen: 8_000 });
+  const none = eveScore(C, [cost, paid, R('approved', 0, 'asp', 'asp:zero', { amountYen: 8_000 })], WINDOW);
+  assert.deepEqual([none.rejected.length, none.funnel.approved, none.funnel.paid, eveAuthorShare(none, 'reader').shareYen], [2, null, null, null]);
+  // Multiplying this amount by 2,000 as a Number rounds the share up by one yen.
+  const amountYen = Number.MAX_SAFE_INTEGER - 22;
+  const one = { ...paid, count: 1, amountYen };
+  assert.equal(eveAuthorShare(eveScore(C, [cost, one], WINDOW), 'reader').shareYen, Number(BigInt(amountYen) / BigInt(5)));
+  assert.throws(() => eveScore(C, [one, { ...one, amountYen: 1 }], WINDOW), /conflicting_receipt/);
+  assert.throws(() => eveScore(C, [one, { ...one, reference: 'bank:other' }], WINDOW), /amount_out_of_range/);
 });
 
 // 作り直し。相手は合成の物。
