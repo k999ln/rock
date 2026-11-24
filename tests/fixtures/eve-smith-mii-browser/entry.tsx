@@ -13,7 +13,9 @@ function SyntheticEve() {
   const [error, setError] = useState('');
   const [replies, setReplies] = useState<Array<{ id: string; text: string; source: EveSourcePin }>>([]);
   const threadId = `fixture-thread-${thread}`;
-  const context = useEveSourceContext(true, threadId);
+  // The real source picker is on a separate page. Only mount an active receiver
+  // once the fixture has queued the source and entered its destination thread.
+  const context = useEveSourceContext(thread > 0, threadId);
   async function queue(role: string) {
     try {
       const key = role === 'counter' ? 'dataset:fixture/counter' : 'space:fixture/summer';
