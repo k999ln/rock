@@ -34,4 +34,4 @@
 - 全体verifyの全段階を確認: 型・lint、主要テスト5441件成功 / 5件skip / 0失敗、課金と運営Workerのdry-run、各パッケージ試験、本番ビルド、asset照合、ローカルAPI 1918 assertions、CSV保存385 assertions、mission/work/bot整合性が成功。
 - 実行環境: OpenSSL 3をPATHへ指定。独立作業ツリーのためrootに加えて `sites/avocado-mini` と `toolkits/noah-coconala` にlockfileどおり `npm ci --ignore-scripts`。最初のverifyは不足依存で停止し、補完後に `test:noah-coconala` からverify末尾まで同じ順で再実行して終了コード0。テストの削除・緩和はなし。
 - 外部への実登録・決済・公開切替は未実施。実画面確認は合成APIであり、本番受入の証拠にはしない。
-- PRは作成後に記録する。
+- 実装と検証: [PR #63](https://github.com/iceiceice999/rock/pull/63)（draft、未公開）。
