@@ -12,6 +12,7 @@ import { NOAH_REMOTE_TEMPLATE } from '../lib/noah-remote-work.ts';
 import { applyWorkCommand, normalizeWorkJob } from '../lib/workflow.ts';
 import { ownerScopeFor } from '../lib/owner-intent.ts';
 import { createIntakeApi } from '../lib/noah-intake-api.ts';
+import { revenueConfigFor, checkRevenueDispatch } from './fixtures/noah/revenue-dispatch.mjs';
 import { mcpServer, tool } from './fixtures/noah/mcp-server.mjs';
 import { world, familyId, hostOf, uuid, rpcs, handshakes } from './fixtures/noah/connect-world.mjs';
 
@@ -615,4 +616,29 @@ void test('image result bytes persist through MCP, Work and owner-only detail wi
   const one=await a.askGet(uuid(810));assert.equal(one.status,200);assert.equal(one.body.result.images[0].data,png);assert.equal(one.body.result.images[0].mimeType,'image/png');
   assert.equal((await w.as('owner-b').askGet(uuid(810))).status,404);
   assert.equal('result' in (await a.asks(connectionId)).body.asks[0],false);
+});
+
+void test('a submitted registry MCP form binds signed revenue evidence to its original private Work', async t => {
+  const definition = lookup();
+  const server = mcpServer({ tools: [definition], call: () => ({ content: [{ type: 'text', text: 'Form result' }] }) });
+  const { w, a, connectionId } = await connected(t, server, {
+    extra: { revenueConfig: revenueConfigFor(familyId(1), `https://${hostOf(1)}/mcp`, 'lookup') },
+  });
+  const askId = uuid(67);
+  const accepted = await a.ask({ id: askId, connectionId, form: await form(definition, { query: 'private request' }) });
+  assert.equal(accepted.status, 202);
+  assert.notEqual(askId, accepted.body.workId);
+  assert.equal(calls(server).length, 1);
+  const params = calls(server)[0].body.params;
+  assert.deepEqual(params.arguments, { query: 'private request' });
+  const job = w.work(accepted.body.workId);
+  const privateDetail = async () => {
+    const response = await a.askGet(askId);
+    assert.equal(response.status, 200);
+    assert.equal(response.body.result.text, 'Form result');
+    return response.body;
+  };
+  await checkRevenueDispatch({ deps: a.deps, job, meta: params._meta['avoado.si/revenue-work'], privateDetail });
+  assert.equal((await w.as('not-the-operator').askGet(askId)).status, 404);
+  assert.equal(calls(server).length, 1);
 });

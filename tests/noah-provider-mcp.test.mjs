@@ -1,6 +1,12 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
+import { screen } from './fixtures/noah/screen.mjs';
+import * as askView from '../lib/noah-ask-view.ts';
 import { fixture } from './fixtures/noah/intake.mjs';
+import { createNoahAskApi } from '../lib/noah-ask.ts';
+import { createNoahWorkRevenueApi } from '../lib/noah-work-revenue-api.ts';
+import { createReceiptSignature } from '../lib/receipt-signature.ts';
+import { noahRevenueConfig } from '../lib/noah-revenue-operation.ts';
 import { parseNoahFlags } from '../lib/noah-flags.ts';
 import { createNoahProviderRuntime } from '../lib/noah-provider-runtime.ts';
 import { createNoahProviderApi } from '../lib/noah-provider-api.ts';
@@ -33,10 +39,97 @@ void test('MCP metadata creates a form, sends once, and persists real SQLite Wor
   const accepted = await w.runtime.accept('owner-a', false, input); await accepted.run();
   const fresh = createNoahProviderRuntime(w.deps), job = await fresh.get('owner-a', input.id);
   assert.equal(job.noahRemote.state, 'returned'); assert.match(job.noahRemote.result.text, /Official provider/);
+  assert.equal(w.state.calls[0]._meta, undefined);
   assert.deepEqual(w.state.calls[0].arguments, { text: 'hello', zones: ['Asia/Tokyo', 'UTC'] });
   assert.equal(await fresh.get('owner-b', input.id), null);
   assert.equal((await fresh.accept('owner-a', false, input)).replay, true); assert.equal(w.state.calls.length, 1);
   assert.equal((await fresh.list('owner-a')).length, 1);
+});
+void test('only the registered revenue tool gets its dispatch proof and signed receipts update that same private Work', async t => {
+  const w = setup(t), combinationId = 'affiliate:ai-tools:blog', operator = 'verified-operator-a';
+  w.deps.revenueConfig = noahRevenueConfig({
+    NOAH_REVENUE_PROVIDER_ID: 'reviewed-provider', NOAH_REVENUE_PROVIDER_SECRET: 't'.repeat(48),
+    NOAH_REVENUE_OPERATOR_ACCOUNTS: JSON.stringify({ 'owner-a': operator, 'another-owner': 'verified-operator-b' }),
+    NOAH_REVENUE_AUTHOR_OWNERS: JSON.stringify({ noellesugar99: 'different-author' }),
+    NOAH_REVENUE_PROVIDER_TARGET: JSON.stringify({ familyKey: projectId, endpoint: target, tool: 'convert', combinationId }),
+  });
+  const input = await w.input();
+  const ownerScope = await ownerScopeFor('owner-a');
+  const provider = createNoahProviderApi(w.deps);
+  const run = await provider(new Request('https://noah.test/api/noah/provider', {
+    method: 'POST', body: JSON.stringify(input),
+    headers: { origin: 'https://noah.test', 'content-type': 'application/json', [OWNER_SCOPE_HEADER]: ownerScope },
+  }));
+  assert.equal(run.status, 202);
+  assert.equal((await run.json()).id, input.id);
+  const meta = w.state.calls[0]._meta['avoado.si/revenue-work'];
+  assert.deepEqual(Object.keys(meta).sort(), ['combinationId', 'dispatchProof', 'version', 'workId']);
+  assert.equal(meta.workId, input.id);
+  assert.equal(meta.combinationId, combinationId);
+  assert.ok(meta.dispatchProof.length >= 32);
+  const got = await w.runtime.get('owner-a', input.id);
+  assert.equal(got.noahRevenue.version, meta.version);
+  assert.equal(got.noahRemote.state, 'returned');
+  assert.ok(!JSON.stringify(got).includes(meta.dispatchProof));
+
+  const receipts = createNoahWorkRevenueApi(w.deps);
+  const path = 'https://noah.test/api/noah/ask/' + input.id;
+  const ask = createNoahAskApi(w.deps);
+  const listing = await ask.collection(new Request('https://noah.test/api/noah/ask'));
+  assert.equal(listing.status, 200);
+  const saved = await listing.json();
+  assert.equal(saved.ownerScope, ownerScope);
+  assert.deepEqual(saved.asks.map(item => item.id), [input.id]);
+  const ui = screen({ modules: { '@/lib/owner-intent': { OWNER_SCOPE_HEADER }, '@/lib/noah-ask-view': askView }, fetch: async ({ method, url }) => {
+    assert.deepEqual([method, url], ['GET', new URL(path).pathname]);
+    const response = await ask.item(new Request(path), input.id);
+    return { status: response.status, body: await response.json() };
+  } });
+  const page = ui.mount('components/noah-task-detail.tsx', { id: input.id });
+  await page.flush();
+  assert.match(page.text(), /成果承認額承認記録なし入金額入金記録なし/);
+  async function privateReceipt() {
+    const response = await ask.item(new Request(path), input.id);
+    assert.equal(response.status, 200);
+    const detail = await response.json();
+    assert.equal(detail.id, input.id);
+    assert.match(detail.result.text, /Official provider result/);
+    assert.equal(detail.revenueReceipt.evidenceConnection, 'connected');
+    assert.ok(!JSON.stringify(detail).includes(meta.dispatchProof));
+    return detail.revenueReceipt;
+  }
+  async function submit(stage, source, amountYen, operatorRef = operator, expectedStatus = 201) {
+    w.f.advance(1000);
+    const raw = JSON.stringify({
+      schema: 'noah-revenue-receipt/1', ...meta, providerId: 'reviewed-provider', operatorRef, stage, source,
+      amountYen, currency: 'JPY', reference: 'fixture/' + stage, observedAt: w.f.time(), evidenceSha256: 'b'.repeat(64),
+    });
+    const signature = await createReceiptSignature(raw, w.deps.revenueConfig.secret, Math.floor(w.f.time() / 1000));
+    const response = await receipts.receipt(new Request('https://noah.test/api/noah/revenue/receipts', {
+      method: 'POST', body: raw, headers: { 'content-type': 'application/json', 'avocado-provider-signature': signature },
+    }));
+    assert.equal(response.status, expectedStatus, await response.text());
+    await page.tick(15000);
+    return privateReceipt();
+  }
+  const stages = r => [r.approvedYen, r.paidYen, r.costYen, r.authorShareStatus, r.authorShareYen];
+  assert.deepEqual(stages(await privateReceipt()), [null, null, null, 'pending-payment', null]);
+  assert.deepEqual(stages(await submit('approved', 'asp-approval', 8000, 'verified-operator-b', 404)),
+    [null, null, null, 'pending-payment', null]);
+  assert.match(page.text(), /成果承認額承認記録なし入金額入金記録なし/);
+  assert.deepEqual(stages(await submit('approved', 'asp-approval', 8000)), [8000, null, null, 'pending-payment', null]);
+  assert.match(page.text(), /成果承認額[￥¥]8,000入金額入金記録なし/);
+  assert.deepEqual(stages(await submit('paid', 'bank-deposit', 8000)), [8000, 8000, null, 'pending-cost', null]);
+  assert.match(page.text(), /入金額[￥¥]8,000この仕事の費用未確定作者の取り分（20%）未確定/);
+  assert.deepEqual(stages(await submit('cost', 'final-work-cost', 1000)), [8000, 8000, 1000, 'confirmed', 1400]);
+
+  assert.match(page.text(), /この仕事の費用[￥¥]1,000作者の取り分（20%）確定（[￥¥]1,400）/);
+  const other = createNoahAskApi({ ...w.deps, authenticate: async () => 'another-owner' });
+  const denied = await other.item(new Request(path), input.id);
+  assert.equal(denied.status, 404);
+  assert.equal((await denied.json()).revenueReceipt, undefined);
+  assert.equal((await w.runtime.accept('owner-a', false, input)).replay, true);
+  assert.equal(w.state.calls.length, 1);
 });
 void test('changed tool descriptions and stop during the last handshake prevent dispatch', async t => {
   for (const mode of ['changed', 'stopped']) {

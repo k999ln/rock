@@ -60,7 +60,10 @@ export async function GET(request: Request) {
     const id = new URL(request.url).searchParams.get('id');
     const store = workStore(database());
     const exact = id === null ? null : await store.get(user, workId(id));
-    return json({ jobs: id === null ? await store.list(user, true) : exact ? [exact] : [], ownerScope: await ownerScopeFor(user) });
+    const jobs = id === null ? await store.list(user, true) : exact ? [exact] : [];
+    // Work-level evidence references are internal to the signed receipt receiver.
+    const summaries = jobs.map(({ noahRevenue: _privateEvidence, ...job }) => job);
+    return json({ jobs: summaries, ownerScope: await ownerScopeFor(user) });
   } catch (error) {
     return rejected(request, error);
   }

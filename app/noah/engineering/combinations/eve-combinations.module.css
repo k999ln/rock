@@ -99,3 +99,9 @@
   .stats > div { border-right: 0; border-bottom: 1px solid var(--os-line); }
   .stats > div:last-child { border-bottom: 0; }
 }
+
+.track { margin: 1rem 0; }
+.track p { margin: .45rem 0; color: var(--os-muted); }
+.track button { min-height: 44px; padding: .55rem 1rem; border: 1px solid #a84408; border-radius: .7rem; background: #a84408; color: white; font: inherit; font-weight: 650; cursor: pointer; }
+.track button:focus-visible { outline: 2px solid var(--os-focus); outline-offset: 3px; }
+.track button:disabled { opacity: .7; cursor: progress; }

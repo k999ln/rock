@@ -254,7 +254,7 @@ export function eveSaleRecordsFromScores(scores: readonly EveScorecard[]): Recor
 }
 
 /** 作者の割合（万分率）。2026-11-24 13:54 の本人回答で 20%（設計書 13 章 I2。Noah の Agent の作者と同じ割合）。元は「入金 − 費用」（I8）。 */
-export const EVE_AUTHOR_SHARE_BPS: number | null = 2_000;
+export const EVE_AUTHOR_SHARE_BPS = 2_000;
 
 export type EveAuthorShare = {
   combinationId: string;
@@ -275,11 +275,16 @@ export type EveAuthorShare = {
  * 同じ利用者・案件の費用と入金を含む累積記録で計算する。期間の表示を足し合わせて支払額にしない。
  * 自分の組み合わせを自分で使った分は計算しない。割合に null を渡した時は額を出さない。eve.si は送金しない（払うのは Wallet）。
  */
-export function eveAuthorShare(score: EveScorecard, userId: string, shareBps: number | null = EVE_AUTHOR_SHARE_BPS): EveAuthorShare {
+export function eveAuthorShare(
+  score: Pick<EveScorecard, 'combinationId' | 'version' | 'author' | 'costComplete' | 'paidYen' | 'costYen'> & { funnel: Pick<EveFunnel, 'paid'> },
+  userId: string,
+  shareBps: number | null = EVE_AUTHOR_SHARE_BPS,
+  authorIsUser = score.author.kind === 'person' && score.author.id === userId,
+): EveAuthorShare {
   const payee: EveAuthorShare['payee'] = score.author.kind === 'eve' ? { kind: 'operator' } : { kind: 'person', id: score.author.id };
   const base = { combinationId: score.combinationId, version: score.version, userId, payee };
   if (shareBps !== null && !(Number.isSafeInteger(shareBps) && shareBps >= 0 && shareBps <= 10_000)) throw new Error('share_bps_invalid');
-  if (score.author.kind === 'person' && score.author.id === userId)
+  if (authorIsUser)
     return { ...base, baseYen: 0, shareBps, shareYen: null, status: 'none', reason: '自分の組み合わせを自分で使った分は、作者の分を計算しません。' };
   if (!score.funnel.paid || score.paidYen <= 0)
     return { ...base, baseYen: 0, shareBps, shareYen: null, status: 'none', reason: '外部の記録で確定した入金が、まだありません。' };
