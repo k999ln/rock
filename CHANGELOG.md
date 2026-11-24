@@ -1,4 +1,6 @@
 ## 2026-11-24
+
+- Eveの相談で、Hermesが組み合わせ案をその仕事のメモに保存できるよう、道具を呼ばずに答えた場合の再試行を修正した（task 130、[PR #57](https://github.com/iceiceice999/rock/pull/57)）。
 - ストアのAgentエンジニアリングでEveに直接相談し、複数Agentの役割と受け渡しを確認できるようにした。組み合わせの日本語の素材照合と予算の判定も修正した（task 130、[PR #49](https://github.com/iceiceice999/rock/pull/49)）。
 - Eve（eve.si）のエージェントエンジニアリングを実装した（Opus / Noelle。本人「最後までやって」。task 130）: 組み合わせファイル `eve-combination/1` と検査の規則 1〜9、宣言型のつなぎ目、試運転（外へ出す工程は動かさない）、出典付きの需要の台帳、型への当てはめと型に無い組み合わせの発見、Jev の成績表（外部の記録だけ）、作り直しの提案（2 割以上良い時だけ。採用は本人）、作者の受け取りの計算（入金の記録だけ。割合は未決）。画面 `/os/eve/combinations` と API `/api/eve/combinations`。最初の 1 本は「AI の道具の紹介 × 自分のブログ（金融以外）」。試験 43 件。 [PR #49](https://github.com/iceiceice999/rock/pull/49)
 - AgentエンジニアリングのEveに相談すると、Noahの無料クラウドが返した設計案を相談文と一緒に読めるようにした（task 129、[PR #56](https://github.com/iceiceice999/rock/pull/56)）。

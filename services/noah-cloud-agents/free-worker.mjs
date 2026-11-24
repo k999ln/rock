@@ -6,6 +6,25 @@ export { NoahCloudConnection, NoahCloudBudget };
 export default worker;
 const terminal = job => !job || ['returned', 'failed', 'cancelled', 'unknown'].includes(job.state);
 
+// The Python Hermes adapter accepts only successful, correlated todo/memory results.
+// The model can finish in prose after that point, including on a later model turn.
+function hasSuccessfulHermesTool(messages) {
+  const pending = new Set();
+  for (const message of messages) {
+    if (message.role === 'assistant') {
+      for (const call of message.tool_calls ?? []) {
+        if (typeof call?.id === 'string' && call.id && ['todo', 'memory'].includes(call.function?.name)) pending.add(call.id);
+      }
+    }
+    if (message.role !== 'tool' || !pending.delete(message.tool_call_id)) continue;
+    let result;
+    try { result = JSON.parse(message.content); }
+    catch { continue; }
+    if (result && typeof result === 'object' && !Array.isArray(result) && !result.error && result.success !== false) return true;
+  }
+  return false;
+}
+
 /** The alarm owns execution, independently of the request/browser that admitted it. */
 export class NoahFreeCloudJob extends NoahCloudJob {
   session;
@@ -55,7 +74,7 @@ export class NoahFreeCloudJob extends NoahCloudJob {
       const latest = await this.live();
       // 断る理由は、この区間の外で投げる（区間の中で投げると、Durable Object が作り直され、失敗の結果を返せない）。
       if (latest.calls >= limits.modelCalls) { refusal = '無料枠のモデル呼出上限に達しました。'; return; }
-      if (latest.profile === 'hermes' && latest.calls === 0 && input.tools?.length) input.tool_choice = 'required';
+      if (latest.profile === 'hermes' && input.tools?.length && !hasSuccessfulHermesTool(input.messages)) input.tool_choice = 'required';
       inputBytes = new TextEncoder().encode(JSON.stringify(input)).length;
       if (inputBytes > limits.modelInputBytes) { refusal = '無料枠のモデル入力上限に達しました。依頼を短くしてください。'; return; }
       // 1 件の上限（取り置いた分）を超えるかを、呼ぶ前に確かめる（トークンは 1 バイト以上なので、入力のバイト数を上限にする）。
