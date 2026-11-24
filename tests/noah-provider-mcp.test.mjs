@@ -98,13 +98,13 @@ void test('only the registered revenue tool gets its dispatch proof and signed r
     assert.ok(!JSON.stringify(detail).includes(meta.dispatchProof));
     return detail.revenueReceipt;
   }
-  async function submit(stage, source, amountYen, operatorRef = operator, expectedStatus = 201) {
+  async function submit(stage, source, amountYen, { operatorRef = operator, dispatchProof = meta.dispatchProof, signingKey = w.deps.revenueConfig.secret, expectedStatus = 201 } = {}) {
     w.f.advance(1000);
     const raw = JSON.stringify({
-      schema: 'noah-revenue-receipt/1', ...meta, providerId: 'reviewed-provider', operatorRef, stage, source,
+      schema: 'noah-revenue-receipt/1', ...meta, dispatchProof, providerId: 'reviewed-provider', operatorRef, stage, source,
       amountYen, currency: 'JPY', reference: 'fixture/' + stage, observedAt: w.f.time(), evidenceSha256: 'b'.repeat(64),
     });
-    const signature = await createReceiptSignature(raw, w.deps.revenueConfig.secret, Math.floor(w.f.time() / 1000));
+    const signature = await createReceiptSignature(raw, signingKey, Math.floor(w.f.time() / 1000));
     const response = await receipts.receipt(new Request('https://noah.test/api/noah/revenue/receipts', {
       method: 'POST', body: raw, headers: { 'content-type': 'application/json', 'avocado-provider-signature': signature },
     }));
@@ -114,10 +114,20 @@ void test('only the registered revenue tool gets its dispatch proof and signed r
   }
   const stages = r => [r.approvedYen, r.paidYen, r.costYen, r.authorShareStatus, r.authorShareYen];
   assert.deepEqual(stages(await privateReceipt()), [null, null, null, 'pending-payment', null]);
-  assert.deepEqual(stages(await submit('approved', 'asp-approval', 8000, 'verified-operator-b', 404)),
+  assert.deepEqual(stages(await submit('approved', 'asp-approval', 8000, { operatorRef: 'verified-operator-b', expectedStatus: 404 })),
     [null, null, null, 'pending-payment', null]);
   assert.match(page.text(), /成果承認額承認記録なし入金額入金記録なし/);
   assert.deepEqual(stages(await submit('approved', 'asp-approval', 8000)), [8000, null, null, 'pending-payment', null]);
+  assert.match(page.text(), /成果承認額[￥¥]8,000入金額入金記録なし/);
+  // Settlement arrives after the same issuer has changed signing keys and moved its MCP endpoint.
+  const oldKey = w.deps.revenueConfig.secret;
+  w.deps.revenueConfig.secret = 'new-test-signing-key-'.repeat(3);
+  w.deps.revenueConfig.target = { ...w.deps.revenueConfig.target, endpoint: 'https://moved.example.com/mcp' };
+  const beforePayment = [8000, null, null, 'pending-payment', null];
+  assert.deepEqual(stages(await submit('paid', 'bank-deposit', 8000, { signingKey: oldKey, expectedStatus: 401 })), beforePayment);
+  const differentProof = '0'.repeat(64);
+  assert.notEqual(differentProof, meta.dispatchProof);
+  assert.deepEqual(stages(await submit('paid', 'bank-deposit', 8000, { dispatchProof: differentProof, expectedStatus: 404 })), beforePayment);
   assert.match(page.text(), /成果承認額[￥¥]8,000入金額入金記録なし/);
   assert.deepEqual(stages(await submit('paid', 'bank-deposit', 8000)), [8000, 8000, null, 'pending-cost', null]);
   assert.match(page.text(), /入金額[￥¥]8,000この仕事の費用未確定作者の取り分（20%）未確定/);
