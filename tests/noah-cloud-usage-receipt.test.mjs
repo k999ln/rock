@@ -1,6 +1,6 @@
 import assert from 'node:assert/strict';
 import test from 'node:test';
-import { NOAH_CLOUD_PROFILES, noahCloudDigest } from '../lib/noah-cloud-contract.ts';
+import { NOAH_CLOUD_MODEL, NOAH_CLOUD_PROFILES, noahCloudDigest } from '../lib/noah-cloud-contract.ts';
 import { noahManagedWorkDetail } from '../lib/noah-managed-work.ts';
 
 const op = { name: 'read_graph', ok: true, inputSha256: '1'.repeat(64), resultSha256: '2'.repeat(64) };
@@ -49,4 +49,31 @@ void test('owner-account turns do not become measured model calls', async () => 
   assert.equal(noahLocalUsageReceipt(execution).metrics.modelCalls, null);
   assert.equal(noahLocalUsageReceipt(execution).metrics.providerTurns, 1);
   assert.equal(noahLocalUsageReceipt({ ...execution, calls: 9 }).metrics.providerTurns, null);
+});
+
+void test('only received Eve designs establish zero tools and model use in the common result receipt', async () => {
+  const work = await workWithManifest('hermes');
+  const remote = work.noahRemote;
+  remote.cloud = { ...remote.cloud, runtimePurpose: 'eve-combination-advice', runtimeModel: NOAH_CLOUD_MODEL,
+    reportedModelCalls: 1, files: [], proposal: { steps: [{role:'Read'}, {role:'Write'}], deliverable:'Report' } };
+  remote.modelCalls = 1;
+  remote.toolCalls = 0;
+  const { usageReceipt, tool } = await noahManagedWorkDetail(work);
+  assert.equal(tool, 'Eve');
+  assert.equal(usageReceipt.model, NOAH_CLOUD_MODEL);
+  assert.equal(usageReceipt.agentVersion, null);
+  assert.equal(usageReceipt.metrics.toolCalls, 0);
+  remote.state = 'failed';
+  delete remote.cloud.proposal;
+  const failed = await noahManagedWorkDetail(work);
+  assert.equal(failed.usageReceipt.model, NOAH_CLOUD_MODEL);
+  assert.equal(failed.usageReceipt.metrics.toolCalls, null);
+  remote.cloud.reportedModelCalls = 0;
+  assert.equal((await noahManagedWorkDetail(work)).usageReceipt.model, undefined);
+  delete remote.cloud.runtimePurpose;
+  delete remote.cloud.runtimeModel;
+  const earlier = await noahManagedWorkDetail(work);
+  assert.equal(earlier.tool, NOAH_CLOUD_PROFILES.hermes.name);
+  assert.equal(earlier.usageReceipt.agentVersion, NOAH_CLOUD_PROFILES.hermes.version);
+  assert.equal(earlier.usageReceipt.model, undefined);
 });

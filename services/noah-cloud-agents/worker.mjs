@@ -1,5 +1,5 @@
 import { DurableObject } from 'cloudflare:workers';
-import { NOAH_CLOUD_PROFILES as profiles, NOAH_CLOUD_LIMITS as limits, NOAH_FREE_CLOUD_LIMITS, NOAH_CLOUD_RESET_TEXT, noahCloudDailyNeurons, noahCloudSupported, NOAH_CLOUD_MODEL, noahCloudId, noahCloudDigest, noahCloudModelInput, noahCloudResult } from '../../lib/noah-cloud-contract.ts';
+import { NOAH_CLOUD_PROFILES as profiles, NOAH_CLOUD_LIMITS as limits, NOAH_EVE_HERMES_PROJECT, NOAH_EVE_ADVICE_PURPOSE, NOAH_FREE_CLOUD_LIMITS, NOAH_CLOUD_RESET_TEXT, noahCloudDailyNeurons, noahCloudSupported, NOAH_CLOUD_MODEL, noahCloudId, noahCloudDigest, noahCloudModelInput, noahCloudResult } from '../../lib/noah-cloud-contract.ts';
 
 const json = (body, status = 200) => Response.json(body, { status, headers: { 'Cache-Control': 'private, no-store', 'X-Content-Type-Options': 'nosniff' } });
 const terminal = state => ['returned', 'failed', 'cancelled', 'unknown'].includes(state);
@@ -23,6 +23,7 @@ export default {
     try {
       const body = await read(request);
       if (!body || !/^[a-f0-9]{64}$/.test(body.owner) || !/^project-[a-f0-9]{64}$/.test(body.project) || !Object.hasOwn(profiles, body.profile) || !['status', 'connect', 'disconnect', 'start', 'job', 'stop'].includes(body.action)) return json({ error: 'invalid_request' }, 400);
+      if (body.purpose !== undefined && (body.action !== 'start' || body.purpose !== NOAH_EVE_ADVICE_PURPOSE || env.NOAH_CLOUD_MODE !== 'free' || body.profile !== 'hermes' || body.project !== NOAH_EVE_HERMES_PROJECT || (body.mode !== undefined && body.mode !== 'run'))) return json({ error: 'invalid_purpose' }, 400);
       if (!noahCloudSupported(env.NOAH_CLOUD_MODE).includes(body.profile)) return json({ error: 'このAgentは無料クラウドの対応準備中です。' }, 403);
       if (['connect', 'start'].includes(body.action) && body.distribution !== profiles[body.profile].sha256) return json({ error: 'Agentの配布版が更新されました。画面を読み直してください。' }, 409);
       return await rpc(env.CONNECTIONS.getByName(`${body.owner}:${body.project}:${body.profile}`), body);
@@ -114,10 +115,11 @@ export class NoahCloudConnection extends DurableObject {
       }
       if (input.action === 'start') {
         if (!noahCloudId(input.jobId) || typeof input.prompt !== 'string' || !input.prompt.trim() || new TextEncoder().encode(input.prompt).length > limits.promptBytes) return json({ error: '依頼は12,000バイト以内で入力してください。' }, 400);
+        const start = { action: 'start', owner: input.owner, id: input.jobId, mode: 'run', profile: input.profile, prompt: input.prompt, receipt: input.receipt, purpose: input.purpose };
         if (state?.jobs.includes(input.jobId)) {
           // A remembered ID must never recreate an expired or never-admitted job.
           if (!await fetchJob(input.jobId)) return json({ error: 'この依頼IDでは実行を再開できません。新しい依頼として送信してください。' }, 409);
-          return rpc(jobStub(this.env, input.owner, input.jobId), { action: 'start', owner: input.owner, id: input.jobId, mode: 'run', profile: input.profile, prompt: input.prompt, receipt: input.receipt });
+          return rpc(jobStub(this.env, input.owner, input.jobId), start);
         }
         if (state?.state !== 'connected' || input.connectionId !== state.id) return json({ error: 'もう一度接続してください。' }, 409);
         if (state.activeJob) {
@@ -127,7 +129,7 @@ export class NoahCloudConnection extends DurableObject {
         // Persist ownership before dispatch so a lost response can still be polled/stopped.
         state = { ...state, activeJob: input.jobId, jobs: [input.jobId, ...state.jobs].slice(0, 20), revision: state.revision + 1 };
         await this.ctx.storage.put('connection', state);
-        return rpc(jobStub(this.env, input.owner, input.jobId), { action: 'start', owner: input.owner, id: input.jobId, mode: 'run', profile: input.profile, prompt: input.prompt, receipt: input.receipt });
+        return rpc(jobStub(this.env, input.owner, input.jobId), start);
       }
       return json({ error: 'invalid_action' }, 400);
     });
@@ -140,14 +142,19 @@ export class NoahCloudJob extends DurableObject {
     const input = await request.json();
     if (input.action === 'start') {
       const response = await this.ctx.blockConcurrencyWhile(async () => {
-        const fingerprint = await noahCloudDigest(JSON.stringify([input.owner, input.id, input.profile, profiles[input.profile].sha256, input.mode, input.prompt]));
+        const identity = [input.owner, input.id, input.profile, profiles[input.profile].sha256, input.mode, input.prompt];
+        if (input.purpose !== undefined) {
+          if (input.purpose !== NOAH_EVE_ADVICE_PURPOSE || this.env.NOAH_CLOUD_MODE !== 'free' || input.profile !== 'hermes' || input.mode !== 'run') return json({ error: 'invalid_purpose' }, 400);
+          identity.push(input.purpose);
+        }
+        const fingerprint = await noahCloudDigest(JSON.stringify(identity));
         const previous = await this.ctx.storage.get('job');
         if (previous) return previous.fingerprint === fingerprint ? json(this.view(previous)) : json({ error: '同じ依頼IDの内容は変更できません。' }, 409);
         if (input.receipt !== undefined && (typeof input.receipt !== 'string' || !/^[\w-]{40,2048}$/.test(input.receipt))) return json({ error: 'invalid_receipt' }, 400);
         const budget = await rpc(this.env.BUDGET.getByName('global'), { action: 'admit', id: `${input.owner}:${input.id}`, owner: input.owner, mode: input.mode });
         if (!budget.ok) return budget;
         const at = Date.now();
-        const job = { id: input.id, owner: input.owner, profile: input.profile, version: profiles[input.profile].version, distribution: profiles[input.profile].sha256, mode: input.mode, fingerprint, prompt: input.prompt, receipt: input.receipt, state: 'queued', createdAt: at, deadlineAt: at + limits.seconds * 1000, calls: 0 };
+        const job = { id: input.id, owner: input.owner, profile: input.profile, version: profiles[input.profile].version, distribution: profiles[input.profile].sha256, mode: input.mode, ...(input.purpose ? { purpose: input.purpose } : {}), fingerprint, prompt: input.prompt, receipt: input.receipt, state: 'queued', createdAt: at, deadlineAt: at + limits.seconds * 1000, calls: 0 };
         await this.ctx.storage.put('job', job); await this.ctx.storage.setAlarm(job.deadlineAt);
         await this.schedule(job);
         return json(this.view(job), 202);

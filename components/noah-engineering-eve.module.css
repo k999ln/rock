@@ -21,3 +21,8 @@
 .consultation [data-eve-proposal] dl { display: grid; grid-template-columns: max-content minmax(0, 1fr); gap: .3rem .7rem; margin: .5rem 0 0; }
 .consultation [data-eve-proposal] dt { font-weight: 650; color: #5e534a; }
 .consultation [data-eve-proposal] dd { margin: 0; }
+
+.consultation [data-eve-scheme] { margin-block: 1rem; padding: 1rem; border: 1px solid #e1d8ce; border-radius: 12px; }
+.consultation [data-eve-scheme] h5 { margin: 0; font-size: 1rem; }
+.consultation [data-eve-scheme] dl { display: grid; grid-template-columns: minmax(0, 1fr); gap: .65rem; }
+.consultation [data-eve-scheme] dt { font-size: .9rem; }

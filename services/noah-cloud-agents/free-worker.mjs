@@ -1,10 +1,20 @@
 import worker, { NoahCloudJob, NoahCloudConnection, NoahCloudBudget } from './worker.mjs';
+import { parseEveAdvice } from '../../lib/noah-eve-advice.ts';
 import { officialSession, executionFile } from './free-official.mjs';
 import { pythonProfiles, pythonJob, timeSession, PythonModelBridge, validatePythonResult } from './free-python.mjs';
-import { NOAH_FREE_CLOUD_LIMITS as limits, NOAH_CLOUD_MODEL, noahCloudModelInput, noahCloudDigest, noahCloudResult, noahCloudCallNeuronsCap, noahCloudReplyUsage } from '../../lib/noah-cloud-contract.ts';
+import { NOAH_FREE_CLOUD_LIMITS as limits, NOAH_CLOUD_MODEL, NOAH_EVE_ADVICE_PURPOSE, noahCloudModelInput, noahCloudDigest, noahCloudResult, noahCloudCallNeuronsCap, noahCloudReplyUsage } from '../../lib/noah-cloud-contract.ts';
 export { NoahCloudConnection, NoahCloudBudget };
 export default worker;
 const terminal = job => !job || ['returned', 'failed', 'cancelled', 'unknown'].includes(job.state);
+
+const eveAdviceInstructions = [
+  'You are Eve. Design an untested agent workflow; no tools or agents have run. Return one JSON object in the requested language.',
+  '{"input":"starting material","steps":[{"agent":null,"role":"specific job","output":"artifact"}],"scheme":{"kind":"user_goal","recipient":"who receives it","outcome":"value delivered","acceptance":"observable success condition","evidence":"specific record to check"}}',
+  'Use two distinct steps unless three or four are necessary. Each takes the preceding output. Choose a fitting listed agent key once or JSON null for a custom role.',
+  'Use kind user_goal for a personal outcome such as a health goal. Follow the user’s own goal; never assume a medical outcome.',
+  'Use kind conversion for revenue. Check the offer’s qualifying milestone (e.g. approval), with payment only if specified. Mark unspecified conditions as proposed. Name evidence to collect.',
+  'Keep each value to one short phrase. Never report an unobserved result.',
+].join('\n');
 
 // The Python Hermes adapter accepts only successful, correlated todo/memory results.
 // The model can finish in prose after that point, including on a later model turn.
@@ -61,6 +71,7 @@ export class NoahFreeCloudJob extends NoahCloudJob {
     const owner = await this.live();
     const input = { ...noahCloudModelInput(value), max_tokens: limits.outputTokens };
     if (['boss', 'hermes'].includes(owner.profile)) input.reasoning_effort = 'low';
+    if (owner.purpose === NOAH_EVE_ADVICE_PURPOSE) input.response_format = { type: 'json_object' };
     if (owner.profile === 'boss') {
       // The official command requests five JSON questions. Reserve the fixed
       // output budget for that result rather than a long reasoning preamble.
@@ -119,6 +130,21 @@ export class NoahFreeCloudJob extends NoahCloudJob {
       });
       if (!job) return;
       this.abort = new AbortController();
+      if (job.purpose === NOAH_EVE_ADVICE_PURPOSE) {
+        const reply = await this.runModel({ messages: [
+          { role: 'system', content: eveAdviceInstructions },
+          { role: 'user', content: job.prompt },
+        ] });
+        const choice = reply?.choices?.[0], message = choice?.message;
+        const noTool = message?.tool_calls == null || (Array.isArray(message.tool_calls) && message.tool_calls.length === 0);
+        if (choice?.finish_reason !== 'stop' || !noTool || (message?.role != null && message.role !== 'assistant') || typeof message?.content !== 'string' || !parseEveAdvice(message.content)) {
+          throw Error('Eveの相談に対する有効な組み合わせ案を受け取れませんでした。');
+        }
+        const latest = await this.live();
+        const result = await noahCloudResult({ type: 'result', exitCode: 0, text: message.content, files: [], operationCount: 0 }, latest.calls);
+        await this.end('returned', null, result);
+        return;
+      }
       if (pythonProfiles.has(job.profile)) {
         const stub = pythonJob(this.env, job);
         if (job.mode === 'probe') {

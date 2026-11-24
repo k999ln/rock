@@ -81,6 +81,7 @@ export default function NoahWorkUsageReceiptPanel({
           {receipt?.source === 'managed-cloud' && receipt.metrics.neurons != null && (
             <Row label={t('計測方法')}>{t('モデルの報告値。使用量の報告がない呼び出しは上限値で記録します。')}</Row>
           )}
+          {receipt?.model && <Row label={t('使用モデル')}><bdi>{receipt.model}</bdi></Row>}
           {receipt?.agentVersion && (
             <Row label={t(/^[a-f0-9]{64}$/i.test(receipt.agentVersion) ? '実行定義（SHA-256）' : 'Agentの版')}>
               <bdi>{receipt.agentVersion}</bdi>
