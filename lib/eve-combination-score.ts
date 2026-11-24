@@ -173,7 +173,7 @@ export function eveScore(
     if (r.combinationId !== c.id || r.version !== c.version) continue;
     const at = Date.parse(r.at);
     if (Number.isFinite(at) && (at < from || at > to)) {
-      if (at < from && r.stage === 'made' && r.source === 'work') costComplete = false;
+      if (r.stage === 'made' && r.source === 'work') costComplete = false;
       continue;
     }
     const problem = eveOutcomeRecordProblem(r, c);

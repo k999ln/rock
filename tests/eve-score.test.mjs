@@ -124,6 +124,13 @@ void test('成果承認から後日の入金までを同じ案件の累積で比
   const slice = eveScore(C, [...history, { ...cost, reference: 'work:later', at: AT(21), costYen: 50 }], { from: AT(20), to: AT(22) });
   assert.equal(slice.costYen, 50);
   assert.equal(eveAuthorShare(slice, 'reader').status, 'pending-cost');
+  const lateCost = { ...cost, reference: 'work:after-payment', costYen: 500, at: AT(23) };
+  const completeHistory = [...history, lateCost];
+  const atPayment = eveScore(C, completeHistory, { from: AT(10), to: AT(21) });
+  const pending = eveAuthorShare(atPayment, 'reader');
+  assert.deepEqual([atPayment.costYen, pending.status, pending.shareYen], [1_000, 'pending-cost', null]);
+  const final = eveAuthorShare(eveScore(C, completeHistory, WINDOW), 'reader');
+  assert.deepEqual([final.status, final.baseYen, final.shareYen], ['due', 6_500, 1_300]);
   for (const fees of [[], [{ ...cost, costYen: undefined }], [cost, { ...cost, reference: 'work:other', costYen: undefined }],
     [cost, { ...cost, costYen: 900 }], [cost, { ...cost, reference: 'work:invalid', costYen: -1 }]]) {
     const share = eveAuthorShare(eveScore(C, [payment, ...fees], WINDOW), 'reader');
