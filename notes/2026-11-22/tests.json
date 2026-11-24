@@ -255,6 +255,11 @@
    "branch": "claude/ice2/noah-earning-average 4b928374 (docs only, on main d5e925f4)",
    "command": "scratchpad/profit/earn.py vs sheet 稼ぐ設計図 (revision 16); release/project/repository/design/version checks; node --test 13 files reading CHANGELOG/spec-110/spec-122/07/README/business",
    "result": "sheet summary cells equal Python (477/857/-380/259; 224,155/402,960/102,360; 260/398; 147,547/201,747; 142,137/165,337; 319/377; 466/613); checks 0; 102/102 pass."
+  },
+  {
+   "branch": "main e32c86c4 (PR #60 merged)",
+   "command": "git show ice/main: docs/noah/business-blueprints-average.md, docs/noah-oss-agents-20261124.md (Open Interpreter fix present), CHANGELOG pull/60, 07 top lines, spec-110 goal-type line; Markdown table cell counts; relative links",
+   "result": "all present; tables 0 bad rows; all relative links resolve."
   }
  ]
 }
