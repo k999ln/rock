@@ -6,6 +6,8 @@
 
 ## 2026-11-25
 
+- SPIDER の手入れ: `sites/avocado-mini` の開発用 vite（astro 経由）を 8.3.1 から 8.3.8 に上げ、high の穴（server.fs の外のファイルが読める等）を消した。lockfile が穴のある版へ戻らない事の試験（`tests/dependency-floor.test.mjs`）を足した。avocado-mini の high は 1 → 0（Opus / Noelle）。（旧リポジトリ k999ln/rock の枝 `claude/spider-daily-20261122` から正本へ移した） [PR #72](https://github.com/iceiceice999/rock/pull/72)
+
 - Eve を、組み合わせを本物の部品で回せる所まで作った（Opus / Noelle。本人「eveも完成品作って」。task 130）。残りの部品 6 つ（案件を比べる・記事・見出し画像・LP・置き場・ブログに出す）を Eve が作り、手元の Qwen と Jev の判定で確かめた（すべて通過）。公開の公式の頁だけから需要の台帳に 2 件を入れ、A8.net × 登録済みのブログ × ロリポップ！AIエージェントクラウドの組み合わせを「本番に出せる」にした。本番の実行役（`scripts/eve-run.mjs`）で 1 回回し、記事・画像・LP を作って、本人の番（A8.net の登録）で止まっている。公開・登録・申請・送金はしていない（[PR #78](https://github.com/iceiceice999/rock/pull/78)）。
 
 - 2026-11-25 のノエルとかいやの会話（本人が貼った書き起こし 2 本）を設計書に取り込んだ（Opus / Noelle。本人「これ取り入れて全部しっかりちゃんと」）: 07 に会話の 6 行と未決 5 行（定期便の形・利用者のお金・会員登録・配る率と売値・データ）。05 に収益の候補「安全の早期発見」と、出口・組織・時間（6 章）、先の事業の構想（7 章）。spec-124 と 04 の配給に「1円も取らない」「一人当たりの予算の中で買い物」「食材・生活必需品・伝統工芸品」。trial-300 に招待と登録の見せ方。登録Agent に iPhone の連絡先からの自動入力。spec-115 につないだアカウントからの推薦の候補。01 に没入の映像の構想（8 章）。03 に通信の秘密。新しい下書き [services/noah-safety-early-warning.md](docs/services/noah-safety-early-warning.md)。会話は決定と意向を分けて書き、前の決め事と合わない所は本人の回答待ちにした。コードの変更はなし。 [PR #77](https://github.com/iceiceice999/rock/pull/77)
