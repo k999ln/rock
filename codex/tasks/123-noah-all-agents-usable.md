@@ -68,3 +68,9 @@
 - 2.1 から順に、1 つずつ PR にする。各 PR の本文に、合格条件と実際に確かめた結果（本番の数・画面）を書く。
 - 本番 D1 の migration が要る時は、本人の許可を取ってから（AGENTS.md §6）。
 - 進み具合は CHANGELOG と、この task の各節の末尾に追記する。
+
+## 2026年11月25日の掲載Agent再調査
+
+[設計書の判定表と担当別内訳](../../docs/services/noah-cloud-agents.md#掲載agentの実行判定)に、公開ストアから固定した2,428件の結果を反映した。作業用台帳は `outputs/noah-agent-tests/ledger.csv` と `ledger.json`。保存済みの掲載IDに不足条件・試験入力・実行経路・出力・証拠を追記した。全3,110行の元の値と、対象外682件を照合済み。
+
+作業用台帳に付属する `preparation-review/completion.json` に経路別件数、`validation.json` に照合結果、`result-manifest.json` にファイルのSHA-256がある。11月25日版の全件JSON台帳のSHA-256は `a4970646473798c9417b381da53bcfec7f4daff1039926641c02888a94b81e58`。次の本番試験では、本人用に保存済みの登録版を照合して、元の掲載IDにWorkの結果を追記する。
