@@ -6,6 +6,8 @@
 
 ## 2026-11-25
 
+- ルートに Claude Code 用の `CLAUDE.md` を追加（Opus / Noelle。本人指示「これ全部とりこんで」）。「Fable 5.2必須プロンプト100選」を作業規則に整理し、冒頭で `AGENTS.md` を読み込み、食い違ったら `AGENTS.md` を優先と明記。このリポジトリでは `progress.txt`・`tests.json`・`init.sh` を作らず、記録は PR 本文と CHANGELOG に残す形に合わせた。コードの変更はなし。（旧リポジトリ k999ln/rock の PR #408 から移した。本人「この3日間の成果ぜんぶgitにあげて」） [PR #71](https://github.com/iceiceice999/rock/pull/71)
+
 - SPIDER の手入れ: `sites/avocado-mini` の開発用 vite（astro 経由）を 8.3.1 から 8.3.8 に上げ、high の穴（server.fs の外のファイルが読める等）を消した。lockfile が穴のある版へ戻らない事の試験（`tests/dependency-floor.test.mjs`）を足した。avocado-mini の high は 1 → 0（Opus / Noelle）。（旧リポジトリ k999ln/rock の枝 `claude/spider-daily-20261122` から正本へ移した） [PR #72](https://github.com/iceiceice999/rock/pull/72)
 
 - Eve を、組み合わせを本物の部品で回せる所まで作った（Opus / Noelle。本人「eveも完成品作って」。task 130）。残りの部品 6 つ（案件を比べる・記事・見出し画像・LP・置き場・ブログに出す）を Eve が作り、手元の Qwen と Jev の判定で確かめた（すべて通過）。公開の公式の頁だけから需要の台帳に 2 件を入れ、A8.net × 登録済みのブログ × ロリポップ！AIエージェントクラウドの組み合わせを「本番に出せる」にした。本番の実行役（`scripts/eve-run.mjs`）で 1 回回し、記事・画像・LP を作って、本人の番（A8.net の登録）で止まっている。公開・登録・申請・送金はしていない（[PR #78](https://github.com/iceiceice999/rock/pull/78)）。
