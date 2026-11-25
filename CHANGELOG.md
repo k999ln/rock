@@ -26,6 +26,7 @@
 - マイAgentのブラウザー保存先から、同じ本人の収益記録を作成・再表示できるようにした（[PR #68](https://github.com/iceiceice999/rock/pull/68)）。
 - マイAgentで収益系Agentの成果を開くと、同じ仕事の承認額・実入金・最終費用と作者20%の確定状況を確認できるようにした。証憑の連携前も表示する（[PR #67](https://github.com/iceiceice999/rock/pull/67)）。
 - Noah の道具カタログを掲載中の系列に合わせて再採取した。接続先の説明の冒頭と入力項目を同梱し、取得・照合の結果は [task 128](codex/tasks/128-noah-agent-explain.md#95-掲載系列の道具定義を再取得) に記録。 [PR #65](https://github.com/iceiceice999/rock/pull/65)
+- Noahの登録シートを、保存情報の再利用と不足項目だけの入力で元のAgentへ戻れる流れに変更。保存・送信先・料金条件を操作前に明示し、スマホ/PCと関連回帰を検証（task 131、[PR #63](https://github.com/iceiceice999/rock/pull/63)。未公開）。
 - 収益型の組み合わせ詳細で、申込承認と実入金後の作者分20%を計算例で確認できるようにした。費用を確認できない場合は作者分を未確定にする（[PR #61](https://github.com/iceiceice999/rock/pull/61)）。
 - つなぐ役を、本人の最初の決定どおり Noa から Eve にまとめた形へ戻した（Opus / Noelle。本人回答 13:54「前者で」）。同じ日に main で「内部ではNoaが接続を組み立てる」と書き換わっていた AGENTS.md・00・04・06・services/eve-si.md を戻し、07 に回答を 1 行足した。目的型・収益型の定義など、ほかの追記はそのまま。コード識別子と API は変えない。
 - 組み合わせの作者の分を「入金 − 費用」の 20% に決めた（Opus / Noelle。本人回答 13:54。`EVE_AUTHOR_SHARE_BPS` = 2,000。Noah の Agent の作者と同じ割合）。目的型・収益型の 2 つの型と、能力を確かめる見本の仕事の送信も、本人の回答として 07 と services/eve-si.md に記録した。

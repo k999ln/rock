@@ -8,7 +8,7 @@ import { ArrowRight, LockKeyhole } from 'lucide-react';
 import { useNoahProfile } from './use-noah-profile';
 import { PROFILE_CONSENT_VERSION, profileField } from '@/lib/noah-profile-contract';
 import { OWNER_SCOPE_HEADER } from '@/lib/owner-intent';
-import type { RegistrationProvider, RegistrationStatus } from '@/lib/noah-registration-contract';
+import type { RegistrationField, RegistrationProvider, RegistrationStatus } from '@/lib/noah-registration-contract';
 import styles from './noah-registration.module.css';
 const STORAGE = 'noah-registration-work-v1';
 type Pending = { id: string; key: string };
@@ -40,6 +40,9 @@ export default function NoahRegistration({ agentId,onReturn }: { agentId: string
   const cooldownNotice=retryAt?<p>{t('受付再開の目安: {time}',{time:new Date(retryAt).toLocaleString(locale)})}</p>:null;
   const reusable=provider?.fields.filter(f=>vault.profile?.reuseEnabled && f.profileField && f.type!=='password' && (f.profileField==='identityDocument'?vault.profile?.documents.length:profileField(f.profileField)&&vault.profile?.fields[f.profileField]) && !excluded.includes(f.key)).map(f=>f.key)??[];
   const missingRequired=provider?.fields.some(f=>f.required&&!reusable.includes(f.key)&&(!values[f.key]?.trim()||f.type==='file'))??true;
+  const newFields = provider?.fields.filter(f => !reusable.includes(f.key)) ?? [];
+  const saveable = newFields.filter(f => f.type !== 'password' && profileField(f.profileField));
+  const canSave = Boolean(vault.profile?.available && saveable.some(f => f.required || values[f.key]?.trim()));
   const usedDocument=documentId||vault.profile?.documents[0]?.id||'';
   const shownValue=(key:string)=>{const f=provider?.fields.find(f=>f.key===key);return reusable.includes(key)&&f?.profileField?(f.profileField==='identityDocument'?vault.profile?.documents.find(d=>d.id===usedDocument)?.name:profileField(f.profileField)?vault.profile?.fields[f.profileField]:'')??'':values[key]??'';};
   const previousOwner=useRef<string|null>(null);
@@ -68,7 +71,7 @@ export default function NoahRegistration({ agentId,onReturn }: { agentId: string
     let ticket = pending, dispatched = false;
     try {
       let profile=vault.profile;
-      if(start && saveNext && profile?.available && provider){
+      if(start && saveNext && canSave && profile?.available && provider && saveable.some(f => values[f.key]?.trim())){
         const fields={...profile.fields};
         for(const f of provider.fields)if(f.type!=='password' && profileField(f.profileField) && !reusable.includes(f.key) && values[f.key])fields[f.profileField]=values[f.key];
         const saved=await vault.save({action:'fields',fields,consentVersion:PROFILE_CONSENT_VERSION,reuse:true});if(!saved)throw Error('情報を保存できませんでした。内容を確認してください。');profile=saved;
@@ -135,33 +138,61 @@ export default function NoahRegistration({ agentId,onReturn }: { agentId: string
     active.current.generation++; setJob(null); setPending(null); setValues({});    setError('');
     try { sessionStorage.removeItem(STORAGE); } catch { /* Private mode. */ }
   }
+  function fieldInput(field: RegistrationField) {
+    return <div className={styles.fieldRow} key={field.key}><label>
+      <span>{t(field.label)}{field.required ? <span className={styles.required}>{t('必須')}</span> : null}</span>
+      {field.type === 'file' ? <Link href="/noah/profile">{t('書類を追加')} →</Link> : <input
+        type={field.type} name={field.key} required={field.required} maxLength={field.maxLength}
+        value={values[field.key] ?? ''} disabled={busy} autoCapitalize={field.type === 'email' ? 'none' : undefined}
+        autoComplete={field.type === 'password' ? 'new-password' : field.type === 'email' ? 'email' : field.profileField === 'phone' ? 'tel' : field.profileField === 'name' ? 'name' : 'off'}
+        onChange={e => setValues(v => ({ ...v, [field.key]: e.target.value }))} />}
+    </label></div>;
+  }
   return <main className={styles.page}>
-    <header><h1>{t(!provider?'登録状況を確認':provider.accountState==='ready'?'登録済み':provider?.accountState?'登録状況を確認':reusable.length===provider?.fields.length?'保存情報を使えます':'足りない情報だけ追加')}</h1></header>
+    <header>
+      <p className={styles.eyebrow}>{provider?.name ?? 'Noah'}</p>
+      <h1>{t(pending || provider?.accountState ? '利用の準備' : reusable.length && !newFields.some(f=>f.required) ? '入力は、もうできています。' : 'このAgentに、必要な分だけ。')}</h1>
+      {!pending && !provider?.accountState && <p>{t('保存した情報を使って、次のAgentもスムーズに。送る内容を確認したら、そのまま続けられます。')}</p>}
+    </header>
     {error && <p role="alert" className={styles.error}>{t(error)}</p>}
     {providers === null && !error && <NoahLoading label={t("登録先を確認しています…")} />}
     {providers === null && error && <button disabled={busy} onClick={() => setReload(n => n + 1)}>{t("再読み込み")}</button>}
     {provider?.accountState&&providers&&providers.length>1&&<label>{t('登録するサービス')}<select value={selected} disabled={busy} onChange={e=>{setSelected(e.target.value);setAgent(agentId||providers.find(p=>p.id===e.target.value)?.agentIds[0]||'');setValues({});}}>{providers.map(p=><option key={p.id} value={p.id}>{p.name}</option>)}</select></label>}
-    {provider?.accountState ? <section className={styles.panel}><h2>{provider.name}</h2><p>{t(provider.accountState==='ready'?'登録済みです。保存した接続で使えます。':provider.accountState==='pending'?'登録を確認中です。情報は再送しません。':provider.accountState==='cooldown'?'登録先の受付が混み合っています。':'登録状況を取得できません。再読み込みしてください。')}</p>{provider.accountState==='cooldown'&&cooldownNotice}{provider.accountState==='ready'?<Link href={`/noah/ready/agent?id=${encodeURIComponent(agent)}`} onClick={onReturn}>{t('Agentを使う')}<ArrowRight size={16}/></Link>:<button disabled={busy||cooling} onClick={()=>setReload(n=>n+1)}>{t('再読み込み')}</button>}{pending&&provider.accountState==='pending'&&<button disabled={busy} onClick={()=>{void run(false);}}>{t('登録の状況を確認')}</button>}</section> : pending ? <section className={styles.panel} aria-label={t("登録の進捗")}><h2>{job ? t(labels[job.state]) : t("登録の受付状況を確認してください")}</h2>
+    {provider?.accountState ? <section className={styles.panel}><h2>{provider.name}</h2><p>{t(provider.accountState==='ready'?'登録済みです。保存した接続で使えます。':provider.accountState==='pending'?'登録を確認中です。情報は再送しません。':provider.accountState==='cooldown'?'登録先の受付が混み合っています。':'登録状況を取得できません。再読み込みしてください。')}</p>{provider.accountState==='cooldown'&&cooldownNotice}{provider.accountState==='ready'?<Link className={styles.primary} href={`/noah/ready/agent?id=${encodeURIComponent(agent)}`} onClick={onReturn}>{t('Agentを使う')}<ArrowRight size={16}/></Link>:<button disabled={busy||cooling} onClick={()=>setReload(n=>n+1)}>{t('再読み込み')}</button>}{pending&&provider.accountState==='pending'&&<button disabled={busy} onClick={()=>{void run(false);}}>{t('登録の状況を確認')}</button>}</section> : pending ? <section className={styles.panel} aria-label={t("登録の進捗")} aria-live="polite"><h2>{job ? t(labels[job.state]) : t("登録の受付状況を確認してください")}</h2>
       {job && <><p>{t("登録先：")}{job.providerName}（{job.providerOrigin}）</p><p>{t("確認期限：")}{new Date(job.expiresAt).toLocaleString(locale)}</p></>}
       {job?.state === 'needs_user' && <><p>{t("本人による確認が必要です。")}</p>{job.verificationUrl && (job.verificationUrl.startsWith('/noah/')?<Link href={job.verificationUrl}>{t("確認を続ける")}<ArrowRight size={16}/></Link>:<a href={job.verificationUrl} target="_blank" rel="noreferrer">{t("登録先で確認する")}<ArrowRight size={16} /></a>)}</>}
-      {job?.state === 'completed' && <><p>{t("実際の利用可否は、元のAgentへの接続時に確認します。")}</p><Link href={job.returnTo} onClick={onReturn}>{t("Agentを使う")}<ArrowRight size={16} /></Link></>}
+      {job?.state === 'completed' && <><p>{t("実際の利用可否は、元のAgentへの接続時に確認します。")}</p><Link className={styles.primary} href={job.returnTo} onClick={onReturn}>{t("Agentへ戻って続ける")}<ArrowRight size={16} /></Link></>}
       {(!job || ['running','needs_user','unknown'].includes(job.state)) && <><p>{t("同じ登録を繰り返さず、この仕事の状況を確認します。")}</p><button disabled={busy} onClick={() => { void run(false); }}>{busy ? t("確認中…") : t("登録の状況を確認")}</button></>}
       {job?.state==='failed'&&<>{retryAt&&<p>{t('登録先の受付が混み合っています。')}</p>}{cooldownNotice}<button disabled={busy||cooling} onClick={retryFailed}>{t('もう一度')}</button></>}
       <details><summary>{t("このブラウザから記録を消す")}</summary><p>{t("登録処理は取り消されません。確認用の情報を消すと、この画面から状況を確認できなくなります。結果が不明な時は、登録先で状況を確認してから新しい依頼を行ってください。")}</p><button disabled={busy} onClick={clear}>{t("ブラウザの確認情報を消す")}</button></details>
     </section> : providers?.length === 0 ? <section className={styles.panel}><h2>{t("このAgentの登録担当は準備中です")}</h2><p>{t("登録Agentの接続と必要項目が設定されると、ここから依頼できます。接続前に登録情報を集めることはありません。")}</p><Link href="/noah/explore">{t("Agentを探す")}</Link></section> : provider?.requiresAccount && !vault.profile ? <section className={styles.panel}>{vault.guest?<><h2>{t("接続を安全に引き継ぐ")}</h2><p>{t("接続を確認すると、登録情報と成果を引き継げます。")}</p><Link href={`/noah/account?returnTo=${encodeURIComponent(`/noah/registration?agent=${agent}`)}`}>{t("接続を確認して続ける")}</Link></>:vault.error?<><p role="alert">{vault.error}</p><button onClick={()=>{void vault.reload();}}>{t("再読み込み")}</button></>:<NoahLoading label={t("保存情報を読み込んでいます…")}/>}</section> : provider && <form onSubmit={e => { e.preventDefault(); void run(true); }}>
       <section className={styles.panel}>
-        {providers&&providers.length>1?<label>{t('登録するサービス')}<select value={selected} disabled={busy} onChange={e=>{setSelected(e.target.value);setExcluded([]);setDocumentId('');setSaveNext(true);setAgent(agentId||providers.find(p=>p.id===e.target.value)?.agentIds[0]||'');setValues({});}}>{providers.map(p=><option key={p.id} value={p.id}>{p.name}</option>)}</select></label>:<h2>{provider.name}</h2>}
+        {providers&&providers.length>1?<label>{t('登録するサービス')}<select value={selected} disabled={busy} onChange={e=>{setSelected(e.target.value);setExcluded([]);setDocumentId('');setSaveNext(true);setAgent(agentId||providers.find(p=>p.id===e.target.value)?.agentIds[0]||'');setValues({});}}>{providers.map(p=><option key={p.id} value={p.id}>{p.name}</option>)}</select></label>:null}
         {!agentId&&<label>{t('使うAgent')}<select value={agent} disabled={busy} onChange={e=>{setAgent(e.target.value);setValues({});}}>{provider.agentIds.map(id=><option key={id} value={id}>{id}</option>)}</select></label>}
-        {reusable.length>0&&<details className={styles.savedGroup}><summary><LockKeyhole size={17}/> {t('保存した情報')} <span>{t('保存済み')} ✓</span></summary>{provider.fields.filter(f=>reusable.includes(f.key)).map(field=><div className={styles.savedValue} key={field.key}><span>{t(field.label)}<small>{shownValue(field.key)}</small></span><button type="button" disabled={busy} onClick={()=>setExcluded(v=>[...v,field.key])}>{t('編集')}</button>{field.type==='file'&&vault.profile&&vault.profile.documents.length>1&&<select aria-label={t(field.label)} value={usedDocument} disabled={busy} onChange={e=>setDocumentId(e.target.value)}>{vault.profile.documents.map(d=><option key={d.id} value={d.id}>{d.name}</option>)}</select>}</div>)}</details>}
-        {provider.fields.filter(f=>!reusable.includes(f.key)).map(field=><div className={styles.fieldRow} key={field.key}><label>{t(field.label)}{field.required?' *':''}{field.type==='file'?<Link href="/noah/profile">{t('書類を追加')} →</Link>:<input type={field.type} name={field.key} required={field.required} maxLength={field.maxLength} value={values[field.key]??''} disabled={busy} autoComplete={field.type==='password'?'new-password':field.type==='email'?'email':field.profileField==='phone'?'tel':field.profileField==='name'?'name':'off'} onChange={e=>setValues(v=>({...v,[field.key]:e.target.value}))}/>}</label></div>)}
+        {reusable.length>0&&<section className={styles.savedGroup} aria-label={t('保存した情報')}><div className={styles.savedHeading}><LockKeyhole size={17} aria-hidden="true"/> {t('保存した情報')}<span>{t('再入力は不要')}</span></div>{provider.fields.filter(f=>reusable.includes(f.key)).map(field=><div className={styles.savedValue} key={field.key}><span>{t(field.label)}<small>{shownValue(field.key)}</small></span><button type="button" disabled={busy} onClick={()=>{setValues(v=>({...v,[field.key]:shownValue(field.key)}));setExcluded(v=>[...v,field.key]);}}>{t('編集')}</button>{field.type==='file'&&vault.profile&&vault.profile.documents.length>1&&<select aria-label={t(field.label)} value={usedDocument} disabled={busy} onChange={e=>setDocumentId(e.target.value)}>{vault.profile.documents.map(d=><option key={d.id} value={d.id}>{d.name}</option>)}</select>}</div>)}</section>}
+        {newFields.filter(f=>f.required).map(fieldInput)}
+        {newFields.some(f=>!f.required) && <details className={styles.optional} onInvalidCapture={event=>{event.currentTarget.open=true;}}><summary>{t('任意の情報を追加')}</summary>{newFields.filter(f=>!f.required).map(fieldInput)}</details>}
+        {canSave && <div className={styles.reuseBanner}>
+          <div><strong>{t('次のAgentでも、この情報を使う')}</strong><p>{t(saveNext ? '新しい入力をNoahに暗号化して保存します。' : '新しい入力は、今回の送信だけに使います。')}</p></div>
+          <button type="button" role="switch" aria-checked={saveNext} aria-label={t('新しい入力を保存して再利用')} className={styles.saveSwitch} disabled={busy} onClick={()=>setSaveNext(v=>!v)}><span aria-hidden="true"/>{t(saveNext ? '保存する' : '今回だけ')}</button>
+          {saveNext && <p className={styles.saveFields}>{saveable.some(f=>values[f.key]?.trim()) && <>{saveable.filter(f=>values[f.key]?.trim()).map(f=>t(f.label)).join(' · ')}<br/></>}{t('保存情報の編集・再利用の停止は「登録情報」から。')}</p>}
+        </div>}
+        {provider.fields.some(f=>f.type==='password') && <p className={styles.hint}>{t('パスワードは登録先へ送り、Noahには保存しません。')}</p>}
+        <div className={styles.disclosure}>
+          <div><span>{t('送信先')}</span><p><strong>{provider.name}</strong><br/><bdi>{provider.providerOrigin}</bdi>{provider.executorOrigin !== provider.providerOrigin && <><br/>{provider.executorName} · <bdi>{provider.executorOrigin}</bdi></>}</p></div>
+          <div><span>{t('料金')}</span><p>{t('この操作は外部サービスへの登録です。有料Agentの利用料は提供元の条件によります。')} <a href={provider.termsUrl} target="_blank" rel="noreferrer">{t('料金・利用条件を確認')} ↗</a></p></div>
+        </div>
+        {provider.notice && <p className={styles.providerNotice}>{provider.notice}</p>}
         <details className={styles.terms}><summary>{t('規約・送信情報')}</summary>
           <p>{t('送信先')}: {provider.name} ({provider.providerOrigin})</p><p>{provider.executorName} ({provider.executorOrigin})</p>
-          {provider.notice&&<p>{provider.notice}</p>}<dl>{provider.fields.map(field=><div key={field.key}><dt>{t(field.label)}</dt><dd>{field.type==='password'?'••••••':shownValue(field.key)||'—'}</dd></div>)}</dl>
+          <dl>{provider.fields.map(field=><div key={field.key}><dt>{t(field.label)}</dt><dd>{field.type==='password'?'••••••':shownValue(field.key)||'—'}</dd></div>)}</dl>
           <a href={provider.termsUrl} target="_blank" rel="noreferrer">{provider.name} · {t('利用規約')} ({provider.termsVersion})</a>
         </details>
-        {vault.profile?.available&&provider.fields.some(f=>profileField(f.profileField)&&f.type!=='password')&&<div className={styles.reuseBanner}><span>{saveNext?t('保存し、次の登録にも使います'):t('今回だけ使う')}</span><button type="button" disabled={busy} onClick={()=>setSaveNext(v=>!v)}>{t(saveNext?t("今回だけ使う"):t("保存して使う"))}</button></div>}
-        <p className={styles.hint}>{t('登録ボタンで、規約と上記情報の送信に同意します。')}</p>
-        <button className={styles.primary} type="submit" disabled={busy||vault.busy||missingRequired}>{busy?<NoahLoading compact/>:t('同意して登録')}<ArrowRight size={17}/></button>
+        <div className={styles.continueArea}>
+          <p className={styles.hint}>{t('登録ボタンで、規約と上記情報の送信に同意します。')}</p>
+          <button className={styles.primary} type="submit" disabled={busy||vault.busy||missingRequired} aria-busy={busy || undefined}>{busy ? <NoahLoading compact label={t('準備しています…')}/> : t('同意して登録・続ける')}<ArrowRight size={17} aria-hidden="true"/></button>
+          <p className={styles.hint}>{t('Noahの情報保存だけで、有料実行や支払いは始まりません。')}</p>
+        </div>
       </section>
     </form>}
     {history.some(p=>p.id!==pending?.id)&&<details><summary>{t('以前の登録')}</summary>{history.filter(p=>p.id!==pending?.id).map((ticket,index)=><button key={ticket.id} disabled={busy} onClick={()=>restore(ticket)}>{t('登録の状況を確認')} {index+1}</button>)}</details>}

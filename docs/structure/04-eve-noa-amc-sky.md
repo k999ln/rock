@@ -302,3 +302,5 @@ Noahの固定アダプターで公開サイト診断を実行し、結果と相�
 2026-11-23: [786系列の接続と稼働表示](../noah/spec-127-live-agent-families.md)。既存の公開Agent一覧へ本体台帳を名寄せして追加し、本番の準備・成果受領を記録する。表示は10秒ごとに更新し、確認期限を過ぎたものを利用可能と断定しない。
 
 本人用収益パックの配布・端末用CLIは `toolkits/noah-revenue-pack/`、Macに依存しないクラウド実行は `services/noah-revenue-runtime/`、共通Noahの入口は `/noah/revenue-pack`。[挙動と合格条件](../services/noah-revenue-pack.md)。
+
+2026-11-24 登録UX: [登録Agent](../services/noah-registration-agent.md)は保存済み項目・必須の不足・任意項目を分け、元のAgentの画面内で準備する。保存の選択、外部送信先、料金条件を操作直前に示す。保存だけで有料実行は開始せず、提供元の未取得料金を無料と表示しない。
