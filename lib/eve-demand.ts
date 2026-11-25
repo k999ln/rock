@@ -39,6 +39,10 @@ export type EveDemand = {
   sources: readonly EveDemandSource[];
   /** 最も古い出典の日付（この日より後に、台帳を作り直す）。 */
   checkedAt: string;
+  /** 売られる物の名前（ASP の案件なら商品・サービスの名前。2026-11-25）。 */
+  item?: string;
+  /** 成果の条件（出典に書いてある言葉のまま。2026-11-25）。 */
+  condition?: string;
 };
 
 /** 出典が古すぎる需要は使わない（日数。候補）。 */

@@ -124,3 +124,38 @@ void test('段 3: the sample jobs cover the two capabilities that block all 470 
   assert.ok(caps.includes('research.market') && caps.includes('tracking.results'));
   for (const t of EVE_VERIFY_TASKS) assert.ok(t.accept && t.input && t.label, t.capability);
 });
+
+// 本物の候補へ送る時の道具の選び方（2026-11-24 13:54 の本人回答「全部送ってよい」）。外に影響が出る道具は呼ばない。
+import { eveMcpOutput, eveVerifyToolChoice } from '../lib/eve-verify.ts';
+
+void test('段 3: only read-only tools whose required inputs the sample fills are chosen; anything that sends, buys or calls is never chosen', () => {
+  const research = EVE_VERIFY_TASKS.find((t) => t.capability === 'research.market');
+  const tools = [
+    { name: 'place_call', description: 'Call a phone number', inputSchema: { properties: { query: { type: 'string' } }, required: ['query'] } },
+    { name: 'send_email', inputSchema: { properties: { text: { type: 'string' } }, required: ['text'] } },
+    { name: 'buy_domain', annotations: { readOnlyHint: true }, inputSchema: { properties: { query: { type: 'string' } }, required: ['query'] } },
+    { name: 'search_cars', inputSchema: { properties: { query: { type: 'string' }, zip: { type: 'string' } }, required: ['query', 'zip'] } },
+    { name: 'get_trends', annotations: { destructiveHint: true }, inputSchema: { properties: { q: { type: 'string' } }, required: ['q'] } },
+    { name: 'search_docs', inputSchema: { properties: { query: { type: 'string' }, limit: { type: 'number' } }, required: ['query'] } },
+    { name: 'keyword_research', annotations: { readOnlyHint: true }, inputSchema: { properties: { keyword: { type: 'string' } }, required: ['keyword'] } },
+  ];
+  const chosen = eveVerifyToolChoice(research, tools);
+  assert.equal(chosen.tool.name, 'keyword_research', 'a name that fits the capability comes first');
+  assert.deepEqual(chosen.args, { keyword: '法人向け AI 研修' });
+  assert.equal(eveVerifyToolChoice(research, tools.filter((t) => t.name !== 'keyword_research')).tool.name, 'search_docs');
+  const none = eveVerifyToolChoice(research, tools.slice(0, 5));
+  assert.equal(none.tool, null, 'a required input the sample cannot fill (zip) is never guessed');
+  assert.match(none.reason, /外に影響/u);
+  const enumOnly = eveVerifyToolChoice(research, [{ name: 'lookup', inputSchema: { properties: { query: { type: 'string', enum: ['a', 'b'] } }, required: ['query'] } }]);
+  assert.equal(enumOnly.tool, null);
+  const script = EVE_VERIFY_TASKS.find((t) => t.capability === 'content.script');
+  assert.equal(eveVerifyToolChoice(script, [{ name: 'write_script', inputSchema: { properties: { prompt: { type: 'string' } }, required: ['prompt'] } }]).tool.name, 'write_script', 'writing text is allowed only for the writing capability');
+  assert.equal(eveVerifyToolChoice(research, [{ name: 'write_script', inputSchema: { properties: { prompt: { type: 'string' } }, required: ['prompt'] } }]).tool, null);
+});
+
+void test('段 3: tool results become what Jev judges — structured first, then JSON text, then plain text; errors are failures', () => {
+  assert.deepEqual(eveMcpOutput({ structuredContent: { topic: 't', keywords: [] }, content: [{ type: 'text', text: 'x' }] }), { topic: 't', keywords: [] });
+  assert.deepEqual(eveMcpOutput({ content: [{ type: 'text', text: '{"clicks":3}' }] }), { clicks: 3 });
+  assert.equal(eveMcpOutput({ content: [{ type: 'text', text: 'hello' }, { type: 'image' }, { type: 'text', text: 'world' }] }), 'hello\nworld');
+  assert.throws(() => eveMcpOutput({ isError: true, content: [{ type: 'text', text: 'bad' }] }), /失敗/u);
+});

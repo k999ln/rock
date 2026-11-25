@@ -5,6 +5,8 @@
 - 最新`origin/main`を土台にローカル設計・収益パックを`avokdo`へ統合。旧`avokado-main`と35ファイルを復元用に保全し、VS Codeの単一入口`avokado.code-workspace`と配置表を追加。ローカルtask番号を131・132へ整理（task133、PR未作成）。
 
 ## 2026-11-25
+- Eve を、組み合わせを本物の部品で回せる所まで作った（Opus / Noelle。本人「eveも完成品作って」。task 130）。残りの部品 6 つ（案件を比べる・記事・見出し画像・LP・置き場・ブログに出す）を Eve が作り、手元の Qwen と Jev の判定で確かめた（すべて通過）。公開の公式の頁だけから需要の台帳に 2 件を入れ、A8.net × 登録済みのブログ × ロリポップ！AIエージェントクラウドの組み合わせを「本番に出せる」にした。本番の実行役（`scripts/eve-run.mjs`）で 1 回回し、記事・画像・LP を作って、本人の番（A8.net の登録）で止まっている。公開・登録・申請・送金はしていない（[PR #78](https://github.com/iceiceice999/rock/pull/78)）。
+
 - 2026-11-25 のノエルとかいやの会話（本人が貼った書き起こし 2 本）を設計書に取り込んだ（Opus / Noelle。本人「これ取り入れて全部しっかりちゃんと」）: 07 に会話の 6 行と未決 5 行（定期便の形・利用者のお金・会員登録・配る率と売値・データ）。05 に収益の候補「安全の早期発見」と、出口・組織・時間（6 章）、先の事業の構想（7 章）。spec-124 と 04 の配給に「1円も取らない」「一人当たりの予算の中で買い物」「食材・生活必需品・伝統工芸品」。trial-300 に招待と登録の見せ方。登録Agent に iPhone の連絡先からの自動入力。spec-115 につないだアカウントからの推薦の候補。01 に没入の映像の構想（8 章）。03 に通信の秘密。新しい下書き [services/noah-safety-early-warning.md](docs/services/noah-safety-early-warning.md)。会話は決定と意向を分けて書き、前の決め事と合わない所は本人の回答待ちにした。コードの変更はなし。 [PR #77](https://github.com/iceiceice999/rock/pull/77)
 
 - 本人用収益パックを同一コードで3周検証し、実携帯3回・クラウド出力の良否と未修正の入口/入力保持/事実性の問題を [task132](codex/tasks/132-noah-revenue-pack-phone.md) に記録。公開受入は未完了（[PR #76](https://github.com/iceiceice999/rock/pull/76)）。
@@ -23,6 +25,8 @@
 - avokadoの事業設計プロンプト（`docs/prompts/avokado-business-design.md`）に、eSIMから自社管理クラウドを使う標準導入、従量料金の確認、外部Agentの提供元クラウドを明記した。4テーマの生成時に `scripts/build-avokado-business-prompt.mjs` が両リポジトリの資料を取得し、正本からeSIMと外部実行の根拠も添える（ローカル作成、PR未作成）。
 
 ## 2026-11-24
+- Eve の部品を 5 つ作った（Opus / Noelle。本人「全部任せるから最後までやって」。task 130）: 規約を読む（引用が規約に文字どおりある項目だけ）、検索の言葉（ウィキペディアの件数で裏付け）、台本（広告の表示と言い切りを決まった式で守る）、広告の表示・表現の点検、成果・売上を読む（レントラックスの売上一覧の CSV）。手元の Qwen と同じ見本・Jev の判定で 1 回ずつ確かめ、5 つとも通った（落ちた版も記録）。設計図の規約の確かめを research.terms に分け、470 通りすべてを止める能力は 0 になった。レントラックスと登録済みの媒体を使う組み合わせ（affiliate:ai-tools:blog:rentracks。部品 5 工程。元の組み合わせは変えない）。
+- Eve の能力の確かめを本物の候補へ送った（Opus / Noelle。本人回答 13:54「全部送ってよい」。task 130）。Noah の 205 件から能力の語で当たった 54 件のうち、読むだけで見本を入れられる道具を持つ 29 件へ 1 回ずつ送り、Jev の判定に通った物は 0 件。送信・購入・電話・申込などの道具は呼ばない。`scripts/eve-verify-run.mjs`、記録は `data/eve-verifications/2026-11-24.json`。
 - マイAgentのブラウザー保存先から、同じ本人の収益記録を作成・再表示できるようにした（[PR #68](https://github.com/iceiceice999/rock/pull/68)）。
 - マイAgentで収益系Agentの成果を開くと、同じ仕事の承認額・実入金・最終費用と作者20%の確定状況を確認できるようにした。証憑の連携前も表示する（[PR #67](https://github.com/iceiceice999/rock/pull/67)）。
 - Noah の道具カタログを掲載中の系列に合わせて再採取した。接続先の説明の冒頭と入力項目を同梱し、取得・照合の結果は [task 128](codex/tasks/128-noah-agent-explain.md#95-掲載系列の道具定義を再取得) に記録。 [PR #65](https://github.com/iceiceice999/rock/pull/65)

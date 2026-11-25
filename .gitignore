@@ -71,3 +71,6 @@ replay_pid*.log
 
 # Local render/export products stay outside source history.
 /output/
+
+# Eve の回の記録（本人の広告リンク・売上の CSV が入る。scripts/eve-run.mjs の既定の置き場）
+data/eve-runs/private/

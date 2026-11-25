@@ -1,0 +1,1085 @@
+{
+  "schema": "eve-verifications/1",
+  "at": "2026-11-24T05:07:03.043Z",
+  "origin": "https://avoado.si",
+  "sent": true,
+  "runnable": 205,
+  "note": "読むだけの道具だけを、見本で 1 回だけ呼んだ記録。相手の返事の本文は残さず、hash と判定の理由だけを残す。",
+  "candidates": [
+    {
+      "capability": "research.market",
+      "ref": "mcp-registry:ai.carfinity/marketplace",
+      "name": "Carfinity car marketplace",
+      "host": "carfinity.ai",
+      "status": "called",
+      "reason": "呼び出しが失敗しました: 道具が失敗を返しました: No market summary for \"法人向け AI 研修\". Use search_cars to see what is listed.",
+      "endpoint": "https://carfinity.ai/mcp",
+      "registryVersion": "1.3.0",
+      "tool": "market_summary",
+      "argKeys": [
+        "query"
+      ],
+      "toolsHash": "c75878e8878b655359cfd75e465ad3d52bb0e7399e69251be3732c70350cc448",
+      "verification": {
+        "capability": "research.market",
+        "ref": "mcp-registry:ai.carfinity/marketplace",
+        "version": "b2fc94bb48eb3077ddfe969ec022beb0ef623b8988c6fabe7bd3b5f620a6b836",
+        "ok": false,
+        "reason": "呼び出しが失敗しました: 道具が失敗を返しました: No market summary for \"法人向け AI 研修\". Use search_cars to see what is listed.",
+        "inputHash": "f25dc4c6eeacb44c6a3d13d39e91f7c8dc0f66f5c179962ca83c5ace0f90b4a8",
+        "outputHash": null,
+        "at": "2026-11-24T05:07:03.782Z"
+      }
+    },
+    {
+      "capability": "research.market",
+      "ref": "mcp-registry:ai.agentsrank/agentsrank",
+      "name": "AgentsRank",
+      "host": "agentsrank.ai",
+      "status": "called",
+      "reason": "呼び出しが失敗しました: サインインが要ります",
+      "endpoint": "https://agentsrank.ai/api/mcp",
+      "registryVersion": "2.2.0",
+      "tool": "list_open_jobs",
+      "argKeys": [
+        "q"
+      ],
+      "toolsHash": "a41a1ad20380a4929d8ccbe1a81495bab5ca98e5b608c79316523561099185fb",
+      "verification": {
+        "capability": "research.market",
+        "ref": "mcp-registry:ai.agentsrank/agentsrank",
+        "version": "f65499d415ad7e2cc9aebfe9d3b51d4b280f487578f1296fc4c25a8f076658bb",
+        "ok": false,
+        "reason": "呼び出しが失敗しました: サインインが要ります",
+        "inputHash": "f25dc4c6eeacb44c6a3d13d39e91f7c8dc0f66f5c179962ca83c5ace0f90b4a8",
+        "outputHash": null,
+        "at": "2026-11-24T05:07:05.051Z"
+      }
+    },
+    {
+      "capability": "research.market",
+      "ref": "mcp-registry:ai.athenahq/mcp",
+      "name": "AthenaHQ",
+      "host": "api.athenahq.ai",
+      "status": "skipped",
+      "reason": "読むだけで、見本を入れられる道具がありません（外に影響が出る道具は呼びません）。",
+      "endpoint": "https://api.athenahq.ai/api/mcp",
+      "registryVersion": "1.0.0",
+      "tool": null,
+      "argKeys": [],
+      "toolsHash": "aeb6fa98c306fbfe0db057cc68fd8847bd4ad37a4e0c2260be2cb321002da84d",
+      "verification": null
+    },
+    {
+      "capability": "research.market",
+      "ref": "mcp-registry:ai.bumblebox/mail",
+      "name": "BumbleBox",
+      "host": "api.bumblebox.ai",
+      "status": "skipped",
+      "reason": "読むだけで、見本を入れられる道具がありません（外に影響が出る道具は呼びません）。",
+      "endpoint": "https://api.bumblebox.ai/api/mcp",
+      "registryVersion": "2.1.0",
+      "tool": null,
+      "argKeys": [],
+      "toolsHash": "e4d7629ee856604c418642ba67bbd995e3f7ce92744dd41b75fed4242d58b3bf",
+      "verification": null
+    },
+    {
+      "capability": "research.market",
+      "ref": "mcp-registry:ai.4ai/domains",
+      "name": "4ai – premium .ai domains for sale",
+      "host": "4ai.ai",
+      "status": "called",
+      "reason": "項目が足りません: topic・keywords",
+      "endpoint": "https://4ai.ai/mcp",
+      "registryVersion": "1.0.0",
+      "tool": "search_domains",
+      "argKeys": [
+        "query"
+      ],
+      "toolsHash": "8d9483da2a8ea0c1ea163765ee67ec220e882be01de8f9a477be30aa3324588d",
+      "verification": {
+        "capability": "research.market",
+        "ref": "mcp-registry:ai.4ai/domains",
+        "version": "c11cf0037864ee623eb683cc67754dfec7b01ad82f08381c94a9ba8d39b0cdc6",
+        "ok": false,
+        "reason": "項目が足りません: topic・keywords",
+        "inputHash": "f25dc4c6eeacb44c6a3d13d39e91f7c8dc0f66f5c179962ca83c5ace0f90b4a8",
+        "outputHash": "e724486693b75b71323304b9bc07a18d7f9299fda535c2f6d56b8df11764bd44",
+        "at": "2026-11-24T05:07:07.921Z"
+      }
+    },
+    {
+      "capability": "research.market",
+      "ref": "mcp-registry:ai.aeoengine/best-ai-search-agency-aeo-report",
+      "name": "Best AI Search Agency AEO Report",
+      "host": "aeoengine.ai",
+      "status": "skipped",
+      "reason": "読むだけで、見本を入れられる道具がありません（外に影響が出る道具は呼びません）。",
+      "endpoint": "https://aeoengine.ai/mcp",
+      "registryVersion": "2.0.0",
+      "tool": null,
+      "argKeys": [],
+      "toolsHash": "78162c476bd6f3bb055a995ca122e0f03502b1b9abb0d8391edc8be9616b9a04",
+      "verification": null
+    },
+    {
+      "capability": "research.market",
+      "ref": "mcp-registry:ai.bezal/local-commerce",
+      "name": "Bezal — Local Business Intelligence for AI Agents",
+      "host": "app.bezal.ai",
+      "status": "called",
+      "reason": "JSON のオブジェクトか配列が返っていません。",
+      "endpoint": "https://app.bezal.ai/api/mcp",
+      "registryVersion": "1.0.0",
+      "tool": "search_businesses",
+      "argKeys": [
+        "query"
+      ],
+      "toolsHash": "e887b4564627abd888b612c50a3d78814b61c71b85a82ab62ac2db713b4164d4",
+      "verification": {
+        "capability": "research.market",
+        "ref": "mcp-registry:ai.bezal/local-commerce",
+        "version": "62868e58886a99752410203e356a9eece86d2b354c105bd86d9370249daca30e",
+        "ok": false,
+        "reason": "JSON のオブジェクトか配列が返っていません。",
+        "inputHash": "f25dc4c6eeacb44c6a3d13d39e91f7c8dc0f66f5c179962ca83c5ace0f90b4a8",
+        "outputHash": "a8fc1c2264e4590e0e9a78ec82cba92ff40b23c5ab89090653429539344f11d5",
+        "at": "2026-11-24T05:07:09.705Z"
+      }
+    },
+    {
+      "capability": "research.market",
+      "ref": "mcp-registry:ai.bithuman/docs",
+      "name": "bitHuman docs",
+      "host": "docs.bithuman.ai",
+      "status": "called",
+      "reason": "項目が足りません: topic・keywords",
+      "endpoint": "https://docs.bithuman.ai/docs-mcp",
+      "registryVersion": "1.0.1",
+      "tool": "search",
+      "argKeys": [
+        "query"
+      ],
+      "toolsHash": "34b749550d1f2cfcdc8c6bf411b643b73d0410d7b6d3bb7b85711894116c4fd6",
+      "verification": {
+        "capability": "research.market",
+        "ref": "mcp-registry:ai.bithuman/docs",
+        "version": "97601a6ea1cb4038ab013865469ba406df55cf8e7601fcb49c8982d9d410e216",
+        "ok": false,
+        "reason": "項目が足りません: topic・keywords",
+        "inputHash": "f25dc4c6eeacb44c6a3d13d39e91f7c8dc0f66f5c179962ca83c5ace0f90b4a8",
+        "outputHash": "3ce7d8a842e3c7075326c5bfa9a1c21aba728a48f58d50c6b9c9a13aecf4617c",
+        "at": "2026-11-24T05:07:10.768Z"
+      }
+    },
+    {
+      "capability": "research.market",
+      "ref": "mcp-registry:ae.projectory/mcp",
+      "name": "Projectory",
+      "host": "mcp.projectory.ae",
+      "status": "called",
+      "reason": "項目が足りません: topic・keywords",
+      "endpoint": "https://mcp.projectory.ae/mcp",
+      "registryVersion": "0.7.0",
+      "tool": "search",
+      "argKeys": [
+        "query"
+      ],
+      "toolsHash": "2d041d517745f59b64d7b26fcc463187cf7b6981d2c9f45ce03eed5465727539",
+      "verification": {
+        "capability": "research.market",
+        "ref": "mcp-registry:ae.projectory/mcp",
+        "version": "57e532461e12ac5ce6a5ac77d3d326f506c60c990b04a5c6dd5e575bf38c2e55",
+        "ok": false,
+        "reason": "項目が足りません: topic・keywords",
+        "inputHash": "f25dc4c6eeacb44c6a3d13d39e91f7c8dc0f66f5c179962ca83c5ace0f90b4a8",
+        "outputHash": "7f8353837e4b862b4e7f6ae90371f92d2095edd37b22e1c62c984cc8ab9889c0",
+        "at": "2026-11-24T05:07:11.460Z"
+      }
+    },
+    {
+      "capability": "research.market",
+      "ref": "mcp-registry:ai.ankra/docs",
+      "name": "Ankra Docs",
+      "host": "docs.ankra.ai",
+      "status": "called",
+      "reason": "JSON のオブジェクトか配列が返っていません。",
+      "endpoint": "https://docs.ankra.ai/mcp",
+      "registryVersion": "1.0.0",
+      "tool": "search_ankra",
+      "argKeys": [
+        "query"
+      ],
+      "toolsHash": "c6db78adab5fd846882e7e37ace4a2a7790967810ad2a0450964bdc9de3ca4d3",
+      "verification": {
+        "capability": "research.market",
+        "ref": "mcp-registry:ai.ankra/docs",
+        "version": "5c7194e8d4617f3320b8abaf1af201fbd087f7c3afc796265c329650ee7f1081",
+        "ok": false,
+        "reason": "JSON のオブジェクトか配列が返っていません。",
+        "inputHash": "f25dc4c6eeacb44c6a3d13d39e91f7c8dc0f66f5c179962ca83c5ace0f90b4a8",
+        "outputHash": "4a0bb25d0fce62efb93d5cadeb3cf38527b0c701d7ad234b9dac5f6393b67530",
+        "at": "2026-11-24T05:07:13.103Z"
+      }
+    },
+    {
+      "capability": "research.market",
+      "ref": "mcp-registry:ai.agenticterminal/directory",
+      "name": "Agentic Terminal Directory",
+      "host": "mcp.agenticterminal.ai",
+      "status": "called",
+      "reason": "項目が足りません: topic・keywords",
+      "endpoint": "https://mcp.agenticterminal.ai/mcp",
+      "registryVersion": "1.0.0",
+      "tool": "search_merchants",
+      "argKeys": [
+        "query"
+      ],
+      "toolsHash": "def6f4fe0111e603d6cdc20b0a464a4b9158c1af54770f509ca10bbab118afc5",
+      "verification": {
+        "capability": "research.market",
+        "ref": "mcp-registry:ai.agenticterminal/directory",
+        "version": "33542bde9c58d319c54b16850ee02221794174a2348deb06da9734a5efb3a597",
+        "ok": false,
+        "reason": "項目が足りません: topic・keywords",
+        "inputHash": "f25dc4c6eeacb44c6a3d13d39e91f7c8dc0f66f5c179962ca83c5ace0f90b4a8",
+        "outputHash": "e0adc79475821cadcb615c6a281ec87d92bb2e5e2a30499e8339a8a24c93b779",
+        "at": "2026-11-24T05:07:14.998Z"
+      }
+    },
+    {
+      "capability": "research.market",
+      "ref": "mcp-registry:ai.coreplex/shopping",
+      "name": "Coreplex",
+      "host": "coreplex.ai",
+      "status": "called",
+      "reason": "項目が足りません: topic・keywords",
+      "endpoint": "https://coreplex.ai/api/apps/6a9567482e969b1ab43e0c49/functions/coreplexMcp",
+      "registryVersion": "1.0.0",
+      "tool": "search_products",
+      "argKeys": [
+        "query"
+      ],
+      "toolsHash": "12bd706432d30eb848795165ab4eab8434bb6c801521f0d0d109d9ad209e9dc1",
+      "verification": {
+        "capability": "research.market",
+        "ref": "mcp-registry:ai.coreplex/shopping",
+        "version": "fb7a4e55c78b168a82b6c07ff3cad52b662fadc38370c42977560ba8b14ee4a9",
+        "ok": false,
+        "reason": "項目が足りません: topic・keywords",
+        "inputHash": "f25dc4c6eeacb44c6a3d13d39e91f7c8dc0f66f5c179962ca83c5ace0f90b4a8",
+        "outputHash": "860a24cf3aa95111110ec6074ffb486ddd1719d687bb5fb363b76f36066c2d9f",
+        "at": "2026-11-24T05:07:15.944Z"
+      }
+    },
+    {
+      "capability": "research.market",
+      "ref": "mcp-registry:ai.ahel/ahel",
+      "name": "Ahel",
+      "host": "mcp.ahel.ai",
+      "status": "called",
+      "reason": "呼び出しが失敗しました: サインインが要ります",
+      "endpoint": "https://mcp.ahel.ai",
+      "registryVersion": "1.0.1",
+      "tool": "capability_search",
+      "argKeys": [
+        "query"
+      ],
+      "toolsHash": "2315b454833dece808593e7c17805771d5b3925701e195b8afa669416dbc2fce",
+      "verification": {
+        "capability": "research.market",
+        "ref": "mcp-registry:ai.ahel/ahel",
+        "version": "e62b93ccbc4ff14b9f94091d0e34f0363a5973a65cb70e84759f006d58544a6a",
+        "ok": false,
+        "reason": "呼び出しが失敗しました: サインインが要ります",
+        "inputHash": "f25dc4c6eeacb44c6a3d13d39e91f7c8dc0f66f5c179962ca83c5ace0f90b4a8",
+        "outputHash": null,
+        "at": "2026-11-24T05:07:17.737Z"
+      }
+    },
+    {
+      "capability": "research.market",
+      "ref": "mcp-registry:ai.arcangel/trademark-search",
+      "name": "Arcangel Trademark Search",
+      "host": "mcp.arcangel.ai",
+      "status": "skipped",
+      "reason": "読むだけで、見本を入れられる道具がありません（外に影響が出る道具は呼びません）。",
+      "endpoint": "https://mcp.arcangel.ai/trademark",
+      "registryVersion": "0.4.0",
+      "tool": null,
+      "argKeys": [],
+      "toolsHash": "fc84fed6af7aae9469f5841bcb525ed50b8679d57c3548e26d6ff1217aeeab83",
+      "verification": null
+    },
+    {
+      "capability": "research.market",
+      "ref": "mcp-registry:ai.botappetit/bot-appetit",
+      "name": "Bot Appétit",
+      "host": "botappetit.ai",
+      "status": "skipped",
+      "reason": "読むだけで、見本を入れられる道具がありません（外に影響が出る道具は呼びません）。",
+      "endpoint": "https://botappetit.ai/mcp",
+      "registryVersion": "1.0.1",
+      "tool": null,
+      "argKeys": [],
+      "toolsHash": "6de052bc9cda625aa519c8fa56f9249d29c346ebdfaed671d9ee93d9d6bc860d",
+      "verification": null
+    },
+    {
+      "capability": "research.market",
+      "ref": "mcp-registry:ai.asrm/asrm",
+      "name": "ASRM (AI Search Rank Monitor)",
+      "host": "asrm.ai",
+      "status": "called",
+      "reason": "項目が足りません: topic・keywords",
+      "endpoint": "https://asrm.ai/mcp",
+      "registryVersion": "1.0.0",
+      "tool": "search_guides",
+      "argKeys": [
+        "query"
+      ],
+      "toolsHash": "f9a3d7113e2fa3d164707839bbe4cb0690101bc7e233a96b896559829a45d494",
+      "verification": {
+        "capability": "research.market",
+        "ref": "mcp-registry:ai.asrm/asrm",
+        "version": "fefe4480d8639d23fa3abf5cd8a586c404616f2c1a001ad02001067ff41a13d0",
+        "ok": false,
+        "reason": "項目が足りません: topic・keywords",
+        "inputHash": "f25dc4c6eeacb44c6a3d13d39e91f7c8dc0f66f5c179962ca83c5ace0f90b4a8",
+        "outputHash": "1cf8b013ce925e60bbcd1bd9690630fc793fa0df7f7c9eba2d58978710f7d0af",
+        "at": "2026-11-24T05:07:20.332Z"
+      }
+    },
+    {
+      "capability": "research.market",
+      "ref": "mcp-registry:ai.achurch/church",
+      "name": "aChurch.ai",
+      "host": "achurch.ai",
+      "status": "called",
+      "reason": "項目が足りません: topic・keywords",
+      "endpoint": "https://achurch.ai/mcp",
+      "registryVersion": "2.0.2",
+      "tool": "search",
+      "argKeys": [
+        "q"
+      ],
+      "toolsHash": "9828f20ada3a84d0b5d0d62fb737b70e97d3c9360b8f9da01d643793c2bfe874",
+      "verification": {
+        "capability": "research.market",
+        "ref": "mcp-registry:ai.achurch/church",
+        "version": "2998c078e2067037cf4e51d4c940f05b25342d17a70927f27fde24aa7693e045",
+        "ok": false,
+        "reason": "項目が足りません: topic・keywords",
+        "inputHash": "f25dc4c6eeacb44c6a3d13d39e91f7c8dc0f66f5c179962ca83c5ace0f90b4a8",
+        "outputHash": "09f0501ea35a568fb8069d2ee07f942ee3d48bc87007164556ec53e219debc1a",
+        "at": "2026-11-24T05:07:21.303Z"
+      }
+    },
+    {
+      "capability": "research.market",
+      "ref": "mcp-registry:agency.goji/goji",
+      "name": "agency.goji/goji",
+      "host": "mcp.goji.agency",
+      "status": "called",
+      "reason": "JSON のオブジェクトか配列が返っていません。",
+      "endpoint": "https://mcp.goji.agency/mcp",
+      "registryVersion": "1.0.1",
+      "tool": "goji_search",
+      "argKeys": [
+        "query"
+      ],
+      "toolsHash": "a6f177bb6cf14136a3f30ff23b7c3e7faaa98686a7301c1fbcb69a595ef167c3",
+      "verification": {
+        "capability": "research.market",
+        "ref": "mcp-registry:agency.goji/goji",
+        "version": "fc926a9d7fa973287b3b22fc50b79d2f88055441497ebba54857256cfa0d51a9",
+        "ok": false,
+        "reason": "JSON のオブジェクトか配列が返っていません。",
+        "inputHash": "f25dc4c6eeacb44c6a3d13d39e91f7c8dc0f66f5c179962ca83c5ace0f90b4a8",
+        "outputHash": "07821dd9a769406a5c2d797f9e8a3f89d7a0c0623417cc157fa447374ddbf719",
+        "at": "2026-11-24T05:07:22.493Z"
+      }
+    },
+    {
+      "capability": "research.market",
+      "ref": "mcp-registry:ai.cleartape/clear-tape",
+      "name": "Clear Tape",
+      "host": "app.cleartape.ai",
+      "status": "called",
+      "reason": "項目が足りません: topic・keywords",
+      "endpoint": "https://app.cleartape.ai/mcp",
+      "registryVersion": "1.0.0",
+      "tool": "search_learning",
+      "argKeys": [
+        "query"
+      ],
+      "toolsHash": "0d8308da5ecfd755b7a49c8e0e850ac1ff5f64da97a18a6772b9de114a049749",
+      "verification": {
+        "capability": "research.market",
+        "ref": "mcp-registry:ai.cleartape/clear-tape",
+        "version": "2f31faf74e4e24a7f77138203f7f17aa8dd5a589a58de26500157e6f6c45556c",
+        "ok": false,
+        "reason": "項目が足りません: topic・keywords",
+        "inputHash": "f25dc4c6eeacb44c6a3d13d39e91f7c8dc0f66f5c179962ca83c5ace0f90b4a8",
+        "outputHash": "454b59d7c17854176116b6b824e7777f22f9de1431770970a74fbfee3bcd3c3f",
+        "at": "2026-11-24T05:07:24.061Z"
+      }
+    },
+    {
+      "capability": "research.market",
+      "ref": "mcp-registry:ae.plantguide/dubai-gardening",
+      "name": "Plant Guide: Dubai gardening research",
+      "host": "plantguide.ae",
+      "status": "called",
+      "reason": "項目が足りません: topic・keywords",
+      "endpoint": "https://plantguide.ae/mcp",
+      "registryVersion": "1.1.0",
+      "tool": "search_guides",
+      "argKeys": [
+        "query"
+      ],
+      "toolsHash": "b3bdcc75da49ec85d4a36ffd083e14a09b171cc00416e5cccdcf4b9af9e34ffb",
+      "verification": {
+        "capability": "research.market",
+        "ref": "mcp-registry:ae.plantguide/dubai-gardening",
+        "version": "240b8f6f9a2e642e54216c5138e7f2a853ed302dc4f7bfc8e270dbcf946219ec",
+        "ok": false,
+        "reason": "項目が足りません: topic・keywords",
+        "inputHash": "f25dc4c6eeacb44c6a3d13d39e91f7c8dc0f66f5c179962ca83c5ace0f90b4a8",
+        "outputHash": "3eeafa017c8558cced28810483d09c39579e56cce2e182272a90b6dce8a16936",
+        "at": "2026-11-24T05:07:25.336Z"
+      }
+    },
+    {
+      "capability": "research.market",
+      "ref": "mcp-registry:ai.bidclub/bidclub",
+      "name": "ai.bidclub/bidclub",
+      "host": "bidclub.ai",
+      "status": "skipped",
+      "reason": "読むだけで、見本を入れられる道具がありません（外に影響が出る道具は呼びません）。",
+      "endpoint": "https://bidclub.ai/api/mcp",
+      "registryVersion": "1.0.0",
+      "tool": null,
+      "argKeys": [],
+      "toolsHash": "e2a235f70380b1e39c0e016b98583a2651ce3909d0f5cbb7c74a1e7cf9fab576",
+      "verification": null
+    },
+    {
+      "capability": "research.market",
+      "ref": "mcp-registry:ai.autoblogging/autoblogging",
+      "name": "Autoblogging.ai",
+      "host": "autoblogging.ai",
+      "status": "called",
+      "reason": "項目が足りません: topic・keywords",
+      "endpoint": "https://autoblogging.ai/mcp",
+      "registryVersion": "1.0.0",
+      "tool": "search_site",
+      "argKeys": [
+        "query"
+      ],
+      "toolsHash": "e7808313a10e101c3ae3e629c6e560874c3c47679d3a747889c918932c1f9825",
+      "verification": {
+        "capability": "research.market",
+        "ref": "mcp-registry:ai.autoblogging/autoblogging",
+        "version": "60dd91ba2bc82df2daaffc18c6e7943409659370c8b3359ae7a504019d5b940c",
+        "ok": false,
+        "reason": "項目が足りません: topic・keywords",
+        "inputHash": "f25dc4c6eeacb44c6a3d13d39e91f7c8dc0f66f5c179962ca83c5ace0f90b4a8",
+        "outputHash": "b85ad23683458b34cb0ebbb468c6ba176ab44b8022264efedeb6f564964cdbd5",
+        "at": "2026-11-24T05:07:30.000Z"
+      }
+    },
+    {
+      "capability": "research.market",
+      "ref": "mcp-registry:ai.cerebrium/docs",
+      "name": "Cerebrium Docs",
+      "host": "cerebrium.ai",
+      "status": "called",
+      "reason": "JSON のオブジェクトか配列が返っていません。",
+      "endpoint": "https://cerebrium.ai/docs/mcp",
+      "registryVersion": "0.1.1",
+      "tool": "search_cerebrium",
+      "argKeys": [
+        "query"
+      ],
+      "toolsHash": "a955d2845ffc5d01afb6d58d71073ee30236381a019f6f78e911fa846b26c1e7",
+      "verification": {
+        "capability": "research.market",
+        "ref": "mcp-registry:ai.cerebrium/docs",
+        "version": "ffd782efeeb795730d58ddd722ef92d04daf6346ff2b39c8280b4f38c94f776c",
+        "ok": false,
+        "reason": "JSON のオブジェクトか配列が返っていません。",
+        "inputHash": "f25dc4c6eeacb44c6a3d13d39e91f7c8dc0f66f5c179962ca83c5ace0f90b4a8",
+        "outputHash": "d393a5cf5eaaeaaa363da44f860c971af133a4ae81db5cd2d2136027a0c62e55",
+        "at": "2026-11-24T05:07:31.910Z"
+      }
+    },
+    {
+      "capability": "research.market",
+      "ref": "mcp-registry:ai.com.nlp/open-model-catalog",
+      "name": "NLP.COM.AI Open Model Catalog",
+      "host": "nlp.com.ai",
+      "status": "called",
+      "reason": "項目が足りません: topic・keywords",
+      "endpoint": "https://nlp.com.ai/mcp",
+      "registryVersion": "1.0.0",
+      "tool": "search_models",
+      "argKeys": [
+        "query"
+      ],
+      "toolsHash": "a9085fa4a8d8ed5fd46a2fc8244515aff021a6a2fd2f1bc0a41b3c7c5a7c342b",
+      "verification": {
+        "capability": "research.market",
+        "ref": "mcp-registry:ai.com.nlp/open-model-catalog",
+        "version": "6f0865001e298e025e3a84ad9d9169a8010cf79ee93bd69c5d7ff255fc0b7775",
+        "ok": false,
+        "reason": "項目が足りません: topic・keywords",
+        "inputHash": "f25dc4c6eeacb44c6a3d13d39e91f7c8dc0f66f5c179962ca83c5ace0f90b4a8",
+        "outputHash": "5dc44eb4fe2c1675faa7ff13d22dae09d44434daf86ee0efc46241df8d410c88",
+        "at": "2026-11-24T05:07:33.468Z"
+      }
+    },
+    {
+      "capability": "research.market",
+      "ref": "mcp-registry:ai.agenticplug/agent-ready-report",
+      "name": "Agent Ready Report",
+      "host": "scan.agenticplug.ai",
+      "status": "skipped",
+      "reason": "読むだけで、見本を入れられる道具がありません（外に影響が出る道具は呼びません）。",
+      "endpoint": "https://scan.agenticplug.ai/mcp",
+      "registryVersion": "1.0.0",
+      "tool": null,
+      "argKeys": [],
+      "toolsHash": "5a77588863e9cd85f56e22460aa82db2c409a79f2b1d69691a427f33d03d7007",
+      "verification": null
+    },
+    {
+      "capability": "research.market",
+      "ref": "mcp-registry:ai.boltclaw/docs",
+      "name": "Bolt Claw documentation",
+      "host": "boltclaw.ai",
+      "status": "called",
+      "reason": "JSON のオブジェクトか配列が返っていません。",
+      "endpoint": "https://boltclaw.ai/docs/mcp-server",
+      "registryVersion": "1.53.0",
+      "tool": "search",
+      "argKeys": [
+        "query"
+      ],
+      "toolsHash": "f1795ba631b4cbf0d4578407c2c48fc922a771e160a2991554b3face198db341",
+      "verification": {
+        "capability": "research.market",
+        "ref": "mcp-registry:ai.boltclaw/docs",
+        "version": "0258d85f57d50b46663d096c01c547cc9908fd98de1fc47a492c2c945b1dd06c",
+        "ok": false,
+        "reason": "JSON のオブジェクトか配列が返っていません。",
+        "inputHash": "f25dc4c6eeacb44c6a3d13d39e91f7c8dc0f66f5c179962ca83c5ace0f90b4a8",
+        "outputHash": "62e13904c5acbc8a3504884627665b896c3c8d34802c1c8c9dc2ad46cac63747",
+        "at": "2026-11-24T05:07:34.908Z"
+      }
+    },
+    {
+      "capability": "research.market",
+      "ref": "mcp-registry:ai.coreyjames/portfolio",
+      "name": "Corey James portfolio",
+      "host": "coreyjames.ai",
+      "status": "called",
+      "reason": "項目が足りません: topic・keywords",
+      "endpoint": "https://coreyjames.ai/mcp",
+      "registryVersion": "1.0.0",
+      "tool": "search",
+      "argKeys": [
+        "query"
+      ],
+      "toolsHash": "d14f71b8fc625b1b6260e73bef0a28de0e02a91662ad0bd16945067e5656d177",
+      "verification": {
+        "capability": "research.market",
+        "ref": "mcp-registry:ai.coreyjames/portfolio",
+        "version": "6533351dc65f3caadf7b3c924a6ef4dfaabca7450d924bc3360fad16a720181f",
+        "ok": false,
+        "reason": "項目が足りません: topic・keywords",
+        "inputHash": "f25dc4c6eeacb44c6a3d13d39e91f7c8dc0f66f5c179962ca83c5ace0f90b4a8",
+        "outputHash": "170c216719e331f0ca6631312799832d4983bb8476d5059d639a367a20f48a84",
+        "at": "2026-11-24T05:07:36.062Z"
+      }
+    },
+    {
+      "capability": "research.market",
+      "ref": "mcp-registry:ai.context-link/context-link",
+      "name": "Context Link",
+      "host": "www.context-link.ai",
+      "status": "called",
+      "reason": "呼び出しが失敗しました: サインインが要ります",
+      "endpoint": "https://www.context-link.ai/mcp",
+      "registryVersion": "1.0.0",
+      "tool": "ask_question",
+      "argKeys": [
+        "query"
+      ],
+      "toolsHash": "247755bc42df78dd1c9eae2cfc6f78e099437a286077958a835df0d8a78a81f7",
+      "verification": {
+        "capability": "research.market",
+        "ref": "mcp-registry:ai.context-link/context-link",
+        "version": "b5247c64138dd5e41910fddf6d231d52d1f25abeecd517aac272ef75c98591f8",
+        "ok": false,
+        "reason": "呼び出しが失敗しました: サインインが要ります",
+        "inputHash": "f25dc4c6eeacb44c6a3d13d39e91f7c8dc0f66f5c179962ca83c5ace0f90b4a8",
+        "outputHash": null,
+        "at": "2026-11-24T05:07:38.740Z"
+      }
+    },
+    {
+      "capability": "research.market",
+      "ref": "mcp-registry:ai.beliefstate/investor-research",
+      "name": "BeliefState",
+      "host": "beliefstate.ai",
+      "status": "called",
+      "reason": "項目が足りません: topic・keywords",
+      "endpoint": "https://beliefstate.ai/v1/research/mcp",
+      "registryVersion": "1.1.1",
+      "tool": "get_companies",
+      "argKeys": [
+        "q"
+      ],
+      "toolsHash": "bc486def6a432a7bc5f9bfe35db6f363bc1934fb1170531bedc329a76284bd04",
+      "verification": {
+        "capability": "research.market",
+        "ref": "mcp-registry:ai.beliefstate/investor-research",
+        "version": "b379d25cae4e245a706b0a9576a3be176f4094fd20472376f6871210d5322dd3",
+        "ok": false,
+        "reason": "項目が足りません: topic・keywords",
+        "inputHash": "f25dc4c6eeacb44c6a3d13d39e91f7c8dc0f66f5c179962ca83c5ace0f90b4a8",
+        "outputHash": "6160c302da6057995eccc9c15b77ee638f0df5e10711b9455723599c18366273",
+        "at": "2026-11-24T05:07:40.452Z"
+      }
+    },
+    {
+      "capability": "research.market",
+      "ref": "mcp-registry:ai.bordet/bordet",
+      "name": "Bordet AI",
+      "host": "www.bordet.ai",
+      "status": "called",
+      "reason": "呼び出しが失敗しました: サインインが要ります",
+      "endpoint": "https://www.bordet.ai/api/mcp/mcp",
+      "registryVersion": "1.1.0",
+      "tool": "search_memory",
+      "argKeys": [
+        "query"
+      ],
+      "toolsHash": "5d5d46e397d49c431983e4c9ff4ae412ed861697826a85a30b3299c48b9ec682",
+      "verification": {
+        "capability": "research.market",
+        "ref": "mcp-registry:ai.bordet/bordet",
+        "version": "58018dc2209d1cc95f8cf2408c93e98be61df638600cae25e0570594db9fc02a",
+        "ok": false,
+        "reason": "呼び出しが失敗しました: サインインが要ります",
+        "inputHash": "f25dc4c6eeacb44c6a3d13d39e91f7c8dc0f66f5c179962ca83c5ace0f90b4a8",
+        "outputHash": null,
+        "at": "2026-11-24T05:07:42.097Z"
+      }
+    },
+    {
+      "capability": "research.market",
+      "ref": "mcp-registry:ae.beachclubs/mcp",
+      "name": "BeachClubs.ae",
+      "host": "www.beachclubs.ae",
+      "status": "called",
+      "reason": "項目が足りません: topic・keywords",
+      "endpoint": "https://www.beachclubs.ae/mcp",
+      "registryVersion": "0.3.0",
+      "tool": "search_beach_clubs",
+      "argKeys": [
+        "query"
+      ],
+      "toolsHash": "c53e61b6cddfebfb0a8c2e1c6074ee0e7cba9dfdb08aadf5921ceea2d223b61d",
+      "verification": {
+        "capability": "research.market",
+        "ref": "mcp-registry:ae.beachclubs/mcp",
+        "version": "e3d6f135a242d4984f115c648dcc7c4e7ef3a47458f0efcf9d6ad7b780e59cee",
+        "ok": false,
+        "reason": "項目が足りません: topic・keywords",
+        "inputHash": "f25dc4c6eeacb44c6a3d13d39e91f7c8dc0f66f5c179962ca83c5ace0f90b4a8",
+        "outputHash": "28ee09307718540a9b5e4883c32a022435ba95f66d1b3a07fd5b02a8f660f254",
+        "at": "2026-11-24T05:07:43.627Z"
+      }
+    },
+    {
+      "capability": "research.market",
+      "ref": "mcp-registry:ai.cotal/cotal",
+      "name": "COTAL actions (cotal.ai)",
+      "host": "cotal.ai",
+      "status": "called",
+      "reason": "項目が足りません: topic・keywords",
+      "endpoint": "https://cotal.ai/mcp",
+      "registryVersion": "1.1.0",
+      "tool": "cotal_search",
+      "argKeys": [
+        "query"
+      ],
+      "toolsHash": "85e87e79ec4ebfecc5e6f473ec0012e42918d591f5653e6f14b2ff3b9163d916",
+      "verification": {
+        "capability": "research.market",
+        "ref": "mcp-registry:ai.cotal/cotal",
+        "version": "2cf584b9e0ee3f847680fdba11ed234b0355c2682fcb1fb85f20ac0c998cb72b",
+        "ok": false,
+        "reason": "項目が足りません: topic・keywords",
+        "inputHash": "f25dc4c6eeacb44c6a3d13d39e91f7c8dc0f66f5c179962ca83c5ace0f90b4a8",
+        "outputHash": "170a5676a6f0d040eb9dc836bdaae1b5fcd95169f93a003850d3e1dee775130e",
+        "at": "2026-11-24T05:07:46.310Z"
+      }
+    },
+    {
+      "capability": "research.market",
+      "ref": "mcp-registry:ai.darkfunnels/docs",
+      "name": "DarkFunnels documentation",
+      "host": "docs.darkfunnels.ai",
+      "status": "called",
+      "reason": "JSON のオブジェクトか配列が返っていません。",
+      "endpoint": "https://docs.darkfunnels.ai/mcp",
+      "registryVersion": "1.0.0",
+      "tool": "search_dark_funnels",
+      "argKeys": [
+        "query"
+      ],
+      "toolsHash": "6fb0ac49cdbe906cfda296d00f9a39b9101b71d0543e6677830797890c86ad72",
+      "verification": {
+        "capability": "research.market",
+        "ref": "mcp-registry:ai.darkfunnels/docs",
+        "version": "b45b0a56208c4ac8ac8b3c7d8abf7f81cfa45b790229d8a1a6fdfeac26dbb2e2",
+        "ok": false,
+        "reason": "JSON のオブジェクトか配列が返っていません。",
+        "inputHash": "f25dc4c6eeacb44c6a3d13d39e91f7c8dc0f66f5c179962ca83c5ace0f90b4a8",
+        "outputHash": "cf62a14525168101da964bd1ff9a8a267fb9e25bd3f70d0de2651f0ef9d61138",
+        "at": "2026-11-24T05:07:47.464Z"
+      }
+    },
+    {
+      "capability": "research.market",
+      "ref": "mcp-registry:ai.agentcv/registry",
+      "name": "AgentCV",
+      "host": "agentcv.ai",
+      "status": "called",
+      "reason": "項目が足りません: topic・keywords",
+      "endpoint": "https://agentcv.ai/mcp",
+      "registryVersion": "1.0.0",
+      "tool": "search_teams",
+      "argKeys": [
+        "query"
+      ],
+      "toolsHash": "50a21d430506e0dc24c3d786babb7b75062ab0aca607f94470e550406b866c85",
+      "verification": {
+        "capability": "research.market",
+        "ref": "mcp-registry:ai.agentcv/registry",
+        "version": "0b496f93c38702d07601c3e3dec563b276dac9ac450b5f5fce0fddd5520419f2",
+        "ok": false,
+        "reason": "項目が足りません: topic・keywords",
+        "inputHash": "f25dc4c6eeacb44c6a3d13d39e91f7c8dc0f66f5c179962ca83c5ace0f90b4a8",
+        "outputHash": "2220205e25a830e1adf55532a4c35060bfe106ca34a381c1fd6778aa35c341d3",
+        "at": "2026-11-24T05:07:48.713Z"
+      }
+    },
+    {
+      "capability": "research.market",
+      "ref": "mcp-registry:ai.airshelf/catalog",
+      "name": "AirShelf Catalog",
+      "host": "mcp.airshelf.ai",
+      "status": "called",
+      "reason": "項目が足りません: topic・keywords",
+      "endpoint": "https://mcp.airshelf.ai/mcp",
+      "registryVersion": "1.0.0",
+      "tool": "search_catalog",
+      "argKeys": [
+        "q"
+      ],
+      "toolsHash": "81843665d3657bcb52b21e4232de9d1b9a6f20c0b19ab19cae621b230316e0e2",
+      "verification": {
+        "capability": "research.market",
+        "ref": "mcp-registry:ai.airshelf/catalog",
+        "version": "566b15934eb862ed9e22cc10bfc4f807a7e5bed527a687b6a7501f10a7f3fdae",
+        "ok": false,
+        "reason": "項目が足りません: topic・keywords",
+        "inputHash": "f25dc4c6eeacb44c6a3d13d39e91f7c8dc0f66f5c179962ca83c5ace0f90b4a8",
+        "outputHash": "9839c7a9a685dfbbb6c921eb52eae2b89bddf3e4a23672a8b0983e7d006abc94",
+        "at": "2026-11-24T05:07:50.271Z"
+      }
+    },
+    {
+      "capability": "research.market",
+      "ref": "mcp-registry:ai.commercebook/commercebook",
+      "name": "CommerceBook",
+      "host": "commercebook.ai",
+      "status": "skipped",
+      "reason": "読むだけで、見本を入れられる道具がありません（外に影響が出る道具は呼びません）。",
+      "endpoint": "https://commercebook.ai/mcp",
+      "registryVersion": "0.6.0",
+      "tool": null,
+      "argKeys": [],
+      "toolsHash": "a0d793f30bf21ba0e18f602c8494997c356956071b61ee94b3e96530a6ff25fd",
+      "verification": null
+    },
+    {
+      "capability": "tracking.results",
+      "ref": "mcp-registry:ai.bidbetter/collector-car-values",
+      "name": "BidBetter collector-car values",
+      "host": "bidbetter.ai",
+      "status": "skipped",
+      "reason": "読むだけで、見本を入れられる道具がありません（外に影響が出る道具は呼びません）。",
+      "endpoint": "https://bidbetter.ai/api/mcp",
+      "registryVersion": "1.0.0",
+      "tool": null,
+      "argKeys": [],
+      "toolsHash": "4788b68e89380aed4a93ac94e99adf3751e8e3a0479bf883644bd01605aaeede",
+      "verification": null
+    },
+    {
+      "capability": "tracking.results",
+      "ref": "mcp-registry:agency.justidea/justidea-agency",
+      "name": "JustIdea Agency",
+      "host": "justidea.agency",
+      "status": "skipped",
+      "reason": "読むだけで、見本を入れられる道具がありません（外に影響が出る道具は呼びません）。",
+      "endpoint": "https://justidea.agency/mcp",
+      "registryVersion": "1.2.0",
+      "tool": null,
+      "argKeys": [],
+      "toolsHash": "ed7a5d6f65d7186296a1e40298c5740ce98dc910fc95515c2e971b77dbc33c52",
+      "verification": null
+    },
+    {
+      "capability": "tracking.results",
+      "ref": "mcp-registry:ai.4ai/domains",
+      "name": "4ai – premium .ai domains for sale",
+      "host": "4ai.ai",
+      "status": "skipped",
+      "reason": "読むだけで、見本を入れられる道具がありません（外に影響が出る道具は呼びません）。",
+      "endpoint": "https://4ai.ai/mcp",
+      "registryVersion": "1.0.0",
+      "tool": null,
+      "argKeys": [],
+      "toolsHash": "8d9483da2a8ea0c1ea163765ee67ec220e882be01de8f9a477be30aa3324588d",
+      "verification": null
+    },
+    {
+      "capability": "tracking.results",
+      "ref": "mcp-registry:ai.aeoengine/best-ai-search-agency-aeo-report",
+      "name": "Best AI Search Agency AEO Report",
+      "host": "aeoengine.ai",
+      "status": "skipped",
+      "reason": "読むだけで、見本を入れられる道具がありません（外に影響が出る道具は呼びません）。",
+      "endpoint": "https://aeoengine.ai/mcp",
+      "registryVersion": "2.0.0",
+      "tool": null,
+      "argKeys": [],
+      "toolsHash": "78162c476bd6f3bb055a995ca122e0f03502b1b9abb0d8391edc8be9616b9a04",
+      "verification": null
+    },
+    {
+      "capability": "tracking.results",
+      "ref": "mcp-registry:ai.clearvoyance/clearvoyance",
+      "name": "Clearvoyance",
+      "host": "clearvoyance.ai",
+      "status": "skipped",
+      "reason": "読むだけで、見本を入れられる道具がありません（外に影響が出る道具は呼びません）。",
+      "endpoint": "https://clearvoyance.ai/mcp",
+      "registryVersion": "1.1.0",
+      "tool": null,
+      "argKeys": [],
+      "toolsHash": "511d6a9df0f5448d604c4b926ec24868d7c19fbb7646f9993e35d7dc3926294d",
+      "verification": null
+    },
+    {
+      "capability": "tracking.results",
+      "ref": "mcp-registry:ae.projectory/mcp",
+      "name": "Projectory",
+      "host": "mcp.projectory.ae",
+      "status": "skipped",
+      "reason": "読むだけで、見本を入れられる道具がありません（外に影響が出る道具は呼びません）。",
+      "endpoint": "https://mcp.projectory.ae/mcp",
+      "registryVersion": "0.7.0",
+      "tool": null,
+      "argKeys": [],
+      "toolsHash": "2d041d517745f59b64d7b26fcc463187cf7b6981d2c9f45ce03eed5465727539",
+      "verification": null
+    },
+    {
+      "capability": "tracking.results",
+      "ref": "mcp-registry:ai.aibotoffice/bot-office",
+      "name": "Bot Office",
+      "host": "aibotoffice.ai",
+      "status": "skipped",
+      "reason": "読むだけで、見本を入れられる道具がありません（外に影響が出る道具は呼びません）。",
+      "endpoint": "https://aibotoffice.ai/mcp",
+      "registryVersion": "0.1.2",
+      "tool": null,
+      "argKeys": [],
+      "toolsHash": "fa54dd5a3eaa1cf332574f0c8206232b364183d6fe6886406cb2a9cc1ea33ae1",
+      "verification": null
+    },
+    {
+      "capability": "tracking.results",
+      "ref": "mcp-registry:ai.aldro/tax",
+      "name": "Aldro: small-business tax",
+      "host": "aldro.ai",
+      "status": "skipped",
+      "reason": "読むだけで、見本を入れられる道具がありません（外に影響が出る道具は呼びません）。",
+      "endpoint": "https://aldro.ai/mcp",
+      "registryVersion": "1.0.0",
+      "tool": null,
+      "argKeys": [],
+      "toolsHash": "cfa5e6ac01030dc5cd067ee9adec739691cb1870767e964667f68f3ab070889b",
+      "verification": null
+    },
+    {
+      "capability": "tracking.results",
+      "ref": "mcp-registry:ai.analyticslegends/sap-analytics",
+      "name": "Analytics Legends — SAP AI & Analytics MCP Server",
+      "host": "analyticslegends.ai",
+      "status": "skipped",
+      "reason": "読むだけで、見本を入れられる道具がありません（外に影響が出る道具は呼びません）。",
+      "endpoint": "https://analyticslegends.ai/mcp",
+      "registryVersion": "1.2.0",
+      "tool": null,
+      "argKeys": [],
+      "toolsHash": "097b1ca013dd154da54f7099357e09c311f533288fe04bfb4b654a2e8eb924c5",
+      "verification": null
+    },
+    {
+      "capability": "tracking.results",
+      "ref": "mcp-registry:ai.agenticplug/agent-ready-report",
+      "name": "Agent Ready Report",
+      "host": "scan.agenticplug.ai",
+      "status": "skipped",
+      "reason": "読むだけで、見本を入れられる道具がありません（外に影響が出る道具は呼びません）。",
+      "endpoint": "https://scan.agenticplug.ai/mcp",
+      "registryVersion": "1.0.0",
+      "tool": null,
+      "argKeys": [],
+      "toolsHash": "5a77588863e9cd85f56e22460aa82db2c409a79f2b1d69691a427f33d03d7007",
+      "verification": null
+    },
+    {
+      "capability": "tracking.results",
+      "ref": "mcp-registry:ai.darkfunnels/docs",
+      "name": "DarkFunnels documentation",
+      "host": "docs.darkfunnels.ai",
+      "status": "skipped",
+      "reason": "読むだけで、見本を入れられる道具がありません（外に影響が出る道具は呼びません）。",
+      "endpoint": "https://docs.darkfunnels.ai/mcp",
+      "registryVersion": "1.0.0",
+      "tool": null,
+      "argKeys": [],
+      "toolsHash": "6fb0ac49cdbe906cfda296d00f9a39b9101b71d0543e6677830797890c86ad72",
+      "verification": null
+    },
+    {
+      "capability": "tracking.results",
+      "ref": "mcp-registry:ae.datadubai/dubai-real-estate",
+      "name": "Dubai Data — Dubai real estate statistics",
+      "host": "mcp.datadubai.ae",
+      "status": "skipped",
+      "reason": "読むだけで、見本を入れられる道具がありません（外に影響が出る道具は呼びません）。",
+      "endpoint": "https://mcp.datadubai.ae/mcp",
+      "registryVersion": "1.1.0",
+      "tool": null,
+      "argKeys": [],
+      "toolsHash": "cfdca9e2c292a84fb6d1c4f7cd3ca1cc397093d7e717ade5931e735fd31e7525",
+      "verification": null
+    },
+    {
+      "capability": "content.script",
+      "ref": "mcp-registry:ai.arabickeyboard/name-calligraphy",
+      "name": "Arabic Name Calligraphy",
+      "host": "arabickeyboard.ai",
+      "status": "skipped",
+      "reason": "読むだけで、見本を入れられる道具がありません（外に影響が出る道具は呼びません）。",
+      "endpoint": "https://arabickeyboard.ai/mcp",
+      "registryVersion": "1.0.1",
+      "tool": null,
+      "argKeys": [],
+      "toolsHash": "46c8bd64c7bd434914581ab77ad10fcd9ebd51a58af9d44775c84fbc660a342d",
+      "verification": null
+    },
+    {
+      "capability": "content.script",
+      "ref": "mcp-registry:ai.aiphotoanimator/photo-animator",
+      "name": "AI Photo Animator",
+      "host": "aiphotoanimator.ai",
+      "status": "skipped",
+      "reason": "読むだけで、見本を入れられる道具がありません（外に影響が出る道具は呼びません）。",
+      "endpoint": "https://aiphotoanimator.ai/api/mcp",
+      "registryVersion": "1.0.0",
+      "tool": null,
+      "argKeys": [],
+      "toolsHash": "034773d2f01b6f06b22f9fb8d916290acf1ee9159300f41ca61c46bc5b27ede8",
+      "verification": null
+    },
+    {
+      "capability": "content.script",
+      "ref": "mcp-registry:ai.callmcp/server",
+      "name": "CallMCP — Phone Call MCP Server",
+      "host": "callmcp.ai",
+      "status": "called",
+      "reason": "呼び出しが失敗しました: サインインが要ります",
+      "endpoint": "https://callmcp.ai/mcp",
+      "registryVersion": "0.1.5",
+      "tool": "list_knowledge",
+      "argKeys": [
+        "query"
+      ],
+      "toolsHash": "19d7501d47d9d91ebd445a6910f7b00f50fa4d4572e6f8b5880483cfa9f79402",
+      "verification": {
+        "capability": "content.script",
+        "ref": "mcp-registry:ai.callmcp/server",
+        "version": "b2702c41df6405b8c217dfaac56f4d65c72d89a33f7914ef3e5700b5d6df0983",
+        "ok": false,
+        "reason": "呼び出しが失敗しました: サインインが要ります",
+        "inputHash": "de91bc0562c4138a37e3c862718c40b5d22e2df08b13147d2d01f53e0a8c6741",
+        "outputHash": null,
+        "at": "2026-11-24T05:08:09.017Z"
+      }
+    },
+    {
+      "capability": "content.script",
+      "ref": "mcp-registry:ai.clearvoyance/clearvoyance",
+      "name": "Clearvoyance",
+      "host": "clearvoyance.ai",
+      "status": "skipped",
+      "reason": "読むだけで、見本を入れられる道具がありません（外に影響が出る道具は呼びません）。",
+      "endpoint": "https://clearvoyance.ai/mcp",
+      "registryVersion": "1.1.0",
+      "tool": null,
+      "argKeys": [],
+      "toolsHash": "511d6a9df0f5448d604c4b926ec24868d7c19fbb7646f9993e35d7dc3926294d",
+      "verification": null
+    },
+    {
+      "capability": "content.script",
+      "ref": "mcp-registry:ag.hood/name-service",
+      "name": "hood. — .hood name service",
+      "host": "www.hood.ag",
+      "status": "skipped",
+      "reason": "読むだけで、見本を入れられる道具がありません（外に影響が出る道具は呼びません）。",
+      "endpoint": "https://www.hood.ag/api/mcp",
+      "registryVersion": "0.1.0",
+      "tool": null,
+      "argKeys": [],
+      "toolsHash": "ef08c8327fbed34897768607b1ec4cde166d1b683afa2ef618fcfb592b803a68",
+      "verification": null
+    },
+    {
+      "capability": "content.script",
+      "ref": "mcp-registry:ai.agentlookups/groundrules",
+      "name": "GroundRules - US Law Text",
+      "host": "law.agentlookups.ai",
+      "status": "skipped",
+      "reason": "読むだけで、見本を入れられる道具がありません（外に影響が出る道具は呼びません）。",
+      "endpoint": "https://law.agentlookups.ai/mcp",
+      "registryVersion": "1.0.0",
+      "tool": null,
+      "argKeys": [],
+      "toolsHash": "65f1cddafb723b3cec5f4dd6de0b3f65fc67cf6834bcd1c3f79484f49c300897",
+      "verification": null
+    }
+  ]
+}

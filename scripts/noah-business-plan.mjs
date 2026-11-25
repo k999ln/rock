@@ -47,7 +47,8 @@ export async function discoveredAgents(fetcher, origin, maxPages = 50) {
 export function businessReport({ runnable, discovered, verified = {}, owned = new Set(), now = Date.now() }) {
   // 確かめた当てはめだけを工程に当てる。今動かせる物が、もう一覧から外れていたら数えない。
   const live = new Set(runnable.map(a => a.id));
-  const usable = Object.fromEntries(Object.entries(verified).map(([capability, ids]) => [capability, ids.filter(id => live.has(id))]));
+  // Eve が作った部品（eve-part:）は Noah の一覧に載らないので、一覧の有無では外さない（task 130）。
+  const usable = Object.fromEntries(Object.entries(verified).map(([capability, ids]) => [capability, ids.filter(id => live.has(id) || id.startsWith('eve-part:'))]));
   const plans = noahPlanBlueprints(usable, owned);
   const backlog = noahEveBacklog(plans).map(row => ({ ...row,
     runnable: noahAgentsFor(row.capability, runnable).slice(0, 10).map(a => ({ id: a.id, name: a.name })),

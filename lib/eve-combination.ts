@@ -24,7 +24,7 @@ export type EveAgentRef = { ref: string; version: string; tool: string; args?: R
 
 /** 工程の合格条件。Jev が機械で判定できる形だけ。 */
 export type EveAcceptRule =
-  | { type: 'json'; required?: readonly string[]; minItems?: number }
+  | { type: 'json'; required?: readonly string[]; minItems?: number; /** この項目が true の時だけ通す（点検の門。2026-11-24）。 */ mustBeTrue?: readonly string[] }
   | { type: 'text'; minLength?: number; maxLength?: number; mustInclude?: readonly string[] }
   | { type: 'file'; mime: readonly string[]; maxBytes?: number };
 
@@ -311,6 +311,8 @@ export function eveCheckAccept(rule: EveAcceptRule, output: unknown): { ok: bool
       const list = Array.isArray(output) ? output : Object.values(output as object).find(Array.isArray);
       if (!Array.isArray(list) || list.length < rule.minItems) return { ok: false, reason: `${rule.minItems} 件以上の一覧が要ります。` };
     }
+    const notTrue = (rule.mustBeTrue ?? []).filter((k) => Array.isArray(output) || (output as Record<string, unknown>)[k] !== true);
+    if (notTrue.length) return { ok: false, reason: `点検に通っていません: ${notTrue.join('・')} が true ではありません。` };
     return { ok: true, reason: '形が合っています。' };
   }
   if (rule.type === 'text') {
@@ -360,7 +362,7 @@ export function eveCombinationFromBlueprint(
       const rules = `rules:${s.account}`;
       steps.push({
         id: rules, label: `${ACCOUNT_LABEL.get(s.account) ?? s.account}の規約と登録の要件を確かめる`, kind: 'auto',
-        capability: 'research.market', account: s.account, after: [],
+        capability: 'research.terms', account: s.account, after: [],
         flow: { inputs: ['提供元の規約・登録要件'], outputs: ['登録要件の確認結果'] },
       });
       present.add(rules);

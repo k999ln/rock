@@ -1,0 +1,50 @@
+{
+  "schema": "eve-demand-ledger/1",
+  "note": "需要の台帳（task 130 段 3）。誰が何にいくら払っているかを、公開の公式の頁だけから、出典 URL と確かめた日付きで書く。確かめた日から 90 日を過ぎた物は、台帳を組む時に外れる（lib/eve-demand.ts の eveDemandLedger）。ASP の管理画面の中の条件（公開されていない物）は書かない。",
+  "entries": [
+    {
+      "id": "affiliate:a8:lolipop-ai-agent-cloud",
+      "origin": "affiliate",
+      "outcome": "conversion:ai-agent-cloud:contract",
+      "label": "ロリポップ！AIエージェントクラウド（新規契約）",
+      "item": "ロリポップ！AIエージェントクラウド",
+      "condition": "新規契約（虚偽・いたずら・重複・キャンセル・不正・申込不備は否認）",
+      "payer": "GMOペパボ（広告主。A8.net 経由）",
+      "place": "A8.net",
+      "priceYen": 2000,
+      "volumePerWeek": null,
+      "competitors": null,
+      "finance": false,
+      "sources": [
+        {
+          "url": "https://lolipop.jp/ai/agent-cloud/affiliate/",
+          "checkedAt": "2026-11-25T06:35:00Z",
+          "note": "公式のアフィリエイトの頁。「新規契約発生1件あたり」2,000 円（税別・ASPコミッション別）。成果と報酬の確定は A8.net。リスティング広告で商標の語（ロリポップ・AIエージェントクラウド・GMOペパボ等）は禁止。"
+        }
+      ],
+      "checkedAt": "2026-11-25T06:35:00Z"
+    },
+    {
+      "id": "affiliate:ai-blogkun:lite-monthly",
+      "origin": "affiliate",
+      "outcome": "conversion:ai-blog-writer:subscription",
+      "label": "AIブログくん（有料会員の登録・Lite の月額）",
+      "item": "AIブログくん",
+      "condition": "有料会員の登録（無料期間中の解約・期間後の未払いは対象外）",
+      "payer": "LinkWay（AIブログくんの運営。自社の紹介制度）",
+      "place": "AIブログくん（自社の紹介制度）",
+      "priceYen": 4100,
+      "volumePerWeek": null,
+      "competitors": null,
+      "finance": false,
+      "sources": [
+        {
+          "url": "https://www.ai-blogkun.com/partners",
+          "checkedAt": "2026-11-25T06:35:00Z",
+          "note": "公式のパートナー募集の頁。有料会員登録 1 件の成果報酬額は Lite プランの月額で 4,100 円（税込）から。支払いは成果の発生月の翌月。"
+        }
+      ],
+      "checkedAt": "2026-11-25T06:35:00Z"
+    }
+  ]
+}
