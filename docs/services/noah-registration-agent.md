@@ -83,3 +83,10 @@ Browser Use Cloudのsignin/分離ブラウザ・本人への引継ぎを参考�
 HMAC付きのサーバー間通信、登録前の本人別暗号化CAS、入力操作の通し番号、4分の期限/停止で再送を防ぐ。WorkerのDurable ObjectsにはID・状態・期限だけを保存し、入力情報/画面/外部キーは永続化しない。Noahの `/api/noah/registration/browser` が本人と登録IDを照合し、専用画面 `/noah/registration/browser` に画像と状態だけを返す。本人確認の完了後、設定した本人照会APIでキーを確認し、Noahの暗号化R2へ保存してブラウザを閉じる。接続先設定のhashをキーの保管記録と照合し、設定変更で既存キーの送信先がすり替わることを防ぐ。
 
 設定は `NOAH_REGISTRATION_BROWSER_URL` と秘密の `NOAH_REGISTRATION_BROWSER_KEY`。既存profile暗号鍵は維持。browser実行の登録先は `execution: browser`、`requiresAccount: true`、同一提供者originの `mcpUrl` を持つ。対応は固定フォームとBearer認証のMCP、書類アップロード/OAuth更新は対象ごとの追加実装が必要。実在サービスの手順が未検証なら公開の登録先一覧へ出さない。初期のクラウド実測予算は合計10分/日（4分×2回＋2分×1回）で、100人向けの受付容量ではない。[実行環境の設定と制約](../../services/noah-registration-browser/README.md)。
+
+## 2026-11-25 の会話（個人情報の登録）
+
+- 意向: 「個人情報欲しい。けど、その個人情報はいかに、シームレスに登録してもらうか」「iPhone にすでに自分のコンタクトみたいに登録してあるやつ持ってこれたりしないかな」。
+- できる事: iPhone の Safari は、フォームの項目に入力の種類（HTML の `autocomplete`。`name`・`email`・`tel`・`postal-code`・`address-level1` など）が付いていれば、本人の連絡先カードから一度に入れられる。Noah の個人情報の項目には、この種類を付ける。
+- 採らない事: 銀行アプリを開いた時に口座を自動で集める規約の案（会話で「ちょっと怖い」）。iPhone では、他のアプリの中身を読めない。口座は本人が入れる。
+- 会員制との関係: 上の「登録不要の範囲」のとおり、2026-11-22 に会員制を廃止した。全員に個人情報を登録してもらう形に戻すか、定期便を受ける人だけにするかは、本人の回答待ち（07 の未決「会員登録」）。
