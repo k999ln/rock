@@ -1,5 +1,7 @@
 ## 2026-11-26
 
+- 関連チャットと20 PR、miiの未コミット43ファイル、最新パッケージ設計を照合して統合。task番号の衝突を134〜137へ整理し、最新仕様に回帰試験を合わせた（[task138](codex/tasks/138-cross-chat-sync.md)、PR準備中）。
+
 - Noahの設計に掲載・本人用登録・経路別の成果判定を反映。11月25日の2,428件再調査と本番の再開条件を記録。パッケージの単一ボタン開始、月間成果、eSIMの接続枠案を仕様化（task123・126、[PR #79](https://github.com/iceiceice999/rock/pull/79)）。
 
 - VS Codeを「avokado（統合版）」の単一workspaceへ切り替え、最新eSIM設計・統合ブランチ・ウインドウ1件を画面確認（task133、PR未作成）。
@@ -115,6 +117,8 @@
 - Noahへ無料枠の公式MCPクラウド実行器を追加。永続alarm、依頼分離、期限・停止、対応profile限定、掲載削除後の停止を実装（[PR #18](https://github.com/iceiceice999/rock/pull/18)、Noah本番受入は継続中）。
 - Noahの実モデル継続時のHTTP400と未実行の完了報告を修正し、公開209のPixelで外部登録→認証付き実行→成果の再読込を再検証（[PR #19](https://github.com/iceiceice999/rock/pull/19)）。
 - NoahのWordPress/EC集客記事と直接導線を改善し、自社Xで紹介を公開。入口の経路別集計と6時間の集客改善を接続。実顧客の申込・承認は未確認（task101、[PR #17](https://github.com/iceiceice999/rock/pull/17)）。
+
+- mii成人研修の3方式比較教材・匿名記入票・翌日再現課題・ローカル集計を`docs/mii/training-study.md`と`experiments/motion-parallax/training-study/`へ追加。共通OSと全室目標を保持、実追跡・実機・参加者未受入。PR未作成。
 
 ## 2026-11-22
 
@@ -409,10 +413,6 @@
 - Noahをニュース・投稿・コミュニティー・Agentの混合タイムラインへ統一。種別ラベルとMac版への案内を追加（本人指示で未公開、PR未作成）。
 
 - avoado.si/noahに公開カタログ・検索・詳細とMac版への導線を追加。私有データ/本番DBは変更しない（Sites用ソース、本人指示で公開せず準備まで、PR未作成）。
-
-## 2026-11-23
-
-- mii成人研修の3方式比較教材・匿名記入票・翌日再現課題・ローカル集計を`docs/mii/training-study.md`と`experiments/motion-parallax/training-study/`へ追加。共通OSと全室目標を保持、実追跡・実機・参加者未受入。PR未作成。
 
 ## 2026-11-08
 

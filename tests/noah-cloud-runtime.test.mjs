@@ -174,27 +174,33 @@ void test('connection refuses expired-ID replay after disconnect and keeps owned
   assert.equal(records.has(`${owner}:${id(11)}`), false);
 });
 
-void test('free CLI caps are three per owner and ten total per UTC day, persist across restart, and reject without reserving', async t => {
+void test('free CLI neuron limits persist across restart and reject without reserving or starting work', async t => {
   let now = Date.UTC(2026, 10, 23, 23, 59, 59);
   t.mock.method(Date, 'now', () => now);
   const ctx = context(), env = { NOAH_CLOUD_MODE: 'free' };
   let budget = new NoahCloudBudget(ctx, env);
   const admit = (n, who) => budget.fetch(request({ id: id(n), owner: who, mode: 'run' }));
-  const release = n => budget.fetch(request({ action: 'release', id: id(n) }));
-  for (let n = 1; n <= 3; n++) {
+  const release = async (n, who) => {
+    assert.equal((await budget.fetch(request({ action: 'use', id: id(n), owner: who, neurons: 1200 }))).status, 200);
+    await budget.fetch(request({ action: 'release', id: id(n) }));
+  };
+  for (let n = 1; n <= 2; n++) {
     assert.equal((await admit(n, owner)).status, 200);
-    await release(n);
+    await release(n, owner);
   }
   budget = new NoahCloudBudget(context(ctx.data), env);
   const before = structuredClone(ctx.data.get('budget'));
-  assert.equal((await admit(4, owner)).status, 429);
+  assert.equal((await admit(3, owner)).status, 429);
   assert.deepEqual(ctx.data.get('budget'), before);
-  for (let n = 4; n <= 10; n++) {
-    assert.equal((await admit(n, `owner-${n}`)).status, 200);
-    await release(n);
+  for (let n = 3; n <= 6; n++) {
+    const anotherOwner = String(n).padStart(64, '0');
+    assert.equal((await admit(n, anotherOwner)).status, 200);
+    await release(n, anotherOwner);
   }
   const full = structuredClone(ctx.data.get('budget'));
-  assert.equal(full.jobs, 10);
+  assert.equal(full.jobs, 6);
+  assert.equal(full.neurons, 7200);
+  assert.equal(full.ownerNeurons[owner], 2400);
   assert.equal((await admit(11, 'new-owner')).status, 429);
   assert.deepEqual(ctx.data.get('budget'), full);
   // The free runtime inherits this admission gate: a full budget must not
@@ -203,7 +209,7 @@ void test('free CLI caps are three per owner and ten total per UTC day, persist 
   rejected.env.BUDGET = { getByName: () => ({ fetch: (url, init) => budget.fetch(new Request(url, init)) }) };
   const response = await rejected.instance.fetch(request({ action: 'start', owner: 'new-owner', id: id(12), profile: 'hermes', mode: 'run', prompt: 'do not execute' }));
   assert.equal(response.status, 429);
-  assert.match((await response.json()).error, /クラウドの利用枠/);
+  assert.match((await response.json()).error, /無料のクラウドの枠/);
   assert.equal(rejected.ctx.data.has('job'), false);
   assert.equal(rejected.ctx.tasks.length, 0);
   assert.deepEqual(rejected.counts(), { starts: 0, stops: 0, calls: 0 });

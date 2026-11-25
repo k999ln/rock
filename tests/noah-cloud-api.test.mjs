@@ -276,7 +276,7 @@ void test('CLI quota rejection does not retry or charge and saved results remain
   const pageRoutes = await import('../lib/noah-page-routes.ts');
   const unused = { default: () => null };
   const savedModules = { '@/lib/noah-my-routes': myRoutes, '@/lib/noah-page-routes': pageRoutes,
-    './noah-library': unused, './noah-boards': {}, './sky-agent-library': unused, './sky-output-center': unused, './noah-result-data': unused };
+    './noah-theater': unused, './noah-library': unused, './noah-boards': {}, './sky-agent-library': unused, './sky-output-center': unused, './noah-result-data': unused };
   const w = await world(t);
   await w.request({ action: 'start', jobId: id(800), connectionId: id(801), prompt: 'saved input' });
   await w.deliver({ id: id(800), profile: 'hermes', version, distribution, mode: 'run', state: 'returned', calls: 1,

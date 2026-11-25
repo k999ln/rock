@@ -217,13 +217,14 @@ await test('自社MCPから匿名準備票を作り、共通Workへ保存・再�
     const askView = await import('../lib/noah-ask-view.ts');
     const myRoutes = await import('../lib/noah-my-routes.ts');
     const pageRoutes = await import('../lib/noah-page-routes.ts');
+    const theaterFilms = await import('../lib/noah-theater-films.ts');
     const unused = { default: () => null };
     const savedModules = { '@/lib/noah-my-routes': myRoutes, '@/lib/noah-page-routes': pageRoutes,
-      './noah-library': unused, './noah-boards': {}, './sky-agent-library': unused, './sky-output-center': unused, './noah-result-data': unused };
+      './noah-theater': unused, './noah-library': unused, './noah-boards': {}, './sky-agent-library': unused, './sky-output-center': unused, './noah-result-data': unused };
     const cloudContract = await import('../lib/noah-cloud-contract.ts');
     const directory = createNoahDirectoryApi({ ...deps, directory: async () => entries });
     const provider = createNoahProviderApi(deps), asks = createNoahAskApi(deps);
-    const ui = screen({ width: 390, modules: { ...savedModules,
+    const ui = screen({ width: 390, modules: { ...savedModules, '@/lib/noah-theater-films': theaterFilms,
       '@/lib/owner-intent': ownerIntent, '@/lib/noah-ask-view': askView, '@/lib/noah-cloud-contract': cloudContract,
       './noah-timeline': { default: () => null }, './noah-ready-detail': { default: () => null },
       './noah-agent-source-ratings': { default: () => null },

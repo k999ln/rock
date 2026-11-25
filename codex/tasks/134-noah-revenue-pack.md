@@ -1,4 +1,4 @@
-# 131 本人用の収益業務パックと無料クラウド直接接続
+# 134 本人用の収益業務パックと無料クラウド直接接続
 
 本人指示: 2026-11-25。GitHub/Hugging Face等から収益業務Agentを探してまとめ、本人分だけeSIM不要・追加支出0で実行。
 正本: docs/services/noah-revenue-pack.md、docs/structure/04-eve-noa-amc-sky.md。

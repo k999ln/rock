@@ -196,7 +196,7 @@ migration 0054 の適用と配備は、本人の許可の後。配備の後、�
 - **作り方**（`scripts/noah-pin-video.mjs`）: ffmpeg で、5〜8 秒（既定 6 秒）を切り出し、縦 3:4 に切り抜き（横長は `--x` の位置）、480×640・24 コマ/秒・音なしの H.264 にする。終わりの 0.5 秒で始めの絵へ溶かすので、繰り返してもつなぎ目が見えない。名前は、できた mp4 の SHA-256 の頭 32 字。`--gif` で本物の GIF も作れる（保存や共有の時のため）。
 - **選び方**（`pickNoahPinVideo`）: Agent の中身の言葉（英語。題・入れる物・返る物から AI が書く）と、動画に映っている物の言葉（英語。AI が絵を見て書く）の重なりで選ぶ。重なりが 3 つに 1 つ以上の物だけ。AI の動画に合う物があれば AI から、無ければ実写から。1 回使われるごとに 0.2 点引く。合う物が無ければ図解のまま。
 - **画面**（`components/noah-art-motion.tsx` の `PinLoopVideo`）: 絵の順は、作者の表紙 → ピンの動画 → 図解 → 場面の絵。見えている間だけ読み込んで繰り返し、画面の外では止める。動きを減らす設定の人には、最初の絵だけ（動画は読まない）。カードの絵は縦 3:4。
-- **集める・割り当てる**のは [task 132](../../codex/tasks/132-noah-pin-videos.md)（Codex。本人の Mac で）。
+- **集める・割り当てる**のは [task 137](../../codex/tasks/137-noah-pin-videos.md)（Codex。本人の Mac で）。
 - **権利**: Higgsfield のみんなの動画は、Higgsfield の決まりでは作った人の物で、他の人が使ってよいという決まりは無い（[Higgsfield のヘルプ](https://higgsfield.ai/creator-hub/help-center/account-and-privacy/who-owns-my-generations-and-can-i-use-them-commercially)）。本人は「すでに許可とってるから大丈夫だよ」と言った。task 132 は、どの動画の許可かを、出どころの記録（`sourceId`・`sourceUrl`）で 1 本ずつたどれるようにする。実写で足す Pexels・Coverr は、商用で使えて作り変えてよい（[Pexels](https://help.pexels.com/hc/en-us/articles/360042295174-What-is-the-license-of-the-photos-and-videos-on-Pexels)・[Coverr](https://coverr.co/license)）。ただし、API の決まりでは、Pexels へのリンク（Pexels）や、Coverr と作った人の名前（Coverr の無料の API）を出す事になっている。本人の決定は「出どころは今は書かない」なので、Pexels・Coverr の API で集める前に、出どころの表示をどうするかを本人に聞く（task 132）。
 - 試験: `tests/noah-pin-video.test.mjs`（1 本の形の確かめ・言葉のそろえ方・AI を先に選ぶ・使い回しを減らす・使う所の決め方・3:4 の切り出し・合成した動画から、音なし・480×640・6 秒の mp4 と最初の絵と GIF を作り、最後のコマが最初のコマへつながる・短すぎる動画は使わない）。ffmpeg が無い所では、変換の試験だけ飛ばす。
 

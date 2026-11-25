@@ -113,9 +113,10 @@
 
 | # | ファイル | 一言 | 状態 |
 | --- | --- | --- | --- |
+| 138 | [138-cross-chat-sync.md](138-cross-chat-sync.md) | 別チャット・未マージPR・miiの差分を最新設計/コードへ統合 | 検証中・PR準備中 |
 | 133 | [133-workspace-consolidation.md](133-workspace-consolidation.md) | 最新mainとローカル作業をavokdoへ一本化 | ✅ ファイル統合・型・lint・17試験成功。VS Codeはavokado統合版1ウインドウを確認、PR未作成 |
-| 131 | [131-noah-revenue-pack.md](131-noah-revenue-pack.md) | 本人用収益Agent・無料クラウド直接接続 | 3担当無料推論・Pixel Wi-Fi起動を受入。クラウド実行器6試験通過、無料プラン確認・配備待ち。PR未作成 |
-| 132 | [132-esim-private-cloud-design.md](132-esim-private-cloud-design.md) | eSIMから本人専用クラウド・適法な犯罪予防への協力 | ✅ ローカル設計反映・文書検証・VS Code表示確認。実装／提携は未実施、PR未作成 |
+| 134 | [134-noah-revenue-pack.md](134-noah-revenue-pack.md) | 本人用収益Agent・無料クラウド直接接続 | 3担当無料推論・Pixel Wi-Fi起動を受入。クラウド実行器6試験通過、無料プラン確認・配備待ち。PR未作成 |
+| 135 | [135-esim-private-cloud-design.md](135-esim-private-cloud-design.md) | eSIMから本人専用クラウド・適法な犯罪予防への協力 | ✅ ローカル設計反映・文書検証・VS Code表示確認。実装／提携は未実施、PR未作成 |
 | 99 | [99-noah-result-data.md](99-noah-result-data.md) | 成果の本人用検索・出力と同意付き運営提供・撤回 | ✅ PR #334 |
 | 100 | [100-noah-standalone-ui.md](100-noah-standalone-ui.md) | Noahの専用UI・登録Agent・利用人数/王冠/コメント・実行中タブ・接続案内・開発者向けメール相談 | ✅ 現mainにUI・登録・保存・タップ反応を統合（[PR #3](https://github.com/iceiceice999/rock/pull/3)、[PR #6](https://github.com/iceiceice999/rock/pull/6)）。公開203のPixelでAgentboard新規登録→認証付き実行→成果再読込、音・振動を確認（[PR #10](https://github.com/iceiceice999/rock/pull/10)）。公開210のPixelで公開209の保存済み成果を再読込して保持を確認 [PR #19](https://github.com/iceiceice999/rock/pull/19)。過去の公開版別記録はtask100/CHANGELOG。任意サービスのブラウザ登録・100人同時外部実行・実eSIM連携は未受入。[PR #24](https://github.com/iceiceice999/rock/pull/24)で目的別の初回導線を追加。初見利用者の評価は[受入手順](../../docs/noah/first-use-architecture.md)で確認する。✅ オレンジのストアとマイAgent、専用Linuxと利用明細（[PR #37](https://github.com/iceiceice999/rock/pull/37)）。 ✅ Today特集、Agent一覧の共通ピン・商品詳細・登録時の表紙動画生成（[PR #41](https://github.com/iceiceice999/rock/pull/41)）。  ✅ 研修導線とCLI上限後の成果閲覧をローカル回帰で確認（[PR #39](https://github.com/iceiceice999/rock/pull/39)）。 |
 | 101 | [101-compute-placement.md](101-compute-placement.md) | 黒殿の 1 ノードを Linux 版 runner の host にし、従量の引き金を測る | 項目 1・4 [#370](https://github.com/k999ln/rock/pull/370)（main への統合は [PR #414](https://github.com/k999ln/rock/pull/414)） |
@@ -158,6 +159,6 @@
 | 130 | [130-eve-si-agent-engineering.md](130-eve-si-agent-engineering.md) | Eve（eve.si）のエージェントエンジニアリング（組み合わせファイルと検査、つなぎ目の変換、試運転、需要の台帳、探索と発見、採点と作り直し、作者の受け取り） | 🔶 段 1〜6・画面・API・本物の候補の確かめ（通過 0）・Eve の部品 11 個（すべて通過）・需要の台帳 2 件・A8.net の組み合わせ（本番に出せる）・本番の実行役と最初の回は済み（Claude、2026-11-25。PR #49・#61・#62・#66・#78）。最初の回は本人の番（A8.net の登録 → 媒体 → 提携の申請 → 公開 → CSV → 入金）で止まっている  ✅ Eveの相談と組み合わせ提案 [PR #49](https://github.com/iceiceice999/rock/pull/49)、相談結果の保存 [PR #57](https://github.com/iceiceice999/rock/pull/57)、Eveの設計相談 [PR #58](https://github.com/iceiceice999/rock/pull/58)、✅ 成果地点と入金後の作者分 [PR #61](https://github.com/iceiceice999/rock/pull/61)、✅ 仕事別の収益明細 [PR #67](https://github.com/iceiceice999/rock/pull/67)、✅ ブラウザー保存先 [PR #68](https://github.com/iceiceice999/rock/pull/68) |
 
 | 132 | [132-noah-revenue-pack-phone.md](132-noah-revenue-pack-phone.md) | 本人無料収益3担当・Mac非依存・携帯とPCの共通Noah | ✅ 3周検証と良否記録。品質/UI修正・公開受入は未完了 [PR #76](https://github.com/iceiceice999/rock/pull/76) |
-| 131 | [131-noah-registration-ux.md](131-noah-registration-ux.md) | Agent利用中の情報登録・再利用、保存/送信/料金の説明 | ✅ 実装・合成APIで390px/1280px確認・全体検証 [PR #63](https://github.com/iceiceice999/rock/pull/63)。未公開・本番外部登録は未実施 |
+| 136 | [136-noah-registration-ux.md](136-noah-registration-ux.md) | Agent利用中の情報登録・再利用、保存/送信/料金の説明 | ✅ 実装・合成APIで390px/1280px確認・全体検証 [PR #63](https://github.com/iceiceice999/rock/pull/63)。未公開・本番外部登録は未実施 |
 | 131 | [131-noah-pin-scenes.md](131-noah-pin-scenes.md) | 約1.7万件のピンに日本語の題と資料の図解（バージョン TAKE。図解はしょうへいさんの Motion Prompt の図解パック（MIT）の書き写し。Luna Max が説明から 24 種類の図を選んで札を書く・確かめ・200件の目視で95%・本番 migration は本人の許可後。バージョン 1 の場面の絵は枝 `claude/noah-pins-version-1`） | 指示書 |
-| 132 | [132-noah-pin-videos.md](132-noah-pin-videos.md) | ピンの動画: 格好いい AI 動画（Higgsfield。本人は許可を取ってあると言った）を集め、5〜8 秒・縦 3:4・音なしのループ（GIF と同じ見た目の mp4）にして、Agent ごとに中身で割り当てる。カードは題名だけ。無作為の 200 件で 95% 以上が合うまで一般には出さない |
+| 137 | [137-noah-pin-videos.md](137-noah-pin-videos.md) | ピンの動画: 格好いい AI 動画（Higgsfield。本人は許可を取ってあると言った）を集め、5〜8 秒・縦 3:4・音なしのループ（GIF と同じ見た目の mp4）にして、Agent ごとに中身で割り当てる。カードは題名だけ。無作為の 200 件で 95% 以上が合うまで一般には出さない |
