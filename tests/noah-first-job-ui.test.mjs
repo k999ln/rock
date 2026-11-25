@@ -34,9 +34,9 @@ void test('the public home opens available tasks directly with their expected ou
   const region = home.find('section').find(s => s.props.id === 'first-jobs');
   assert.equal(region.props.tabIndex, -1);
   assert.equal(home.find('section')[0], region);
-  assert.equal(home.find('h1', 'Today').length, 1);
+  assert.equal(home.find('h1', 'Today').length, 0);
   assert.equal(home.find('time').length, 1);
-  assert.equal(home.find('h2', 'この仕事、誰の担当だっけ？').length, 1);
+  assert.equal(home.find('h1', 'この仕事、誰の担当だっけ？').length, 1);
   assert.ok(home.find('h2').some(h => h.props.id === region.props['aria-labelledby']));
   assert.equal(home.find('a', '専用クラウドを開く')[0].props.href, '/api/noah/cloud-work');
   assert.equal(home.find('a', 'eSIMでつなぐ専用クラウド')[0].props.href, '/connect');
@@ -57,7 +57,7 @@ void test('the public home opens available tasks directly with their expected ou
   assert.equal(ui.calls[0].method, 'GET');
 });
 
-void test('Today places a real featured job and the catalog ahead of store services', async () => {
+void test('The store places a real featured job and the catalog ahead of store services', async () => {
   const memory = choices.find(job => job.id === 'memory');
   const directoryId = 'project-' + 'b'.repeat(64);
   const directoryHref = '/noah/discover/agent?id=' + directoryId;
@@ -80,7 +80,7 @@ void test('Today places a real featured job and the catalog ahead of store servi
     const services = home.find('a', 'Buy agents')[0];
     assert.equal(home.find('a', 'Agent Engineering')[0].props.href, '/noah/engineering');
     assert.equal(feature.props.href, available.length ? memory.href : '/noah/discover/agent?id=' + project);
-    assert.equal(home.find('h2', 'Who’s working on what?').length, available.length);
+    assert.equal(home.find('h1', 'Who’s working on what?').length, available.length);
     assert.equal(directory.props.href, directoryHref);
     const shelf = home.find('section').find(node => node.props['aria-labelledby'] === 'noah-featured-agents-title');
     const shelfNodes = home.nodes(shelf);
