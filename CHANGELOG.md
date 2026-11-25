@@ -1,3 +1,17 @@
+## 2026-11-23
+
+- mii成人研修の3方式比較教材・匿名記入票・翌日再現課題・ローカル集計を`docs/mii/training-study.md`と`experiments/motion-parallax/training-study/`へ追加。共通OSと全室目標を保持、実追跡・実機・参加者未受入。PR未作成。
+
+## 2026-11-08
+
+- mii全室空間SIの新規研究を28章・研究profileへ追加。光線反例／帯域／電力と段階予算の再現計算、裸眼・工事なし・共通OSを維持。PR未作成。
+
+2026-11-08 — mii空間SIの裸眼・工事なしの実現範囲、KC-310G等の端子・条件付き費用を27章へ追加。部屋全域・実機・見積未成立を保持。PR未作成。
+
+## 2026-11-03 — mii F3 検定・互換性・分岐給電
+
+[26章](docs/mii/design/26-fire-certification-power.md)に現行検定条項・既設機器対応表・24部品行/20接続/7頁PDF・4社8系列比較を追加。A1289 C1/C2とSC1636による20W評価電源へ改版し、Quectel回答でYECN028AAを除外。共通OS不変、完成品電池・機構・OEM検定・実機・物件は未完了。local branchのみ。
+
 ## 2026-11-02 — mii後付け消防ハード F2
 
 [25章](docs/mii/design/25-retrofit-fire-hardware.md)に新規配線工事不要の条件、評価用型番・実端子・5頁配線図sourceを追加。住宅連携試作、施設接続制限、一般ビルOEM・全通信電源HOLDを区別。共通OS不変、local branch・PR未作成。

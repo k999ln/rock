@@ -1,0 +1,193 @@
+{
+  "revision": "F3",
+  "reviewedDate": "2026-11-03",
+  "scope": "Existing manufacturer head/base comparisons, not an approved new mii product or installation instruction",
+  "commonOsUnchanged": true,
+  "crossManufacturerInterchangeAccepted": false,
+  "siteCountAccepted": 0,
+  "families": [
+    {
+      "id": "NOHMI-2",
+      "manufacturer": "能美防災",
+      "head": "FDK246",
+      "bases": [
+        "FZBJ014-R-2",
+        "FZB013-2",
+        "FZB018-2"
+      ],
+      "terminals": "L・S+ / C・S−",
+      "receiverScope": "N-13/B-10以降、B-11/15除外。Rは指定中継器。",
+      "remaining": "回路版・base保持・既設負荷の照合。",
+      "sources": [
+        "B1",
+        "B2"
+      ],
+      "manufacturerHeadBaseMatched": true,
+      "terminalPositionDrawingComplete": false,
+      "miiReplacementAccepted": false,
+      "siteAccepted": false
+    },
+    {
+      "id": "NOHMI-4",
+      "manufacturer": "能美防災",
+      "head": "FDK246-X",
+      "bases": [
+        "FZBJ014-R-4",
+        "FZB013-4",
+        "FZB018-4"
+      ],
+      "terminals": "4刃の端子配置は未確定",
+      "receiverScope": "室外表示灯付きの別構成。",
+      "remaining": "2刃から転記不可。4刃正式図と表示灯条件。",
+      "sources": [
+        "B1"
+      ],
+      "manufacturerHeadBaseMatched": true,
+      "terminalPositionDrawingComplete": false,
+      "miiReplacementAccepted": false,
+      "siteAccepted": false
+    },
+    {
+      "id": "HOCHIKI-2",
+      "manufacturer": "ホーチキ",
+      "head": "SLV-2",
+      "bases": [
+        "YBR-RL/1",
+        "YBR-UL/1"
+      ],
+      "terminals": "移報なし。端子配置図を受領照合",
+      "receiverScope": "RPP-EDW05: SLV30個/回線、計105個。Rは中継器。",
+      "remaining": "SLV-2RL/2UL。回路版・終端・残容量確認。",
+      "sources": [
+        "B3",
+        "B3spec",
+        "B4"
+      ],
+      "manufacturerHeadBaseMatched": true,
+      "terminalPositionDrawingComplete": false,
+      "miiReplacementAccepted": false,
+      "siteAccepted": false
+    },
+    {
+      "id": "HOCHIKI-S",
+      "manufacturer": "ホーチキ",
+      "head": "SLV-2",
+      "bases": [
+        "YBR-RL/2",
+        "YBR-UL/2"
+      ],
+      "terminals": "L/C有極性 / Sは専用中継器",
+      "receiverScope": "S仕様24V/60mA。L→L、C→C。",
+      "remaining": "SLV-2RLK/2ULK。Sを無電圧接点扱いしない。",
+      "sources": [
+        "B3",
+        "B3spec",
+        "B5",
+        "B5purpose"
+      ],
+      "manufacturerHeadBaseMatched": true,
+      "terminalPositionDrawingComplete": false,
+      "miiReplacementAccepted": false,
+      "siteAccepted": false
+    },
+    {
+      "id": "NITTAN-2",
+      "manufacturer": "ニッタン",
+      "head": "CK2B-016",
+      "bases": [
+        "CX2B-001",
+        "B2-C"
+      ],
+      "terminals": "L–C:24V/65mA",
+      "receiverScope": "1PM,S,V,Z / 2PK,M。計20×回線数、最大40/回線。",
+      "remaining": "旧2KH3後継。極性・接触位置は現物/施工図照合。",
+      "sources": [
+        "B6",
+        "B7",
+        "B7spec"
+      ],
+      "manufacturerHeadBaseMatched": true,
+      "terminalPositionDrawingComplete": false,
+      "miiReplacementAccepted": false,
+      "siteAccepted": false
+    },
+    {
+      "id": "NITTAN-P",
+      "manufacturer": "ニッタン",
+      "head": "CK2B-P-032",
+      "bases": [
+        "CX3B-002",
+        "B3-J"
+      ],
+      "terminals": "L–C:65mA / P–C:50mA、24V",
+      "receiverScope": "同上受信機系列。Pは外部制御用。",
+      "remaining": "3端子。Pを共通Coreへ直結しない。",
+      "sources": [
+        "B6",
+        "B7",
+        "B7Pspec"
+      ],
+      "manufacturerHeadBaseMatched": true,
+      "terminalPositionDrawingComplete": false,
+      "miiReplacementAccepted": false,
+      "siteAccepted": false
+    },
+    {
+      "id": "PANASONIC-2",
+      "manufacturer": "パナソニック",
+      "head": "BV454818",
+      "bases": [
+        "BVK4010",
+        "BVK4017"
+      ],
+      "terminals": "L/C、通常2線図は無極性",
+      "receiverScope": "同社P系列30個/回線。BVJ10105HKを照合候補。",
+      "remaining": "15–30V。BVE系と同じbaseでも回路互換は別。",
+      "sources": [
+        "B8",
+        "B9",
+        "B10"
+      ],
+      "manufacturerHeadBaseMatched": true,
+      "terminalPositionDrawingComplete": false,
+      "miiReplacementAccepted": false,
+      "siteAccepted": false
+    },
+    {
+      "id": "PANASONIC-3",
+      "manufacturer": "パナソニック",
+      "head": "BV454818",
+      "bases": [
+        "BVK4030",
+        "BVK4037"
+      ],
+      "terminals": "L/C/S、出火室表示用",
+      "receiverScope": "旧BV4920/4921は現行head非互換。",
+      "remaining": "2信号BV456618＋BV4860/4867と別。",
+      "sources": [
+        "B8",
+        "B9"
+      ],
+      "manufacturerHeadBaseMatched": true,
+      "terminalPositionDrawingComplete": false,
+      "miiReplacementAccepted": false,
+      "siteAccepted": false
+    }
+  ],
+  "sources": {
+    "B1": "https://www.nohmi.co.jp/shoninzu/007/bl7g6v0000001bcf-att/bl7g6v0000001bdf.pdf",
+    "B2": "https://www.nohmi.co.jp/shoninzu/009/bl7g6v0000001eln-att/TN52041.pdf",
+    "B3": "https://www.hochiki.co.jp/support/business/catalog/kahou/digital/149/",
+    "B3spec": "https://www.hochiki.co.jp/support/business/catalog/kahou/digital/157/",
+    "B4": "https://www.hochiki.co.jp/support/business/catalog/kahou/digital/112/",
+    "B5": "https://faq.hochiki.co.jp/faq/show/768?site_domain=default",
+    "B5purpose": "https://faq.hochiki.co.jp/faq/show/338?category_id=10&site_domain=default",
+    "B6": "https://www.nittan.com/contact/pdf/%E4%BB%A3%E8%A1%A8%E7%9A%84%E3%81%AA%E6%84%9F%E7%9F%A5%E5%99%A8%E3%81%AE%E6%96%B0%E6%97%A7%E7%A2%BA%E8%AA%8D%E8%A1%A8_2026.05.08.pdf",
+    "B7": "https://www.nittan.com/products/sk010lc0905023.html",
+    "B7spec": "https://www.nittan.com/useful/search.php?product_id=25777&mode=get_spec",
+    "B7Pspec": "https://www.nittan.com/useful/search.php?product_id=25789&mode=get_spec",
+    "B8": "https://esctlg.panasonic.biz/iportal/CatalogPageGroupDetail.do?catalogID=7670470000&method=initial_screen&pageGroupID=74&volumeID=PEWJ0001",
+    "B9": "https://esctlg.panasonic.biz/iportal/CatalogPageGroupDetail.do?catalogID=7670470000&method=initial_screen&pageGroupID=82&volumeID=PEWJ0001",
+    "B10": "https://www2.panasonic.biz/jp/densetsu/ha/bousai_net/products/41_list.html"
+  }
+}

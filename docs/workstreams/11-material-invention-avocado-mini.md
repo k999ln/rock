@@ -241,3 +241,15 @@ MAT15/ROCK、MINI-08・NET01・SIM01・OS10。[22章](../mii/design/22-integrate
 通信2社への照会は[23章](../mii/design/23-japan-procurement.md)でQuectel会社メール配信済み・Soracomフォーム受付済み。消防機器OEMへの問い合わせは今回未送信。
 
 F2：[後付けハード25章](../mii/design/25-retrofit-fire-hardware.md)、[BOM/netlist](../mii/design/fire-f2/bom-netlist.json)、5頁PDF生成元を追加。住宅用接点→絶縁USBを具体化し、施設接続制限、一般ビルOEM head、USB全通信電源をHOLD。新規建物配線・AC100V直結・天井内工事なしを設計入力に追加。次はF-E01〜05と対象物件の機器対応表。静的検証は `python3 docs/mii/design/fire-f2/check.py`、PDFは同dirの `render.py`。実機・検定・設備受入は未実施。
+
+F3（2026-11-03）：[26章](../mii/design/26-fire-certification-power.md)。MAT15／JOINT、OS10・MINI-08・NET01。2系統電源とHub、24部品行/20接続、条項数値と機器互換表を追加。ROCKは評価配線/共通契約、EXTERNALはOEM電池・head・検定、JOINTは電源/熱/RF/建物受入、OWNERは物件選定。`python3 docs/mii/design/fire-f3/check.py` と `render.py`、既存design/verifyを使う。次はR04/接点保証、最終OEM機構・電池、実物件型番。main9393ed97は読取り確認のみ、本branch未push/未統合。
+
+F3の既設互換比較は能美防災・ホーチキ・ニッタン・パナソニックの4社8系列へ拡張。共通Core＋系列別OEM消防部を設計し、メーカー間相互交換・新mii検定・物件受入は未成立。詳細は26章§5.1。
+
+### 裸眼・工事なしの空間SI（2026-11-08）
+
+MAT15／ROCK、MINI01/02・OS10。[27章](../mii/design/27-spatial-si-feasibility.md)でKC-310G／UM890 Pro／YVC-200B／任意D405の接続と条件付き費用を整理。部屋全域・小型天井単体の適合一式は未確認。ROCKは共通仕事・表示入力、EXTERNALは光学unit見積／正確な端子／視域、JOINTは光学・電源・遅延実測、OWNERは用途／予算。次はS1-G01資料と見積、その後S1-G02〜05。C-02・可搬通信・消防代替の未受入を維持。検証は`npm run design:check`／`npm run verify`、実機は別記。
+
+### 全室空間SIの新規光学研究（2026-11-08・後続）
+
+本人が卓上を採らず全室表示を指定。[28章](../mii/design/28-room-scale-si-rd.md)、[再現計算](../mii/design/room-rd/calculate.py)。MAT15／ROCK、MINI01/02・OS10。4壁中央の幅0.6m開口は中央水平60.76度、646試験視線中28本に留まる反例を記録。これは物理完成率ではない。ROCKは共通OS契約・波面／追跡・設計計算、EXTERNALは光学技術／供給、JOINTは開口・光安全・電力・実機、OWNERは展開寸法／予算／外部相談。次はR0の開口配置と室内光学測定。`python3 docs/mii/design/room-rd/calculate.py`、`npm run design:check`、`npm run verify`を使い、全室・工事不要・無線／消防の未受入を維持。予算は段階見積の仮定で、発注や成功保証ではない。

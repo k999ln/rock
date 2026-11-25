@@ -142,3 +142,7 @@ F-E01（接点／入力）、F-E02（電源）、F-E03（取付）、F-E04（施
 - [L5 消防庁：軽微な工事に関する運用](https://www.fdma.go.jp/laws/tutatsu/items/e7ed89c8437d7e29f0cc26e846d0f3bf4fc164a4.pdf)
 
 Panasonic住宅用SHK484531/SH3291は比較候補だったが、今回その現行施工説明書の端子を確定できていないためF-Hには採用しない。供給元探索のStripe Directoryは起動handshake失敗のため利用できず、上記メーカー原本で確認した。
+
+## F3優先追補（2026-11-03）
+
+消防側の型番と端子は本章を維持する。全搭載電源と検定条項・既設互換性の最新は[26章](26-fire-certification-power.md)。F3はPBの独立C1/C2出力とSC1636を使い、本章F07をHub.U3接続に置換。旧P3のUPS/12.6V/I2C線をF3へ混在させない。20Wは設計枠、実測・modem電力契約・完成製品電池・機構は未受入。

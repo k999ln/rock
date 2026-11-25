@@ -2,7 +2,7 @@
 
 2026-11-02 / MAT15・MINI-08・NET01・SIM01・OS10 / 主担当ROCK。対象は[22章の可搬mii P3](22-integrated-radio.md)。共通OS・本人性・仕事・予算・保存の契約を変更しない。
 
-**結論: 全部品の一括購入はHOLD。日本で衛星通信できる機器一式としての調達releaseには達していない。** 公開資料でサービス提供と代替品の端子は確認できたが、日本NTNの機器認証範囲・指定アンテナ・ホスト給電・最終端末の接続承認には原本回答が必要。未確認を「非対応」とも「適合済み」とも記録しない。Quectelは会社メールからの配信済み、Soracomは公式フォームの受付完了を確認し、2社の技術回答待ち。購入・契約・開通・無線送信は未実施。
+**結論: 全部品の一括購入はHOLD。日本で衛星通信できる機器一式としての調達releaseには達していない。** 公開資料でサービス提供と代替品の端子は確認できたが、日本NTNの機器認証範囲・指定アンテナ・ホスト給電・最終端末の接続承認には原本回答が必要。未確認を「非対応」とも「適合済み」とも記録しない。Quectelは会社メールからの配信済み、Soracomは公式フォームの受付完了を確認し、Quectelのアンテナ回答のみ部分受領（2026-11-03読戻し）、Soracomと残問は回答待ち。購入・契約・開通・無線送信は未実施。
 
 ## 1. 公開資料で更新できた判断
 
@@ -15,7 +15,7 @@
 | Murata現選定品 | 1SC-005公開datasheet v1.1のNTN日本欄は空欄。旧2020年EVK manualにはUSB/外部5V入力の保護があるが、選定NTN kitと同一revisionと確認できない | 旧manualのCN番号・逆流保護回路を現kitへ転用しない。U01は未通電releaseのまま |
 | Wi-Fi | Raspberry Pi公式compliance portalにPi4の日本証明書が掲載。WLAN country設定が必要 | 初号日本profileはJP・2.4GHz・20MHz・ch1〜11・BT OFFへ限定。技適表示/基板revision/純正RF firmwareを受領照合し、完成host適合とは分離 |
 | 代替modem | Quectel BG770A-SNはSoracom設定guideの対象。TE-B manualは端子番号と5V範囲を公開 | 下表まで具体化。国内NTN認証・最大電流が未照合のためBOM自動置換はしない |
-| 代替antenna | YECN028AAはSMA male、225×54.5×13mm。NTN帯の特性表あり | 型番だけは確定できるが、日本の認証で認められた組合せかは別。225mmなので現行200mm外形目標へ無条件搭載不可 |
+| 代替antenna | Quectel部分回答でYECN028AAはBG770A認証リスト外と確認 | 不採用。YECT003AAを照合第一候補に変更。日本NTNの証明・利得・同居条件は引き続き未確認 |
 
 根拠: [Soracom日本提供の告知](https://changelog.soracom.io/ja/wei-xing-tong-xin-sabisu-ntn-dui-ying-no-plannt1-gari-ben-demoli-yong-dekiruyouninarimasita-314ddm)、[2026年7月公式更新まとめ](https://blog.soracom.com/ja-jp/2026/07/14/soracom-biweekly-85/)、[Skylo device conformance §2.4／§3／§4](https://www.skylo.tech/knowledge-base/device-conformance-document)、[Soracom Murata/Quectel設定](https://docs.soracom.io/en/devices/murata-1sc)、[Murata旧EVK manual](https://www.murata.com/-/media/webrenewal/campaign/events/asean/2024/may24_webinar_satelite-ntn/type1sc_evk_user-guide.ashx?cvid=20240601114504000000&la=en-sg)。告知の表示相対日付を新しい発表日として転記しない。旧Soracom国一覧の「日本未提供」より日本の明示告知を優先する。
 
@@ -23,25 +23,25 @@ Wi-Fi根拠: [メーカーPi4日本証明書の掲載先](https://pip.raspberryp
 
 ## 2. 代替品の端子照合表（発注・通電指示ではない）
 
-**候補Q: Quectel BG770A-SN-TE-B-KIT＋YECN028AA**。現P3のMurataを残したまま2台追加する案ではなく、R01〜04を閉じられた場合だけmodem一式を交換する候補。
+**候補Q: Quectel BG770A-SN-TE-B-KIT＋YECT003AA（日本NTN条件未確認）**。現P3のMurataを残したまま2台追加する案ではなく、R01〜04を閉じられた場合だけmodem一式を交換する候補。
 
 | 部分 | 確認できた端子・仕様 | 採用時の差分／未確認 |
 | --- | --- | --- |
 | AT data | TE-B **J0301 USB-to-UART**、Main UART 115200/8N1。kitのUSB-A–Micro-Bを使用 | P3のMini-B cable/CP210x識別を流用しない。UART channel Aを現物列挙で確認 |
-| 主RF | **J0502 ANT_RF、SMA** → **YECN028AA SMA male** | 日本で許可されたantenna型式/最大利得と一致することが必要 |
+| 主RF | **J0502 ANT_RF、SMA** → **YECT003AA SMA male（候補）** | 日本で許可されたantenna型式/最大利得と一致することが必要 |
 | SIM | **J0606 Micro-SIM、1.8V USIM** | plan01s標準3FFの電圧対応、planX1/NT1の対象firmwareをproviderに照合 |
 | 電源 | **J0301/J0405 USB、J0201 DC入力: 4.75〜5.25V、標準5V** | 電圧は確認済み。最大/突入/列挙前電流、J0201寸法/極性、USB併用時の逆流保護は未確認 |
 | 除外端子 | **J0202はmodule測定用VBAT**。manualの測定手順では3.3Vを与える | **5V/12.6VをJ0202へ入れない**。初号では未接続、module単独給電試験を組立手順へ転用しない |
 | GNSS | **J0501 GNSS SMA** | 初号の独立BU-353N5を保持する候補。内蔵GNSSと外部位置の対応はfirmwareで照合。受信antennaが不要かも回答待ち |
 | 基板 | 70×74mm（厚さ1.6mmはPCBのみ） | コネクタ/部品高さは別。現在の180×160mm配置へ保持具を改版する場合の図面待ち |
-| antenna | YECN028AA v3.0、50Ω、線偏波。NTN表のpeak gain上限はfree-space 2.5dBi／130mm EVB 3.7dBi | これらは試験配置依存の値。販売ページの5.8dBiをNTN全帯の値にしない。日本の許容利得とは未照合 |
+| antenna | YECT003AA、SMA male、113×φ10mm。Quectelが認証リスト内の候補として提示 | 日本NTNのband別利得と証明附属書は未照合。旧YECN028AAのNTN特性表を流用しない |
 
-根拠: [メーカー作成TE-B User Guide v1.0.0 Preliminary 2024-07-30（正規流通掲載）§2–4](https://mc-technologies.com/wp-content/uploads/2024/09/Quectel_BG770A-SN_TE-B_User_Guide_V1.0.0_Preliminary_20240730-1.pdf)、[Skylo BG770A-SN kit guide](https://www.skylo.tech/skylo-ecosystem-get-started-article/getting-started-quectel-bg770a-sn)、[メーカーantenna製品](https://www.quectel.com/product/yecn028aa-5g-ntn-terminal-mount-antenna/)、[antenna datasheet v3.0 2026-01-05 §1–2](https://www.quectel.com/content/uploads/2026/03/Quectel_5G_Antenna_YECN028AA_Datasheet_V3.0.pdf)。Preliminary版を最終製造仕様としない。
+根拠: [メーカー作成TE-B User Guide v1.0.0 Preliminary 2024-07-30（正規流通掲載）§2–4](https://mc-technologies.com/wp-content/uploads/2024/09/Quectel_BG770A-SN_TE-B_User_Guide_V1.0.0_Preliminary_20240730-1.pdf)、[Skylo BG770A-SN kit guide](https://www.skylo.tech/skylo-ecosystem-get-started-article/getting-started-quectel-bg770a-sn)。YECT003AAの出典は末尾の回答取込み節。履歴として[不採用YECN028AA製品](https://www.quectel.com/product/yecn028aa-5g-ntn-terminal-mount-antenna/)と[同datasheet v3.0](https://www.quectel.com/content/uploads/2026/03/Quectel_5G_Antenna_YECN028AA_Datasheet_V3.0.pdf)を保持するが、現候補の特性根拠には使わない。Preliminary版を最終製造仕様としない。
 
 ```text
 候補Qの照合用接続（点線部は未確定・通電禁止）
-Pi USB2-A ...... kit A–Micro-B ...... TE-B J0301 UART
-                                             J0502 SMA ─ YECN028AA
+F3 HUB.U1 ...... kit A–Micro-B ...... TE-B J0301 UART
+                                             J0502 SMA ─ YECT003AA [日本NTN条件HOLD]
                                              J0606 ─ 3FF SIM
 独立5V案 ...... J0201（寸法/極性/逆流防止 未回答）
 J0202 VBAT / J0405 USB / J0501 GNSS: 本案では未接続、FW要件照合待ち
@@ -52,9 +52,9 @@ J0202 VBAT / J0405 USB / J0501 GNSS: 本案では未接続、FW要件照合待�
 ## 3. 買い直しを避ける発注順序
 
 1. **先に2社へ仕様確認**。2社の回答を同じ比較票へ転記。国内NTN証明・許可antenna・給電図・接続資格のそろう候補を選ぶ。両方不足ならmodem一式は発注しない。
-2. Pi/SD/GNSS/UPS/P28Aの型番は22章のまま。ただし本体完成を目的とする一括発注はmodem回答後。充電器は日本向けplug/入力定格・表示・指定optionの納入型番も照合する。
+2. Pi/SD/GNSSは22章の型番を維持。消防入力を含む現F3ではUPS/P28Aを外し、26章のA1289＋SC1636と指定ケーブル・充電器へ変更する。本体完成を目的とする一括発注はmodem回答後。日本向けplug/入力定格・表示・納入型番も照合する。
 3. USB2の500mAを超える消費が必要なら、Piの合計1.2Aを根拠に直結しない。メーカーが指定する外部5V給電と逆流防止を採用し、**電源branch・保護・cable・netlist・受入値を改版してから**発注する。既存R04の1A割当は許可電流ではない。
-4. YECN028AA採用なら収納/使用時の外形を実寸で再設計。200mm以内を維持するなら認証内の短い指定antennaを取得する。ANTを勝手に短縮しない。
+4. YECN028AAは採用しない。代替YECT003AAの認証附属書・band/gain/FW・筐体条件と実寸を照合する。メーカーの一般認証リスト内という回答を日本NTN承認に拡大解釈せず、Murataへも流用しない。
 5. 現物の無送信電源試験→許可条件内の単独radio試験→同居試験→PC/phone/LANなしの電池往復試験。実機合格は[22章P3-A01〜07](22-integrated-radio.md#8-組立試験の順序)に別記録する。
 
 ## 4. 問い合わせの実行状況
@@ -64,7 +64,7 @@ J0202 VBAT / J0405 USB / J0501 GNSS: 本案では未接続、FW要件照合待�
 | 宛先 | 確認する内容 | 状況 |
 | --- | --- | --- |
 | [Soracom公式窓口](https://soracom.jp/contact/) | Murata/Quectelの日本NTN証明・band/fw/SIM、指定antenna、UART0電流/外部給電、Skylo維持/停止、最終端末の接続資格、1台の見積/納期 | 本人提供の会社名・電話番号、会社返信先で送信済み。部署は指定がなく「未指定」と記載。公式フォームの受付完了表示を確認。技術回答は未受領 |
-| Quectel support@quectel.com（メーカーguide記載） | BG770A-SNの003-250340原本/対象周波数、YECN028AA/短い指定代替、J0301電流/J0201給電、Linux UART/FW/GNSS、同居/接続維持、現行kit供給 | 最初の個人Gmail送信後、本人指定の会社Zohoから同じ照会を再送し、今後の返信先を会社へ指定。会社メールの送信済み本文と「配信済み」表示を確認済み。技術回答は未受領 |
+| Quectel support@quectel.com（メーカーguide記載） | BG770A-SNの003-250340原本/対象周波数、YECN028AA/短い指定代替、J0301電流/J0201給電、Linux UART/FW/GNSS、同居/接続維持、現行kit供給 | 最初の個人Gmail送信後、本人指定の会社Zohoから同じ照会を再送し、今後の返信先を会社へ指定。会社メールの送信済み本文と「配信済み」表示を確認済み。11月2日表示のアンテナ部分回答を11月3日に読戻し。YECN028AAは認証リスト外、他5候補を提示。日本証明・USB等の残問は回答待ち |
 
 最初の送信後に本人から会社アドレス使用の指示があった。本人がアドレスの綴りを訂正し、外部Chromeで開いた認証済みZohoを使用して会社送信を完了した。旧表記でのアカウント未検出は解消済み。個人Gmailからの追加送信はしていない。Soracomも会社返信先を訂正し、本人の会社名・電話番号回答後に送信した。受付完了先は `https://soracom.jp/contact/contactsales_sent/`。Quectel宛ては同じ技術照会の連絡先変更を含む再送であり、新規発注ではない。2社への照会、計3回の送信（最初の個人メール、会社からの訂正再送、公式フォーム）を区別する。メールID・送信元・電話等の詳細はGit外で扱う。
 
@@ -87,3 +87,11 @@ J0202 VBAT / J0405 USB / J0501 GNSS: 本案では未接続、FW要件照合待�
 | R04 | exact board給電図/最大電流/USB契約、charger納入仕様 | 必要な電源branchを改版、dummy load/実測。文書回答だけで過渡/熱試験を合格にしない |
 
 回答の原本はアクセス制限付きの作業保管先へ保存し、Gitには秘密を除いた文書名・版・条件・判断だけを残す。どちらも必要証明がない場合、対応済み日本端末の提供可否を同じ窓口へ確認し、根拠のない別moduleへ次々置換しない。本人の問い合わせ送信許可は取得済み。現在の送信状況は§4。認証の適合判定とは分離する。
+
+## 2026-11-03 回答取込みと給電改版
+
+会社ZohoでQuectelのアンテナ質問への部分回答を確認。YECN028AAはBG770A認証アンテナリストに含まれず、YCN001AA、YE0011BA、YE0013CA、YECT002AA、YECT003AAが提示された。小型のYECT003AAを照合第一候補にする。上記はメーカーからの技術回答の要約であり、公開された日本NTN原証明ではない。他の質問は継続確認中との回答。メール原文・添付・連絡先はGit外。Soracom検索で見つかったのは受付メールのみで、技術回答は確認できていない。追加送信なし。
+
+YECT003AAのSMA male／113×φ10mmは[Quectel公式カタログ](https://quectel.com/content/uploads/2024/05/Quectel-Product-Brochure-V7.7.pdf)で照合。受領した最新datasheetのband/gainと日本証明附属書の最終照合は残る。メーカー一般リストを日本NTN適合や最終host適合へ昇格しない。
+
+消防入力を含む可搬評価の給電は[26章F3](26-fire-certification-power.md)へ改版。A1289のC1/C2＋SC1636に分離し、設計20W。modemの1Aは許可電流ではなく、R04はOPEN。未受入の外部5V端子を使わない。完成製品電池と天井取付も別途必要。

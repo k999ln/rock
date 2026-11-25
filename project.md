@@ -93,3 +93,28 @@ F1検証完了: project:update、baseline:check、design:check、profile/gate/�
 本人が工事不要の後付けを追加指定。MAT15／JOINTを維持し、新規建物配線・AC100V直結・天井内工事なしを要件化。25章、19行BOM・8接続、5頁PDF生成元、hardware profile、静的照合を作成。住宅用NOHMI FSKJ226系＋FSOJ001B-S→Phidgets1018_3/3060_0を評価選定。施設用S4はメーカー接続制限、ビルは完成mii head未確定。全通信同時USB給電は余裕なしでHOLD。
 
 GitHub main9393ed97fc0333ed3a26be49c86b87fd21254b50を再読取、同名remote branchなし。作業起点33f3c533e、未push／未統合、同一SHA CI未確認。新規の問い合わせ・購入・施工なし。次はF-E01〜05、OEM完成形、対象物件のhead/base/受信機対応表。F2検証は静的19部品/8接続、PDF5頁目視、リンク・baseline・design、全verify exit0（root3597件/3593pass/0fail/4skip、API1678、CSV385、Web264/欠落0）。物理・検定・施工試験はNOT_RUN。全ログは /private/tmp/mii-fire-f2-verify.log。
+
+## mii F3 検定・互換性・独立給電（2026-11-03・着手）
+
+本人の追加指示により、MAT15／JOINTを主担当として、無新規建物配線・共通OSを保持し、完成品検定の条項、既設設備照合、全搭載負荷の給電を詰める。Quectelの部分回答を会社メールで読戻し、YECN028AAは認証antenna list外と判明したため候補から除外。Soracom検索で確認できたのは受付メールのみ。原文・連絡先はGitへ保存しない。現物／物件未指定とOEM完成品未成立を合格へ変換しない。
+
+F3判断変更: A1289のC1→Pi/C2→SC1636、24部品行/20接続、20W設計枠へ更新。市販電池は完成天井製品に不採用。JFEII R8.4.1/e-Gov条項を照合。本人の「いろんな方」を受け4社8系列を比較し、共通Core＋系列別OEM消防部を方針化。既製head/baseの証拠とmii適合は分け、全物理gateをOPENのまま保持。
+
+F3検証完了: 静的24部品/20接続・4社8系列の出典整合PASS、PDF7頁の目視・欄外文字0、追加ローカルリンク22件/欠落0。全verify exit0（root3597件/3593pass/0fail/4skip、API1678、CSV385、Web264/欠落0）。ログ `/private/tmp/mii-fire-f3-verify.log`、要約 `data/mii-fire-alarm-design.json`。最終文書・進捗更新はtargeted再照合で閉じ、OS runtime変更なし。購入・新規問い合わせ・通電・施工・検定は未実施。local branchへ保存、PDFはGit外、未push・未main統合。次はR01〜04の原本回答、F-E01接点保証、4社系列ごとのOEM head/電池/取付設計と実物件・資格区分、全負荷実測／完成品検定。
+
+## 裸眼・工事なしの空間SI調査（2026-11-08・着手）
+
+本人の参考動画を確認し、浮遊資料・立体対象・手操作・会話・仕事再開を調査対象とする。名称SI、共通OSを維持。MAT15／ROCK、MINI01/02・OS10。市販光学の一次資料と価格・端子を照合し、既存設計27章へまとめる。最新main読取値9393ed97fc0333ed3a26be49c86b87fd21254b50とlocal HEAD420f7dcce7c112883869321dfcdec649592c24fcは別。共有差分を保持し、購入・新規外部照会・実機・統合は行わない。
+
+- 2026-11-08 検証完了: [27章](docs/mii/design/27-spatial-si-feasibility.md)にKC-310G／UM890 Pro／YVC-200B／追加D405、端子間接続、2種類の機材費算式、外注工数仮定、全室の未達条件を保存。S1基本はQ310＋232,899～252,899円、深度追加はQ310＋281,649～301,649円＋輸入費。Q310・正確なDC/USB端子はメーカー資料待ち。旧05章の50cm成立境界・輝度等の断定を訂正。
+- `npm run project:update`、費用算術、6文書の相対リンク、`git diff --check`は合格。全`npm run verify`は初回localhost EPERMで停止→同コマンドをlocalhost許可付きで再実行しexit0。ログはGit外 `/private/tmp/mii-spatial-si-verify-full.log`、hashと要約は進捗JSON。最終の文書・metadata追記はtargeted project/design/link/diffで再照合。実機、光学、Noah音声／手操作、購入、外部照会、GitHub保存、main統合は未実施。
+- 次はS1-G01のKC-310G現行見積・付属ケーブル／電源・USB種別／driver・EDID・視域の取得。その後にS1-G02〜05。部屋全域・天井単体・消防代替・無線の未受入を保持し、卓上試作を完成miiへ昇格しない。
+
+## 全室空間SIの新規開発設計（2026-11-08・着手）
+
+本人が卓上案を採用せず、動画のような部屋全体を新規開発の対象と指定。裸眼・工事なし・共通OS・SI名称を固定。MAT15／ROCK、MINI01/02・OS10。既存27章を市販比較として残し、28章へ原理・反証計算・構成・段階予算・中止条件を具体化する。今回の費用は研究計画の仮定で、発注見積や成功保証ではない。GitHub mainは通常ネットワーク制限後の読取再試行で9393ed97を確認、local HEAD420f7dccのまま。
+
+- 28章と研究profileを保存。主経路は追跡型多開口の波面再生、Core／室内worker／展開式出射部。4壁中央0.6m開口の水平60.757度、646視線中28hit、床／天井方向398本を計算。物理完成率ではなく幾何反例。SLM拡大、両眼RGB帯域、眼移動1m/sと30msから70mm必要余裕、予算の再現sourceも追加。
+- 研究予算仮定: 9/36/108/216人月、150～220万円/人月、追加機材・外部評価・予備費25/30/35/35%。原理確認3000～5100万円、全室試作まで累計4.30～7.05億円、少数製品評価まで10.02～16.57億円。見積・成功保証・支出許可ではない。新半導体量産／消防・通信適合等は別。
+- `python3 docs/mii/design/room-rd/calculate.py`、8文書の相対リンク、設計JSONと再計算の一致、diff checkは成功。全`npm run verify`は既存Miniflareの127.0.0.1接続ETIMEDOUTでexit1（3597件中3589pass/4fail/4skip）。失敗した3fileをtest-concurrency=1で再実行すると18件中17pass/1fail、migration-unionだけlocalhost ETIMEDOUT継続。既存testやruntimeを弱めて通していない。詳細は進捗JSON、ログはGit外 `/private/tmp/mii-room-rd-verify.log` と `/private/tmp/mii-room-rd-retry-targeted.log`。全体passとは記録しない。最終metadata／design／links／計算を局所再照合する。
+- 次はR0で展開可能な側方／低位置／上方開口と連続3D両眼到達条件、独立光学評価、部品／共同研究見積を確定。全室・小型・工事不要・光安全・低眩しさの物理成立は未証明。外部照会・購入・実機・GitHub保存・main統合なし。

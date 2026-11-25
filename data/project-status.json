@@ -12906,8 +12906,8 @@
     "providerConformanceAccepted": false
   },
   "miiPortableProcurementReview": {
-    "date": "2026-11-02",
-    "status": "design_revised_two_vendor_inquiries_sent_technical_responses_pending",
+    "date": "2026-11-03",
+    "status": "quectel_antenna_partial_response_received_remaining_questions_pending",
     "owner": "ROCK",
     "taskIds": [
       "MAT15",
@@ -12931,15 +12931,20 @@
     "procurementReleased": false,
     "providerConformanceAccepted": false,
     "verification": "P3/P2 static PASS; PDF6 visually reviewed; design:check/project:update/added-link/diff/hash PASS; full verify exit0 after localhost sandbox retry",
-    "next": "Await both vendors technical responses; obtain certificate/antenna/power originals, revise affected wiring, then physical P3-A01..07",
+    "next": "Verify Japan NTN certificate annexes for YECT003AA and BG770A; obtain remaining USB/FW/co-location replies; maintain procurement hold",
     "companySenderStatus": "Authenticated company Zoho sender used; Quectel contact correction and repeated technical inquiry sent, Sent body and Delivered status verified",
     "soracomFormPrepared": true,
     "quectelCompanyFollowupSent": true,
     "vendorsContacted": 2,
-    "soracomReceipt": "Official form accepted; confirmation page observed"
+    "soracomReceipt": "Official form accepted; confirmation page observed",
+    "quectelAntennaResponseReceived": true,
+    "rejectedAntenna": "YECN028AA",
+    "candidateAntenna": "YECT003AA",
+    "soracomTechnicalResponseReceived": false,
+    "currentReviewEvidence": "data/mii-fire-alarm-design.json (F3 full verify PASS; radio and product acceptance remain pending)"
   },
   "miiFireAlarm": {
-    "date": "2026-11-02",
+    "date": "2026-11-03",
     "taskIds": [
       "MAT15",
       "OS10",
@@ -12947,7 +12952,7 @@
       "NET01"
     ],
     "primaryOwner": "JOINT",
-    "status": "retrofit_evaluation_wiring_prepared_final_product_and_power_pending",
+    "status": "f3_power_wiring_and_certification_matrix_prepared_final_product_pending",
     "authority": "docs/mii/design/24-fire-alarm.md",
     "data": "data/mii-fire-alarm-design.json",
     "commonOsUnchanged": true,
@@ -12957,18 +12962,213 @@
     "replacementAccepted": false,
     "githubSaved": false,
     "mainIntegrated": false,
-    "next": "Close F-E01..05: contact compatibility, complete power, existing mount fit, facility permission, OEM final head and certification",
+    "next": "R04 exact modem USB and Japan NTN certificates; F-E01 contact guarantee; OEM common-Core plus manufacturer-specific fire head, final battery/mount, site choice and qualification review; physical power/thermal/RF/certification",
     "verification": {
       "status": "PASS_DESIGN_AND_REPOSITORY_ONLY",
-      "designAndBaseline": "PASS",
-      "staticParts": 19,
-      "staticConnections": 8,
-      "pdfVisualPages": 5,
-      "repositoryVerifyExitCode": 0,
-      "physical": "NOT_RUN",
-      "details": "data/mii-fire-alarm-design.json"
+      "fireF3Static": "PASS_24_PARTS_20_CONNECTIONS",
+      "compatibility": "4_manufacturers_8_reference_families_no_mii_or_site_acceptance",
+      "pdf": "7_pages_visually_checked",
+      "fullVerifyExitCode": 0,
+      "physical": "NOT_RUN"
     },
-    "revision": "F2",
-    "hardwareAuthority": "docs/mii/design/25-retrofit-fire-hardware.md"
+    "revision": "F3",
+    "hardwareAuthority": "docs/mii/design/26-fire-certification-power.md"
+  },
+  "miiSpatialSiFeasibility": {
+    "date": "2026-11-08",
+    "taskIds": [
+      "MAT15",
+      "MINI01",
+      "MINI02",
+      "OS10"
+    ],
+    "primaryOwner": "ROCK",
+    "status": "primary_source_review_and_conditional_design_verified_physical_pending",
+    "authority": "docs/mii/design/27-spatial-si-feasibility.md",
+    "commonOsUnchanged": true,
+    "terminology": "SI",
+    "physicalAccepted": false,
+    "roomWideFreeSpaceAccepted": false,
+    "fireReplacementAccepted": false,
+    "runtimeImplemented": false,
+    "githubSaved": false,
+    "mainIntegrated": false,
+    "next": "Superseded as product direction by room-scale research in 28; retain S1 as commercial comparison only",
+    "hardwareCandidate": [
+      "KC-310G",
+      "UM890 Pro 32GB/1TB",
+      "YVC-200B",
+      "D405 optional"
+    ],
+    "cost": {
+      "currency": "JPY",
+      "usdJpyAssumption": 150,
+      "baseExcludingDisplayQuote": [
+        232899,
+        252899
+      ],
+      "depthExcludingDisplayQuoteAndImport": [
+        281649,
+        301649
+      ],
+      "displayQuoteReceived": false,
+      "completeMiiTotalEstablished": false
+    },
+    "verification": {
+      "projectUpdateExitCode": 0,
+      "designCheck": "PASS_IN_FULL_VERIFY",
+      "costArithmetic": "PASS",
+      "relativeLinks": "6_documents_no_missing_targets",
+      "fullVerifyExitCode": 0,
+      "firstAttempt": "sandbox_EPERM_localhost_in_sky_a2a_workflow_test",
+      "retry": "same_verify_with_localhost_permission_passed",
+      "log": "/private/tmp/mii-spatial-si-verify-full.log",
+      "logSha256": "46085fd5ebf1fbcead7fc842bd5a252dc1e6929e588e0035c511393b9b5e32e3",
+      "physical": "NOT_RUN"
+    }
+  },
+  "miiRoomScaleSiResearch": {
+    "date": "2026-11-08",
+    "taskIds": [
+      "MAT15",
+      "MINI01",
+      "MINI02",
+      "OS10"
+    ],
+    "primaryOwner": "ROCK",
+    "authority": "docs/mii/design/28-room-scale-si-rd.md",
+    "status": "rd_design_and_calculation_recorded_physical_feasibility_open",
+    "commonOsUnchanged": true,
+    "nakedEyeRequired": true,
+    "constructionFreeRequired": true,
+    "desktopIsProductTarget": false,
+    "physicalAccepted": false,
+    "productFeasibilityProven": false,
+    "budgetAuthorizedForSpending": false,
+    "next": "R0: solve deployable aperture coverage including low and upper directions within allowed footprint, then independently validate wave optics, brightness/safety and power; no automatic R1 spend",
+    "geometryScope": "necessary_ray_counterexamples_only_no_wave_optics_or_physical_acceptance",
+    "calculationResult": {
+      "scope": "necessary_geometry_and_budget_only_not_physical_acceptance",
+      "central_horizontal_coverage_deg": 60.7571,
+      "central_horizontal_coverage_fraction": 0.16877,
+      "sampled_geometry": [
+        {
+          "width_m_each_of_4": 0.6,
+          "hits": 28,
+          "rays": 646,
+          "fraction": 0.043344
+        },
+        {
+          "width_m_each_of_4": 1.5,
+          "hits": 52,
+          "rays": 646,
+          "fraction": 0.080495
+        },
+        {
+          "width_m_each_of_4": 4.5,
+          "hits": 176,
+          "rays": 646,
+          "fraction": 0.272446
+        }
+      ],
+      "floor_or_ceiling_exit_rays": 398,
+      "slm_native_full_angle_deg": 8.15698,
+      "simple_relay_full_angle_deg": 0.21136,
+      "simple_relay_cone_span_mm_at_eye_distance": 9.2223,
+      "phase_payload_gbps_per_channel": 3.981312,
+      "phase_payload_gbps_rgb_two_independent_eyes": 23.887872,
+      "sequential_rgb_two_eye_subframes_hz": 360,
+      "tracking_eyebox_minimum_mm_under_assumptions": 70.0,
+      "raw_camera_payload_gbps_8_cameras": 17.69472,
+      "phases": [
+        {
+          "id": "R0",
+          "labor_man_jpy": [
+            1350,
+            1980
+          ],
+          "incremental_man_jpy": [
+            3000.0,
+            5100.0
+          ],
+          "cumulative_man_jpy": [
+            3000.0,
+            5100.0
+          ]
+        },
+        {
+          "id": "R1",
+          "labor_man_jpy": [
+            5400,
+            7920
+          ],
+          "incremental_man_jpy": [
+            9360.0,
+            15756.0
+          ],
+          "cumulative_man_jpy": [
+            12360.0,
+            20856.0
+          ]
+        },
+        {
+          "id": "R2",
+          "labor_man_jpy": [
+            16200,
+            23760
+          ],
+          "incremental_man_jpy": [
+            30645.0,
+            49626.0
+          ],
+          "cumulative_man_jpy": [
+            43005.0,
+            70482.0
+          ]
+        },
+        {
+          "id": "R3",
+          "labor_man_jpy": [
+            32400,
+            47520
+          ],
+          "incremental_man_jpy": [
+            57240.0,
+            95202.0
+          ],
+          "cumulative_man_jpy": [
+            100245.0,
+            165684.0
+          ]
+        }
+      ],
+      "sequential_months_all_gates_pass": 39,
+      "physical_accepted": false,
+      "success_probability": null
+    },
+    "verification": {
+      "calculation": "PASS_reproduced_geometry_bandwidth_power_and_budget_arithmetic",
+      "relativeLinks": "PASS_8_documents",
+      "fullVerifyExitCode": 1,
+      "fullVerifyFailure": "existing_Miniflare_localhost_ETIMEDOUT_in_3_test_files_4_test_results",
+      "fullTestCounts": {
+        "tests": 3597,
+        "pass": 3589,
+        "fail": 4,
+        "skip": 4
+      },
+      "targetedRetry": {
+        "testConcurrency": 1,
+        "tests": 18,
+        "pass": 17,
+        "fail": 1,
+        "remaining": "tests/migration-union.test.mjs_Miniflare_connect_ETIMEDOUT"
+      },
+      "log": "/private/tmp/mii-room-rd-verify.log",
+      "logSha256": "b13e8eefa4ecd0d4de1beb33fb27dfae559b0e4b656777c70e35b046a17d40d9",
+      "targetedLog": "/private/tmp/mii-room-rd-retry-targeted.log",
+      "physical": "NOT_RUN",
+      "fullVerifyPassed": false
+    }
   }
 }

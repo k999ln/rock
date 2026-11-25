@@ -1,0 +1,766 @@
+{
+  "commonOsUnchanged": true,
+  "noNewBuildingWiring": true,
+  "contact": {
+    "output": "H4",
+    "type": "normally_open_potential_free_nonpolar",
+    "maxVoltageV": 50,
+    "maxCurrentMa": 100,
+    "inputPullupOhm": 15000,
+    "conservativeSenseVoltageV": 5.3,
+    "lowMaxV": 1.0,
+    "highMinV": 1.8,
+    "minimumLoadConfirmed": false,
+    "openMeansHealthy": false,
+    "providesZoneIdentity": false,
+    "providesFaultOrBattery": false
+  },
+  "schema": "mii-fire-f3-wiring/v1",
+  "revision": "F3",
+  "date": "2026-11-03",
+  "authority": "docs/mii/design/26-fire-certification-power.md",
+  "scope": "JP-H conditional bench power and input wiring; NOT final ceiling product",
+  "bom": [
+    {
+      "id": "H1",
+      "model": "NOHMI FSKJ226-M",
+      "quantity": 1,
+      "profile": "JP-H",
+      "role": "煙親器 / 住警第2019～5号",
+      "ports": [
+        "純正電池コネクタ",
+        "指定無線"
+      ],
+      "source": "H1",
+      "status": "EVALUATION_SELECTED"
+    },
+    {
+      "id": "H2",
+      "model": "NOHMI FSKJ226-C",
+      "quantity": 1,
+      "profile": "JP-H",
+      "role": "煙子器 / 住警第2019～6号",
+      "ports": [
+        "純正電池コネクタ",
+        "指定無線"
+      ],
+      "source": "H1",
+      "status": "EVALUATION_SELECTED"
+    },
+    {
+      "id": "H4",
+      "model": "NOHMI FSOJ001B-S",
+      "quantity": 1,
+      "profile": "JP-H",
+      "role": "住宅用移報 / 感知器ではない",
+      "ports": [
+        "電池用コネクタ",
+        "火災移報用コネクタ",
+        "指定無線"
+      ],
+      "source": "H2",
+      "status": "EVALUATION_SELECTED"
+    },
+    {
+      "id": "HB1",
+      "model": "CR17450E-N-CN10",
+      "quantity": 2,
+      "profile": "JP-H",
+      "role": "H1/H2純正電池 / 同梱品",
+      "ports": [
+        "純正コネクタ"
+      ],
+      "source": "H1",
+      "status": "EVALUATION_SELECTED"
+    },
+    {
+      "id": "HB2",
+      "model": "CR17450E-N-2-CN1",
+      "quantity": 1,
+      "profile": "JP-H",
+      "role": "H4純正電池 / 同梱品",
+      "ports": [
+        "純正コネクタ"
+      ],
+      "source": "H2",
+      "status": "EVALUATION_SELECTED"
+    },
+    {
+      "id": "HC",
+      "model": "FSOJ001B-S付属 火災移報コネクタケーブル",
+      "quantity": 1,
+      "profile": "JP-H",
+      "role": "約30cm / 純正品 / A,Bは設計線名",
+      "ports": [
+        "純正プラグ",
+        "lead A",
+        "lead B"
+      ],
+      "source": "H2",
+      "status": "EVALUATION_SELECTED"
+    },
+    {
+      "id": "I1",
+      "model": "Phidgets 1018_3",
+      "quantity": 1,
+      "profile": "JP-H",
+      "role": "読取入力 / 未使用出力は接続しない",
+      "ports": [
+        "Digital Inputs 0",
+        "Digital Inputs G/GND",
+        "USB Mini-B"
+      ],
+      "source": "I1",
+      "status": "EVALUATION_SELECTED"
+    },
+    {
+      "id": "I2",
+      "model": "Phidgets 3060_0",
+      "quantity": 1,
+      "profile": "JP-H",
+      "role": "USB絶縁 / Full Speed",
+      "ports": [
+        "host Mini-B",
+        "device USB-A"
+      ],
+      "source": "I2",
+      "status": "EVALUATION_SELECTED"
+    },
+    {
+      "id": "C1",
+      "model": "Phidgets 3017_1",
+      "quantity": 1,
+      "profile": "JP-H",
+      "role": "28cm USB完成ケーブル",
+      "ports": [
+        "USB-A",
+        "Mini-B"
+      ],
+      "source": "I2",
+      "status": "EVALUATION_SELECTED"
+    },
+    {
+      "id": "C2",
+      "model": "Phidgets 3017_1",
+      "quantity": 1,
+      "profile": "JP-H",
+      "role": "28cm USB完成ケーブル",
+      "ports": [
+        "USB-A",
+        "Mini-B"
+      ],
+      "source": "I2",
+      "status": "EVALUATION_SELECTED"
+    },
+    {
+      "id": "CORE",
+      "model": "Raspberry Pi 4 Model B 4GB SC0194, board revision >=1.2",
+      "quantity": 1,
+      "profile": "COMMON",
+      "role": "既存P3 / 共通OS / 評価時modem+GNSS未接続",
+      "ports": [
+        "青USB3-A下段",
+        "USB-C power",
+        "J8-4 5V",
+        "J8-6 GND",
+        "J8-8 BCM14",
+        "microSD"
+      ],
+      "source": "P3",
+      "status": "EVALUATION_SELECTED"
+    },
+    {
+      "id": "PB",
+      "model": "Anker A1289011 / A1289",
+      "quantity": 1,
+      "profile": "CORE_F3",
+      "ports": [
+        "C1",
+        "C2",
+        "USB-A"
+      ],
+      "source": "P1",
+      "role": "2 independent 5V outputs; NOT ceiling product battery",
+      "status": "CONDITIONAL_EVALUATION_SELECTED"
+    },
+    {
+      "id": "HUB",
+      "model": "Raspberry Pi USB 3 Hub SC1636",
+      "quantity": 1,
+      "profile": "CORE_F3",
+      "ports": [
+        "USB-C POWER",
+        "captive upstream A",
+        "U1",
+        "U2",
+        "U3",
+        "U4"
+      ],
+      "source": "P2",
+      "role": "U1..4 are applied design labels",
+      "status": "CONDITIONAL_EVALUATION_SELECTED"
+    },
+    {
+      "id": "CP1",
+      "model": "StarTech USB2CC50CM",
+      "quantity": 1,
+      "profile": "CORE_F3",
+      "ports": [
+        "USB-C a",
+        "USB-C b"
+      ],
+      "source": "P3",
+      "role": "0.5m 3A / Pi power",
+      "status": "CONDITIONAL_EVALUATION_SELECTED"
+    },
+    {
+      "id": "CP2",
+      "model": "StarTech USB2CC50CM",
+      "quantity": 1,
+      "profile": "CORE_F3",
+      "ports": [
+        "USB-C a",
+        "USB-C b"
+      ],
+      "source": "P3",
+      "role": "0.5m 3A / Hub power",
+      "status": "CONDITIONAL_EVALUATION_SELECTED"
+    },
+    {
+      "id": "CHG",
+      "model": "Anker Nano II 65W A2663115",
+      "quantity": 1,
+      "profile": "CORE_F3",
+      "ports": [
+        "USB-C",
+        "AC plug"
+      ],
+      "source": "P4",
+      "role": "Charging only after Core shutdown/disconnection",
+      "status": "CONDITIONAL_EVALUATION_SELECTED"
+    },
+    {
+      "id": "CC",
+      "model": "A1289 factory 140W USB-C cable",
+      "quantity": 1,
+      "profile": "CORE_F3",
+      "ports": [
+        "USB-C a",
+        "USB-C b"
+      ],
+      "source": "P1",
+      "role": "Charging cable only",
+      "status": "CONDITIONAL_EVALUATION_SELECTED"
+    },
+    {
+      "id": "MODEM",
+      "model": "Murata LBAD0XX1SC-DMSB-EVK-B / 4573326593342",
+      "quantity": 1,
+      "profile": "CORE_F3",
+      "ports": [
+        "UART0 Mini-B",
+        "main RF SMA",
+        "3FF SIM"
+      ],
+      "source": "RADIO",
+      "role": "USB power contract and Japan NTN hold",
+      "status": "CONDITIONAL_EVALUATION_SELECTED"
+    },
+    {
+      "id": "CM",
+      "model": "Murata EVK factory USB-A to Mini-B cable",
+      "quantity": 1,
+      "profile": "CORE_F3",
+      "ports": [
+        "USB-A",
+        "Mini-B"
+      ],
+      "source": "RADIO",
+      "role": "UART0 only",
+      "status": "CONDITIONAL_EVALUATION_SELECTED"
+    },
+    {
+      "id": "GNSS",
+      "model": "GlobalSat BU-353N5",
+      "quantity": 1,
+      "profile": "CORE_F3",
+      "ports": [
+        "captive USB-A"
+      ],
+      "source": "GNSS",
+      "role": "GNSS receive-only / 4800 8N1",
+      "status": "CONDITIONAL_EVALUATION_SELECTED"
+    },
+    {
+      "id": "SD",
+      "model": "Samsung MB-MJ64KA/AM",
+      "quantity": 1,
+      "profile": "CORE_F3",
+      "ports": [
+        "microSDXC"
+      ],
+      "source": "SD",
+      "role": "64GB OS/storage",
+      "status": "CONDITIONAL_EVALUATION_SELECTED"
+    },
+    {
+      "id": "FAN",
+      "model": "Raspberry Pi 4 Case Fan",
+      "quantity": 1,
+      "profile": "CORE_F3",
+      "ports": [
+        "red 5V",
+        "black GND",
+        "blue PWM"
+      ],
+      "source": "FAN",
+      "role": "Factory 3-wire fan",
+      "status": "CONDITIONAL_EVALUATION_SELECTED"
+    },
+    {
+      "id": "ANT",
+      "model": "4573326593342 factory NTN antenna",
+      "quantity": 1,
+      "profile": "CORE_F3",
+      "ports": [
+        "SMA"
+      ],
+      "source": "RADIO",
+      "role": "Exact antenna MPN/bands/gain remain R03; no substitute authorized",
+      "status": "CONDITIONAL_EVALUATION_SELECTED"
+    },
+    {
+      "id": "SIM",
+      "model": "Soracom plan01s 3FF SIM, planX1/planNT1",
+      "quantity": 1,
+      "profile": "CORE_F3",
+      "ports": [
+        "3FF"
+      ],
+      "source": "RADIO",
+      "role": "No subscription activation or purchase executed",
+      "status": "CONDITIONAL_EVALUATION_SELECTED"
+    }
+  ],
+  "sources": [
+    {
+      "id": "H1",
+      "url": "https://www.nohmi.co.jp/jukeiki01/manual/TN51890R3.pdf",
+      "checked": "2026-11-02",
+      "retrievedSha256": "86f1f86863d3ede0e8905ef97c2076e52054b0bdb69a6cb078b75bd3d1646989"
+    },
+    {
+      "id": "H2",
+      "url": "https://www.nohmi.co.jp/shoninzu/029/bl7g6v0000000daw-att/FSOJ8019R1.pdf",
+      "checked": "2026-11-02",
+      "retrievedSha256": "1e30a4e11cfc532031daac08714ce54652ac96e795d99c238a157f931f36b989"
+    },
+    {
+      "id": "H3",
+      "url": "https://www.nohmi.co.jp/jukeiki01/manual/TN51932_4.pdf",
+      "checked": "2026-11-02",
+      "retrievedSha256": "53549c7b1500edc8c3f9206a0451e4caa2205a05517832a47a7050db04b5f5de"
+    },
+    {
+      "id": "I1",
+      "url": "https://www.phidgets.com/?prodid=1198",
+      "checked": "2026-11-02",
+      "retrievedSha256": "db7850ddfe0488e317cdc98de79b3bb348df07a10ca5e024ae33fb843a0f5e6b"
+    },
+    {
+      "id": "I2",
+      "url": "https://www.phidgets.com/?prodid=196",
+      "checked": "2026-11-02"
+    },
+    {
+      "id": "S1",
+      "url": "https://www.nohmi.co.jp/webcatalog_001/g_bf_2030/pageindices/index383.html",
+      "checked": "2026-11-02"
+    },
+    {
+      "id": "S2",
+      "url": "https://www.nohmi.co.jp/product/gh/product/identification/radio_001.html",
+      "checked": "2026-11-02"
+    },
+    {
+      "id": "B1",
+      "url": "https://www.nohmi.co.jp/shoninzu/007/bl7g6v0000001bcf-att/bl7g6v0000001bdf.pdf",
+      "checked": "2026-11-02",
+      "retrievedSha256": "32f6b129b3e57d065a8d492fecf2077880a6999d31f040ce44191d6c6c1a2dc0"
+    },
+    {
+      "id": "B2",
+      "url": "https://www.nohmi.co.jp/shoninzu/009/bl7g6v0000001eln-att/TN52041.pdf",
+      "checked": "2026-11-02",
+      "retrievedSha256": "96bfed3ef52a1872ad58cb64c1c17d8d77493e6080699c8184bcae106989524c"
+    },
+    {
+      "id": "B3",
+      "url": "https://www.nohmi.co.jp/shoninzu/F-PDF/GKF05691.pdf",
+      "checked": "2026-11-02",
+      "retrievedSha256": "23eaa3fb20b29cd66c5f4318dfd7eb3aba05bffabfd35d53c540198219bcdfec"
+    },
+    {
+      "id": "L1",
+      "url": "https://www.jfeii.or.jp/activity/",
+      "checked": "2026-11-02"
+    },
+    {
+      "id": "L2",
+      "url": "https://www.fdma.go.jp/singi_kento/kento/items/yobou10.pdf",
+      "checked": "2026-11-02",
+      "retrievedSha256": "3320f3cbf8f5050ae7b6e59786ce374d615809c1daf8ed0b622045a26f9d4201"
+    },
+    {
+      "id": "L3",
+      "url": "https://www.fdma.go.jp/laws/tutatsu/items/tokusyoujikahou.pdf",
+      "checked": "2026-11-02"
+    },
+    {
+      "id": "L5",
+      "url": "https://www.fdma.go.jp/laws/tutatsu/items/e7ed89c8437d7e29f0cc26e846d0f3bf4fc164a4.pdf",
+      "checked": "2026-11-02"
+    },
+    {
+      "id": "P3",
+      "path": "docs/mii/design/22-integrated-radio.md"
+    },
+    {
+      "id": "P1",
+      "url": "https://www.ankerjapan.com/products/a1289"
+    },
+    {
+      "id": "P1-M",
+      "url": "https://lp.ankerjapan.com/hubfs/aoos/manual/A1289Manual.pdf"
+    },
+    {
+      "id": "P2",
+      "url": "https://www.raspberrypi.com/documentation/accessories/usb.html"
+    },
+    {
+      "id": "P2-MPN",
+      "url": "https://thepihut.com/products/raspberry-pi-usb-3-hub"
+    },
+    {
+      "id": "P4",
+      "url": "https://www.ankerjapan.com/products/a2663"
+    },
+    {
+      "id": "RADIO",
+      "url": "https://store.soracom.io/product/murata-type-1sc-ntn-evaluation-kit-global-connect-sim/"
+    },
+    {
+      "id": "GNSS",
+      "url": "https://www.globalsat.com.tw/files/User%20Manual-BU-353N5_BR-355N5%20V1.1_20240905.pdf"
+    },
+    {
+      "id": "FAN",
+      "url": "https://datasheets.raspberrypi.org/case-fan/case-fan-product-brief.pdf"
+    },
+    {
+      "id": "SD",
+      "url": "https://www.samsung.com/us/memory-storage/memory-card/pro-endurance-adapter-microsdxc-64gb-sku-mb-mj64ka-am/"
+    },
+    {
+      "id": "LAW-H",
+      "url": "https://laws.e-gov.go.jp/api/1/lawdata/417M60000008011"
+    },
+    {
+      "id": "LAW-B",
+      "url": "https://laws.e-gov.go.jp/api/1/lawdata/356M50000008017"
+    },
+    {
+      "id": "KENTEI",
+      "url": "https://www.jfeii.or.jp/download/kitei/Kentei-Gyoumu-R08-04-01.pdf"
+    }
+  ],
+  "connections": [
+    {
+      "id": "F01a",
+      "fromPort": "HB1[1].純正コネクタ",
+      "toPort": "H1.純正電池コネクタ",
+      "kind": "factory_battery",
+      "domain": "FIRE_H1",
+      "mode": "RUN",
+      "held": false
+    },
+    {
+      "id": "F01b",
+      "fromPort": "HB1[2].純正コネクタ",
+      "toPort": "H2.純正電池コネクタ",
+      "kind": "factory_battery",
+      "domain": "FIRE_H2",
+      "mode": "RUN",
+      "held": false
+    },
+    {
+      "id": "F02",
+      "fromPort": "HB2.純正コネクタ",
+      "toPort": "H4.電池用コネクタ",
+      "kind": "factory_battery",
+      "domain": "FIRE_H4",
+      "mode": "RUN",
+      "held": false
+    },
+    {
+      "id": "F03",
+      "fromPort": "H4.火災移報用コネクタ",
+      "toPort": "HC.純正プラグ",
+      "kind": "factory_contact_harness",
+      "domain": "CONTACT",
+      "mode": "RUN",
+      "held": true
+    },
+    {
+      "id": "F04",
+      "fromPort": "HC.lead A",
+      "toPort": "I1.Digital Inputs 0",
+      "kind": "contact_sense",
+      "domain": "ISOLATED_USB",
+      "mode": "RUN",
+      "held": true
+    },
+    {
+      "id": "F05",
+      "fromPort": "HC.lead B",
+      "toPort": "I1.Digital Inputs G/GND",
+      "kind": "contact_return",
+      "domain": "ISOLATED_USB",
+      "mode": "RUN",
+      "held": true
+    },
+    {
+      "id": "F06",
+      "fromPort": "I2.device USB-A",
+      "toPort": "I1.USB Mini-B",
+      "via": "C2",
+      "kind": "usb",
+      "domain": "ISOLATED_USB",
+      "mode": "RUN",
+      "held": false
+    },
+    {
+      "id": "P01",
+      "fromPort": "PB.C1",
+      "toPort": "CORE.USB-C power",
+      "kind": "power",
+      "domain": "CORE_5V",
+      "mode": "RUN",
+      "held": false,
+      "via": "CP1"
+    },
+    {
+      "id": "P02",
+      "fromPort": "PB.C2",
+      "toPort": "HUB.USB-C POWER",
+      "kind": "power",
+      "domain": "HUB_5V",
+      "mode": "RUN",
+      "held": false,
+      "via": "CP2"
+    },
+    {
+      "id": "D01",
+      "fromPort": "HUB.captive upstream A",
+      "toPort": "CORE.青USB3-A下段",
+      "kind": "usb",
+      "domain": "CORE_USB",
+      "mode": "RUN",
+      "held": false
+    },
+    {
+      "id": "D02",
+      "fromPort": "HUB.U1",
+      "toPort": "MODEM.UART0 Mini-B",
+      "kind": "usb",
+      "domain": "HUB_USB",
+      "mode": "RUN",
+      "held": true,
+      "via": "CM"
+    },
+    {
+      "id": "D03",
+      "fromPort": "HUB.U2",
+      "toPort": "GNSS.captive USB-A",
+      "kind": "usb",
+      "domain": "HUB_USB",
+      "mode": "RUN",
+      "held": false
+    },
+    {
+      "id": "F07-F3",
+      "fromPort": "HUB.U3",
+      "toPort": "I2.host Mini-B",
+      "kind": "usb",
+      "domain": "HUB_USB",
+      "mode": "RUN",
+      "held": false,
+      "via": "C1"
+    },
+    {
+      "id": "FAN1",
+      "fromPort": "CORE.J8-4 5V",
+      "toPort": "FAN.red 5V",
+      "kind": "power",
+      "domain": "CORE_5V",
+      "mode": "RUN",
+      "held": false
+    },
+    {
+      "id": "FAN2",
+      "fromPort": "CORE.J8-6 GND",
+      "toPort": "FAN.black GND",
+      "kind": "ground",
+      "domain": "CORE_GND",
+      "mode": "RUN",
+      "held": false
+    },
+    {
+      "id": "FAN3",
+      "fromPort": "CORE.J8-8 BCM14",
+      "toPort": "FAN.blue PWM",
+      "kind": "signal",
+      "domain": "CORE_LOGIC",
+      "mode": "RUN",
+      "held": false
+    },
+    {
+      "id": "SD01",
+      "fromPort": "SD.microSDXC",
+      "toPort": "CORE.microSD",
+      "kind": "card",
+      "domain": "CORE_LOGIC",
+      "mode": "RUN",
+      "held": false
+    },
+    {
+      "id": "RF01",
+      "fromPort": "MODEM.main RF SMA",
+      "toPort": "ANT.SMA",
+      "kind": "rf",
+      "domain": "MODEM_RF",
+      "mode": "RUN",
+      "held": true
+    },
+    {
+      "id": "SIM01",
+      "fromPort": "SIM.3FF",
+      "toPort": "MODEM.3FF SIM",
+      "kind": "card",
+      "domain": "MODEM_LOGIC",
+      "mode": "RUN",
+      "held": true
+    },
+    {
+      "id": "C01",
+      "fromPort": "CHG.USB-C",
+      "toPort": "PB.C1",
+      "kind": "power",
+      "domain": "CHARGE",
+      "mode": "CHARGE_ONLY",
+      "held": false,
+      "via": "CC"
+    }
+  ],
+  "wireless": [
+    {
+      "id": "RF1",
+      "source": "H1",
+      "target": "H2",
+      "family": "NOHMI residential"
+    },
+    {
+      "id": "RF2",
+      "source": "H1",
+      "target": "H4",
+      "family": "NOHMI residential"
+    }
+  ],
+  "noConnect": [
+    "PB.USB-A",
+    "HUB.U4",
+    "All other Pi USB ports",
+    "All I1 outputs/analog/5V",
+    "Pi GPIO to isolated fire-side GND",
+    "Waveshare UPS/12.6V charger/I2C",
+    "Any building L/C or S+/S- to mii",
+    "Quectel external-power pins"
+  ],
+  "power": {
+    "sourcePortLimitMa": 3000,
+    "sourceNominalV": 5,
+    "sourceTwoCPortAggregateMaxW": 140,
+    "source5VSimultaneousVerified": false,
+    "coreAllocationMa": 2500,
+    "hubOwnAllocationMa": 300,
+    "modemAllocationMa": 1000,
+    "gnssAllocationMa": 100,
+    "fireIoAllocationMa": 100,
+    "hubAllocationMa": 1500,
+    "totalAllocationW": 20,
+    "loadVoltageMinV": 4.75,
+    "loadVoltageMaxV": 5.25,
+    "usbPowerContractAccepted": false,
+    "upstreamBackfeedAccepted": false,
+    "upstreamBusLimitMa": 900,
+    "piUsbTotalLimitMa": 1200,
+    "measured": false,
+    "unattendedCeilingChargeAccepted": false,
+    "temperatureRangeC": [
+      0,
+      35
+    ],
+    "batteryMassG": 632,
+    "allRadiosPowerAccepted": false
+  },
+  "modes": {
+    "RUN": [
+      "P01",
+      "P02"
+    ],
+    "CHARGE_ONLY": [
+      "C01"
+    ],
+    "mutuallyExclusive": true,
+    "runtimeLteNtnDataSimultaneous": false,
+    "wifiModemColocationAccepted": false
+  },
+  "gates": [
+    {
+      "id": "F-E01",
+      "status": "OPEN",
+      "reason": "H4接点の微小負荷・OFF漏れ/ON抵抗・接続許可と故障影響"
+    },
+    {
+      "id": "F-E02",
+      "status": "OPEN",
+      "reason": "I1/I2最大・突入とP3全USB電源余裕",
+      "detail": "F3 replaces Pi bus bottleneck; USB contract, transient/backfeed/temperature/runtime measurements and final OEM battery pending"
+    },
+    {
+      "id": "F-E03",
+      "status": "OPEN",
+      "reason": "既設台/穴・取付強度・流入煙・熱・点検"
+    },
+    {
+      "id": "F-E04",
+      "status": "OPEN",
+      "reason": "S4外部接続許可と施設適用/届出"
+    },
+    {
+      "id": "F-E05",
+      "status": "OPEN",
+      "reason": "完成mii OEM head/筐体の型式・受信機互換・検定"
+    }
+  ],
+  "release": {
+    "unconditionalProcurement": false,
+    "fieldInstallation": false,
+    "certifiedReplacement": false,
+    "manufacturing": false,
+    "physicalTest": "NOT_RUN",
+    "ceilingMountAccepted": false,
+    "finalProductBomComplete": false,
+    "benchDiagramPrepared": true
+  }
+}

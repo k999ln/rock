@@ -81,3 +81,5 @@ replay_pid*.log
 
 # Private outbound inquiry drafts and delivery receipts.
 /output/inquiries/
+
+/output/pdf/mii-fire-f3-wiring.pdf

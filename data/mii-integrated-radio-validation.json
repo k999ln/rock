@@ -231,5 +231,16 @@
     "scope": "Company Quectel delivery and Soracom official form acceptance verified; both technical responses pending. Hardware/runtime unchanged.",
     "physical": "NOT_RUN",
     "validation": "project:update/design:check/diff/source-hash/contact-exclusion PASS; prior full verify retained, no runtime changes"
-  }
+  },
+  "vendorReplyReview20261103": {
+    "quectel": "Partial antenna response read in authenticated company mailbox; YECN028AA not in BG770A certification antenna list; 5 alternatives suggested",
+    "candidate": "YECT003AA subject to Japan NTN certificate/antenna conditions",
+    "remainingQuestionsPending": true,
+    "soracom": "Receipt only found; technical response not verified",
+    "additionalMessagesSent": 0,
+    "commonOsUnchanged": true,
+    "procurementReleased": false,
+    "powerAuthority": "docs/mii/design/26-fire-certification-power.md"
+  },
+  "sourceHashScope": "Historical P3.1 checkpoint; current F3 revisions are hashed in data/mii-fire-alarm-design.json"
 }

@@ -22,3 +22,7 @@
 ## 入力
 
 設計書 docs/mii/design/ の 05（描画手順）、08 §4（投影校正）、13（4 週間計画の Week 3）。受入は 11 章 D-1〜D-5。
+
+## 2026-11-23 追加依頼の範囲
+
+[成人研修比較](../../docs/mii/training-study.md)と[ローカルキット](../../systems/rock-star-os/experiments/motion-parallax/training-study/README.md)を追加。既存off-axis設計を使う教材・匿名記録・集計と実頭位置の受け口、模擬入力を検証する。実顔追跡、上の3シーン、Job起動、実測報告・動画は未完了。task21全体や実機受入の完了ではない。発注・対外連絡・照射装置製作・本番変更なし。

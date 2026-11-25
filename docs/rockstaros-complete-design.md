@@ -1570,3 +1570,15 @@ queued → sending → completed、生成前FREE_LIMITとRetry-Afterを確認で
 [火災警報設計24章](mii/design/24-fire-alarm.md)は住宅・店舗／ビルを対象に追加するhardware profileであり、RockstarOSを別OSへ分岐しない。消防機器側の検知・現場警報・設備連動をruntimeから独立させ、OSは読取専用状態adapter、既存の保存／本人性／通知同意／予算を使う。火災・故障・通信未確認は併存し、画面の既読・job取消・account失効を警報解除へ転用しない。遠隔通知は補助で、監視の代わりではない。実adapterと各用途の消防機器・設備受入は未完了。
 
 mii消防F2：後付けの型番・端子と電源条件は[25章](mii/design/25-retrofit-fire-hardware.md)、[hardware profile](../systems/rock-star-os/targets/mii-fire-f2/README.md)。共通runtimeは維持。初号接点入力は群単位contact_closedだけで、zone/fault/lowBatteryを推測補完しない。完成品検定・runtime adapter・実機受入は未完了。
+
+消防F3は[26章](mii/design/26-fire-certification-power.md)の電源/I/O差分。共通OS不変、保存停止後に充電する。PB停止やCore着脱から固定側消防を独立。単純接点のunknown境界と権限・予算を維持。LTE/NTNは一modemの経路選択であり同時データ転送は未対応。BSP/adapter・実機・完成品検定は未受入。
+
+F3の既設互換比較は能美防災・ホーチキ・ニッタン・パナソニックの4社8系列へ拡張。共通Core＋系列別OEM消防部を設計し、メーカー間相互交換・新mii検定・物件受入は未成立。詳細は26章§5.1。
+
+### mii空間SIの表示worker候補（2026-11-08）
+
+[空間SI調査27章](mii/design/27-spatial-si-feasibility.md)で工事不要の卓上空中像と部屋全域の未成立を区別。可搬Coreの共通OSを保持し、Windows表示worker候補は既存session／job／owner／revision／Broker／予算の契約で入力・描画を接続する。表示・手操作を承認に格上げせず、切断・追跡喪失時は停止、再開時に同じ仕事と校正を照合。目的・体験・責任・入出力・保存・失敗復旧・未決定・受入は27章§1〜6。新runtime・実機・部屋全域表示・無線／消防適合の合格を追加する変更ではない。
+
+### 全室空間SIの研究profile（2026-11-08・後続）
+
+[28章](mii/design/28-room-scale-si-rd.md)で裸眼・工事なし・部屋全体の新規光学研究を設計。Coreの本人／job／revision／Broker／予算／保存を維持し、室内Hubは光学workerとする。入出力にpose不確かさ・校正epoch・frame期限・可視領域を束縛し、物理出力監視・停止はSIやネットワークから独立。状態・保存・失敗復旧は§5、受入・未決定・責任は§6/8を正本にする。研究計算・費用計画の追加であり、新しいruntime、全室表示、実機、光安全、通信／消防適合の完成ではない。
