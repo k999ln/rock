@@ -1,0 +1,724 @@
+{
+  "schema": "eve-combination/1",
+  "id": "affiliate:ai-agent-cloud:blog:a8",
+  "version": 1,
+  "title": "AI エージェントのクラウドの紹介 × 登録済みのブログ（金融以外・A8.net）",
+  "blueprint": "affiliate:ai-tools:blog",
+  "origin": "template",
+  "demand": {
+    "id": "affiliate:a8:lolipop-ai-agent-cloud",
+    "expectedPriceYen": 2000
+  },
+  "author": {
+    "kind": "person",
+    "id": "noellesugar99"
+  },
+  "finance": false,
+  "keepForSelf": [],
+  "budget": {
+    "perRunYen": 3000,
+    "trialYen": 3000
+  },
+  "steps": [
+    {
+      "id": "rules:asp-a8",
+      "label": "A8.net の規約と登録の要件を確かめる",
+      "kind": "auto",
+      "capability": "research.terms",
+      "after": [],
+      "flow": {
+        "inputs": [
+          "提供元の規約・登録要件"
+        ],
+        "outputs": [
+          "A8.net の登録要件の確認結果"
+        ]
+      },
+      "agent": {
+        "ref": "eve-part:terms-reader",
+        "version": "7ff8d75ab9792215f70bc71b5e0b199be9deccfb6d2c45bf37284fcafb501376",
+        "tool": "run",
+        "args": {
+          "account": "asp-a8",
+          "url": "https://www.a8.net/compliance/media-userpolicy.php"
+        }
+      },
+      "accept": {
+        "type": "json",
+        "required": [
+          "requirements"
+        ],
+        "minItems": 3
+      }
+    },
+    {
+      "id": "signup:asp-a8",
+      "label": "A8.net に登録する（登録済みなら、そのアカウントを使う）",
+      "kind": "human",
+      "account": "asp-a8",
+      "reason": "パスワード・確認コード・口座は本人が入れる（Eve は規約の要点と手順を用意する）",
+      "after": [
+        "rules:asp-a8"
+      ],
+      "flow": {
+        "inputs": [
+          "登録要件・本人情報・認証情報",
+          "A8.net の登録要件の確認結果"
+        ],
+        "outputs": [
+          "A8.net のアカウント"
+        ],
+        "dataFrom": [
+          {
+            "from": "rules:asp-a8",
+            "material": "A8.net の登録要件の確認結果"
+          }
+        ]
+      }
+    },
+    {
+      "id": "media:asp-a8",
+      "label": "A8.net に載せる場（登録済みのブログ）を登録する",
+      "kind": "tap",
+      "reason": "媒体の登録は A8.net の画面で本人が押す（Eve はブログの説明文を用意する）",
+      "after": [
+        "signup:asp-a8"
+      ],
+      "flow": {
+        "inputs": [
+          "A8.net のアカウント",
+          "掲載媒体情報"
+        ],
+        "outputs": [
+          "A8.net に登録した媒体"
+        ],
+        "dataFrom": [
+          {
+            "from": "signup:asp-a8",
+            "material": "A8.net のアカウント"
+          }
+        ]
+      }
+    },
+    {
+      "id": "research",
+      "label": "検索の言葉を調べる",
+      "kind": "auto",
+      "capability": "research.market",
+      "after": [],
+      "flow": {
+        "inputs": [
+          "公開情報・検索条件"
+        ],
+        "outputs": [
+          "調査結果"
+        ]
+      },
+      "agent": {
+        "ref": "eve-part:keyword-research",
+        "version": "8900d3e8aab66a896b3941d96b79afd30450746c50a2e9f7c762c1e9305a2da1",
+        "tool": "run",
+        "args": {
+          "topic": "{テーマ}",
+          "country": "JP",
+          "language": "ja"
+        }
+      },
+      "accept": {
+        "type": "json",
+        "required": [
+          "topic",
+          "keywords"
+        ],
+        "minItems": 5
+      }
+    },
+    {
+      "id": "offers",
+      "label": "公開の案件を比べて選ぶ",
+      "kind": "auto",
+      "capability": "research.offer",
+      "after": [],
+      "flow": {
+        "inputs": [
+          "需要の台帳"
+        ],
+        "outputs": [
+          "案件・条件"
+        ]
+      },
+      "agent": {
+        "ref": "eve-part:offer-compare",
+        "version": "d381262de7560d9416073b88cc43a77df1fb759c1facbb58d7ae46f56e12f1ab",
+        "tool": "run",
+        "args": {
+          "asp": "A8.net"
+        }
+      },
+      "accept": {
+        "type": "json",
+        "required": [
+          "offers",
+          "chosen"
+        ],
+        "minItems": 1
+      }
+    },
+    {
+      "id": "apply",
+      "label": "案件に提携を申し込む",
+      "kind": "tap",
+      "reason": "提携の申請は A8.net の画面で本人が押す。承認されたら、広告リンク（https://px.a8.net/…）を Eve に返す",
+      "after": [
+        "offers",
+        "media:asp-a8"
+      ],
+      "flow": {
+        "inputs": [
+          "案件・条件",
+          "A8.net に登録した媒体"
+        ],
+        "outputs": [
+          "提携承認または申請結果"
+        ],
+        "dataFrom": [
+          {
+            "from": "offers",
+            "material": "案件・条件"
+          },
+          {
+            "from": "media:asp-a8",
+            "material": "A8.net に登録した媒体"
+          }
+        ]
+      }
+    },
+    {
+      "id": "brief",
+      "label": "調べた言葉と案件から、記事の指示を作る",
+      "kind": "auto",
+      "capability": "glue.convert",
+      "after": [
+        "offers",
+        "research"
+      ],
+      "flow": {
+        "inputs": [
+          "案件・条件",
+          "調査結果"
+        ],
+        "outputs": [
+          "記事の指示"
+        ],
+        "dataFrom": [
+          {
+            "from": "offers",
+            "material": "案件・条件"
+          },
+          {
+            "from": "research",
+            "material": "調査結果"
+          }
+        ]
+      },
+      "glue": {
+        "schema": "eve-glue/1",
+        "ops": [
+          {
+            "op": "take",
+            "from": "調査結果.keywords",
+            "n": 5,
+            "as": "入れる語"
+          },
+          {
+            "op": "join",
+            "from": "$out.入れる語",
+            "sep": "、",
+            "as": "入れる語の文"
+          },
+          {
+            "op": "take",
+            "from": "案件・条件.offers",
+            "n": 3,
+            "as": "候補"
+          },
+          {
+            "op": "map",
+            "from": "$out.候補",
+            "as": "紹介する物",
+            "fields": {
+              "名前": "name",
+              "成果の条件": "condition",
+              "報酬": "rewardYen"
+            }
+          },
+          {
+            "op": "count",
+            "from": "$out.候補",
+            "as": "紹介する数"
+          },
+          {
+            "op": "template",
+            "as": "指示",
+            "text": "「{{調査結果.topic}}」を比べる記事を書く。入れる語: {{$out.入れる語の文}}。紹介するのは {{$out.紹介する数}} 件（最初は {{案件・条件.offers.0.name}}）。最初に広告（PR）である事を書く。断定・誇大な表現をしない。"
+          }
+        ],
+        "tests": [
+          {
+            "input": {
+              "調査結果": {
+                "topic": "法人向け AI 研修",
+                "keywords": [
+                  "比較",
+                  "料金",
+                  "助成金",
+                  "導入事例",
+                  "口コミ",
+                  "期間"
+                ]
+              },
+              "案件・条件": {
+                "offers": [
+                  {
+                    "name": "A 研修",
+                    "condition": "無料相談の申込",
+                    "rewardYen": 8000
+                  },
+                  {
+                    "name": "B 研修",
+                    "condition": "資料請求",
+                    "rewardYen": 1500
+                  }
+                ]
+              }
+            },
+            "expected": {
+              "入れる語": [
+                "比較",
+                "料金",
+                "助成金",
+                "導入事例",
+                "口コミ"
+              ],
+              "入れる語の文": "比較、料金、助成金、導入事例、口コミ",
+              "候補": [
+                {
+                  "name": "A 研修",
+                  "condition": "無料相談の申込",
+                  "rewardYen": 8000
+                },
+                {
+                  "name": "B 研修",
+                  "condition": "資料請求",
+                  "rewardYen": 1500
+                }
+              ],
+              "紹介する物": [
+                {
+                  "名前": "A 研修",
+                  "成果の条件": "無料相談の申込",
+                  "報酬": 8000
+                },
+                {
+                  "名前": "B 研修",
+                  "成果の条件": "資料請求",
+                  "報酬": 1500
+                }
+              ],
+              "紹介する数": 2,
+              "指示": "「法人向け AI 研修」を比べる記事を書く。入れる語: 比較、料金、助成金、導入事例、口コミ。紹介するのは 2 件（最初は A 研修）。最初に広告（PR）である事を書く。断定・誇大な表現をしない。"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "id": "article",
+      "label": "記事を書く",
+      "kind": "auto",
+      "capability": "content.article",
+      "after": [
+        "brief"
+      ],
+      "flow": {
+        "inputs": [
+          "記事の指示"
+        ],
+        "outputs": [
+          "記事"
+        ],
+        "dataFrom": [
+          {
+            "from": "brief",
+            "material": "記事の指示"
+          }
+        ]
+      },
+      "agent": {
+        "ref": "eve-part:article-writer",
+        "version": "9f3168730a05af8ac4491cc0b818085e9ed507e8e0cc2d6313a8c463e71f68b6",
+        "tool": "run"
+      },
+      "accept": {
+        "type": "text",
+        "minLength": 1500,
+        "mustInclude": [
+          "PR",
+          "{{AFFILIATE_URL}}"
+        ]
+      }
+    },
+    {
+      "id": "image",
+      "label": "記事の見出し画像を作る",
+      "kind": "auto",
+      "capability": "content.image",
+      "after": [
+        "article"
+      ],
+      "flow": {
+        "inputs": [
+          "記事"
+        ],
+        "outputs": [
+          "図・画像素材"
+        ],
+        "dataFrom": [
+          {
+            "from": "article",
+            "material": "記事"
+          }
+        ]
+      },
+      "agent": {
+        "ref": "eve-part:eyecatch-image",
+        "version": "7fa153cf670a63aa6ba1340cccdc8d99f18e63d3a125fbf0eea33d8517a4d048",
+        "tool": "run"
+      },
+      "accept": {
+        "type": "file",
+        "mime": [
+          "image/png"
+        ],
+        "maxBytes": 5000000
+      }
+    },
+    {
+      "id": "lp",
+      "label": "紹介の LP を作る",
+      "kind": "auto",
+      "capability": "site.build",
+      "after": [
+        "offers",
+        "research"
+      ],
+      "flow": {
+        "inputs": [
+          "案件・条件",
+          "調査結果"
+        ],
+        "outputs": [
+          "紹介 LP"
+        ],
+        "dataFrom": [
+          {
+            "from": "offers",
+            "material": "案件・条件"
+          },
+          {
+            "from": "research",
+            "material": "調査結果"
+          }
+        ]
+      },
+      "agent": {
+        "ref": "eve-part:lp-builder",
+        "version": "457fe7efa9361b02de8f987efa88b08308ef4c6b319ecd9831ef5353411cc35f",
+        "tool": "run"
+      },
+      "accept": {
+        "type": "text",
+        "minLength": 800,
+        "mustInclude": [
+          "PR",
+          "{{AFFILIATE_URL}}",
+          "sponsored"
+        ]
+      }
+    },
+    {
+      "id": "disclose",
+      "label": "記事と LP の広告の表示・表現を点検する",
+      "kind": "auto",
+      "capability": "compliance.check",
+      "after": [
+        "article",
+        "lp"
+      ],
+      "flow": {
+        "inputs": [
+          "紹介 LP",
+          "記事"
+        ],
+        "outputs": [
+          "広告表示・表現の確認結果"
+        ],
+        "dataFrom": [
+          {
+            "from": "article",
+            "material": "記事"
+          },
+          {
+            "from": "lp",
+            "material": "紹介 LP"
+          }
+        ],
+        "gate": true
+      },
+      "agent": {
+        "ref": "eve-part:ad-check",
+        "version": "9adeb66c1564003d176ba00836add4953bae714f0df84b988bf1884f9402aecc",
+        "tool": "run"
+      },
+      "accept": {
+        "type": "json",
+        "required": [
+          "ok",
+          "problems"
+        ],
+        "mustBeTrue": [
+          "ok"
+        ]
+      }
+    },
+    {
+      "id": "lp-host",
+      "label": "LP を置く（置く一式は Eve、置くのは本人）",
+      "kind": "auto",
+      "capability": "site.host",
+      "reason": "公開は本人。Eve は置く一式を作り、本人が置いたページの URL を受け取る",
+      "after": [
+        "lp",
+        "disclose",
+        "apply",
+        "image"
+      ],
+      "flow": {
+        "inputs": [
+          "紹介 LP",
+          "広告表示・表現の確認結果",
+          "提携承認または申請結果",
+          "図・画像素材"
+        ],
+        "outputs": [
+          "公開 LP"
+        ],
+        "dataFrom": [
+          {
+            "from": "lp",
+            "material": "紹介 LP"
+          },
+          {
+            "from": "disclose",
+            "material": "広告表示・表現の確認結果"
+          },
+          {
+            "from": "apply",
+            "material": "提携承認または申請結果"
+          },
+          {
+            "from": "image",
+            "material": "図・画像素材"
+          }
+        ]
+      },
+      "agent": {
+        "ref": "eve-part:static-bundle",
+        "version": "c6b4ddf2119a5f54f02682720b44a8a5862b6aa468819c3896a44020cabe5a4d",
+        "tool": "run"
+      },
+      "accept": {
+        "type": "json",
+        "required": [
+          "files",
+          "bundleSha256",
+          "entry"
+        ],
+        "minItems": 1
+      }
+    },
+    {
+      "id": "publish:blog",
+      "label": "記事をブログに出す（出す一式は Eve、公開は本人）",
+      "kind": "auto",
+      "capability": "publish.blog",
+      "reason": "公開は本人。Eve はブログに読み込める一式（下書き）を作り、本人が読んで公開した記事の URL を受け取る",
+      "after": [
+        "article",
+        "image",
+        "disclose",
+        "apply",
+        "lp-host"
+      ],
+      "flow": {
+        "inputs": [
+          "記事",
+          "図・画像素材",
+          "広告表示・表現の確認結果",
+          "提携承認または申請結果",
+          "公開 LP"
+        ],
+        "outputs": [
+          "公開済みの記事"
+        ],
+        "dataFrom": [
+          {
+            "from": "article",
+            "material": "記事"
+          },
+          {
+            "from": "image",
+            "material": "図・画像素材"
+          },
+          {
+            "from": "disclose",
+            "material": "広告表示・表現の確認結果"
+          },
+          {
+            "from": "apply",
+            "material": "提携承認または申請結果"
+          },
+          {
+            "from": "lp-host",
+            "material": "公開 LP"
+          }
+        ]
+      },
+      "agent": {
+        "ref": "eve-part:blog-package",
+        "version": "c4d2354e831afcd2853acac5b9af9d0b4264dc3c02875de0c1a6947e3024dbad",
+        "tool": "run"
+      },
+      "accept": {
+        "type": "json",
+        "required": [
+          "title",
+          "html",
+          "wxr"
+        ]
+      }
+    },
+    {
+      "id": "export:asp-a8",
+      "label": "A8.net の成果を CSV で書き出す",
+      "kind": "human",
+      "reason": "A8.net の管理画面へのログインと CSV の書き出しは本人（パスワードは本人だけ）。Eve は受け取った CSV の文字だけを読む",
+      "after": [
+        "publish:blog"
+      ],
+      "flow": {
+        "inputs": [
+          "公開済みの記事"
+        ],
+        "outputs": [
+          "成果の CSV"
+        ],
+        "dataFrom": [
+          {
+            "from": "publish:blog",
+            "material": "公開済みの記事"
+          }
+        ]
+      }
+    },
+    {
+      "id": "track",
+      "label": "成果・売上を数える",
+      "kind": "auto",
+      "capability": "tracking.results",
+      "after": [
+        "export:asp-a8"
+      ],
+      "flow": {
+        "inputs": [
+          "成果の CSV"
+        ],
+        "outputs": [
+          "成果・売上の集計"
+        ],
+        "dataFrom": [
+          {
+            "from": "export:asp-a8",
+            "material": "成果の CSV"
+          }
+        ]
+      },
+      "agent": {
+        "ref": "eve-part:results-csv",
+        "version": "4aa85f4e496747ff95d158fee01b8bfbb253ee1fac4cbff8325cf08417ada02e",
+        "tool": "run"
+      },
+      "accept": {
+        "type": "json",
+        "required": [
+          "clicks",
+          "approved",
+          "approvedYen"
+        ]
+      }
+    },
+    {
+      "id": "decide",
+      "label": "続ける・増やす・止めるを決める",
+      "kind": "auto",
+      "capability": "optimize.rules",
+      "after": [
+        "track"
+      ],
+      "flow": {
+        "inputs": [
+          "成果・売上の集計"
+        ],
+        "outputs": [
+          "継続・増加・停止の判断"
+        ],
+        "dataFrom": [
+          {
+            "from": "track",
+            "material": "成果・売上の集計"
+          }
+        ]
+      }
+    },
+    {
+      "id": "payout",
+      "label": "入金を確かめる",
+      "kind": "human",
+      "reason": "銀行の明細は本人の口座（Eve は A8.net の支払明細との照合を用意する）",
+      "after": [
+        "track"
+      ],
+      "flow": {
+        "inputs": [
+          "成果・売上の集計",
+          "支払明細・銀行明細"
+        ],
+        "outputs": [
+          "入金確認"
+        ],
+        "dataFrom": [
+          {
+            "from": "track",
+            "material": "成果・売上の集計"
+          }
+        ]
+      }
+    }
+  ],
+  "exit": {
+    "step": "payout",
+    "material": "入金確認",
+    "source": "A8.net の成果・承認・支払明細と、銀行の入金",
+    "counts": "approved-or-paid"
+  }
+}

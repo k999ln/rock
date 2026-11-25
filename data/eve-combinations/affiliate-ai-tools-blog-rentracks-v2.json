@@ -1,0 +1,705 @@
+{
+  "schema": "eve-combination/1",
+  "id": "affiliate:ai-tools:blog:rentracks",
+  "version": 2,
+  "title": "AI の道具の紹介 × 登録済みのブログ（金融以外・レントラックス）",
+  "blueprint": "affiliate:ai-tools:blog",
+  "origin": "template",
+  "demand": null,
+  "author": {
+    "kind": "person",
+    "id": "noellesugar99"
+  },
+  "finance": false,
+  "keepForSelf": [],
+  "budget": {
+    "perRunYen": 3000,
+    "trialYen": 3000
+  },
+  "steps": [
+    {
+      "id": "rules:hosting",
+      "label": "サイトの置き場所とドメインの規約と登録の要件を確かめる",
+      "kind": "auto",
+      "capability": "research.terms",
+      "account": "hosting",
+      "after": [],
+      "flow": {
+        "inputs": [
+          "提供元の規約・登録要件"
+        ],
+        "outputs": [
+          "登録要件の確認結果"
+        ]
+      },
+      "agent": {
+        "ref": "eve-part:terms-reader",
+        "version": "7ff8d75ab9792215f70bc71b5e0b199be9deccfb6d2c45bf37284fcafb501376",
+        "tool": "run",
+        "args": {
+          "account": "hosting"
+        }
+      },
+      "accept": {
+        "type": "json",
+        "required": [
+          "requirements"
+        ],
+        "minItems": 3
+      }
+    },
+    {
+      "id": "signup:hosting",
+      "label": "サイトの置き場所とドメインに登録する",
+      "kind": "human",
+      "account": "hosting",
+      "reason": "パスワード・確認コードは本人が入れる（Noah は入力内容と手順を用意し、入力欄の手前まで進める）",
+      "after": [
+        "rules:hosting"
+      ],
+      "flow": {
+        "inputs": [
+          "登録要件・本人情報・認証情報",
+          "登録要件の確認結果"
+        ],
+        "outputs": [
+          "利用可能なアカウント"
+        ],
+        "dataFrom": [
+          {
+            "from": "rules:hosting",
+            "material": "登録要件の確認結果"
+          }
+        ]
+      }
+    },
+    {
+      "id": "rules:asp-rentracks",
+      "label": "レントラックスの規約と登録の要件を確かめる",
+      "kind": "auto",
+      "capability": "research.terms",
+      "account": "asp-rentracks",
+      "after": [],
+      "flow": {
+        "inputs": [
+          "提供元の規約・登録要件"
+        ],
+        "outputs": [
+          "登録要件の確認結果"
+        ]
+      },
+      "agent": {
+        "ref": "eve-part:terms-reader",
+        "version": "7ff8d75ab9792215f70bc71b5e0b199be9deccfb6d2c45bf37284fcafb501376",
+        "tool": "run",
+        "args": {
+          "account": "asp-rentracks"
+        }
+      },
+      "accept": {
+        "type": "json",
+        "required": [
+          "requirements"
+        ],
+        "minItems": 3
+      }
+    },
+    {
+      "id": "signup:asp-rentracks",
+      "label": "レントラックスに登録する",
+      "kind": "human",
+      "account": "asp-rentracks",
+      "reason": "パスワード・確認コード・口座は本人が入れる（Noah は入力内容と手順を用意し、入力欄の手前まで進める）",
+      "after": [
+        "rules:asp-rentracks",
+        "signup:hosting"
+      ],
+      "waitNote": "ASP の登録では、載せる場（サイト・SNS）の名前と URL を入れる（レントラックス は無ければ A8 のブログを作る形、アクセストレードも登録の最後にサイトの情報を入れる、Amazon アソシエイトは SNS の URL で申し込める）。だから、載せる場を作った後に ASP に登録する",
+      "flow": {
+        "inputs": [
+          "登録要件・本人情報・認証情報",
+          "登録要件の確認結果"
+        ],
+        "outputs": [
+          "利用可能なアカウント"
+        ],
+        "dataFrom": [
+          {
+            "from": "rules:asp-rentracks",
+            "material": "登録要件の確認結果"
+          }
+        ]
+      }
+    },
+    {
+      "id": "media:asp-rentracks",
+      "label": "ASP に載せる場（媒体）を登録する",
+      "kind": "tap",
+      "account": "asp-rentracks",
+      "reason": "媒体の登録と提携の申請は ASP の画面で本人が押す（Noah は説明文と申請の中身を用意する）",
+      "after": [
+        "signup:asp-rentracks"
+      ],
+      "waitNote": "ASP の会員登録で入れた載せる場を、提携の申し込みに使う媒体として確かめる。だから、ASP の登録を待つ",
+      "flow": {
+        "inputs": [
+          "ASPアカウント",
+          "掲載媒体情報"
+        ],
+        "outputs": [
+          "登録済み掲載媒体"
+        ]
+      }
+    },
+    {
+      "id": "offers",
+      "label": "案件を比べて選ぶ（単価・承認率・条件）",
+      "kind": "auto",
+      "capability": "research.offer",
+      "after": [
+        "signup:asp-rentracks"
+      ],
+      "waitNote": "案件の一覧と条件（単価・承認率）は、ASP に登録してから見られる",
+      "flow": {
+        "inputs": [
+          "ASPアカウント"
+        ],
+        "outputs": [
+          "案件・条件"
+        ]
+      },
+      "accept": {
+        "type": "json",
+        "required": [
+          "offers"
+        ],
+        "minItems": 1
+      }
+    },
+    {
+      "id": "apply",
+      "label": "案件に提携を申し込む",
+      "kind": "tap",
+      "account": "asp-rentracks",
+      "reason": "提携の申請は ASP の画面で本人が押す",
+      "after": [
+        "offers",
+        "media:asp-rentracks"
+      ],
+      "flow": {
+        "inputs": [
+          "案件・条件",
+          "登録済み掲載媒体"
+        ],
+        "outputs": [
+          "提携承認または申請結果"
+        ],
+        "dataFrom": [
+          {
+            "from": "offers",
+            "material": "案件・条件"
+          },
+          {
+            "from": "media:asp-rentracks",
+            "material": "登録済み掲載媒体"
+          }
+        ]
+      }
+    },
+    {
+      "id": "research",
+      "label": "需要と競合を調べる",
+      "kind": "auto",
+      "capability": "research.market",
+      "after": [],
+      "waitNote": "需要と競合は公開の情報で調べられるので、何も待たない（登録の審査を待つ間に進める）",
+      "flow": {
+        "inputs": [
+          "公開情報・検索条件"
+        ],
+        "outputs": [
+          "調査結果"
+        ]
+      },
+      "accept": {
+        "type": "json",
+        "required": [
+          "topic",
+          "keywords"
+        ],
+        "minItems": 5
+      },
+      "agent": {
+        "ref": "eve-part:keyword-research",
+        "version": "8900d3e8aab66a896b3941d96b79afd30450746c50a2e9f7c762c1e9305a2da1",
+        "tool": "run",
+        "args": {
+          "topic": "{テーマ}",
+          "country": "JP",
+          "language": "ja"
+        }
+      }
+    },
+    {
+      "id": "brief",
+      "label": "調査と案件から、記事の指示を作る（つなぎ目の変換）",
+      "kind": "auto",
+      "capability": "glue.convert",
+      "after": [
+        "offers",
+        "research"
+      ],
+      "flow": {
+        "inputs": [
+          "案件・条件",
+          "調査結果"
+        ],
+        "outputs": [
+          "記事の指示"
+        ],
+        "dataFrom": [
+          {
+            "from": "offers",
+            "material": "案件・条件"
+          },
+          {
+            "from": "research",
+            "material": "調査結果"
+          }
+        ]
+      },
+      "glue": {
+        "schema": "eve-glue/1",
+        "ops": [
+          {
+            "op": "take",
+            "from": "調査結果.keywords",
+            "n": 5,
+            "as": "入れる語"
+          },
+          {
+            "op": "join",
+            "from": "$out.入れる語",
+            "sep": "、",
+            "as": "入れる語の文"
+          },
+          {
+            "op": "take",
+            "from": "案件・条件.offers",
+            "n": 3,
+            "as": "候補"
+          },
+          {
+            "op": "map",
+            "from": "$out.候補",
+            "as": "紹介する物",
+            "fields": {
+              "名前": "name",
+              "成果の条件": "condition",
+              "報酬": "rewardYen"
+            }
+          },
+          {
+            "op": "count",
+            "from": "$out.候補",
+            "as": "紹介する数"
+          },
+          {
+            "op": "template",
+            "as": "指示",
+            "text": "「{{調査結果.topic}}」を比べる記事を書く。入れる語: {{$out.入れる語の文}}。紹介するのは {{$out.紹介する数}} 件（最初は {{案件・条件.offers.0.name}}）。最初に広告（PR）である事を書く。断定・誇大な表現をしない。"
+          }
+        ],
+        "tests": [
+          {
+            "input": {
+              "調査結果": {
+                "topic": "法人向け AI 研修",
+                "keywords": [
+                  "比較",
+                  "料金",
+                  "助成金",
+                  "導入事例",
+                  "口コミ",
+                  "期間"
+                ]
+              },
+              "案件・条件": {
+                "offers": [
+                  {
+                    "name": "A 研修",
+                    "condition": "無料相談の申込",
+                    "rewardYen": 8000
+                  },
+                  {
+                    "name": "B 研修",
+                    "condition": "資料請求",
+                    "rewardYen": 1500
+                  }
+                ]
+              }
+            },
+            "expected": {
+              "入れる語": [
+                "比較",
+                "料金",
+                "助成金",
+                "導入事例",
+                "口コミ"
+              ],
+              "入れる語の文": "比較、料金、助成金、導入事例、口コミ",
+              "候補": [
+                {
+                  "name": "A 研修",
+                  "condition": "無料相談の申込",
+                  "rewardYen": 8000
+                },
+                {
+                  "name": "B 研修",
+                  "condition": "資料請求",
+                  "rewardYen": 1500
+                }
+              ],
+              "紹介する物": [
+                {
+                  "名前": "A 研修",
+                  "成果の条件": "無料相談の申込",
+                  "報酬": 8000
+                },
+                {
+                  "名前": "B 研修",
+                  "成果の条件": "資料請求",
+                  "報酬": 1500
+                }
+              ],
+              "紹介する数": 2,
+              "指示": "「法人向け AI 研修」を比べる記事を書く。入れる語: 比較、料金、助成金、導入事例、口コミ。紹介するのは 2 件（最初は A 研修）。最初に広告（PR）である事を書く。断定・誇大な表現をしない。"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "id": "article",
+      "label": "記事を書く",
+      "kind": "auto",
+      "capability": "content.article",
+      "after": [
+        "brief"
+      ],
+      "flow": {
+        "inputs": [
+          "記事の指示"
+        ],
+        "outputs": [
+          "記事",
+          "制作物"
+        ],
+        "dataFrom": [
+          {
+            "from": "brief",
+            "material": "記事の指示"
+          }
+        ]
+      },
+      "accept": {
+        "type": "text",
+        "minLength": 1500,
+        "mustInclude": [
+          "PR"
+        ]
+      }
+    },
+    {
+      "id": "image",
+      "label": "図・画像を作る",
+      "kind": "auto",
+      "capability": "content.image",
+      "after": [
+        "article"
+      ],
+      "flow": {
+        "inputs": [
+          "記事"
+        ],
+        "outputs": [
+          "図・画像素材",
+          "制作物"
+        ],
+        "dataFrom": [
+          {
+            "from": "article",
+            "material": "記事"
+          }
+        ]
+      },
+      "accept": {
+        "type": "file",
+        "mime": [
+          "image/png",
+          "image/webp",
+          "image/jpeg"
+        ],
+        "maxBytes": 5000000
+      }
+    },
+    {
+      "id": "lp",
+      "label": "紹介の LP を作る",
+      "kind": "auto",
+      "capability": "site.build",
+      "after": [
+        "offers",
+        "research"
+      ],
+      "flow": {
+        "inputs": [
+          "案件・条件",
+          "調査結果"
+        ],
+        "outputs": [
+          "紹介 LP"
+        ],
+        "dataFrom": [
+          {
+            "from": "offers",
+            "material": "案件・条件"
+          },
+          {
+            "from": "research",
+            "material": "調査結果"
+          }
+        ]
+      },
+      "accept": {
+        "type": "text",
+        "minLength": 800,
+        "mustInclude": [
+          "PR"
+        ]
+      }
+    },
+    {
+      "id": "disclose",
+      "label": "広告の表示（PR）と誇大な表現を点検する",
+      "kind": "auto",
+      "capability": "compliance.check",
+      "after": [
+        "image",
+        "lp"
+      ],
+      "flow": {
+        "inputs": [
+          "紹介 LP",
+          "制作物"
+        ],
+        "outputs": [
+          "広告表示・表現の確認結果"
+        ],
+        "dataFrom": [
+          {
+            "from": "image",
+            "material": "制作物"
+          },
+          {
+            "from": "lp",
+            "material": "紹介 LP"
+          }
+        ],
+        "gate": true
+      },
+      "accept": {
+        "type": "json",
+        "required": [
+          "ok",
+          "problems"
+        ],
+        "mustBeTrue": [
+          "ok"
+        ]
+      },
+      "agent": {
+        "ref": "eve-part:ad-check",
+        "version": "9adeb66c1564003d176ba00836add4953bae714f0df84b988bf1884f9402aecc",
+        "tool": "run"
+      }
+    },
+    {
+      "id": "lp-host",
+      "label": "LP を公開する",
+      "kind": "auto",
+      "capability": "site.host",
+      "after": [
+        "lp",
+        "disclose"
+      ],
+      "flow": {
+        "inputs": [
+          "紹介 LP",
+          "広告表示・表現の確認結果"
+        ],
+        "outputs": [
+          "公開 LP"
+        ],
+        "dataFrom": [
+          {
+            "from": "lp",
+            "material": "紹介 LP"
+          },
+          {
+            "from": "disclose",
+            "material": "広告表示・表現の確認結果"
+          }
+        ]
+      }
+    },
+    {
+      "id": "publish:blog",
+      "label": "ブログ（自分のサイト）に出す",
+      "kind": "auto",
+      "capability": "publish.blog",
+      "account": "hosting",
+      "after": [
+        "disclose",
+        "apply",
+        "signup:hosting",
+        "lp-host"
+      ],
+      "waitNote": "紹介のリンクを載せるのは、提携が通り、広告の表示と表現の点検が済んでから",
+      "flow": {
+        "inputs": [
+          "公開用コンテンツ",
+          "ブログ（自分のサイト）の公開先アカウント",
+          "広告表示・表現の確認結果",
+          "提携承認または申請結果"
+        ],
+        "outputs": [
+          "公開済みコンテンツ"
+        ],
+        "dataFrom": [
+          {
+            "from": "disclose",
+            "material": "広告表示・表現の確認結果"
+          },
+          {
+            "from": "apply",
+            "material": "提携承認または申請結果"
+          }
+        ]
+      }
+    },
+    {
+      "id": "export:asp-rentracks",
+      "label": "ASP の売上一覧を CSV で書き出す",
+      "kind": "human",
+      "reason": "レントラックスの管理画面へのログインと CSV の書き出しは本人（パスワードは本人だけ）。Eve は書き出す画面の場所と手順を用意し、受け取った CSV の文字だけを読む",
+      "account": "asp-rentracks",
+      "after": [
+        "publish:blog"
+      ],
+      "flow": {
+        "inputs": [
+          "公開済みコンテンツ"
+        ],
+        "outputs": [
+          "成果の CSV"
+        ],
+        "dataFrom": [
+          {
+            "from": "publish:blog",
+            "material": "公開済みコンテンツ"
+          }
+        ]
+      }
+    },
+    {
+      "id": "track",
+      "label": "成果・売上を読む",
+      "kind": "auto",
+      "capability": "tracking.results",
+      "after": [
+        "export:asp-rentracks"
+      ],
+      "flow": {
+        "inputs": [
+          "成果の CSV"
+        ],
+        "outputs": [
+          "成果・売上の集計"
+        ],
+        "dataFrom": [
+          {
+            "from": "export:asp-rentracks",
+            "material": "成果の CSV"
+          }
+        ]
+      },
+      "accept": {
+        "type": "json",
+        "required": [
+          "clicks",
+          "approved",
+          "approvedYen"
+        ]
+      },
+      "agent": {
+        "ref": "eve-part:results-csv",
+        "version": "4aa85f4e496747ff95d158fee01b8bfbb253ee1fac4cbff8325cf08417ada02e",
+        "tool": "run"
+      }
+    },
+    {
+      "id": "decide",
+      "label": "続ける・増やす・止めるを決める",
+      "kind": "auto",
+      "capability": "optimize.rules",
+      "after": [
+        "track"
+      ],
+      "flow": {
+        "inputs": [
+          "成果・売上の集計"
+        ],
+        "outputs": [
+          "継続・増加・停止の判断"
+        ],
+        "dataFrom": [
+          {
+            "from": "track",
+            "material": "成果・売上の集計"
+          }
+        ]
+      }
+    },
+    {
+      "id": "payout",
+      "label": "入金を確かめる",
+      "kind": "human",
+      "reason": "銀行の明細は本人の口座（Noah は ASP・売り場の支払明細との照合を用意する）",
+      "after": [
+        "track"
+      ],
+      "flow": {
+        "inputs": [
+          "成果・売上の集計",
+          "支払明細・銀行明細"
+        ],
+        "outputs": [
+          "入金確認"
+        ],
+        "dataFrom": [
+          {
+            "from": "track",
+            "material": "成果・売上の集計"
+          }
+        ]
+      }
+    }
+  ],
+  "exit": {
+    "step": "payout",
+    "material": "入金確認",
+    "source": "ASP の成果・承認・支払明細と、銀行の入金",
+    "counts": "approved-or-paid"
+  }
+}

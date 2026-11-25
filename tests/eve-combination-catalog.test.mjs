@@ -30,14 +30,17 @@ void test('catalog: the first combination is listed with its status, owner steps
   assert.equal(c.steps.find((s) => s.id === 'brief').part, 'glue');
   assert.equal(c.steps.find((s) => s.id === 'decide').part, 'builtin');
   assert.equal(c.steps.find((s) => s.id === 'payout').part, 'owner');
-  assert.equal(EVE_DEMAND_LEDGER.length, 0);
+  // 需要の台帳は、公開の出典が付いた物だけ（2026-11-25 に 2 件。90 日で外れる試験は tests/eve-run.test.mjs）。
+  assert.ok(EVE_DEMAND_LEDGER.every((d) => d.sources.length > 0 && d.sources.every((x) => x.url.startsWith('https://'))));
   assert.deepEqual(eveTemplateShapeCount(), { blueprints: 470, shapes: 19 });
   assert.deepEqual(eveCombinationCatalog(), items, 'deterministic');
   // レントラックスと登録済みの媒体を使う組み合わせ（2026-11-24）。ASP と媒体を変えたので、元の組み合わせとは別の id にした。
-  assert.deepEqual(items.map((x) => x.id).sort(), ['affiliate:ai-tools:blog', 'affiliate:ai-tools:blog:rentracks'], 'one row per combination');
+  // A8.net の組み合わせ（2026-11-25。公開の条件がある案件を狙う）も、1 行で並ぶ。
+  assert.deepEqual(items.map((x) => x.id).sort(), ['affiliate:ai-agent-cloud:blog:a8', 'affiliate:ai-tools:blog', 'affiliate:ai-tools:blog:rentracks'], 'one row per combination');
   const r = items.find((x) => x.id === 'affiliate:ai-tools:blog:rentracks');
-  assert.equal(r.version, 1);
-  assert.equal(r.status, 'paper', 'still no demand in the ledger, and article / LP / hosting have no part yet');
+  assert.equal(r.version, 2, 'version 2 points at the re-verified terms and keyword parts; version 1 is kept');
+  assert.equal(eveCombinationFile('affiliate:ai-tools:blog:rentracks', 1).version, 1);
+  assert.equal(r.status, 'paper', 'the Rentracks program terms are not public, so it has no sourced demand; offers / article / LP / hosting have no part attached');
   assert.deepEqual(r.problems.filter((p) => p.level === 'block'), []);
   assert.deepEqual(r.steps.filter((s) => s.part === 'agent').map((s) => [s.id, s.agent]), [
     ['rules:hosting', 'eve-part:terms-reader'], ['rules:asp-rentracks', 'eve-part:terms-reader'], ['research', 'eve-part:keyword-research'], ['disclose', 'eve-part:ad-check'], ['track', 'eve-part:results-csv'],

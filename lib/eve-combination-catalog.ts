@@ -6,6 +6,9 @@
 
 import firstCombination from '../data/eve-combinations/affiliate-ai-tools-blog.json' with { type: 'json' };
 import rentracksCombination from '../data/eve-combinations/affiliate-ai-tools-blog-rentracks.json' with { type: 'json' };
+import rentracksCombinationV2 from '../data/eve-combinations/affiliate-ai-tools-blog-rentracks-v2.json' with { type: 'json' };
+import a8Combination from '../data/eve-combinations/affiliate-ai-agent-cloud-blog-a8.json' with { type: 'json' };
+import demandLedger from '../data/eve-demand/ledger.json' with { type: 'json' };
 import capabilities from '../data/noah-business-capabilities.json' with { type: 'json' };
 import { NOAH_BUILTIN_CAPABILITIES, NOAH_CAPABILITIES } from './noah-business.ts';
 import {
@@ -13,14 +16,20 @@ import {
   type EveCombination, type EveCombinationStatus, type EveProblem, type EveStep,
 } from './eve-combination.ts';
 import { eveOwnerMinutesPerRun, eveTemplateSignatures } from './eve-combination-search.ts';
-import type { EveDemand } from './eve-demand.ts';
+import { eveDemandLedger, type EveDemand } from './eve-demand.ts';
 import { eveScore, type EveOutcomeRecord } from './eve-combination-score.ts';
 
 /** 確かめたエージェント（能力 → ref）。 */
 export const EVE_VERIFIED: Readonly<Partial<Record<string, readonly string[]>>> = (capabilities as { verified: Record<string, string[]> }).verified;
 
-/** 需要の台帳。出典付きの物だけ（eveDemandLedger を通した物）。今は空。 */
-export const EVE_DEMAND_LEDGER: readonly EveDemand[] = [];
+/** 需要の台帳に書いた物（data/eve-demand/ledger.json。公開の公式の頁だけから、出典と確かめた日付き。2026-11-25）。 */
+export const EVE_DEMAND_FILE: readonly EveDemand[] = (demandLedger as { entries: EveDemand[] }).entries;
+
+/**
+ * 需要の台帳。出典付きで、確かめた日から 90 日以内の物だけ（eveDemandLedger を通した物）。
+ * 読み込んだ時の時刻で組むので、出典が古くなった需要は自然に外れ、その需要を狙う組み合わせは「試運転だけ」に戻る。
+ */
+export const EVE_DEMAND_LEDGER: readonly EveDemand[] = eveDemandLedger(EVE_DEMAND_FILE, Date.now()).entries;
 
 /**
  * 組み合わせファイル。直す時は新しい版のファイルを足し、元の版は消さない（同じ id の、版の違う物が並ぶ）。
@@ -30,6 +39,9 @@ export const EVE_DEMAND_LEDGER: readonly EveDemand[] = [];
 const FILES: readonly EveCombination[] = [
   defineCombination(firstCombination as unknown as EveCombination),
   defineCombination(rentracksCombination as unknown as EveCombination),
+  // 版 2（2026-11-25）: 規約を読む部品（長い規約を分けて読む）と、検索の言葉の部品（混んでいる時に 1 回だけ待つ）を直したので、新しい版を指す。
+  defineCombination(rentracksCombinationV2 as unknown as EveCombination),
+  defineCombination(a8Combination as unknown as EveCombination),
 ];
 
 export type EveStepView = {
