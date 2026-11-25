@@ -1,6 +1,6 @@
 ## 2026-11-26
 
-- 関連チャットと20 PR、miiの未コミット43ファイル、最新パッケージ設計を照合して統合。task番号の衝突を134〜137へ整理し、最新仕様に回帰試験を合わせた（[task138](codex/tasks/138-cross-chat-sync.md)、PR準備中）。
+- 関連チャットと20 PR、miiの未コミット43ファイル、最新パッケージ設計を照合して統合。task番号の衝突を134〜137へ整理し、最新仕様に回帰試験を合わせた（[task138](codex/tasks/138-cross-chat-sync.md)、[PR #80](https://github.com/iceiceice999/rock/pull/80)）。全体verify成功（本体5,558成功・失敗0）、CIのWeb計測件数をNoahアイコン込みの9へ整合。
 
 - Noahの設計に掲載・本人用登録・経路別の成果判定を反映。11月25日の2,428件再調査と本番の再開条件を記録。パッケージの単一ボタン開始、月間成果、eSIMの接続枠案を仕様化（task123・126、[PR #79](https://github.com/iceiceice999/rock/pull/79)）。
 

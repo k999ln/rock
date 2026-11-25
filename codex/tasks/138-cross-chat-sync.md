@@ -68,3 +68,12 @@ PR #64のMac接続・アイコンは#76にも含まれる。両方の履歴を�
 - `PATH=/opt/homebrew/opt/openssl@3/bin:$PATH npm run verify`を実行。旧PR39の試験で見つかった現行画面fixture不足と旧日次件数の前提を修正。neuron量上限でも再起動後の拒否・予約/実行なし・保存成果の閲覧を検証する。
 - ココナラ連携の合成3試験は専用依存の準備後に成功。テストの削除はしない。
 - 検証の最終結果と統合PRは下記へ追記する。本番公開/DB migration/契約/実資金移動をこの同期作業の成功に含めない。
+
+## 最終確認（2026-11-26）
+
+- 統合保存先: [PR #80](https://github.com/iceiceice999/rock/pull/80)。本番公開前のドラフト。VS Codeの作業ブランチとGitHubは`codex/chat-sync-20261126`を共用する。元の`codex/workspace-latest-20261126`は復元用履歴として残す。
+- 全体`npm run verify`はexit 0。本体5,563件中5,558成功・失敗0・skip5、仕事API1,918項目、CSV385項目、型/lint/設計/DB/課金dry-run/ビルド/公開資産421参照の欠落0、AMC/Work/Bot確認まで成功。ログはローカル`/private/tmp/avokado-chat-verify-final.log`。
+- mii研修キットはPython14＋Node3件成功。HW1・通信P3・消防F2/F3の静的整合は成功、実機合格はfalseのまま。
+- GitHub初回CIのWeb計測は、Noahアイコン追加後もworkflowが検査対象8件を要求していたため失敗。実計測に合わせ9件＋Noahアイコン必須へ修正し、YAML構文と不足/FAILの拒否を確認。修正後のCIと公開版の受入は公開担当が確認する。
+- 競合マーカー・追加ファイルの代表的な秘密鍵/tokenパターンは0。`git diff --check`は上流OFLライセンス原文（CRLF/元の空白）を除き成功。ライセンス原文は保全した。
+- VS Codeのavokado統合workspaceで本記録・20 PRの一覧を表示確認。ルート作業先の未コミット差分を残さず、GitHubのbranch HEADとtreeを照合する。

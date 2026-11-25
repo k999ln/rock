@@ -71,3 +71,5 @@ Codex はタスクに書かれたフォルダ以外を開かない。特に:
 統合の基準は2026-11-26に取得した`origin/main` = `141fdb1879`。統合用ブランチは`codex/workspace-latest-20261126`。この記録は自動更新ではない。次の作業時は`git fetch origin`と`git status --short --branch`で確認し、変更を保全してから取り込む。リモートの他の作業ブランチ・未マージPRを「mainの最新版」と混同しない。公開／mainへの反映は別の検証・PRで行う。
 
 2026-11-26追補: 別チャットと未マージPRの統合一覧・旧ブランチの扱い・task番号対応は[task138](../../codex/tasks/138-cross-chat-sync.md)。VS CodeとGitHubの照合は同じcommit/treeを基準に行い、公開版との一致は公開担当が別途確認する。
+
+最終の通常作業ブランチは`codex/chat-sync-20261126`、GitHubの同名branchと[PR #80](https://github.com/iceiceice999/rock/pull/80)が保存先。先のworkspace-latest branchは旧チェックポイントとして保持する。

@@ -18,3 +18,6 @@ PR: 未作成。
 クラウド追補（2026-11-25）: `services/noah-revenue-runtime`へ本人限定HTTPS、SQLite Durable Objectのalarm、固定3担当、Work保存、停止generation、再送防止を実装。6試験（実workerd alarm/再起動を含む）・dry-run通過。Cloudflare OAuth接続は成功したが契約一覧は403、`standard`はFreeの証拠ではない。Workers Freeの確認待ちで未配備。ブラウザのCloudflare契約ページは既存アカウントへのサインインが必要。登録・カード・passwordの提供は不要。既存Macの携帯入口は維持。
 
 クラウド追補の全体検証: `PATH="/opt/homebrew/opt/openssl@3/bin:$PATH" npm run verify` exit 0。主試験4,611件中4,607成功・4skip・失敗0、build/API/台帳/Bot検証まで成功（`/private/tmp/noah-revenue-cloud-verify.log`）。最後のWork実行元記録追加後にも収益業務16試験・型・対象lint・Worker dry-run成功。実装と配備準備は完了、無料プラン確認・公開・実クラウド/携帯受入は未完了。
+
+
+2026-11-26統合: この文書は初期ローカル版の実測記録。携帯・PC共通画面の最新版と残件は[task132](132-noah-revenue-pack-phone.md)。保存先は[PR #80](https://github.com/iceiceice999/rock/pull/80)。

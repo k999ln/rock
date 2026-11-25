@@ -179,7 +179,8 @@ jobs:
           ], { encoding: 'utf8', timeout: 120000, maxBuffer: 1024 * 1024 }));
           if (checked.schema !== 'rockstaros-web-security-response-check/1' || checked.status !== 'PASS' ||
               checked.baseOrigin !== 'http://127.0.0.1:8787' || checked.universalHeaders !== 8 ||
-              !Array.isArray(checked.routes) || checked.routes.length !== 8)
+              !Array.isArray(checked.routes) || checked.routes.length !== 9 ||
+              !checked.routes.includes('/brand/noah-icon-v2.png'))
             throw new Error('web measurement did not complete');
           const worker = await fetch('http://127.0.0.1:8787/sw.js', {
             cache: 'no-store', redirect: 'error', signal: AbortSignal.timeout(10000),

@@ -31,3 +31,6 @@
 - `npm run design:check`、`npm run repository:check`、`npm run baseline:check`、`git diff --check`: 成功。対象文書のローカルリンク先とコードフェンスも確認。
 - 文書のみの変更。全体の`npm run verify`は未実行、PR作成時に実施する。
 - VS Codeの既存ウインドウは`/Users/kaiya/Developer/avokado-main`を表示していたため、新しいウインドウで`/Users/kaiya/Documents/ChatGPT/avokdo`を開いた。`docs/structure/03-esim.md`の最新本文（§8〜10を含む）を画面で確認。旧フォルダのGit更新・上書きは行っていない。
+
+
+2026-11-26: 他チャットの最新設計と統合し、[PR #80](https://github.com/iceiceice999/rock/pull/80)へ保存。全体verify成功。実回線・提携・情報提供運用の受入状況は変更しない。

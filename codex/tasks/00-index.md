@@ -35,7 +35,7 @@
 | # | ファイル | 一言 | 状態 |
 | --- | --- | --- | --- |
 | 20 | [20-mii-architecture-research.md](20-mii-architecture-research.md) | Tower/Hub/表示層の部品候補・工場・BOM の調査（価格は決めない） | |
-| 21 | [21-mii-motion-parallax-prototype.md](21-mii-motion-parallax-prototype.md) | Gen1 試作: 1 プロジェクター＋1 壁＋頭追跡 | 成人研修比較キット・匿名fixture追加。実追跡・実機・参加者未受入、PR未作成 |
+| 21 | [21-mii-motion-parallax-prototype.md](21-mii-motion-parallax-prototype.md) | Gen1 試作: 1 プロジェクター＋1 壁＋頭追跡 | 成人研修比較キット・匿名fixture追加。17試験成功、実追跡・実機・参加者未受入。[PR #80](https://github.com/iceiceice999/rock/pull/80) |
 | 22 | [22-mii-hardware-profile.md](22-mii-hardware-profile.md) | targets/avocado-mini → targets/mii、4 筐体（column/puck/slot/**ceiling**）の profile 記述 | |
 | 23 | [23-mii-v2-into-design.md](23-mii-v2-into-design.md) | V2 研究と第 1 形態（v2-study 20・37〜45）を設計書 V1 に反映。**本人承認後** | |
 
@@ -113,10 +113,10 @@
 
 | # | ファイル | 一言 | 状態 |
 | --- | --- | --- | --- |
-| 138 | [138-cross-chat-sync.md](138-cross-chat-sync.md) | 別チャット・未マージPR・miiの差分を最新設計/コードへ統合 | 検証中・PR準備中 |
-| 133 | [133-workspace-consolidation.md](133-workspace-consolidation.md) | 最新mainとローカル作業をavokdoへ一本化 | ✅ ファイル統合・型・lint・17試験成功。VS Codeはavokado統合版1ウインドウを確認、PR未作成 |
-| 134 | [134-noah-revenue-pack.md](134-noah-revenue-pack.md) | 本人用収益Agent・無料クラウド直接接続 | 3担当無料推論・Pixel Wi-Fi起動を受入。クラウド実行器6試験通過、無料プラン確認・配備待ち。PR未作成 |
-| 135 | [135-esim-private-cloud-design.md](135-esim-private-cloud-design.md) | eSIMから本人専用クラウド・適法な犯罪予防への協力 | ✅ ローカル設計反映・文書検証・VS Code表示確認。実装／提携は未実施、PR未作成 |
+| 138 | [138-cross-chat-sync.md](138-cross-chat-sync.md) | 別チャット・未マージPR・miiの差分を最新設計/コードへ統合 | ✅ 統合・全体verify成功・VS Code確認 [PR #80](https://github.com/iceiceice999/rock/pull/80)。本番公開は別受入 |
+| 133 | [133-workspace-consolidation.md](133-workspace-consolidation.md) | 最新mainとローカル作業をavokdoへ一本化 | ✅ ファイル統合・型・lint・17試験成功。VS Codeはavokado統合版1ウインドウを確認、[PR #80](https://github.com/iceiceice999/rock/pull/80) |
+| 134 | [134-noah-revenue-pack.md](134-noah-revenue-pack.md) | 本人用収益Agent・無料クラウド直接接続 | 3担当無料推論・Pixel Wi-Fi起動を受入。クラウド実行器6試験通過。最新版はtask132、統合 [PR #80](https://github.com/iceiceice999/rock/pull/80) |
+| 135 | [135-esim-private-cloud-design.md](135-esim-private-cloud-design.md) | eSIMから本人専用クラウド・適法な犯罪予防への協力 | ✅ ローカル設計反映・文書検証・VS Code表示確認。実装／提携は未実施、[PR #80](https://github.com/iceiceice999/rock/pull/80) |
 | 99 | [99-noah-result-data.md](99-noah-result-data.md) | 成果の本人用検索・出力と同意付き運営提供・撤回 | ✅ PR #334 |
 | 100 | [100-noah-standalone-ui.md](100-noah-standalone-ui.md) | Noahの専用UI・登録Agent・利用人数/王冠/コメント・実行中タブ・接続案内・開発者向けメール相談 | ✅ 現mainにUI・登録・保存・タップ反応を統合（[PR #3](https://github.com/iceiceice999/rock/pull/3)、[PR #6](https://github.com/iceiceice999/rock/pull/6)）。公開203のPixelでAgentboard新規登録→認証付き実行→成果再読込、音・振動を確認（[PR #10](https://github.com/iceiceice999/rock/pull/10)）。公開210のPixelで公開209の保存済み成果を再読込して保持を確認 [PR #19](https://github.com/iceiceice999/rock/pull/19)。過去の公開版別記録はtask100/CHANGELOG。任意サービスのブラウザ登録・100人同時外部実行・実eSIM連携は未受入。[PR #24](https://github.com/iceiceice999/rock/pull/24)で目的別の初回導線を追加。初見利用者の評価は[受入手順](../../docs/noah/first-use-architecture.md)で確認する。✅ オレンジのストアとマイAgent、専用Linuxと利用明細（[PR #37](https://github.com/iceiceice999/rock/pull/37)）。 ✅ Today特集、Agent一覧の共通ピン・商品詳細・登録時の表紙動画生成（[PR #41](https://github.com/iceiceice999/rock/pull/41)）。  ✅ 研修導線とCLI上限後の成果閲覧をローカル回帰で確認（[PR #39](https://github.com/iceiceice999/rock/pull/39)）。 |
 | 101 | [101-compute-placement.md](101-compute-placement.md) | 黒殿の 1 ノードを Linux 版 runner の host にし、従量の引き金を測る | 項目 1・4 [#370](https://github.com/k999ln/rock/pull/370)（main への統合は [PR #414](https://github.com/k999ln/rock/pull/414)） |
