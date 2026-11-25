@@ -5,6 +5,8 @@
 - 最新`origin/main`を土台にローカル設計・収益パックを`avokdo`へ統合。旧`avokado-main`と35ファイルを復元用に保全し、VS Codeの単一入口`avokado.code-workspace`と配置表を追加。ローカルtask番号を131・132へ整理（task133、PR未作成）。
 
 ## 2026-11-25
+- 2026-11-25 のノエルとかいやの会話（本人が貼った書き起こし 2 本）を設計書に取り込んだ（Opus / Noelle。本人「これ取り入れて全部しっかりちゃんと」）: 07 に会話の 6 行と未決 5 行（定期便の形・利用者のお金・会員登録・配る率と売値・データ）。05 に収益の候補「安全の早期発見」と、出口・組織・時間（6 章）、先の事業の構想（7 章）。spec-124 と 04 の配給に「1円も取らない」「一人当たりの予算の中で買い物」「食材・生活必需品・伝統工芸品」。trial-300 に招待と登録の見せ方。登録Agent に iPhone の連絡先からの自動入力。spec-115 につないだアカウントからの推薦の候補。01 に没入の映像の構想（8 章）。03 に通信の秘密。新しい下書き [services/noah-safety-early-warning.md](docs/services/noah-safety-early-warning.md)。会話は決定と意向を分けて書き、前の決め事と合わない所は本人の回答待ちにした。コードの変更はなし。 [PR #77](https://github.com/iceiceice999/rock/pull/77)
+
 - 本人用収益パックを同一コードで3周検証し、実携帯3回・クラウド出力の良否と未修正の入口/入力保持/事実性の問題を [task132](codex/tasks/132-noah-revenue-pack-phone.md) に記録。公開受入は未完了（[PR #76](https://github.com/iceiceice999/rock/pull/76)）。
 - 最新mainと公開版241の差分を保全し、本人用の無料クラウド3担当を携帯・PC共通のNoah画面へ接続した。公開・実携帯の受入は [task132](codex/tasks/132-noah-revenue-pack-phone.md) に分けて記録（[PR #76](https://github.com/iceiceice999/rock/pull/76)）。
 
