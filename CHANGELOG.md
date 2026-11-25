@@ -406,6 +406,46 @@
 
 - avoado.si/noahに公開カタログ・検索・詳細とMac版への導線を追加。私有データ/本番DBは変更しない（Sites用ソース、本人指示で公開せず準備まで、PR未作成）。
 
+## 2026-11-23
+
+- mii成人研修の3方式比較教材・匿名記入票・翌日再現課題・ローカル集計を`docs/mii/training-study.md`と`experiments/motion-parallax/training-study/`へ追加。共通OSと全室目標を保持、実追跡・実機・参加者未受入。PR未作成。
+
+## 2026-11-08
+
+- mii全室空間SIの新規研究を28章・研究profileへ追加。光線反例／帯域／電力と段階予算の再現計算、裸眼・工事なし・共通OSを維持。PR未作成。
+
+2026-11-08 — mii空間SIの裸眼・工事なしの実現範囲、KC-310G等の端子・条件付き費用を27章へ追加。部屋全域・実機・見積未成立を保持。PR未作成。
+
+## 2026-11-03 — mii F3 検定・互換性・分岐給電
+
+[26章](docs/mii/design/26-fire-certification-power.md)に現行検定条項・既設機器対応表・24部品行/20接続/7頁PDF・4社8系列比較を追加。A1289 C1/C2とSC1636による20W評価電源へ改版し、Quectel回答でYECN028AAを除外。共通OS不変、完成品電池・機構・OEM検定・実機・物件は未完了。local branchのみ。
+
+## 2026-11-02 — mii後付け消防ハード F2
+
+[25章](docs/mii/design/25-retrofit-fire-hardware.md)に新規配線工事不要の条件、評価用型番・実端子・5頁配線図sourceを追加。住宅連携試作、施設接続制限、一般ビルOEM・全通信電源HOLDを区別。共通OS不変、local branch・PR未作成。
+
+## 2026-11-02 — miiの火災警報機能
+
+[24章](docs/mii/design/24-fire-alarm.md)と要件・設計台帳へ、住宅・施設両方の代替目標、独立警報、固定部と可搬部、検定／設備／実機gateを追加。共通OS不変、実機・認定は未完了。local branch、PR未作成。
+
+## 2026-11-02 — 可搬mii P3.1 調達条件の再確認
+
+[22章](docs/mii/design/22-integrated-radio.md)のWi-Fi時modem電源断前提をSkylo要件に合わせて撤回し、[23章](docs/mii/design/23-japan-procurement.md)へ日本向け認証・代替kit端子・antenna外形・給電の照合と2社への送信前確認文を追加。共通OS不変、調達/実機は未release。local branchのみ、PR未作成。
+
+## 2026-11-02 — 可搬mii P3
+
+[22章](docs/mii/design/22-integrated-radio.md)にLTE/NTN共用kit・GNSS・3S UPS/指定chargerの条件付き配線と国別RF/電力条件を追加。17 BOM行/18接続/11ネット/6頁図面source。OS共通、R01〜04と実機は未完了。local branchのみ、PR未作成。
+
+## 2026-11-02 — 可搬mii P2
+
+LTE/Wi-Fi/衛星と電池を可搬Coreへ選定し、[21章](docs/mii/design/21-portable-connectivity.md)・型番付きBOM/端子netlist・7頁配線図source・hardware profileを追加。共通OSを維持。実機/RF/回線未受入、local branchのみ、PR未作成。
+
+## 2026-11-02
+
+- mii 18章にM4 Macを使うP0bとPi 5＋GS CameraのP1aを追加。型番付きBOM、9系統の端子間接続、3ページの配線図と組立手順を作成。共通OSを維持、組立/通電/購入は未実施。
+
+- mii設計14〜17章に共通OS・試作BOM/接続/電力・受入票・部品提供相談資料を整備。Hub電力と4 Nodeの集約帯域を訂正。実機/製造未受入、PR未作成。
+
 # CHANGELOG — 内側の人向け更新ログ
 
 このファイルは「何日に何を変えたか」を残す場所です。製品の説明はREADME.md、仕組みの説明はdocs/structure/ にあります。Codexは日常作業でこのファイルを読む必要はありません（読むのは「以前どう変えたか」を調べる時だけ）。
@@ -663,3 +703,8 @@ Offline apply now requires an owned private0700 parent for both source copy and 
 
 開発の現在primaryはmiiの成立判断1件です。実行queueと所有・証拠段階は[data/development-model-routing.json](data/development-model-routing.json)のcurrentExecution、運用と残gateは[Git作業入口](docs/workstreams/10-git-ci-operations.md#execution-recovery-20261028)を参照してください。`npm run mission:check`は宣言の矛盾を拒否しますが、実GitHub/物理受入の証明は独立検収で確認します。
 
+## 2026-11-02 — mii本体 HW1の組立設計
+
+4 Tower＋専用Hub＋表示部の選定BOM、12信号/電源ネット、14接続系統、6枚の印刷図を19章へ追加。18章のMac/Pi構成は開発用検証装置と明記。共通OS契約を保持し、既製モジュールとの差分、firmware/adapter、同期・閉箱・光学の未受入を記録。購入・実通電・公開は未実施。
+
+同日の通信参照指示で20章HW1-COM1を追加。専用有線WANの型番とJ33配線を選定し、mii既存LTE/SIM・Wi-Fi・衛星・携帯・費用/復旧を本体設計へ接続。PDFは7枚、radio/provider/携帯は未受入。

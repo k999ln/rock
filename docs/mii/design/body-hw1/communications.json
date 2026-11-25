@@ -1,0 +1,54 @@
+{
+  "revision": "HW1-COM1",
+  "date": "2026-11-02",
+  "authority": "docs/mii/design/20-connectivity.md",
+  "selectedParts": [
+    {
+      "id": "WAN-NIC",
+      "model": "StarTech USB31000S",
+      "quantity": 1,
+      "host": "HUB.J33 (mark selected USB-A COM1)",
+      "source": "https://media.startech.com/cms/pdfs/usb31000s_datasheet.pdf"
+    },
+    {
+      "id": "WAN-CABLE",
+      "model": "StarTech NLBL-2M-CAT6A-PATCH",
+      "quantity": 1,
+      "length_m": 2,
+      "source": "https://media.startech.com/cms/pdfs/nlbl-2m-cat6a-patch_datasheet.pdf"
+    }
+  ],
+  "connections": [
+    {
+      "id": "COM-W01",
+      "from": "HUB.J33.COM1",
+      "to": "WAN-NIC.USB-A",
+      "kind": "USB data + 5V bus power",
+      "powerBudgetW": 4.5
+    },
+    {
+      "id": "COM-W02",
+      "from": "WAN-NIC.RJ45",
+      "to": "existing_owner_router.LAN",
+      "cable": "WAN-CABLE",
+      "kind": "1000BASE-T data only"
+    }
+  ],
+  "roles": {
+    "sensor": "HUB.J17; isolated; no default gateway",
+    "wan": "USB NIC on HUB.J33; no bridging to sensor LAN",
+    "ap": "not selected; disabled"
+  },
+  "physicalInterfaceNames": "resolve from actual device and port; do not assume eth0",
+  "unselected": [
+    "LTE modem / Japan carrier / APN / nano SIM / RF antenna",
+    "Wi-Fi AP radio / antenna / regional profile",
+    "satellite modem / JP-US provider / RF antenna / transport",
+    "portable core power / battery / enclosure C-01"
+  ],
+  "physicalAccepted": false,
+  "carrierConnected": false,
+  "satelliteAccepted": false,
+  "portableAccepted": false,
+  "purchased": false
+}

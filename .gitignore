@@ -74,3 +74,18 @@ replay_pid*.log
 
 # Eve の回の記録（本人の広告リンク・売上の CSV が入る。scripts/eve-run.mjs の既定の置き場）
 data/eve-runs/private/
+
+# Reproducible mii assembly drawings; renderer and BOM are versioned.
+/output/pdf/mii-prototype-wiring.pdf
+
+/output/pdf/mii-body-hw1-wiring.pdf
+
+/output/pdf/mii-portable-p2-wiring.pdf
+
+/output/pdf/mii-portable-p3-wiring.pdf
+/output/pdf/mii-fire-f2-wiring.pdf
+
+# Private outbound inquiry drafts and delivery receipts.
+/output/inquiries/
+
+/output/pdf/mii-fire-f3-wiring.pdf

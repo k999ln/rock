@@ -1,0 +1,132 @@
+{
+  "date": "2026-11-02",
+  "revision": "HW1",
+  "status": "design_validated_physical_not_run",
+  "scope": "module body assembly design only; 4 Towers, dedicated Hub and Gen1 display",
+  "baseMain": "7bbb4b27ab6ca3b1d42bef4643c9dda8cb8ba0c6",
+  "baseLocalCommit": "114d1da4",
+  "staticDesign": {
+    "result": "PASS_STATIC_DESIGN_ONLY",
+    "parts": 31,
+    "nets": 12,
+    "connections": 14,
+    "communicationsParts": 2,
+    "communicationsConnections": 2,
+    "payload_mbps_per_tower": 258.5824,
+    "payload_mbps_four_towers": 1034.3296,
+    "minimum_load_ma": 105.205,
+    "load_resistor_worst_w": 0.6747,
+    "physical_accepted": false,
+    "firmware_accepted": false
+  },
+  "physicalAccepted": false,
+  "firmwareAccepted": false,
+  "manufacturingReleased": false,
+  "runtimeChanged": false,
+  "githubSaved": false,
+  "mainIntegrated": false,
+  "tests": {
+    "projectUpdate": "PASS",
+    "projectCheck": "PASS",
+    "designCheck": "PASS",
+    "diffCheck": "PASS",
+    "fullVerify": {
+      "command": "PATH=/opt/homebrew/opt/openssl@3/bin:$PATH npm run verify",
+      "finalExitCode": 0,
+      "rootTests": 3597,
+      "rootPass": 3593,
+      "rootFail": 0,
+      "rootSkipped": 4,
+      "webAssetsReferences": 264,
+      "webAssetsMissing": 0,
+      "workApiAssertions": 1678,
+      "csvAssertions": 385,
+      "log": "/private/tmp/mii-body-verify-final.log",
+      "initialAttempt": {
+        "exitCode": 1,
+        "failure": "existing tests/eve-model-toolkit.test.mjs; test_sigterm_supervisor_reaps_its_owned_synthetic_child read an empty PID file",
+        "log": "/private/tmp/mii-body-verify.log"
+      },
+      "targetedRetry": {
+        "exitCode": 0,
+        "log": "/private/tmp/mii-body-eve-test-retry.log"
+      },
+      "finalMetadataAndSocketDocumentation": "targeted static/design/project/link/PDF/diff checks after full verify; no runtime code change"
+    }
+  },
+  "pdf": {
+    "path": "output/pdf/mii-body-hw1-wiring.pdf",
+    "pages": 7,
+    "renderedAllPages": true,
+    "visuallyInspectedAllPages": true,
+    "lastChangedPagesRechecked": [
+      2,
+      5
+    ],
+    "sha256": "1bf45774902c45039afb6e9dac2803073882fb74542f9924e964431ed056d069",
+    "gitTracked": false
+  },
+  "communicationsRevision": "HW1-COM1",
+  "links": {
+    "markdownFiles": 20,
+    "missingRelativeFiles": 0
+  },
+  "review": {
+    "performedBy": "author",
+    "independentReviewer": false,
+    "checked": [
+      "Teensy pin card / no 5V GPIO",
+      "Ethernet vs PoE power paths",
+      "MCU removable sockets and programming with MCU isolated",
+      "PSE per-port and aggregate power budget",
+      "I2S stereo select and clock",
+      "camera/control bandwidth and 10G uplink",
+      "sensor/WAN physical separation",
+      "unimplemented synchronization, firmware, RF and portable conditions are explicit"
+    ]
+  },
+  "sourceThread": {
+    "id": "01a16c30-a468-7681-923d-3a8bd7871587",
+    "title": "RockstarOS｜通信・Web・運用",
+    "scope": "recent 16 turns plus current repository communication authorities; no message sent"
+  },
+  "remaining": [
+    "Physical parts, pin continuity, power, bandwidth, thermal and mechanical tests",
+    "MCU firmware and Hub common-OS adapters",
+    "Four-camera HW sync, eight-channel phase and multi-radar TDM",
+    "LTE modem/carrier, Wi-Fi AP radio, satellite modem/provider, regional RF profiles",
+    "Portable core C-01 and optical conditions C-02"
+  ],
+  "fileSha256": {
+    ".gitignore": "37392191d82199233f938d7d740d416abb4a066e486132e37be75fd11898c35c",
+    "CHANGELOG.md": "2a7c3806b8418b5e316586ffae8b9eb10985c4a33d686e740774866958419ee4",
+    "README.md": "051aeb8f95c9b5e7eef7794e389d7b1fc50c8aefcb158641bbcd1c0e75e745f1",
+    "data/design-document-index.json": "77be7c9040c1accb5ddaa61061c7479982e4396fe389d7fe34d67b3c811d198a",
+    "data/mii-prototype-wiring-validation.json": "3628542b5542e02a1780c6c29049667a17ad1f8c5b4bc9581428bf6afe4007f6",
+    "data/project-status.json": "2d147fd458a49bae11c4d1faeab967f560403bf1b80fa5d80425cf96a37469b8",
+    "docs/mii/design/00-README.md": "c4791dfe32077eda6cfb2c807827d78f467828bac186ead9f7f215ff628a0b34",
+    "docs/mii/design/03-node-hardware.md": "d230c49aeaae0dea733d4438467d0886b3625dd76ace530efbaa30f62efd551e",
+    "docs/mii/design/04-hub.md": "afc6504deb4c770edba5aaab9fdc016514d9f672a9dfda0838342d5965528e61",
+    "docs/mii/design/05-display-gen1.md": "5adf15637e2ee9c04c15d87c5ff1c48b26a51814ce1d87e66573a497bf95edb7",
+    "docs/mii/design/06-sync-network-power.md": "aadf011c8112b32d786b67600cdc5338cca465cb92477cb6fdb61dba4937efbc",
+    "docs/mii/design/12-bom-structure.md": "abca87abc6b3685fbb2c570e36b06eb49cbe82e0fc3e4fe6595fcfbdb4dd9eaa",
+    "docs/mii/design/15-prototype-spec.md": "c96d9c9bcc3458497152d6129dc9336f4c8e28c45598753c8a2cf16a66412594",
+    "docs/mii/design/16-prototype-acceptance.md": "e1cf7f98555b00b2845a176e53c449f51fe95de179a000d30a0227f28f6b2977",
+    "docs/mii/design/17-component-evaluation-brief.md": "29cd02d4f713067244b91d6c222a478aaa6f1ec0dde9a5f69af6e8d2425d6671",
+    "docs/mii/design/18-parts-wiring.md": "e94f702b247be4d0c9a2585cc7d1da72b7f534e5099ce06169b747c6b246080f",
+    "docs/mii/design/19-body-hardware.md": "cef3fb57c8c3e1afafbfb52d5fb1f4a30759ff09ca867423de7a5276bc7fd467",
+    "docs/mii/design/20-connectivity.md": "d06720ea09470f76ba7932242d330c080a2a7802b17d31a6606994d785452f92",
+    "docs/mii/design/body-hw1/bom-netlist.json": "5438761cc33a5aa26e0ef6b9d9087a411aeee221ac3d49ed425aaea19034a0d9",
+    "docs/mii/design/body-hw1/check.py": "68795d2be1a406172eefaef2e51534c81381e4c25c2a2c623332096ef18f0fcd",
+    "docs/mii/design/body-hw1/communications.json": "ec80472b836e36bb01e548de1a732bda2f189483de2e0be5fa2a210a1ec5264d",
+    "docs/mii/design/body-hw1/render.py": "16544a5fa32df4321926444c0f21e652092bb10554ec69f5a8bb62f85b5ac8f9",
+    "docs/rockstaros-avocado-mini-complete-design.md": "044621d626102000b5e68908832eac729de7d653dae372334b069be99f393998",
+    "docs/rockstaros-complete-design.md": "a13e392c338043f3c97ed5974aaae38dcf7fac210df5e456d891a9e5b4d94dd6",
+    "docs/structure/01-mii.md": "85ecc14e10e3def1512ad561e026829683a7174cbe53cdf42e8d399f085c1447",
+    "docs/structure/07-decisions-from-minutes.md": "abd8ab3e38db8674074324d03dac8cdb1d42ffcdca48a79930a3b11c4f6f7b35",
+    "docs/workstreams/11-material-invention-avocado-mini.md": "f6548a2081ce30f5ac9b195026c33e4acfe2acf1d136829b5f295d3668515919",
+    "project.md": "51e440f8924fd6995f546154a8b51798daf29eff79609a511d6632b23e20bdaa"
+  },
+  "snapshotLocalCommit": "da176838",
+  "historicalSnapshotNote": "HW1/HW1-COM1 validation at local commit da176838. fileSha256 is historical, not the current P2 tree. P2 selection is recorded separately in data/mii-portable-hardware-validation.json."
+}

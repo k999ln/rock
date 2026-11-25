@@ -1,9 +1,29 @@
-# mii 設計書 V1（Tower 4本＋Hub フル構成、本数可変）
+# mii 設計書 — 共通OS・可搬Core・固定Tower/Hub
+
+用途の比較試験: [成人職業研修・断面理解と翌日再現](../training-study.md)。スマホ／通常投影／頭部追従Gen1の教材・匿名票・ローカル集計。全室表示の完成とは別の探索試験。
+
+**最新の本人指示（2026-11-08・後続）:** 卓上を採用せず、全室を新規開発する。[28章 全室空間SIの技術・構成・段階予算](28-room-scale-si-rd.md)を優先。4細柱の光線不足を計算し、展開式出射面と共通OSの研究構成を定義。全室成立・実機・見積は未確定。
+
+**2026-11-08 空間SI追補:** [27章 裸眼・工事なしの実現性／部品／接続／費用](27-spatial-si-feasibility.md)。卓上の浮遊UIは市販品で評価可能。部屋全域・天井単体の購入可能な適合構成は未確認。KC-310Gを候補とし、表示unitの価格・DC/USB詳細は見積資料待ち。共通OSと既存の表示4条件・可搬通信・消防代替要求を維持。
+
+**最新は[22章 可搬P3.1](22-integrated-radio.md)と[23章 日本調達判定・確認文](23-japan-procurement.md)。** Wi-Fi時modem OFFの旧前提を撤回し、常時給電・網維持を含む同居確認へ訂正。 LTE/NTNをMurata1SCへ統合、GNSS追加、3S UPS/P28A×3と指定12.6V充電器へ改版。17 BOM行・18接続・11論理ネット、6枚の条件付き配線図。Wi-Fiとの同居RF、日本NTN機器適合、kit antenna、USB給電契約はR01〜04として未解決。実機/開通/共通OS adapterは未受入。[21章 P2](21-portable-connectivity.md)は前案、19〜20章は固定HW1として保持。
 
 版: V1.0 / 2026-11-02 / 著者: Fable（Noelle 指示）
 状態: **設計入力（Design Input）**。寸法・性能目標・受入条件を固定し、試作とRFQに渡す。製造図・部品確定・法規適合・実機合格を意味しない。
 上位: [docs/structure/01-mii.md](../../structure/01-mii.md)（構造の決定）。本書はその下の設計書。
 出典: 議事録 2026-08〜10、「3Dプロジェクション技術説明」チャット（特に回答 34, 50–55, 64–65）、AVOKADO Issue01 PDF、R5 統合設計（docs/avocado-mini-r5/package/integrated_design.md）。
+
+## V1.1追補 — OSの中身は共通（2026-11-02）
+
+本人の回答「osの中身は一緒」に基づき、**共通OS→ハード接続→実機試験**の順で設計を具体化した。まず [14章 共通OS](14-common-os.md)、[15章 部品・接続・電力](15-prototype-spec.md)、[16章 試験と記録票](16-prototype-acceptance.md)、[17章 部品提供相談資料](17-component-evaluation-brief.md) を読む。
+
+以下V1.0の室内Tower＋Hub構成は保持する。一方、元miiチャットと従来設計の単体携帯・表示4条件も保持する。今回の回答は筐体の選択ではないため、C-01/C-02として未解決を明示する。投影方式の試作合格を、板膜なし・少数表示部・上下全域・低眩しさの製品合格へ置き換えない。
+
+既存01〜13章の数値は設計目標で実測結果ではない。電源/集約帯域の訂正は06/15章、保存・認証・停止の具体契約は14章を使う。製品最終部品、pinout、PCB、実機受入は未確定。
+
+## V1.2追補 - 開発用検証装置の配線（2026-11-02）
+
+[18章 開発用検証装置](18-parts-wiring.md)で、手持ちM4 Macを使うP0bと、Pi 5＋Global Shutter CameraのP1aを選定。14点のBOMと9系統の接続、3ページの印刷図を追加した。P1aは同期前の1台立上げであり、2台同期・製品Tower・光学の受入は別。組立/通電は未実施。
 
 ## 0. 本人の指示（2026-11-02）で固定したこと
 
@@ -60,6 +80,13 @@ Gen1 では ③④ の代わりに市販の投影エンジンを Hub に直結�
 | 11 | [11-acceptance.md](11-acceptance.md) | 受入試験（数値）と Demo 1〜6 |
 | 12 | [12-bom-structure.md](12-bom-structure.md) | BOM の構造（部品の役割と候補。**価格は書かない**） |
 | 13 | [13-prototype-plan.md](13-prototype-plan.md) | 試作の順番、手持ち機材の使い方、最初の 4 週間 |
+| 14 | [14-common-os.md](14-common-os.md) | 同じOS・仕事・保存・復旧、sourceと実装境界 |
+| 15 | [15-prototype-spec.md](15-prototype-spec.md) | 試作BOM、接続表、帯域・電力・機構固定条件 |
+| 16 | [16-prototype-acceptance.md](16-prototype-acceptance.md) | 実機一周、故障・再開、表示4条件、記録票 |
+| 17 | [17-component-evaluation-brief.md](17-component-evaluation-brief.md) | メーカーへ相談する概要と評価品・数量（未送信） |
+| 18 | [18-parts-wiring.md](18-parts-wiring.md) | 開発用検証装置: Mac・BRIO・Pi 5・GS camera（mii本体ではない） |
+| 19 | [19-body-hardware.md](19-body-hardware.md) | 本体HW1: 4 Tower＋専用Hub、選定BOM、電源/端子/配線、組立と受入 |
+| 20 | [20-connectivity.md](20-connectivity.md) | 通信: 専用有線WAN、既存LTE/SIM・Wi-Fi・衛星、切断/保存/予算と携帯構成との差 |
 
 ## 3. 用語
 
@@ -76,3 +103,17 @@ Gen1 では ③④ の代わりに市販の投影エンジンを Hub に直結�
 2. Gen1 の投影エンジンを「別売りの箱」にするか「Hub に内蔵」するか（05 章は別箱を推奨）。
 3. mii の名前（商標。docs/structure/08 §3）。
 4. 本物の空中像（Gen2）に進む判断時期（Gen1 の没入評価＝11 章の受入 D-4 の結果で決める）。
+
+## 可搬通信を組む入口
+
+[21章](21-portable-connectivity.md) → [BOM・端子netlist](portable-p2/bom-netlist.json) → `python3 docs/mii/design/portable-p2/check.py` → `python3 docs/mii/design/portable-p2/render.py`。PDFはGit外の `output/pdf/mii-portable-p2-wiring.pdf`。C-01は構成選定済・物理受入待ち、C-02の表示4条件は継続。
+
+## 可搬P3を再開する入口
+
+[22章](22-integrated-radio.md) → [BOM/netlist](portable-p3/bom-netlist.json) → `python3 docs/mii/design/portable-p3/check.py` → `python3 docs/mii/design/portable-p3/render.py`。PDFはGit外 `output/pdf/mii-portable-p3-wiring.pdf`（6頁）。[23章の照会状況](23-japan-procurement.md)でR01〜04の原本回答を取得して必要箇所を改版し、P3-A01〜07へ進む。共通OS/光学C-02は同じ。
+
+## 火災警報器・設備の代替を目指す追加設計
+
+[24章 火災警報機能を備えるmii](24-fire-alarm.md)は、本人の「全部」という対象指定に基づき住宅・特定小規模施設・店舗／ビルを含める。共通OSを維持し、固定する消防機器側と着脱できる演算・通信部、用途別の検定、受信機等の設備一式を設計する。[25章 後付け消防ハード](25-retrofit-fire-hardware.md)に型番・住宅用接点／絶縁USB配線・施設／ビルの適合条件を追加した。新規建物配線・AC100V直結・天井内工事不要を要件とする。完成品検定・一般ビルOEM head・全通信同時給電・建物受入は未完了。既存警報器を外して試作miiへ置き換える段階ではない。
+
+最新追補: [26章 F3検定・既設互換・全搭載給電](26-fire-certification-power.md)。24部品行/20接続/7頁の評価配線、4社8系列の互換比較。共通OS維持、完成品検定・天井取付・物件受入は未完了。

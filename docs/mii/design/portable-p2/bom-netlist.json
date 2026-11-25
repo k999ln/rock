@@ -1,0 +1,471 @@
+{
+  "revision": "P2",
+  "date": "2026-11-02",
+  "status": "assembly_design_not_physical_acceptance",
+  "commonOs": "docs/mii/design/14-common-os.md",
+  "profile": "systems/rock-star-os/targets/mii-portable-p2/README.md",
+  "physicalAccepted": false,
+  "runtimeImplemented": false,
+  "manufacturingReleased": false,
+  "rfColocationAccepted": false,
+  "sources": {
+    "PI": "https://www.raspberrypi.com/products/raspberry-pi-4-model-b/",
+    "POWER": "https://www.raspberrypi.com/documentation/computers/raspberry-pi.html",
+    "UPS": "https://docs.pisugar.com/docs/product-wiki/battery/pisugar3/pisugar-3-series",
+    "UPS-I2C": "https://docs.pisugar.com/docs/product-wiki/battery/pisugar3/pisugar-3-i2c",
+    "UPS-SAFE": "https://docs.pisugar.com/docs/product-wiki/battery/safety-precautions",
+    "LTE": "https://www.waveshare.net/wiki/SIM7080G_Cat-M/NB-IoT_HAT",
+    "LTE-PCB": "https://www.waveshare.net/w/upload/0/0d/SIM7080X-Cat-M-NB-IoT-HAT-Schematic.pdf",
+    "LTE-HW": "https://files.waveshare.com/upload/e/e7/SIM7080G_Hardware_Design_V1.03.pdf",
+    "RF": "https://cdn.taoglas.com/datasheets/FXP14.07.0100A.pdf",
+    "SAT": "https://docs.groundcontrol.com/iot/rockblock-9704/specification",
+    "SAT-HW": "https://docs.groundcontrol.com/iot/rockblock-9704/hardware",
+    "SAT-INSTALL": "https://docs.groundcontrol.com/iot/rockblock-9704/installation",
+    "SD": "https://www.samsung.com/us/memory-storage/memory-card/pro-endurance-adapter-microsdxc-64gb-sku-mb-mj64ka-am/",
+    "FAN": "https://datasheets.raspberrypi.org/case-fan/case-fan-product-brief.pdf",
+    "C-LTE": "https://media.startech.com/cms/pdfs/usbaub50cmbk_datasheet.pdf",
+    "C-SAT": "https://media.startech.com/cms/pdfs/usb2ac50cm_datasheet.pdf",
+    "PSU": "https://datasheets.raspberrypi.com/power-supply/usb-c-power-supply-product-brief.pdf",
+    "C-LAN": "https://media.startech.com/cms/pdfs/nlbl-2m-cat6a-patch_datasheet.pdf",
+    "PPP": "https://docs.espressif.com/projects/esp-iot-solution/en/latest/usb/usb_host/usb_ppp.html",
+    "WIFI": "https://pip.raspberrypi.com/categories/685-app-notes-guides-whitepapers/documents/RP-003475-WP/Transitioning-from-Pi-3-to-Pi-4.pdf"
+  },
+  "parts": [
+    {
+      "id": "CORE",
+      "model": "Raspberry Pi 4 Model B 4GB",
+      "quantity": 1,
+      "optional": false,
+      "role": "common runtime / Wi-Fi / storage host",
+      "connector": "J8, USB2-A x2, microSD, RJ45",
+      "sources": [
+        "PI",
+        "POWER",
+        "WIFI"
+      ]
+    },
+    {
+      "id": "UPS",
+      "model": "PiSugar 3 Plus 5000mAh",
+      "quantity": 1,
+      "optional": false,
+      "role": "complete battery and UPS kit",
+      "connector": "Type-C IN / factory underside contacts / PH2.0 battery",
+      "sources": [
+        "UPS",
+        "UPS-SAFE",
+        "UPS-I2C"
+      ]
+    },
+    {
+      "id": "LTE",
+      "model": "SIM7080G Cat-M/NB-IoT HAT (EN)",
+      "quantity": 1,
+      "optional": false,
+      "role": "Waveshare 17693 LTE-M",
+      "connector": "USBJ1 Micro-B / LTE1 IPEX / SIM_CARD1",
+      "sources": [
+        "LTE",
+        "LTE-PCB",
+        "LTE-HW"
+      ]
+    },
+    {
+      "id": "LTE-ANT",
+      "model": "FXP14.07.0100A",
+      "quantity": 1,
+      "optional": false,
+      "role": "LTE internal FPC antenna",
+      "connector": "I-PEX MHF I plug / 100mm 1.13mm coax",
+      "sources": [
+        "RF"
+      ]
+    },
+    {
+      "id": "SAT",
+      "model": "RockBLOCK 9704-ANT",
+      "quantity": 1,
+      "optional": false,
+      "role": "Iridium IMT with integrated patch",
+      "connector": "USB-C / external 16pin all NC",
+      "sources": [
+        "SAT",
+        "SAT-HW",
+        "SAT-INSTALL"
+      ]
+    },
+    {
+      "id": "SD",
+      "model": "MB-MJ64KA/AM",
+      "quantity": 1,
+      "optional": false,
+      "role": "Samsung PRO Endurance 64GB",
+      "connector": "microSDXC",
+      "sources": [
+        "SD"
+      ]
+    },
+    {
+      "id": "FAN",
+      "model": "Raspberry Pi 4 Case Fan",
+      "quantity": 1,
+      "optional": false,
+      "role": "official 3-wire kit / heatsink",
+      "connector": "5V red / GND black / control blue",
+      "sources": [
+        "FAN",
+        "POWER"
+      ]
+    },
+    {
+      "id": "C-LTE",
+      "model": "USBAUB50CMBK",
+      "quantity": 1,
+      "optional": false,
+      "role": "0.5m USB2 data+power",
+      "connector": "USB-A male to Micro-B male",
+      "sources": [
+        "C-LTE"
+      ]
+    },
+    {
+      "id": "C-SAT",
+      "model": "USB2AC50CM",
+      "quantity": 1,
+      "optional": false,
+      "role": "0.5m USB2 data+power",
+      "connector": "USB-A male to USB-C male",
+      "sources": [
+        "C-SAT"
+      ]
+    },
+    {
+      "id": "PSU",
+      "model": "SC0218",
+      "quantity": 1,
+      "optional": false,
+      "role": "KSA-15E-051300HU fixed 5.1V/3A",
+      "connector": "US Type-A AC / captive Type-C",
+      "sources": [
+        "PSU"
+      ]
+    },
+    {
+      "id": "C-LAN",
+      "model": "NLBL-2M-CAT6A-PATCH",
+      "quantity": 1,
+      "optional": true,
+      "role": "optional data LAN / 2m",
+      "connector": "RJ45 to RJ45",
+      "sources": [
+        "C-LAN"
+      ]
+    },
+    {
+      "id": "MECH",
+      "model": "MII-P2-MECH-01",
+      "quantity": 1,
+      "optional": false,
+      "role": "custom frame / protective parts / dock",
+      "connector": "180x160x90 allocation; see chapter21",
+      "sources": [
+        "DESIGN"
+      ]
+    }
+  ],
+  "connections": [
+    {
+      "id": "P01",
+      "to": "UPS.TypeC_IN",
+      "signal": "5.1V input",
+      "assembly": "PSU",
+      "remains_when_undocked": false,
+      "from": "PSU.captive_TypeC"
+    },
+    {
+      "id": "P02",
+      "to": "CORE.underside_GPIO",
+      "signal": "5V/GND/I2C",
+      "assembly": "UPS",
+      "remains_when_undocked": true,
+      "from": "UPS.factory_back_contacts"
+    },
+    {
+      "id": "P03",
+      "to": "UPS.PH2_battery_socket",
+      "signal": "factory polarized battery",
+      "assembly": "UPS",
+      "remains_when_undocked": true,
+      "from": "UPS.included_battery_harness"
+    },
+    {
+      "id": "U01",
+      "to": "LTE.USBJ1",
+      "signal": "USB2 data + 5V",
+      "assembly": "C-LTE",
+      "remains_when_undocked": true,
+      "from": "CORE.USB2_black_upper"
+    },
+    {
+      "id": "U02",
+      "to": "SAT.USB_C",
+      "signal": "USB2 data + 5V",
+      "assembly": "C-SAT",
+      "remains_when_undocked": true,
+      "from": "CORE.USB2_black_lower"
+    },
+    {
+      "id": "R01",
+      "to": "LTE.LTE1",
+      "signal": "50ohm RF",
+      "assembly": "LTE-ANT",
+      "remains_when_undocked": true,
+      "from": "LTE-ANT.MHF_I"
+    },
+    {
+      "id": "F01",
+      "to": "FAN.red",
+      "signal": "5V",
+      "assembly": "FAN",
+      "remains_when_undocked": true,
+      "from": "CORE.J8.4"
+    },
+    {
+      "id": "F02",
+      "to": "FAN.black",
+      "signal": "GND",
+      "assembly": "FAN",
+      "remains_when_undocked": true,
+      "from": "CORE.J8.6"
+    },
+    {
+      "id": "F03",
+      "to": "FAN.blue",
+      "signal": "BCM14 control 3.3V",
+      "assembly": "FAN",
+      "remains_when_undocked": true,
+      "from": "CORE.J8.8"
+    },
+    {
+      "id": "S01",
+      "to": "CORE.microSD",
+      "signal": "storage bus",
+      "assembly": "SD",
+      "remains_when_undocked": true,
+      "from": "SD.contacts"
+    },
+    {
+      "id": "E01",
+      "to": "OWNER.LAN",
+      "signal": "Ethernet data; no PoE HAT",
+      "assembly": "C-LAN",
+      "remains_when_undocked": false,
+      "from": "CORE.RJ45"
+    }
+  ],
+  "nets": [
+    {
+      "name": "5V_SYSTEM",
+      "nominal_v": 5,
+      "endpoints": [
+        "UPS.5V_OUT_BUS",
+        "CORE.J8.2",
+        "CORE.J8.4",
+        "FAN.red"
+      ]
+    },
+    {
+      "name": "GND",
+      "nominal_v": 0,
+      "endpoints": [
+        "UPS.GND",
+        "CORE.J8.6",
+        "FAN.black"
+      ]
+    },
+    {
+      "name": "I2C_SDA",
+      "nominal_v": 3.3,
+      "endpoints": [
+        "UPS.SDAT",
+        "CORE.J8.3"
+      ]
+    },
+    {
+      "name": "I2C_SCL",
+      "nominal_v": 3.3,
+      "endpoints": [
+        "UPS.SSCL",
+        "CORE.J8.5"
+      ]
+    },
+    {
+      "name": "FAN_CONTROL",
+      "nominal_v": 3.3,
+      "endpoints": [
+        "CORE.J8.8",
+        "FAN.blue"
+      ]
+    },
+    {
+      "name": "LTE_USB_VBUS",
+      "nominal_v": 5,
+      "endpoints": [
+        "CORE.U_LTE.1",
+        "LTE.USBJ1.1"
+      ]
+    },
+    {
+      "name": "LTE_USB_DM",
+      "nominal_v": null,
+      "endpoints": [
+        "CORE.U_LTE.2",
+        "LTE.USBJ1.2"
+      ]
+    },
+    {
+      "name": "LTE_USB_DP",
+      "nominal_v": null,
+      "endpoints": [
+        "CORE.U_LTE.3",
+        "LTE.USBJ1.3"
+      ]
+    },
+    {
+      "name": "LTE_USB_GND",
+      "nominal_v": 0,
+      "endpoints": [
+        "CORE.U_LTE.4",
+        "LTE.USBJ1.5"
+      ]
+    }
+  ],
+  "netNotes": [
+    "Logical bus correspondence, not instructions to add parallel jumpers to factory contacts",
+    "USB ground returns join system ground inside CORE; cable internal CC/shield wiring remains factory-built"
+  ],
+  "nc": [
+    "CORE.USB_C",
+    "CORE.USB3_upper",
+    "CORE.USB3_lower",
+    "CORE.PoE_header",
+    "CORE.HDMI0",
+    "CORE.HDMI1",
+    "CORE.CSI",
+    "CORE.DSI",
+    "LTE.P1_all",
+    "LTE.H1_all",
+    "LTE.GPS1",
+    "LTE.USBJ1.4",
+    "SAT.HEADER16_all",
+    "SAT.V_BATT",
+    "SAT.GNSS_out",
+    "UPS.MicroUSB_IN",
+    "UPS.extension_pads"
+  ],
+  "jumpers": {
+    "LTE.P2": [
+      "2-3 only; 4-5 removed"
+    ],
+    "SAT.fast_charge": "default open; do not bridge 800mA link"
+  },
+  "radio": {
+    "lteMode": "Cat-M1",
+    "lteGnss": false,
+    "wifiModes": [
+      "STA",
+      "AP"
+    ],
+    "wifiSimultaneousApSta": false,
+    "bluetooth": false,
+    "satellite": "IMT message only",
+    "satelliteUsbDefaultBudgetA": 0.5,
+    "satelliteBaud": 230400,
+    "satelliteFirstPayloadBytes": 1024,
+    "satelliteRetryLimit": 2,
+    "satelliteTtlSeconds": 900,
+    "carrierSelected": false,
+    "providerActivated": false,
+    "wifiPart": "Cypress CYW43455 (on CORE board)",
+    "wifiHostInterface": "internal SDIO; no external RF connector"
+  },
+  "power": {
+    "nominalV": 5,
+    "upsOutputMaxA": 3,
+    "usbTotalMaxA": 1.2,
+    "loadsA": {
+      "core": 1.5,
+      "lteUsb": 0.5,
+      "satUsb": 0.5,
+      "fan": 0.18
+    },
+    "limitsAreMeasured": false,
+    "batteryCapacityMah": 5000,
+    "assumedBatteryNominalV": 3.7,
+    "assumedEfficiency": 0.85,
+    "assumedUsableFraction": 0.8,
+    "chargeEnclosureOpenRequired": true,
+    "upsInputMeasurementMaxV": 5.2
+  },
+  "mechanics": {
+    "allocationMm": [
+      180,
+      160,
+      90
+    ],
+    "maximumEnvelopeTargetMm": 200,
+    "fitAccepted": false,
+    "satAllocationMm": [
+      95,
+      72,
+      16.5
+    ],
+    "lteBoardMm": [
+      65,
+      30.5
+    ],
+    "lteHoleCentresMm": [
+      58,
+      23.2
+    ],
+    "lteFpcMm": [
+      70,
+      20,
+      0.2
+    ]
+  },
+  "acceptance": [
+    {
+      "id": "P2-A01",
+      "status": "NOT_RUN"
+    },
+    {
+      "id": "P2-A02",
+      "status": "NOT_RUN"
+    },
+    {
+      "id": "P2-A03",
+      "status": "NOT_RUN"
+    },
+    {
+      "id": "P2-A04",
+      "status": "BLOCKED_CARRIER_AND_RF"
+    },
+    {
+      "id": "P2-A05",
+      "status": "NOT_RUN"
+    },
+    {
+      "id": "P2-A06",
+      "status": "BLOCKED_COLOCATION_AND_PROVIDER"
+    },
+    {
+      "id": "P2-A07",
+      "status": "NOT_RUN"
+    },
+    {
+      "id": "P2-A08",
+      "status": "NOT_RUN"
+    }
+  ]
+}

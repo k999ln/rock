@@ -1,0 +1,219 @@
+{
+  "schema": "mii-prototype-wiring/1",
+  "revision": "W1",
+  "date": "2026-11-02",
+  "authority": "docs/mii/design/18-parts-wiring.md",
+  "scope": [
+    "P0b",
+    "P1a"
+  ],
+  "physicalAccepted": false,
+  "parts": [
+    {
+      "id": "H01",
+      "model": "Apple MacBook Pro 14-inch / M4 / 16GB / November 2024",
+      "quantity": "既存1",
+      "summary": "USB-C、内蔵display/mic/camera。ACアダプターの定格は画像から確認できない",
+      "sources": "S01、本人画像",
+      "ownership": "user_screenshot"
+    },
+    {
+      "id": "C01",
+      "model": "Logitech BRIO 500 Graphite、US MPN 960-001493",
+      "quantity": "1",
+      "summary": "固定USB-C cable 1.5m、mic内蔵、clip同梱。1080p30/720p60対応は機材上限",
+      "sources": "S02/S03",
+      "ownership": "unconfirmed"
+    },
+    {
+      "id": "N01",
+      "model": "Raspberry Pi 5 4GB",
+      "quantity": "1",
+      "summary": "Gigabit RJ45、CAM/DISP1、USB-C電源、microSD、FANを使用",
+      "sources": "S04",
+      "ownership": "unconfirmed"
+    },
+    {
+      "id": "C02",
+      "model": "Raspberry Pi Global Shutter Camera SC0715 / Sony IMX296",
+      "quantity": "1",
+      "summary": "15pin CSI、C/CS mount、IR-cut付き。可視光試作、最大1456×1088/60fps",
+      "sources": "S05/S06",
+      "ownership": "unconfirmed"
+    },
+    {
+      "id": "L01",
+      "model": "Raspberry Pi公式 6mm wide-angle CS-mount lens",
+      "quantity": "1",
+      "summary": "GS cameraへCSで直付け。6mm/F1.2の公式variant。16mm C-mount品と取り違えない",
+      "sources": "S06/S07",
+      "ownership": "unconfirmed"
+    },
+    {
+      "id": "F01",
+      "model": "Raspberry Pi Camera Cable Standard - Mini, 200mm",
+      "quantity": "1",
+      "summary": "camera側15pin/1mm、Pi 5側22pin/0.5mm。Display Cableではない",
+      "sources": "S08/S09",
+      "ownership": "unconfirmed"
+    },
+    {
+      "id": "P01",
+      "model": "Raspberry Pi 27W USB-C Power Supply, US plug",
+      "quantity": "1",
+      "summary": "Pi向け5.1V/5A、固定USB-C cable。使用地のコンセントに合うvariantを受領時照合",
+      "sources": "S10",
+      "ownership": "unconfirmed"
+    },
+    {
+      "id": "T01",
+      "model": "Raspberry Pi Active Cooler for Pi 5",
+      "quantity": "1",
+      "summary": "専用FAN 4pin cable、thermal pad、固定部材を使用",
+      "sources": "S11",
+      "ownership": "unconfirmed"
+    },
+    {
+      "id": "S01",
+      "model": "Raspberry Pi SD Card 64GB A2、blank版（初期書込用）",
+      "quantity": "1",
+      "summary": "microSD slotへ。Macで公式Imagerから64-bit版を準備。image版/hashを記録",
+      "sources": "S12",
+      "ownership": "unconfirmed"
+    },
+    {
+      "id": "R01",
+      "model": "StarTech SDMSDRWU3AC USB-C/USB-A card reader",
+      "quantity": "1",
+      "summary": "microSD slotを使用。初期設定時だけMacの空きUSB-Cへ直結",
+      "sources": "S17",
+      "ownership": "unconfirmed"
+    },
+    {
+      "id": "E01",
+      "model": "Belkin F2CU040btBLK USB-C to Gigabit Ethernet Adapter",
+      "quantity": "1",
+      "summary": "USB-C male→RJ45 female、10/100/1000BASE-T。macOS上の実認識は受入対象",
+      "sources": "S13",
+      "ownership": "unconfirmed"
+    },
+    {
+      "id": "E02",
+      "model": "StarTech N6PATC2MBK",
+      "quantity": "1",
+      "summary": "2m Cat6、RJ45 male同士の完成patch cable。今回はdataのみ",
+      "sources": "S14",
+      "ownership": "unconfirmed"
+    },
+    {
+      "id": "M01",
+      "model": "Manfrotto MTPIXI-B PIXI mini tripod",
+      "quantity": "1",
+      "summary": "cameraの1/4-20固定部に使用。FFCを荷重支持に使わない",
+      "sources": "S05/S15",
+      "ownership": "unconfirmed"
+    },
+    {
+      "id": "D01",
+      "model": "StarTech HDMM2M、2m HDMI male同士",
+      "quantity": "条件付き1",
+      "summary": "手持ちprojectorがHDMI Type-A入力なら採用。P0/P1aでは不要",
+      "sources": "S16",
+      "ownership": "unconfirmed"
+    }
+  ],
+  "connections": [
+    {
+      "id": "W01",
+      "endpoints": "C01固定cable → H01 U1 USB-C receptacle",
+      "signal": "1.5m USB-C、video/audio/bus power",
+      "constraint": "完成品を直結、splitterなし",
+      "status": "design_only"
+    },
+    {
+      "id": "W02",
+      "endpoints": "E01固定USB-C plug → H01 U2 USB-C receptacle",
+      "signal": "USB data＋adapter bus power",
+      "constraint": "U1と異なる空きUSB-C。Mac↔Piの給電線ではない",
+      "status": "design_only"
+    },
+    {
+      "id": "W03",
+      "endpoints": "E01 RJ45 → N01 RJ45",
+      "signal": "E02、8接点完成Cat6 patch 2m",
+      "constraint": "1000BASE-T交渉を確認、PoEなし、自作結線なし",
+      "status": "design_only"
+    },
+    {
+      "id": "W04",
+      "endpoints": "P01固定USB-C plug → N01 USB-C POWER",
+      "signal": "5.1V/5A rail、純正cable",
+      "constraint": "Piに必要な5A供給。27Wは商品名、5.1×5=25.5Wが該当rail定格",
+      "status": "design_only"
+    },
+    {
+      "id": "W05",
+      "endpoints": "C02 camera 15pin → N01 CAM/DISP1 22pin",
+      "signal": "F01、CSI-2＋制御/給電の公式配線",
+      "constraint": "両側無通電で挿抜。15-15同梱cableはPi 5に使わない",
+      "status": "design_only"
+    },
+    {
+      "id": "W06",
+      "endpoints": "T01 fan plug → N01 FAN 4pin",
+      "signal": "同梱key付きcable、5V/PWM/tach",
+      "constraint": "GPIO 40pinに挿さない。key方向を確認し無理に押さない",
+      "status": "design_only"
+    },
+    {
+      "id": "W07",
+      "endpoints": "S01 microSD → N01 microSD slot",
+      "signal": "storage、電源offで着脱",
+      "constraint": "起動媒体は電源投入前に装着",
+      "status": "design_only"
+    },
+    {
+      "id": "W09",
+      "endpoints": "R01 USB-C plug → H01空きUSB-C、S01 → R01 microSD slot",
+      "signal": "初期設定時のみ、USB給電",
+      "constraint": "USB-A側は同時接続しない。書込検証後ejectしてS01をPiへ移す",
+      "status": "design_only"
+    },
+    {
+      "id": "W08",
+      "endpoints": "H01 HDMI → projector HDMI IN",
+      "signal": "D01、2m HDMI、条件付き",
+      "constraint": "exact型番・入力・EDID確認後。初期目標1080p60、実交渉を記録",
+      "status": "design_only"
+    }
+  ],
+  "unconnected": [
+    "Pi GPIO 40pin",
+    "Pi PCIe",
+    "Pi CAM/DISP0",
+    "GS XTR",
+    "GS XVS",
+    "GS MAS"
+  ],
+  "sourceUrls": [
+    "https://support.apple.com/en-la/121552",
+    "https://www.logitech.com/en-us/shop/p/brio-500-webcam",
+    "https://www.logitech.com/assets/66219/3/brio-500.pdf",
+    "https://www.raspberrypi.com/products/raspberry-pi-5/",
+    "https://www.raspberrypi.com/products/raspberry-pi-global-shutter-camera/",
+    "https://pip.raspberrypi.com/search?page=2&q=Raspberry+Pi+Camera",
+    "https://www.raspberrypi.com/documentation/accessories/global-shutter-camera.html",
+    "https://datasheets.raspberrypi.com/hq-camera/cs-mount-lens-guide.pdf",
+    "https://www.raspberrypi.com/products/camera-cable/",
+    "https://www.raspberrypi.com/documentation/accessories/camera-software.html",
+    "https://www.raspberrypi.com/products/27w-power-supply/",
+    "https://www.raspberrypi.com/products/active-cooler/",
+    "https://www.raspberrypi.com/products/sd-cards/",
+    "https://www.belkin.com/p/usb-c-to-gigabit-ethernet-adapter/F2CU040btBLK.html",
+    "https://media.startech.com/cms/pdfs/n6patc2mbk_datasheet.pdf",
+    "https://www.manfrotto.com/global-uk/pixi-mini-tripod-black-mtpixi-b/",
+    "https://media.startech.com/cms/pdfs/hdmm2m_datasheet.pdf",
+    "https://media.startech.com/cms/pdfs/sdmsdrwu3ac_datasheet.pdf",
+    "https://www.raspberrypi.com/documentation/computers/getting-started.html"
+  ]
+}

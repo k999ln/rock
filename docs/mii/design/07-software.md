@@ -92,3 +92,7 @@ world.quality  // 09 章: 本数で変わる。ゲームは quality を見て機
 - Node の増減は hot-plug。sync-service が PTP 参加と露光スケジュールを更新、fusion-service が node_mask を更新、API の quality が変わる。
 - 未校正 Node が繋がったら room-service が増設校正を促す（08 章）。校正完了まで fusion には入れない。
 - Node 故障（露光 skew 超過・温度・IMU 転倒）は即 mask から外し、本人へ通知。表示は止めない。
+
+## 2026-11-02 — 共通OS契約の具体化
+
+[14章](14-common-os.md)を接続契約とする。同じWorkJob/owner/revision/command/Receipt、Broker、予算、保存/停止照合を使い、ハード別の仕事DBを追加しない。上記spatiald/shared-memory/120Hz/offline同期は設計目標で、現miiの2D編集sourceとは区別する。追跡/権限/出力leaseを失った場合、校正済みの安全表示へ移せる証拠がなければblackoutし、「表示は止めない」を無条件に適用しない。

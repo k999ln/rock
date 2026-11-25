@@ -2,15 +2,27 @@
   "noahCloudExecution": {
     "decidedAt": "2026-11-22",
     "entry": "esim_authenticated_cloud",
-    "destinations": ["provider_cloud", "registered_endpoint", "noah_cloud"],
+    "destinations": [
+      "provider_cloud",
+      "registered_endpoint",
+      "noah_cloud"
+    ],
     "execution": "screen_independent_durable_work",
-    "report": ["accomplished", "incomplete", "unverified"]
+    "report": [
+      "accomplished",
+      "incomplete",
+      "unverified"
+    ]
   },
   "noahDistribution": {
     "decidedAt": "2026-11-22",
     "managedBy": "operator_dock",
     "fundedBy": "operator",
-    "recipientActions": ["register_delivery_address", "view_assigned_goods", "acknowledge_receipt"],
+    "recipientActions": [
+      "register_delivery_address",
+      "view_assigned_goods",
+      "acknowledge_receipt"
+    ],
     "allocation": "received_stock_with_registered_recipient_address",
     "addressChangesApplyTo": "future_allocations",
     "ordinaryConnection": "generic_update_only",
@@ -3337,5 +3349,21 @@
     "requirementsChanged": false,
     "authAndExecutionGatesPreserved": true,
     "githubMainIntegration": "in_progress"
+  },
+  "miiFireAlarmIntent": {
+    "date": "2026-11-02",
+    "source": "Explicit user request in mii chat; scope answer: 全部",
+    "decision": "Add fire detection and alarm to mii and target replacement in both housing and shops/buildings",
+    "scope": [
+      "JP-H residential",
+      "JP-S eligible small facilities",
+      "JP-B building fire alarm systems"
+    ],
+    "commonOsUnchanged": true,
+    "authority": "docs/mii/design/24-fire-alarm.md",
+    "replacementAccepted": false,
+    "existingRequirementsPreserved": true,
+    "retrofitRequirement": "No new building wiring, hardwired AC100V work, or ceiling access construction; certified final assemblies and site-compatible mounts/interfaces required",
+    "hardwareAuthority": "docs/mii/design/25-retrofit-fire-hardware.md"
   }
 }

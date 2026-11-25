@@ -1,0 +1,119 @@
+{
+  "date": "2026-11-02",
+  "revision": "P2",
+  "status": "design_validated_physical_not_run",
+  "baseMain": "7bbb4b27ab6ca3b1d42bef4643c9dda8cb8ba0c6",
+  "baseLocalCommit": "da176838",
+  "branch": "codex/mii-prototype-design-20261102",
+  "scope": "Portable common runtime core, battery, LTE-M, onboard Wi-Fi, IMT satellite and manual dock wiring",
+  "staticDesign": {
+    "result": "PASS_STATIC_DESIGN_ONLY",
+    "parts": 12,
+    "connections": 11,
+    "logicalNets": 9,
+    "systemDesignA": 2.68,
+    "usbDesignA": 1.0,
+    "systemMarginA": 0.32,
+    "usbMarginA": 0.2,
+    "assumedUsableWh": 12.58,
+    "assumedHoursAt6W": 2.1,
+    "physicalAccepted": false,
+    "rfColocationAccepted": false
+  },
+  "physicalAccepted": false,
+  "runtimeImplemented": false,
+  "rfColocationAccepted": false,
+  "purchased": false,
+  "carrierActivated": false,
+  "manufacturingReleased": false,
+  "githubSaved": false,
+  "mainIntegrated": false,
+  "tests": {
+    "projectUpdate": "PASS",
+    "projectCheck": "PASS",
+    "designCheck": "PASS",
+    "previousHw1StaticCheck": "PASS",
+    "diffCheck": "PASS",
+    "fullVerify": {
+      "command": "PATH=/opt/homebrew/opt/openssl@3/bin:$PATH npm run verify",
+      "exitCode": 0,
+      "rootTests": 3597,
+      "rootPass": 3593,
+      "rootFail": 0,
+      "rootSkipped": 4,
+      "webAssetsReferences": 264,
+      "webAssetsMissing": 0,
+      "workApiAssertions": 1678,
+      "csvAssertions": 385,
+      "log": "/private/tmp/mii-portable-verify.log",
+      "logSha256": "a27ad1343a16fd1d62226e55fa9891da7228497546259f7d938af37ae51af6e0"
+    },
+    "lastMetadataAndWifiPartUpdate": "targeted static/design/project/link/PDF/diff checks after full verify; no runtime changes"
+  },
+  "pdf": {
+    "path": "output/pdf/mii-portable-p2-wiring.pdf",
+    "pages": 7,
+    "renderedAllPages": true,
+    "visuallyInspectedAllPages": true,
+    "lastChangedPagesRechecked": [
+      4
+    ],
+    "sha256": "67ad310584b26cf2f4617bd5ecdde55da0f9592d104ebc1ef2cd871b85717a8f",
+    "gitTracked": false
+  },
+  "links": {
+    "markdownFiles": 14,
+    "missingRelativeFiles": 0
+  },
+  "review": {
+    "performedBy": "author",
+    "independentReviewer": false,
+    "checked": [
+      "Pi GPIO physical pins and fan/UART exclusivity",
+      "LTE carrier-board schematic USB/P2/LTE1/GPS1 and voltage levels",
+      "USB single-supply paths and NC restrictions",
+      "UPS and aggregate USB budget; LTE typical module peak not USB maximum",
+      "Battery travels with core; manual dock removes input and optional Ethernet only",
+      "CYW43455 internal SDIO, no additional RF cable",
+      "RockBLOCK ANT/SMA distinction and unresolved colocation requirements",
+      "Charging enclosure restriction and maximum UPS input voltage",
+      "Common OS contract remains shared; adapters and physical acceptance remain separate"
+    ]
+  },
+  "remaining": [
+    "P2 BSP/common-runtime and battery/detach, PPP/AP, satellite adapters",
+    "Measured peak power, battery duration, case fit and thermal performance",
+    "SC0218 actual input to UPS must remain <=5.2V over acceptance profile; nominal value alone insufficient",
+    "9704-ANT co-located-radio and regional integration conditions before transmission",
+    "JP LTE-M carrier/APN/SIM/module acceptance; JP/US satellite provider and quota",
+    "P2-A01 through P2-A08 physical acceptance; optical C-02 unchanged"
+  ],
+  "fileSha256": {
+    ".gitignore": "4ec59f0a3c348e90e6053a800a3fa1b09a7fb17db3873a7d9ac26b74d8ffa48e",
+    "CHANGELOG.md": "401950f93018ddf794cc16cc9ed2257f56fdc666f928f4fe401a8f09d2e71354",
+    "README.md": "d7aaa9494ea30025e1f2aa6ebf0fa6a5d1cfd105aebb7fb4b935f03a168c7a41",
+    "data/design-document-index.json": "d009b4c7e7ddc9fdbc729befe9622719ac585f391dad0fc6a0d10ef7a309f2ef",
+    "data/mii-body-hardware-validation.json": "62ee22efeabfc67492569d1450e7aafe062c9a6f45a987eeabc0fccb84a8ccfe",
+    "data/project-status.json": "848cfbf3335c470443f6a296f9f6e56c0b71b0fd3af8aa73602ae8c1cfd1ee3b",
+    "docs/mii/design/00-README.md": "acb1643f7d1be2f9469213f1d6620056f0c6a5144ba3f1b874c17d849e2c6464",
+    "docs/mii/design/19-body-hardware.md": "6e64890af1edcc64cbd82eba119c8866410fef4c5438edc8fbd1c36aaf29a55d",
+    "docs/mii/design/20-connectivity.md": "bcad1599802e496446e5003285422b4c92eddc274768ded27decd8cecffed215",
+    "docs/mii/design/21-portable-connectivity.md": "d2d26fab1a940a01fe950468a8193aff86dc6ff73a9cf5cf4a09c23897189929",
+    "docs/mii/design/portable-p2/bom-netlist.json": "f002623b16c3357339d1348878a2abde65645168168bff58a58a6787d2ccc691",
+    "docs/mii/design/portable-p2/check.py": "256cb37e708ccd0f05f02820a50fe1068458c19d9fcffee14f31be2b8a24ff5e",
+    "docs/mii/design/portable-p2/render.py": "487464202d2e963e7bc4e8039c783e62a8cdbc14fdae818b8783c916ee903699",
+    "docs/rockstaros-avocado-mini-complete-design.md": "c27fe90d4d89df80711445606c2910b64f969d8ae98b289bf066d196a607ef87",
+    "docs/rockstaros-complete-design.md": "f0c5358fa83f080c3a0bba1329e6f9e7ff687c4825bc2c7425c398c5bc9a9e4c",
+    "docs/structure/01-mii.md": "fd1c21c29b7a930d733cd3273cf785b8d47564e6715a2ced331a8fc596b649bb",
+    "docs/structure/02-rockstaros.md": "e0636c0023fc709eb1e5865fd25c987dc283bbab8f5159fa70c5715aabb117d4",
+    "docs/structure/07-decisions-from-minutes.md": "d19ac57b8d66a2c32bf096f2fd09afecc151b7c1d1bb9a38bbf97f16b0712889",
+    "docs/workstreams/11-material-invention-avocado-mini.md": "a7dd7e62a43316fd874c3220a29b3c15628acf1341c5263b4923e7329c9d9b47",
+    "project.md": "d6ace5e152d132e9e55c7cad8458cf1c05002c67182db1c518cbc6c548dbf661",
+    "systems/rock-star-os/targets/mii-portable-p2/README.md": "55064c8faa61f412960a57dc572bd5ec137ca5368e8631971075f627ee9c12bc"
+  },
+  "historicalSnapshot": {
+    "localCommit": "4f79aded",
+    "supersededBy": "data/mii-integrated-radio-validation.json",
+    "note": "P2 hashes refer to commit 4f79aded; P3 changes links/metadata, not P2 physical acceptance"
+  }
+}

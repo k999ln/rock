@@ -2,6 +2,9 @@
 
 miiは、声でEveに頼み、部屋に映った成果を手で操作するために開発している空間コンピューターです。
 
+空間SIの現行研究: [mii・部屋全体を裸眼／工事なしで表示する新規開発設計](docs/mii/design/28-room-scale-si-rd.md)。共通OSを維持し、出射面の反例計算、研究部品、段階予算を整理。卓上は製品目標にせず、全室の物理成立は未実証。
+
+
 **[NoahでAgentを試す](https://avoado.si/noah/agents)**　·　[18秒で操作を見る](#catalog)
 
 <a href="https://avocadomini.si/#technology">
@@ -81,6 +84,7 @@ npm run amc:cycle -- demo
 | [app/os/eve/](app/os/eve/) / [components/sky-chat-workspace.tsx](components/sky-chat-workspace.tsx) | 会話・仕事・Toolの画面 |
 | [lib/workflow.ts](lib/workflow.ts) / [lib/work-store.ts](lib/work-store.ts) | 状態遷移・本人別保存・revision競合判定 |
 | [docs/structure/04-eve-noa-amc-sky.md](docs/structure/04-eve-noa-amc-sky.md) | Eveと担当構成・実行・評価の責任 |
+| mii本体の組立設計（OS共通・4 Tower＋専用Hub） | [本体HW1: 型番・端子・配線](docs/mii/design/19-body-hardware.md) / [共通OS](docs/mii/design/14-common-os.md) / [開発用検証装置](docs/mii/design/18-parts-wiring.md) |
 
 担当設定は[全社役割台帳](data/company-role-map.json)、[営業担当台帳](data/revenue-role-map.json)、[担当別の設定](.cursor/agents/)にあります。
 
@@ -472,3 +476,21 @@ macOSでHomebrewのOpenSSL 3を使う場合は `PATH=/opt/homebrew/opt/openssl@3
 Noahのブラウザ本人は、会員登録なしで自分専用のAgent取込と下書きの保存へ進めます。コードの保存権利確認・容量上限・本人別の分離を保ち、公開や実行の権限は別に判定します。ブラウザ本人は何人でも作れるので、ブラウザ本人を全員まとめた1日（UTC）の上限も掛けます（依頼1万・新しい接続5千・Agentの登録500・下書きのファイル1万・置くバイト数4GiB・コードの取り込み300。サインインした本人は数えません。`lib/noah-browser-quota.ts`。2026-11-23）。
 
 確認済みの786系列は `/noah/agents/verified` で検索できます。接続条件の調査と本番の稼働状態を分け、成果受領・定義変更・失敗・確認期限を10秒ごとに表示へ反映します。すべての系列が接続済みという意味ではありません。[接続と稼働表示](docs/noah/spec-127-live-agent-families.md)・[初回本番受入](docs/noah/acceptance-127-live-agent-families.md)
+
+
+
+開発用検証装置（本体ではない）の配線図: `python3 docs/mii/design/wiring/render-wiring.py --output output/pdf/mii-prototype-wiring.pdf`（reportlabと日本語fontが必要）。選定品14点、端子間接続9系統。Mac以外の所持と実機受入は未確認。
+
+mii本体HW1の配線図: `python3 docs/mii/design/body-hw1/render.py` → `output/pdf/mii-body-hw1-wiring.pdf`（reportlabと日本語fontが必要）。[19章](docs/mii/design/19-body-hardware.md)の4 Tower＋専用Hub＋表示部、31 BOM行・12ネット・14接続系統と、[通信20章](docs/mii/design/20-connectivity.md)のWAN追加2部品/2接続を全7枚にまとめる。静的照合は `python3 docs/mii/design/body-hw1/check.py`。実機通電、firmware/adapter、閉箱と光学は未受入。
+
+可搬miiの通信Coreは[22章 P3](docs/mii/design/22-integrated-radio.md)でLTE/衛星共用Murata・Wi-Fi・GNSS・電池を一式に選定。P3.1ではアプリ経路とmodem網維持を分離、共通OSは同じ。充電DC5521と任意RJ45を外す。印刷図は `python3 docs/mii/design/portable-p3/render.py` → `output/pdf/mii-portable-p3-wiring.pdf`（6枚、reportlab＋日本語font）、整合確認は `python3 docs/mii/design/portable-p3/check.py`。条件付き図面で、同居RF/日本NTN適合/kit antenna/USB給電契約・実機は未受入。[23章の調達判定・照会状況](docs/mii/design/23-japan-procurement.md)で日本向け条件を照会する。全部品の一括購入は回答待ち。P2は前案として保持。
+
+miiの追加商品要件は[24章 火災警報機能](docs/mii/design/24-fire-alarm.md)。住宅・店舗／ビルの両方を対象に、独立した固定警報部と着脱できる共通OS部を設計する。[25章の後付けハード設計](docs/mii/design/25-retrofit-fire-hardware.md)に部品型番・住宅用接点／絶縁USB配線・検定／設置条件をまとめた。新規建物配線・AC100V直結・天井内工事なしを目標にする。完成品検定・ビルOEM head・全通信同時電力・施工受入は未完了。評価図は `python3 docs/mii/design/fire-f2/render.py`、静的照合は `python3 docs/mii/design/fire-f2/check.py`。
+
+### mii研修比較キット
+
+miiの用途検証には[成人職業研修の比較試験](docs/mii/training-study.md)を追加しています。[ローカルキット](systems/rock-star-os/experiments/motion-parallax/training-study/README.md)で同難度を狙った3教材・順序割付・匿名記入票・翌日課題・ローカル集計を生成できます。部屋全体・裸眼・工事なし・共通OSは最終目標として維持。模擬検証済みで、実頭追跡・実参加者・全室光学は未受入です。
+
+### mii消防F3の設計確認
+
+最新の[26章](docs/mii/design/26-fire-certification-power.md)は、工事不要の目標を維持した検定条件・既設互換性・独立給電の評価設計です。`python3 docs/mii/design/fire-f3/check.py`、reportlab環境で同dir `render.py` により配線整合と7頁PDFを再生成できます。24部品行/20接続、能美防災・ホーチキ・ニッタン・パナソニックの4社8系列を比較、共通OS不変。市販電池は机上評価用であり、完成miiの天井取付・検定・全通信実機受入は未完了です。

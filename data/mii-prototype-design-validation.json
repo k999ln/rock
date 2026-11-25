@@ -1,0 +1,90 @@
+{
+  "schema": "mii-prototype-design-validation/1",
+  "date": "2026-11-02",
+  "scope": "documentation_only",
+  "sourceMain": "7bbb4b27ab6ca3b1d42bef4643c9dda8cb8ba0c6",
+  "userDirection": "osの中身は一緒",
+  "documents": {
+    "docs/mii/design/00-README.md": "1ce6cab03170ef0784ba99ee17570fbefd3cbf5d3e667604029a2ca61d23c969",
+    "docs/mii/design/03-node-hardware.md": "1b48efd801535a3401adec6519ce85ab81a8770eec317f5d810f6d8aa99c0a02",
+    "docs/mii/design/04-hub.md": "317cda1d930bc302c3b965f808d14e958e47118293720be9868b7d650fe2d469",
+    "docs/mii/design/06-sync-network-power.md": "c16f8021ce51935f6852297261b0a816b480a0237beded4506ca78192fb78792",
+    "docs/mii/design/07-software.md": "33c453aacdda22b3588c32c590b86c9300b85c9f6250f0bcc97d89a0827ac867",
+    "docs/mii/design/11-acceptance.md": "192062c55002dedeca53329d8d2f11d0252b9753c70a17ba0144900bebb9b1b6",
+    "docs/mii/design/13-prototype-plan.md": "f7a522c5e8e21255b3979497f25a4c3dbe3dd56d7a890d722865fe704b9ce684",
+    "docs/mii/design/14-common-os.md": "0f0bf1e54fb7b2e90afe39e43c16c1386ab37400a80c6250651449de97da75d1",
+    "docs/mii/design/15-prototype-spec.md": "a03b6a57149b91280fa05bcbc2065bcd55bc72bebdb15ff3caa959d696ba05cd",
+    "docs/mii/design/16-prototype-acceptance.md": "9fcb2a7c85bf437d25b11191badf5dc24cb6087c13c1bf3d9d6f104205082ff2",
+    "docs/mii/design/17-component-evaluation-brief.md": "f6d5279f96bee1ed36ac87155ff5b02cb072ce57a4fccaa594735785c498d46b"
+  },
+  "validation": [
+    {
+      "command": "npm run project:update",
+      "result": "PASS; generated summary/date metadata synchronized, existing task states preserved"
+    },
+    {
+      "command": "npm run baseline:check",
+      "result": "PASS"
+    },
+    {
+      "command": "npm run design:check",
+      "result": "PASS; design/source coverage only"
+    },
+    {
+      "command": "Markdown relative-link audit across docs/mii/design/*.md",
+      "result": "PASS; 18 files, 0 missing targets"
+    },
+    {
+      "command": "Arithmetic recalculation of bandwidth and IR duty",
+      "result": "PASS; 733.552 Mbps per Node, 2934.208 Mbps for 4; 28.8–52.8% duty for stated pulse"
+    },
+    {
+      "command": "git diff --check",
+      "result": "PASS"
+    },
+    {
+      "command": "PATH=/opt/homebrew/opt/openssl@3/bin:$PATH npm run verify (sandbox)",
+      "result": "STOPPED: localhost listen EPERM; no success claim"
+    },
+    {
+      "command": "PATH=/opt/homebrew/opt/openssl@3/bin:$PATH npm run verify (permitted local listeners)",
+      "result": "FAIL: 3597 tests, 3591 pass, 2 dependency-resolution failures, 4 skipped. Shared node_modules resolved braces from sibling worktree; missing Mini-site installation resolved wrong undici version.",
+      "logOutsideGit": "/private/tmp/mii-design-verify-unrestricted.log"
+    },
+    {
+      "command": "node --experimental-strip-types --test tests/dependency-security.test.mjs tests/undici-dependency-security.test.mjs",
+      "result": "PASS after copying lockfile-identical root and Mini-site dependencies into this worktree; no source/test/lockfile changes",
+      "logOutsideGit": "/private/tmp/mii-design-dependencies.log"
+    },
+    {
+      "command": "PATH=/opt/homebrew/opt/openssl@3/bin:$PATH npm run verify (isolated dependencies)",
+      "result": "PASS exit 0: root Node tests 3597 total / 3593 passed / 0 failed / 4 skipped; typecheck, lint, nested package suites, build, Web asset closure 264 references / 0 missing, API 1678 assertions, CSV, mission/work/bot passed",
+      "logOutsideGit": "/private/tmp/mii-design-verify-final.log",
+      "logSha256": "176cc3548854cc1da846f2763a0b6e0fc8434b486133c2033ad227a1bdcfe817"
+    },
+    {
+      "command": "Final document hash readback",
+      "result": "PASS; all 11 scoped document hashes match after verification"
+    }
+  ],
+  "physicalTestsRun": false,
+  "runtimeChanged": false,
+  "manufacturingReleased": false,
+  "supplierContactSent": false,
+  "purchased": false,
+  "publicDeploymentChanged": false,
+  "githubSaved": false,
+  "mainIntegrated": false,
+  "unresolved": [
+    "C-01 physical product configuration: existing room design and earlier portable requirement remain distinct",
+    "C-02 Gen1 projection cannot satisfy original four optical conditions",
+    "Exact host/camera/projector models and ownership",
+    "Final pinouts, power/thermal measurements, BOM and PCB",
+    "Physical voice/finger precision, cross-device and offline recovery",
+    "Optical whole-range/comfort/independent stopping"
+  ],
+  "status": "design_validated_physical_not_run",
+  "localBranch": "codex/mii-prototype-design-20261102",
+  "validatedSnapshotCommit": "fb3c431379eebaf40a9860051c14b4618c0cd2ea",
+  "snapshotNote": "Historical V1.1 results/hashes at validatedSnapshotCommit; W1 changes are recorded separately in data/mii-prototype-wiring-validation.json."
+}
