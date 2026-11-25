@@ -683,6 +683,90 @@
           "sample": "<!doctype html>\n<html lang=\"ja\">\n<head>\n<meta charset=\"utf-8\">\n<meta name=\"viewport\" content=\"width=device-width, initial-scale=1\">\n<meta name=\"robots\" content=\"noindex\">\n<title>【PR】法人向け AI 研修を選ぶ前に確かめる事</title>\n<style>\n:root{color-scheme:light dark;--bg:#ffffff;--fg:#1d1d1f;--muted:#5f6368;--line:#d9dde3;--accent:#1f4e79;--accent-fg:#ffffff}\n@media (prefers-color-scheme:dark){:root{--bg:#121417;--fg:#eceff3;--muted:#a7adb6;--line:#2c3138;--accent:#7fb2e5;--accent-fg:#0b1220}}\n*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--fg);font:16px/1.8 system-ui,-apple-system,\"Hiragino Sans\",\"Noto Sans JP\",sans-serif}\nmain{max-width:640px;margin:0 auto;padding:16px}.pr{font-size:13px;color:var(--muted);border:1px solid var(--line);border-radius:6px;padding:8px 12px;margin:0 0 16px}\nh1{font-size:26px;line-height:1.4;margin:8px 0 16px}h2{font-size:20px;margin:32px 0 8px}ul,ol{padding-left:1.4em}\n.cta{display:block;text-align:center;background:var(--accent);color:var(--accent-fg);text-decoration:none;font-weight:700;border-radius:8px;padding:14px 16px;margin:16px 0}\nfooter{font-size:13px;color:var(--muted);border-top:1px solid var(--line);margin-top:32px;padding-top:12px}\n</style>\n</head>\n<body>\n<main>\n<p class=\"pr\">広告（PR）: このページにはアフィリエイトリンクを含みます。</p>\n<h1>法人向け AI 研修を選ぶ前に、確かめておく事</h1>\n<p>法人向け AI 研修は、使う目的や使い方によって、合う物が変わります。申し込む前に、次の事を公式の案内で確かめておくと、あとで迷いにくくなります。</p>\n<h2>比べる時に見る所</h2>\n<ul><li><strong>使い方</strong>: 自分の使い方に合うかを、公式の案内で確かめます。</li><li><strong>料金の決まり</strong>: 自分の使い方に合うかを、公式の案内で確かめます。</li><li><strong>困った時の問い合わせ先</strong>: 自分の使い方に合うかを、公式の案内で確かめます。</li></ul>\n<h2>申し込む前の確かめ</h2>\n<ol><li>料金の決まり（いつ、何に、いくらかかるか）を確かめます。</li><li>解約の決まり（いつまでに、どうやって止めるか）を確かめます。</li><li>使える範囲と、困った時の問い合わせ先を確かめます。</li></ol>\n<h2>A 研修を見てみる</h2>\n<p>A 研修の料金・できる事・解約の決まりは、公式サイトで確かめてください。このページでは、A 研修の中身を評価していません。</p>\n<a class=\"cta\" href=\"{{AFFILIATE_URL}}\" rel=\"sponsored nofollow noopener\" target=\"_blank\">A 研修の公式サイトで確かめる</a>\n<footer>このページは広告を含みます。上のリンクから申し込みがあると、このページの運営者に報酬が支払われることがあります。紹介する物の内容と条件は、リンク先の公式サイトの案内が正しい物です。</footer>\n</main>\n</body>\n</html>\n"
         }
       ]
+    },
+    {
+      "at": "2026-11-25T07:32:44.870Z",
+      "model": "qwen2.5-3b-instruct-q4_k_m.gguf#626b4a6678b86442",
+      "parts": [
+        {
+          "capability": "research.market",
+          "ref": "eve-part:keyword-research",
+          "version": "7f46d1d8853b855dc97290c6c7bb8e3e20ac43470c2d66a1d944dc0d483b91ff",
+          "files": [
+            "lib/eve-part-research.ts",
+            "lib/eve-part-llm.ts"
+          ],
+          "model": "qwen2.5-3b-instruct-q4_k_m.gguf#626b4a6678b86442",
+          "ms": 28112,
+          "verification": {
+            "capability": "research.market",
+            "ref": "eve-part:keyword-research",
+            "version": "7f46d1d8853b855dc97290c6c7bb8e3e20ac43470c2d66a1d944dc0d483b91ff",
+            "ok": true,
+            "reason": "形が合っています。",
+            "inputHash": "f25dc4c6eeacb44c6a3d13d39e91f7c8dc0f66f5c179962ca83c5ace0f90b4a8",
+            "outputHash": "5a03be342e9654e76a8893a87192c5a167cab4066c916eab78e5923f62ed81e4",
+            "at": "2026-11-25T07:32:44.873Z"
+          },
+          "sample": {
+            "topic": "法人向け AI 研修",
+            "keywords": [
+              "AI 研修講座",
+              "AI 研修費用",
+              "法人向け AI 教育",
+              "AI 研修プログラム",
+              "AI 研修教材",
+              "AI 研修時間"
+            ],
+            "evidence": [
+              {
+                "word": "AI 研修講座",
+                "hits": 3,
+                "together": 3,
+                "source": "https://ja.wikipedia.org/w/index.php?search=%22AI%22+%22%E7%A0%94%E4%BF%AE%E8%AC%9B%E5%BA%A7%22&fulltext=1"
+              },
+              {
+                "word": "AI 研修費用",
+                "hits": 2,
+                "together": 2,
+                "source": "https://ja.wikipedia.org/w/index.php?search=%22AI%22+%22%E7%A0%94%E4%BF%AE%E8%B2%BB%E7%94%A8%22&fulltext=1"
+              },
+              {
+                "word": "法人向け AI 教育",
+                "hits": 97,
+                "together": 97,
+                "source": "https://ja.wikipedia.org/w/index.php?search=%22%E6%B3%95%E4%BA%BA%E5%90%91%E3%81%91%22+%22AI%22+%22%E6%95%99%E8%82%B2%22&fulltext=1"
+              },
+              {
+                "word": "AI 研修プログラム",
+                "hits": 51,
+                "together": 51,
+                "source": "https://ja.wikipedia.org/w/index.php?search=%22AI%22+%22%E7%A0%94%E4%BF%AE%E3%83%97%E3%83%AD%E3%82%B0%E3%83%A9%E3%83%A0%22&fulltext=1"
+              },
+              {
+                "word": "AI 研修教材",
+                "hits": 2,
+                "together": 2,
+                "source": "https://ja.wikipedia.org/w/index.php?search=%22AI%22+%22%E7%A0%94%E4%BF%AE%E6%95%99%E6%9D%90%22&fulltext=1"
+              },
+              {
+                "word": "AI 研修時間",
+                "hits": 1,
+                "together": 1,
+                "source": "https://ja.wikipedia.org/w/index.php?search=%22AI%22+%22%E7%A0%94%E4%BF%AE%E6%99%82%E9%96%93%22&fulltext=1"
+              }
+            ],
+            "basis": "LLM の候補を、日本語版ウィキペディアの全文検索で裏付けた。テーマの芯の言葉と一緒に出てくる頁がある物だけを、一緒に出てくる頁 ÷ 言葉だけの頁の大きい順に並べた（話題の近さの目安。検索の回数ではない）。",
+            "model": "qwen2.5-3b-instruct-q4_k_m.gguf#626b4a6678b86442",
+            "checkedAt": "2026-11-25T07:33:12.982Z",
+            "dropped": [
+              "AI 研修内容",
+              "AI 研修メリット",
+              "AI 研修参加者"
+            ]
+          }
+        }
+      ]
     }
   ]
 }

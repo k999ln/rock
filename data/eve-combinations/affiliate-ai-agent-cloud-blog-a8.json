@@ -116,7 +116,7 @@
       },
       "agent": {
         "ref": "eve-part:keyword-research",
-        "version": "8900d3e8aab66a896b3941d96b79afd30450746c50a2e9f7c762c1e9305a2da1",
+        "version": "7f46d1d8853b855dc97290c6c7bb8e3e20ac43470c2d66a1d944dc0d483b91ff",
         "tool": "run",
         "args": {
           "topic": "{テーマ}",

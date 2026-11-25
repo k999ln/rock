@@ -67,23 +67,29 @@ void test('部品 台本を書く: four sections in order, the ad label first, h
   await assert.rejects(eveWriteScript({}, seq(sections)), /brief/u);
 });
 
-void test('部品 検索の言葉を集める: only words with Wikipedia hits are kept, in the model’s order; fewer than 5 is a failure', async () => {
+void test('部品 検索の言葉を集める: only words found on Wikipedia together with the topic are kept, strongest link first; fewer than 5 is a failure', async () => {
   const t = task('research.market');
   const words = ['AI 研修 比較', '生成AI 研修 料金', '人材開発支援助成金', 'リスキリング 研修', 'DX 研修 法人', 'プロンプト 研修', 'まったく無い言葉', '法人向け AI 研修', 'english only'];
   const hits = { 'AI 研修 比較': 120, '生成AI 研修 料金': 40, '人材開発支援助成金': 15, 'リスキリング 研修': 300, 'DX 研修 法人': 60, 'プロンプト 研修': 8, 'まったく無い言葉': 0 };
   const calls = [];
+  // テーマの芯の言葉（AI）を含まない言葉は、"言葉" "AI" で一緒に出てくる頁も数える（2026-11-25）。
+  const together = { '人材開発支援助成金': 3, 'リスキリング 研修': 30, 'DX 研修 法人': 30, 'プロンプト 研修': 4 };
   const fakeFetch = async (url) => {
-    const w = new URL(url).searchParams.get('srsearch');
+    const q = new URL(url).searchParams.get('srsearch');
+    const tokens = [...q.matchAll(/"([^"]+)"/gu)].map((m) => m[1]);
+    const withCore = tokens.at(-1) === 'AI' && !tokens.slice(0, -1).some((t) => t.includes('AI'));
+    const w = (withCore ? tokens.slice(0, -1) : tokens).join(' ');
     calls.push(w);
-    return new Response(JSON.stringify({ query: { searchinfo: { totalhits: hits[w] ?? 0 } } }), { status: 200 });
+    return new Response(JSON.stringify({ query: { searchinfo: { totalhits: (withCore ? together[w] : hits[w]) ?? 0 } } }), { status: 200 });
   };
   const out = await eveResearchKeywords(t.input, { llm: fakeLlm('```json\n' + JSON.stringify(words) + '\n```'), fetch: fakeFetch, now: () => Date.parse('2026-11-24T10:00:00Z') });
-  // 2026-11-25 から、並びはモデルが挙げた順（テーマに近い順）。件数の順にすると、広すぎる言葉（例: クラウドファンディング）が先に来た。
-  assert.deepEqual(out.keywords, ['AI 研修 比較', '生成AI 研修 料金', '人材開発支援助成金', 'リスキリング 研修', 'DX 研修 法人', 'プロンプト 研修']);
+  // 2026-11-25 から、並びはテーマとの結び付き（一緒に出てくる頁 ÷ 言葉だけの頁）の強い順。件数の順にすると、広すぎる言葉（例: クラウドファンディング）が先に来た。
+  // AI を含む言葉は 1（同じならモデルが挙げた順）、DX 30/60・プロンプト 4/8 は 0.5、助成金 3/15 は 0.2、リスキリング 30/300 は 0.1。
+  assert.deepEqual(out.keywords, ['AI 研修 比較', '生成AI 研修 料金', 'DX 研修 法人', 'プロンプト 研修', '人材開発支援助成金', 'リスキリング 研修']);
   assert.deepEqual(out.dropped, ['まったく無い言葉']);
   assert.ok(!calls.includes('法人向け AI 研修') && !calls.includes('english only'), 'the topic itself and English-only words are not candidates');
   assert.match(out.evidence[0].source, /^https:\/\/ja\.wikipedia\.org\/w\/index\.php\?search=/u);
-  assert.deepEqual(out.evidence.map((k) => k.hits), [120, 40, 15, 300, 60, 8]);
+  assert.deepEqual(out.evidence.map((k) => [k.hits, k.together]), [[120, 120], [40, 40], [60, 30], [8, 4], [15, 3], [300, 30]]);
   assert.equal(eveCheckAccept(t.accept, out).ok, true);
   await assert.rejects(eveResearchKeywords(t.input, { llm: fakeLlm(JSON.stringify(words.slice(0, 4))), fetch: fakeFetch }), /5 個に足りません/u);
   await assert.rejects(eveResearchKeywords({ ...t.input, country: 'US' }, { llm: fakeLlm('[]'), fetch: fakeFetch }), /日本/u);
