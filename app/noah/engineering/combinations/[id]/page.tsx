@@ -8,6 +8,8 @@ import { EVE_STATUS_LABEL, eveCatalogEntry, eveCombinationFile, type EveStepView
 import { EVE_AUTHOR_SHARE_BPS, EVE_FUNNEL, EVE_FUNNEL_LABEL } from '@/lib/eve-combination-score';
 import { eveAuthorShareExample } from '@/lib/eve-author-share-example';
 import styles from '../eve-combinations.module.css';
+import EveRunView from '@/components/eve-run-view';
+import { eveLatestRun } from '@/lib/eve-run-records';
 
 type Props = { params: Promise<{ id: string }>; searchParams: Promise<{ engineering?: string; lang?: string }> };
 
@@ -50,6 +52,7 @@ export default async function EveCombinationPage(p: Props) {
   const owner = entry.steps.filter((s) => s.part === 'owner' || s.part === 'self');
   const general = entry.problems.filter((x) => !x.step);
   const order = new Map(entry.steps.map((s, i) => [s.id, i + 1]));
+  const latest = eveLatestRun(c.id, c.version);
   return (
     <div className={styles.shell}>
       <article className={`${styles.page} ${columns.container}`} lang="ja" dir="ltr">
@@ -74,12 +77,14 @@ export default async function EveCombinationPage(p: Props) {
           </dl>
           <EveStartRevenueWork combinationId={c.id} version={c.version} />
           <nav className={styles.jumps} aria-label="組み合わせの詳細">
-            <a href="#eve-flow">組み合わせの図</a><a href="#eve-owner">本人の番</a><a href="#eve-score">成績表</a><a href="#eve-author">作者の取り分</a>
+            {latest ? <a href="#eve-run">最新の回</a> : null}<a href="#eve-flow">組み合わせの図</a><a href="#eve-owner">本人の番</a><a href="#eve-score">成績表</a><a href="#eve-author">作者の取り分</a>
           </nav>
         </header>
 
         <div className={columns.columns} data-engineering-columns>
-          <section className={`${styles.section} ${columns.primary}`} data-engineering-primary aria-labelledby="eve-flow">
+          <div className={columns.primary} data-engineering-primary>
+          {latest ? <EveRunView c={c} run={latest.run} runPath={latest.path} /> : null}
+          <section className={styles.section} aria-labelledby="eve-flow">
             <h2 id="eve-flow">組み合わせの図</h2>
             <p>上から順に動きます。同じ所で待つ工程は、同時に進められます。</p>
             <ol className={styles.flow}>
@@ -115,6 +120,7 @@ export default async function EveCombinationPage(p: Props) {
               })}
             </ol>
           </section>
+          </div>
 
           <aside className={columns.secondary} data-engineering-secondary>
             <section className={styles.section} aria-labelledby="eve-owner">
