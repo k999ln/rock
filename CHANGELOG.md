@@ -54,6 +54,7 @@
 - 組み合わせの作者の分を「入金 − 費用」の 20% に決めた（Opus / Noelle。本人回答 13:54。`EVE_AUTHOR_SHARE_BPS` = 2,000。Noah の Agent の作者と同じ割合）。目的型・収益型の 2 つの型と、能力を確かめる見本の仕事の送信も、本人の回答として 07 と services/eve-si.md に記録した。
 - eve.si の設計書（Claude の文書）の全文を [services/eve-si-design.md](docs/services/eve-si-design.md) に写した（Opus / Noelle。本人「gitにあげて」）。図 4 枚は原本だけ。本人の回答 ⑧ の書き方が main で変わった事を、写しの頭に書いた。
 - 稼ぐ設計図 470 件の 1 年目の月の利益を、公開の数字で見積もった（Opus / Noelle。0 円も入れた平均）: 1 件あたり月 −380 円。動画の作る費用（月 3,000 円）が見込みより大きいため。動画と画像をオープンソースで作れば +259 円。あわせて、オープンソースの自分で動く Agent の 2026 年 10 月の一覧と、Noah での組み合わせを docs に置き、目的型の Agent は一旦無料という本人の答えを記録した（[PR #60](https://github.com/iceiceice999/rock/pull/60)）。
+- Noah内のMac接続を登録なしの保存先に結び、Runnerの資格情報をNoahに限定した。本人承認後、このMacの専用Linux VMで入力・読取・画像取得を実行し、Noahで成果を受取。白背景の旧faviconを透過済みNoahロゴに更新し、Webの公開名をNoah・Eveへ修正（task 83、[PR #64](https://github.com/iceiceice999/rock/pull/64)）。
 - Eveがモデル1回で複数Agentの設計案を返し、相談記録に各担当の入力・成果と、本人の目的または案件の成果地点・確認方法を残すようにした。PCのナビゲーションで作者画面の名前を読みやすくした（task 130、[PR #58](https://github.com/iceiceice999/rock/pull/58)）。
 
 - Eveの相談で、Hermesが組み合わせ案をその仕事のメモに保存できるよう、道具を呼ばずに答えた場合の再試行を修正した（task 130、[PR #57](https://github.com/iceiceice999/rock/pull/57)）。
