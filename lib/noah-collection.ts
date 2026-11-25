@@ -1,5 +1,7 @@
 import { remoteMcpUrl } from './mcp-inspection.ts';
 import { sha256Hex, looksLikeNoahSecret } from './noah-connect-requirements.ts';
+import type { NoahPin } from './noah-pin-scene.ts';
+import { parseNoahPinForStorage } from './noah-pin-storage.ts';
 
 /**
  * 集めた Agent の紹介（R2 の出所ごとのスナップショット）。task 120 で 4 出所、task 121 で出所を増やし、並びを「新しく・使いやすい物が上」にした。
@@ -52,6 +54,7 @@ export type NoahCollectionItem = {
   run?: NoahCollectionRun;
   /** run が phone の時の、Noah の系列（詳細の頁へつなぐ）。 */
   familyId?: string;
+  pin?: NoahPin;
   // Collection cards are discoveries, never an execution entitlement.
 };
 export type NoahCollectionSnapshot = { schema: 'noah-collection/1'; source: NoahCollectionSource; collectedAt: number; items: NoahCollectionItem[] };
@@ -123,7 +126,8 @@ export function parseCollectionSnapshot(value: unknown, now: number): NoahCollec
       if (typeof raw.familyId !== 'string' || !FAMILY.test(raw.familyId) || extra.run !== 'phone') return fail();
       extra.familyId = raw.familyId;
     }
-    return { id, source, name, summary, author, url, sourceUrl, observedAt, expiresAt, ...(Object.keys(metrics).length ? { metrics } : {}), ...extra };
+    const pin = parseNoahPinForStorage(raw.pin);
+    return { id, source, name, summary, author, url, sourceUrl, observedAt, expiresAt, ...(Object.keys(metrics).length ? { metrics } : {}), ...extra, ...(pin ? { pin } : {}) };
   });
   return { schema: 'noah-collection/1', source, collectedAt: at, items };
 }
