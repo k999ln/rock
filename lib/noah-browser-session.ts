@@ -13,7 +13,7 @@ export function noahBrowserRequestAllowed(request: Request): boolean {
     '/api/noah/connect-plan', '/api/noah/library', '/api/noah/invites',
     '/api/noah/agents', '/api/noah/public-catalog', '/api/noah/feed',
   ].includes(path)) return true;
-  // Private source intake shares this browser's owner; review/publish/runner APIs remain excluded.
+  // Private source intake shares this browser's owner; review/publish/runner APIs remain excluded. Mac grants and user commands have their own explicit routes.
   if (method === 'GET' && path === '/api/noah/drafts') return true;
   if (method === 'POST' && ['/api/noah/import', '/api/noah/agents', '/api/noah/revenue/work'].includes(path)) return true;
   if (['GET', 'POST'].includes(method) && path === '/api/noah/drafts/storage') return true;
@@ -23,7 +23,7 @@ export function noahBrowserRequestAllowed(request: Request): boolean {
   if (['GET', 'DELETE'].includes(method) && new RegExp(`^/api/noah/agents/${uploadId}$`, 'i').test(path)) return true;
   if (method === 'GET' && new RegExp(`^/api/noah/(drafts|agents)/${uploadId}/source$`, 'i').test(path)) return true;
   if (['GET', 'POST'].includes(method) && [
-    '/api/noah/session', '/api/noah/connect', '/api/noah/ask', '/api/noah/provider', '/api/noah/profile', '/api/noah/cloud-agents',
+    '/api/noah/devices', '/api/noah/launch', '/api/noah/session', '/api/noah/connect', '/api/noah/ask', '/api/noah/provider', '/api/noah/profile', '/api/noah/cloud-agents',
     '/api/noah/registration', '/api/noah/registration/browser',
     '/api/noah/data', '/api/noah/feedback', '/api/noah/boards',
   ].includes(path)) return true;

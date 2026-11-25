@@ -115,7 +115,7 @@ export default function RockstarAccount({ service = 'os' }: { service?: 'os' | '
   }
   return <main className={`${styles.page}${noah ? ` ${styles.noah}` : ''}`}>
     {noah ? <nav className={styles.top} aria-label={t("Noahのアカウント")}><Link href="/noah"><img src="/company-mark.png" alt="" width="32" height="32" />Noah</Link><Link href={returnNavigation.href}>{t("戻る")}</Link></nav>
-      : <nav className={styles.top}><Link href="/"><img src="/brand/rainbow-logo-96.png" alt="" width="28" height="28" />RockstarOS</Link><Link href="/#timeline">Noah</Link><Link href="/os/eve">Eve</Link><Link href={returnNavigation.href}>{t(returnNavigation.label)}</Link></nav>}
+      : <nav className={styles.top}><Link href="/noah"><img src="/company-mark.png" alt="" width="28" height="28" />Noah</Link><Link href="/os/eve">Eve</Link><Link href={returnNavigation.href}>{t(returnNavigation.label)}</Link></nav>}
     <section className={styles.card} aria-labelledby="account-title" aria-busy={busy}>
       <p className={styles.eyebrow}>{noah ? 'NOAH ACCOUNT' : 'YOUR OWN SPACE'}</p>
       <h1 id="account-title">{complete || configured ? noah ? t("あなたのNoahへ。") : t("自分のNoahとEveへ。") : mode === 'login' ? t("おかえりなさい。") : mode === 'recover' ? t("続きを、取り戻そう。") : noah ? t("あなたの成果を、ここに。") : t("登録して、はじめよう。")}</h1>
@@ -143,6 +143,6 @@ export default function RockstarAccount({ service = 'os' }: { service?: 'os' | '
       {error && <p role="alert" className={styles.error}>{t(error)}</p>}
       {signedIn && !recoveryCode && <details className={styles.credentials}><summary>{noah ? t("ログイン方法の管理") : t("アカウントと端末の管理")}</summary><p>{t("パスキー：")}{access?.credentials?.length ?? 0}{t("個")}</p><ul>{access?.credentials?.map(c => <li key={c.id}><span>{c.label}<small>{new Date(c.createdAt).toLocaleDateString('ja-JP')} {t("登録")}</small></span><button disabled={busy || (access.credentials?.length ?? 0) < 2} onClick={() => void revoke(c.id)}>{t("解除")}</button></li>)}</ul><button disabled={busy} onClick={() => change('login', 'passkey')}>{t("パスキーで本人確認")}</button>{!noah && <p><Link href="/connect">{t("接続済みの端末を管理")}</Link></p>}</details>}
       {!signedIn && !recoveryCode && <details className={styles.credentials}><summary>{t("以前のアカウントを使っていた方")}</summary><p>{t("既存アカウントでログイン後、同じデータへログイン方法を追加できます。")}</p><a href={`/signin-with-chatgpt?return_to=${encodeURIComponent(accountPath)}`} target="_top">{t("以前のデータを引き継ぐ")}</a></details>}
-    </section><p className={styles.footer}>{noah ? 'Noah · by avokado' : 'RockstarOS 1.0 · Developer Preview'}</p>
+    </section><p className={styles.footer}>{noah ? 'Noah · by avokado' : 'Noah・Eve · by avokado'}</p>
   </main>;
 }

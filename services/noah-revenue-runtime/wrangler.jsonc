@@ -1,0 +1,12 @@
+{
+  "$schema": "../../node_modules/wrangler/config-schema.json",
+  "name": "avokado-noah-revenue-runtime",
+  "main": "src/worker.mjs",
+  "account_id": "ae3e6c52c0a9e50aab66a6e4184aa09e",
+  "compatibility_date": "2026-10-01",
+  "workers_dev": true,
+  "preview_urls": false,
+  "durable_objects": { "bindings": [{ "name": "REVENUE", "class_name": "NoahRevenueOperation" }] },
+  "migrations": [{ "tag": "v1", "new_sqlite_classes": ["NoahRevenueOperation"] }],
+  "observability": { "enabled": false }
+}

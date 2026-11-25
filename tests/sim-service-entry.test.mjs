@@ -63,8 +63,9 @@ void test('RockstarOS service entry remains separate from the selected Mini/Pro 
   assert.match(accountEntry, /Noah/);
   assert.match(onboarding, /Web版を使うためにSIM\/eSIMを購入する必要はありません/);
   assert.doesNotMatch(launch, /href="\/sky\/esim"/);
+  assert.match(onboarding, /RockstarOS/);
+  assert.doesNotMatch(accountEntry, /RockstarOS|Rockstar ID/);
   for (const source of [onboarding, accountEntry]) {
-    assert.match(source, /RockstarOS/);
     assert.match(source, /Noah|smis/);
     assert.match(source, /Eve/);
   }

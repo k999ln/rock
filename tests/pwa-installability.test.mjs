@@ -2,9 +2,18 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
 import { resolve } from 'node:path';
-import manifest, { eveManifest } from '../app/web-app-manifests.ts';
+import manifest, { eveManifest, noahWebManifest } from '../app/web-app-manifests.ts';
 
 const root = resolve(import.meta.dirname, '..');
+
+void test('public web manifest uses Noah and the transparent current icon', () => {
+  const value = noahWebManifest();
+  assert.equal(value.name, 'Noah');
+  assert.equal(value.start_url, '/noah');
+  assert.equal(value.id, '/');
+  assert.equal(value.icons[0].src, '/brand/noah-icon-v2.png');
+  assert.equal(readFileSync(resolve(root, 'public/brand/noah-icon-v2.png'))[25], 6);
+});
 
 function pngSize(path) {
   const bytes = readFileSync(path);

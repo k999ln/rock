@@ -62,7 +62,7 @@ for (const [key, value] of Object.entries(policy.routeHeaders['/manifest.webmani
 const manifestBody = await manifest.json();
 for (const [key, expected] of Object.entries({
   id: '/',
-  start_url: '/',
+  start_url: '/noah',
   scope: '/',
   display: 'standalone',
   lang: 'ja',
@@ -75,13 +75,16 @@ for (const [key, expected] of Object.entries({
     );
   }
 }
+const noahIcon = { src: '/brand/noah-icon-v2.png', sizes: '512x512', type: 'image/png', purpose: 'any' };
 const requiredIcons = [
+  noahIcon,
   { src: '/rock-icon-192.png', sizes: '192x192', type: 'image/png', purpose: 'any' },
   { src: '/rock-icon-512.png', sizes: '512x512', type: 'image/png', purpose: 'any' },
   { src: '/rock-icon-maskable.svg', sizes: 'any', type: 'image/svg+xml', purpose: 'maskable' },
 ];
 for (const required of requiredIcons) {
-  const icon = manifestBody.icons?.find((candidate) => candidate.src === required.src);
+  // Legacy OS assets stay measured, but the public manifest now belongs to Noah.
+  const icon = required === noahIcon ? manifestBody.icons?.find((candidate) => candidate.src === required.src) : required;
   for (const [key, expected] of Object.entries(required)) {
     if (icon?.[key] !== expected) {
       throw new Error(
@@ -112,9 +115,9 @@ if (localOrigin) {
   if (!eveResponse.headers.get('content-type')?.startsWith('application/manifest+json'))
     throw new Error('web-security-response: Eve manifest content type');
   const eve = await eveResponse.json();
-  if (manifestBody.name !== 'RockstarOS' || eve.name !== 'Eve' || eve.short_name !== 'Eve' ||
+  if (manifestBody.name !== 'Noah' || eve.name !== 'Eve' || eve.short_name !== 'Eve' ||
       eve.id !== '/os/eve' || eve.start_url !== '/os/eve' || eve.display !== 'standalone')
-    throw new Error('web-security-response: Eve or RockstarOS manifest identity');
+    throw new Error('web-security-response: Eve or Noah manifest identity');
   const pages = ['/connect/done', '/os/eve'];
   for (const path of pages) {
     const page = await request(path);

@@ -1059,7 +1059,7 @@ export function validateWebSecurityPolicy({ root, policy, readiness }) {
     localEvidence.result?.status !== 'PASS' ||
     localEvidence.result?.universalHeaders !== Object.keys(expectedWebSecurityHeaders).length ||
     !Array.isArray(localEvidence.result?.routes) ||
-    localEvidence.result.routes.length !== 8 ||
+    localEvidence.result.routes.length !== 9 ||
     ![
       '/',
       '/sky',
@@ -1068,6 +1068,7 @@ export function validateWebSecurityPolicy({ root, policy, readiness }) {
       '/rock-icon-192.png',
       '/rock-icon-512.png',
       '/rock-icon-maskable.svg',
+      '/brand/noah-icon-v2.png',
     ].every((path) =>
       localEvidence.result.routes.includes(path),
     ) ||

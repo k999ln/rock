@@ -1,0 +1,39 @@
+{
+  "repository": "msitarzewski/agency-agents",
+  "commit": "8ae6164602c95ca78828b148b9052460ee426885",
+  "license": "MIT",
+  "files": [
+    {
+      "path": "LICENSE",
+      "file": "LICENSE",
+      "blob": "523078c01624b9b1b1c551e75054b9d3a9f953ab",
+      "url": "https://github.com/msitarzewski/agency-agents/blob/8ae6164602c95ca78828b148b9052460ee426885/LICENSE",
+      "sha256": "9a45258434d5cedf0af73c9ad4771373701225038d246c49219026c33677f66f",
+      "bytes": 1079
+    },
+    {
+      "path": "sales/sales-offer-lead-gen-strategist.md",
+      "file": "sales-offer-lead-gen-strategist.md",
+      "blob": "deb1e7e18cb65de2903011dc31c366b82129c298",
+      "url": "https://github.com/msitarzewski/agency-agents/blob/8ae6164602c95ca78828b148b9052460ee426885/sales/sales-offer-lead-gen-strategist.md",
+      "sha256": "75a12987fb2a205ac029c2ebf43d1ae1a1502d1707ab4921923928489ff3778c",
+      "bytes": 16126
+    },
+    {
+      "path": "marketing/marketing-content-creator.md",
+      "file": "marketing-content-creator.md",
+      "blob": "4beedb05f5e4f8754c63125649ac8a9763609330",
+      "url": "https://github.com/msitarzewski/agency-agents/blob/8ae6164602c95ca78828b148b9052460ee426885/marketing/marketing-content-creator.md",
+      "sha256": "26ddce44f057068a3935c13d53becd3c57385fb47fcdcfdd891b80269070b3d5",
+      "bytes": 3140
+    },
+    {
+      "path": "sales/sales-proposal-strategist.md",
+      "file": "sales-proposal-strategist.md",
+      "blob": "cca0a66ddb053f487e243c8a12fc030f6b8f7f27",
+      "url": "https://github.com/msitarzewski/agency-agents/blob/8ae6164602c95ca78828b148b9052460ee426885/sales/sales-proposal-strategist.md",
+      "sha256": "84c42e0ae7e11e6b239b7f921bdb0c33398102f94998c2eaa41114a3a46dc4c9",
+      "bytes": 14295
+    }
+  ]
+}

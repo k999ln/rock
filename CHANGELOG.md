@@ -1,3 +1,6 @@
+## 2026-11-25
+- 最新mainと公開版241の差分を保全し、本人用の無料クラウド3担当を携帯・PC共通のNoah画面へ接続した。公開・実携帯の受入は [task132](codex/tasks/132-noah-revenue-pack-phone.md) に分けて記録（PR作成中）。
+
 ## 2026-11-24
 - マイAgentのブラウザー保存先から、同じ本人の収益記録を作成・再表示できるようにした（[PR #68](https://github.com/iceiceice999/rock/pull/68)）。
 - マイAgentで収益系Agentの成果を開くと、同じ仕事の承認額・実入金・最終費用と作者20%の確定状況を確認できるようにした。証憑の連携前も表示する（[PR #67](https://github.com/iceiceice999/rock/pull/67)）。

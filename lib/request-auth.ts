@@ -120,6 +120,14 @@ async function requestExistingUser(
     if (!db) throw new Error('AUTH_UNAVAILABLE');
     return access.authenticateEsimCloudRequest(request, db, env);
   }
+  if (authorization.startsWith('Bearer noah_runner_')) {
+    const scope = await import('./noah-runner-access.ts');
+    if (!allowDeviceSession || !scope.noahRunnerRequestAllowed(request)) throw new Error('UNAUTHORIZED');
+    const [runtime, sessions] = await Promise.all([import('cloudflare:workers'), import('./rockstar-device-link.ts')]);
+    const db = (runtime.env as unknown as { DB?: D1Database }).DB;
+    if (!db) throw new Error('AUTH_UNAVAILABLE');
+    return sessions.rockstarDeviceLinkStore(db, 'noah-runner').authenticate(authorization.slice('Bearer '.length));
+  }
   if (authorization.startsWith('Bearer rock_session_')) {
     if (!allowDeviceSession) throw new Error('UNAUTHORIZED');
     const [runtime, sessions] = await Promise.all([
