@@ -1,5 +1,5 @@
 ## 2026-11-25
-- 最新mainと公開版241の差分を保全し、本人用の無料クラウド3担当を携帯・PC共通のNoah画面へ接続した。公開・実携帯の受入は [task132](codex/tasks/132-noah-revenue-pack-phone.md) に分けて記録（PR作成中）。
+- 最新mainと公開版241の差分を保全し、本人用の無料クラウド3担当を携帯・PC共通のNoah画面へ接続した。公開・実携帯の受入は [task132](codex/tasks/132-noah-revenue-pack-phone.md) に分けて記録（[PR #76](https://github.com/iceiceice999/rock/pull/76)）。
 
 ## 2026-11-24
 - マイAgentのブラウザー保存先から、同じ本人の収益記録を作成・再表示できるようにした（[PR #68](https://github.com/iceiceice999/rock/pull/68)）。
