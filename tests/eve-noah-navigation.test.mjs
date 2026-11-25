@@ -1,6 +1,41 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { eveToolPath, eveWorkspaceNavigation, accountReturnNavigation, newsSourceNavigation } from '../lib/eve-noah-navigation.ts';
+import { eveNoahProjectHref, noahProjectHandoffDraft } from '../lib/noah-project-view.ts';
+import { screen } from './fixtures/noah/screen.mjs';
+
+void test('Noah sends an existing project identity and Eve can draft a package with the official release and social sources', () => {
+  const id = 'project-' + 'a'.repeat(64);
+  const handoff = new URL(eveNoahProjectHref(id), 'https://avoado.si');
+  assert.equal(handoff.pathname, '/os/eve');
+  assert.equal(handoff.searchParams.get('noahProject'), id);
+  assert.equal(handoff.hash, '#eve-compose');
+  const release = 'https://github.com/sandbox-quantum/switch/releases/tag/switch-console-v0.41.1';
+  const discovery = 'https://x.com/switch_ai_/status/123456789';
+  const draft = noahProjectHandoffDraft({ card: { name: 'Switch Buddy', sources: [
+    { source: 'github', sourceUrl: 'https://github.com/sandbox-quantum/switch' },
+    { source: 'x', sourceUrl: discovery },
+    { source: 'github', sourceUrl: release },
+  ] } });
+  assert.match(draft, /Switch Buddy/);
+  assert.deepEqual(draft.split('\n').filter(line => line.startsWith('出典：')), [`出典：${release}`, `出典：${discovery}`]);
+  assert.ok(draft.length <= 2000);
+});
+
+void test('Eve refreshes the public candidate and fills a draft only after the user clicks', async () => {
+  const id = 'project-' + 'a'.repeat(64);
+  const drafts = [];
+  const official = 'https://github.com/sandbox-quantum/switch/releases/tag/switch-console-v0.41.1';
+  const ui = screen({ fetch: async () => ({ body: { card: { name: 'Switch Console', sources: [{ source: 'github', sourceUrl: official }] } } }) });
+  const view = ui.mount('components/eve-noah-project-handoff.tsx', { id, disabled: false, onDraft: text => drafts.push(text) });
+  await view.flush();
+  assert.match(view.text(), /Switch Console/);
+  assert.deepEqual(drafts, []);
+  await view.click('依頼文を入力する');
+  assert.equal(drafts.length, 1);
+  assert.ok(drafts[0].includes(official));
+  assert.deepEqual(ui.calls.map(call => [call.method, call.url]), [['GET', `/api/noah/discover/project?id=${id}`]]);
+});
 
 void test('legacy Tool handoffs keep selected Tool, conversation, package and setup through canonical Eve navigation', () => {
   const query = new URLSearchParams({tool:'rockstar-spider',thread:crypto.randomUUID(),package:'fixture/package',view:'work',workJob:'job-1',setup:'passkey'});

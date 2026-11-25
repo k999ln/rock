@@ -101,6 +101,12 @@
 
 - 旧 `main` の収集で、チャンク保存完了後のマニフェスト確定が60秒でタイムアウトし、公開 Hacker News の鮮度が2時間を超えた。チャンクの存在確認を R2 メタデータの読み取りに変え、古い断片の掃除を確定応答後に移す。掲載再開と24時間観測の実測は [修正 PR #26](https://github.com/iceiceice999/rock/pull/26) に記録する。
 
+#### 2026-11-23 Switchの公式版とEveへの引き継ぎ
+
+- Switch Console 0.41.1をApple Silicon Macにインストールし、ローカルのSwitch BuddyをCodexで起動した。
+- 定期収集に公式リリースの取得を加え、スター増加の記録がまだなくても、新機能を持つ版を拾えるようにした。最初の取得先は [Switch Console 0.41.1](https://github.com/sandbox-quantum/switch/releases/tag/switch-console-v0.41.1)。[公式発表](https://www.switchagents.ai/blog-posts/whats-new-in-switch-rooms-november-2026) と配布元を照合した。
+- Noahの候補詳細からEveに出典を渡せる。実行する工程の組立とホームの掲載は [task 126](126-noah-packages-first.md) の合格条件を使う。
+
 ## 4. 合格条件
 
 - 本番の X の列と「Noahが読んだ」の列に、7 日続けて、毎日新しい紹介が入る。
