@@ -11,12 +11,9 @@ import { dirname, resolve } from 'node:path';
 import { parseArgs } from 'node:util';
 import { createHash } from 'node:crypto';
 import { EVE_VERIFY_TASKS, eveMergeVerified, eveVerifyCapability } from '../lib/eve-verify.ts';
-import { EVE_PART_RESULTS_REF, eveReadResults } from '../lib/eve-part-results.ts';
-import { EVE_PART_SCRIPT_REF, eveWriteScript } from '../lib/eve-part-writer.ts';
-import { EVE_PART_RESEARCH_REF, eveResearchKeywords } from '../lib/eve-part-research.ts';
 import { eveLocalLlm } from '../lib/eve-part-llm.ts';
-import { EVE_PART_ADCHECK_REF, eveCheckAd } from '../lib/eve-part-adcheck.ts';
-import { EVE_PART_TERMS_REF, eveReadTerms } from '../lib/eve-part-terms.ts';
+import { evePartRunners } from './eve-parts.mjs';
+import { EVE_PART_FILES } from '../lib/eve-part-registry.ts';
 
 const { values } = parseArgs({ options: { llm: { type: 'string', default: 'http://127.0.0.1:8787' }, out: { type: 'string', default: `data/eve-verifications/${new Date().toISOString().slice(0, 10)}-parts.json` }, write: { type: 'boolean', default: false }, only: { type: 'string' } } });
 const root = resolve(import.meta.dirname, '..');
@@ -27,13 +24,9 @@ const llm = eveLocalLlm(values.llm);
 const probe = await llm({ messages: [{ role: 'user', content: '「はい」とだけ答えてください。' }], maxTokens: 5, temperature: 0 });
 const model = probe.model;
 
-const parts = {
-  'tracking.results': { ref: EVE_PART_RESULTS_REF, files: ['lib/eve-part-results.ts'], llm: false, run: async (input) => eveReadResults(input) },
-  'content.script': { ref: EVE_PART_SCRIPT_REF, files: ['lib/eve-part-writer.ts', 'lib/eve-part-llm.ts'], llm: true, run: async (input) => (await eveWriteScript(input, llm)).text },
-  'research.market': { ref: EVE_PART_RESEARCH_REF, files: ['lib/eve-part-research.ts', 'lib/eve-part-llm.ts'], llm: true, run: async (input) => eveResearchKeywords(input, { llm }) },
-  'research.terms': { ref: EVE_PART_TERMS_REF, files: ['lib/eve-part-terms.ts', 'lib/eve-part-adcheck.ts', 'lib/eve-part-writer.ts', 'lib/eve-part-llm.ts'], llm: true, run: async (input) => eveReadTerms(input, { llm }) },
-  'compliance.check': { ref: EVE_PART_ADCHECK_REF, files: ['lib/eve-part-adcheck.ts', 'lib/eve-part-writer.ts', 'lib/eve-part-llm.ts'], llm: false, run: async (input) => eveCheckAd(input) },
-};
+// 部品の一覧（ファイルの一覧は lib/eve-part-registry.ts、呼び方は scripts/eve-parts.mjs。実行役と同じ物を使う）。
+const runners = evePartRunners(llm);
+const parts = Object.fromEntries(Object.entries(EVE_PART_FILES).map(([ref, spec]) => [spec.capability, { ref, files: spec.files, llm: spec.llm, run: runners[ref] }]));
 
 const record = { schema: 'eve-verifications/1', at: new Date().toISOString(), kind: 'eve-parts', model, note: 'Eve が作った部品を、Noah の候補と同じ見本の仕事と Jev の判定で 1 回ずつ確かめた記録。部品の出力は Eve の物なので見本として残す。', parts: [] };
 const results = [];

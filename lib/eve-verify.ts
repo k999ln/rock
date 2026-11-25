@@ -59,6 +59,68 @@ export const EVE_VERIFY_TASKS: readonly EveVerifyTask[] = [
     },
     accept: { type: 'json', required: ['requirements'], minItems: 3 },
   },
+  // 2026-11-25: 最初の組み合わせの残りの自動工程（案件を比べる・記事・画像・LP・置き場・ブログに出す）。Noah の候補が無く、Eve が作る。
+  {
+    capability: 'research.offer',
+    label: '案件を比べる',
+    input: {
+      asp: 'A8.net',
+      offers: [
+        { id: 'a8:ai-training', name: 'A 研修', condition: '無料相談の申込', rewardYen: 8_000, place: 'A8.net', sources: [{ url: 'https://example.com/a8/ai-training', checkedAt: '2026-11-25T00:00:00Z' }] },
+        { id: 'a8:ai-writer', name: 'B ライティング', condition: '有料会員の登録', rewardYen: 4_000, place: 'A8.net', sources: [{ url: 'https://example.com/a8/ai-writer', checkedAt: '2026-11-25T00:00:00Z' }], record: { occurred: 20, approved: 18 } },
+        { id: 'a8:card', name: 'C カード', condition: 'カードの発行', rewardYen: 12_000, place: 'A8.net', finance: true, sources: [{ url: 'https://example.com/a8/card', checkedAt: '2026-11-25T00:00:00Z' }] },
+        { id: 'other:ai-tool', name: 'D ツール', condition: '購入', rewardYen: 3_000, place: '別の ASP', sources: [{ url: 'https://example.com/other/ai-tool', checkedAt: '2026-11-25T00:00:00Z' }] },
+      ],
+    },
+    accept: { type: 'json', required: ['offers', 'chosen', 'dropped'], minItems: 1 },
+  },
+  {
+    capability: 'content.article',
+    label: '記事を書く',
+    input: {
+      記事の指示: {
+        指示: '「法人向け AI 研修」を比べる記事を書く。最初に広告（PR）である事を書く。断定・誇大な表現をしない。',
+        入れる語: ['比較', '料金', '助成金', '導入事例', '期間'],
+        紹介する物: [{ 名前: 'A 研修', 成果の条件: '無料相談の申込', 報酬: 8_000 }],
+      },
+    },
+    accept: { type: 'text', minLength: 1_500, mustInclude: ['PR', '{{AFFILIATE_URL}}'] },
+  },
+  {
+    capability: 'content.image',
+    label: '見出し画像を作る',
+    input: { 記事: 'PR｜見本\n\n# 法人向け AI 研修の選び方｜比べる時に見る所と、申し込む前に確かめる事\n' },
+    accept: { type: 'file', mime: ['image/png'], maxBytes: 5_000_000 },
+  },
+  {
+    capability: 'site.build',
+    label: '紹介の LP を作る',
+    input: {
+      '案件・条件': { offers: [{ id: 'a8:ai-training', name: 'A 研修', condition: '無料相談の申込', rewardYen: 8_000 }], chosen: 'a8:ai-training' },
+      調査結果: { topic: '法人向け AI 研修', keywords: ['比較', '料金', '助成金', '導入事例', '期間'] },
+    },
+    accept: { type: 'text', minLength: 800, mustInclude: ['PR', '{{AFFILIATE_URL}}', 'sponsored'] },
+  },
+  {
+    capability: 'site.host',
+    label: 'LP を置く用意をする',
+    input: {
+      '紹介 LP': '<!doctype html><html lang="ja"><body><p>広告（PR）: このページにはアフィリエイトリンクを含みます。</p><a href="{{AFFILIATE_URL}}" rel="sponsored nofollow noopener">公式サイトで確かめる</a></body></html>',
+      '広告表示・表現の確認結果': { ok: true, problems: [] },
+      提携承認または申請結果: { affiliateUrl: 'https://px.a8.net/svt/ejp?a8mat=SAMPLE' },
+    },
+    accept: { type: 'json', required: ['files', 'bundleSha256', 'entry'], minItems: 1 },
+  },
+  {
+    capability: 'publish.blog',
+    label: 'ブログに出す用意をする',
+    input: {
+      記事: 'PR｜この記事には広告（アフィリエイトリンク）を含みます。リンク先で申し込むと、運営者に報酬が入ることがあります。\n\n# 法人向け AI 研修の選び方\n\n研修を選ぶ前に、使う目的を決めておきます。\n\n## 申し込む前に確かめること\n\n料金と解約の決まりを、公式サイトで確かめましょう。\n\n[A 研修の公式サイトを見る]({{AFFILIATE_URL}})\n',
+      '広告表示・表現の確認結果': { ok: true, problems: [] },
+      提携承認または申請結果: { affiliateUrl: 'https://px.a8.net/svt/ejp?a8mat=SAMPLE' },
+    },
+    accept: { type: 'json', required: ['title', 'html', 'wxr'] },
+  },
 ];
 
 export type EveVerification = {

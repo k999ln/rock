@@ -3,7 +3,8 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { createHash } from 'node:crypto';
-import { readFileSync } from 'node:fs';
+import { readFileSync, readdirSync } from 'node:fs';
+import { EVE_PART_FILES } from '../lib/eve-part-registry.ts';
 import { eveCheckAccept } from '../lib/eve-combination.ts';
 import { EVE_VERIFY_TASKS } from '../lib/eve-verify.ts';
 import { eveParseCsv, eveReadResults, eveResultsFormat } from '../lib/eve-part-results.ts';
@@ -66,7 +67,7 @@ void test('部品 台本を書く: four sections in order, the ad label first, h
   await assert.rejects(eveWriteScript({}, seq(sections)), /brief/u);
 });
 
-void test('部品 検索の言葉を集める: only words with Wikipedia hits are kept, sorted by hits; fewer than 5 is a failure', async () => {
+void test('部品 検索の言葉を集める: only words with Wikipedia hits are kept, in the model’s order; fewer than 5 is a failure', async () => {
   const t = task('research.market');
   const words = ['AI 研修 比較', '生成AI 研修 料金', '人材開発支援助成金', 'リスキリング 研修', 'DX 研修 法人', 'プロンプト 研修', 'まったく無い言葉', '法人向け AI 研修', 'english only'];
   const hits = { 'AI 研修 比較': 120, '生成AI 研修 料金': 40, '人材開発支援助成金': 15, 'リスキリング 研修': 300, 'DX 研修 法人': 60, 'プロンプト 研修': 8, 'まったく無い言葉': 0 };
@@ -77,11 +78,12 @@ void test('部品 検索の言葉を集める: only words with Wikipedia hits ar
     return new Response(JSON.stringify({ query: { searchinfo: { totalhits: hits[w] ?? 0 } } }), { status: 200 });
   };
   const out = await eveResearchKeywords(t.input, { llm: fakeLlm('```json\n' + JSON.stringify(words) + '\n```'), fetch: fakeFetch, now: () => Date.parse('2026-11-24T10:00:00Z') });
-  assert.deepEqual(out.keywords, ['リスキリング 研修', 'AI 研修 比較', 'DX 研修 法人', '生成AI 研修 料金', '人材開発支援助成金', 'プロンプト 研修']);
+  // 2026-11-25 から、並びはモデルが挙げた順（テーマに近い順）。件数の順にすると、広すぎる言葉（例: クラウドファンディング）が先に来た。
+  assert.deepEqual(out.keywords, ['AI 研修 比較', '生成AI 研修 料金', '人材開発支援助成金', 'リスキリング 研修', 'DX 研修 法人', 'プロンプト 研修']);
   assert.deepEqual(out.dropped, ['まったく無い言葉']);
   assert.ok(!calls.includes('法人向け AI 研修') && !calls.includes('english only'), 'the topic itself and English-only words are not candidates');
   assert.match(out.evidence[0].source, /^https:\/\/ja\.wikipedia\.org\/w\/index\.php\?search=/u);
-  assert.deepEqual(out.evidence.map((k) => k.hits), [300, 120, 60, 40, 15, 8]);
+  assert.deepEqual(out.evidence.map((k) => k.hits), [120, 40, 15, 300, 60, 8]);
   assert.equal(eveCheckAccept(t.accept, out).ok, true);
   await assert.rejects(eveResearchKeywords(t.input, { llm: fakeLlm(JSON.stringify(words.slice(0, 4))), fetch: fakeFetch }), /5 個に足りません/u);
   await assert.rejects(eveResearchKeywords({ ...t.input, country: 'US' }, { llm: fakeLlm('[]'), fetch: fakeFetch }), /日本/u);
@@ -141,19 +143,22 @@ void test('部品の LLM: only a local model is called', () => {
   assert.equal(typeof eveLocalLlm('http://127.0.0.1:8787'), 'function');
 });
 
-void test('部品の版: every Eve part pinned in a combination file matches its source code and a passing verification', () => {
+void test('部品の版: in the newest version of every combination file, each pinned Eve part matches its source code and a passing verification', () => {
   const read = (f) => readFileSync(new URL(`../${f}`, import.meta.url), 'utf8');
-  const record = JSON.parse(read('data/eve-verifications/2026-11-24-parts.json'));
-  const passed = record.runs.flatMap((r) => r.parts.filter((p) => p.verification.ok));
-  const v2 = JSON.parse(read('data/eve-combinations/affiliate-ai-tools-blog-rentracks.json'));
-  const pinned = v2.steps.filter((s) => s.agent?.ref.startsWith('eve-part:'));
-  assert.ok(pinned.length >= 5);
+  const records = readdirSync(new URL('../data/eve-verifications/', import.meta.url)).filter((f) => f.endsWith('-parts.json'));
+  const passed = records.flatMap((f) => JSON.parse(read(`data/eve-verifications/${f}`)).runs.flatMap((r) => r.parts.filter((p) => p.verification.ok)));
+  const files = readdirSync(new URL('../data/eve-combinations/', import.meta.url)).filter((f) => f.endsWith('.json')).map((f) => JSON.parse(read(`data/eve-combinations/${f}`)));
+  // 古い版は記録として残す（その時の部品の版を指したまま。実行役は、版の違う部品を呼ばない）。試すのは、id ごとに一番新しい版。
+  const newest = [...new Set(files.map((c) => c.id))].map((id) => files.filter((c) => c.id === id).sort((a, b) => b.version - a.version)[0]);
+  const pinned = newest.flatMap((c) => c.steps.filter((s) => s.agent?.ref.startsWith('eve-part:')).map((s) => ({ c: c.id, ...s })));
+  assert.ok(pinned.length >= 15);
+  const caps = JSON.parse(read('data/noah-business-capabilities.json')).verified;
   for (const s of pinned) {
     const p = passed.find((x) => x.ref === s.agent.ref && x.version === s.agent.version);
-    assert.ok(p, `${s.id}: the pinned version passed Jev`);
+    assert.ok(p, `${s.c} ${s.id}: the pinned version passed Jev`);
+    assert.deepEqual(p.files, EVE_PART_FILES[s.agent.ref].files, `${s.agent.ref}: the verified files are the registry's files`);
     const now = createHash('sha256').update(p.files.map(read).join('\n') + (p.model ? `\nmodel:${p.model}` : '')).digest('hex');
-    assert.equal(now, s.agent.version, `${s.id}: ${s.agent.ref} changed since it was verified — verify the new version before pinning it`);
+    assert.equal(now, s.agent.version, `${s.c} ${s.id}: ${s.agent.ref} changed since it was verified — verify the new version and pin it in a new version of the combination`);
+    assert.ok(caps[s.capability]?.includes(s.agent.ref), `${s.id}: ${s.agent.ref} is listed as verified for ${s.capability}`);
   }
-  const caps = JSON.parse(read('data/noah-business-capabilities.json')).verified;
-  for (const s of pinned) assert.ok(caps[s.capability]?.includes(s.agent.ref), `${s.id}: ${s.agent.ref} is listed as verified for ${s.capability}`);
 });

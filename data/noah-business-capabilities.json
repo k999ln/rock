@@ -5,14 +5,32 @@
     "compliance.check": [
       "eve-part:ad-check"
     ],
+    "content.article": [
+      "eve-part:article-writer"
+    ],
+    "content.image": [
+      "eve-part:eyecatch-image"
+    ],
     "content.script": [
       "eve-part:script-writer"
+    ],
+    "publish.blog": [
+      "eve-part:blog-package"
     ],
     "research.market": [
       "eve-part:keyword-research"
     ],
+    "research.offer": [
+      "eve-part:offer-compare"
+    ],
     "research.terms": [
       "eve-part:terms-reader"
+    ],
+    "site.build": [
+      "eve-part:lp-builder"
+    ],
+    "site.host": [
+      "eve-part:static-bundle"
     ],
     "tracking.results": [
       "eve-part:results-csv"

@@ -63,7 +63,14 @@ export function eveParseKeywordList(text: string, topic: string): string[] {
 export async function eveWikipediaHits(word: string, fetcher: typeof fetch = fetch): Promise<{ hits: number; source: string }> {
   const api = new URL('https://ja.wikipedia.org/w/api.php');
   api.search = new URLSearchParams({ action: 'query', list: 'search', srsearch: word, srlimit: '1', srinfo: 'totalhits', srprop: '', format: 'json', utf8: '1' }).toString();
-  const response = await fetcher(api, { headers: { 'User-Agent': UA, Accept: 'application/json' }, signal: AbortSignal.timeout(20_000), redirect: 'error' });
+  const ask = () => fetcher(api, { headers: { 'User-Agent': UA, Accept: 'application/json' }, signal: AbortSignal.timeout(20_000), redirect: 'error' });
+  let response = await ask();
+  // 混んでいる時（429）は、相手の言う秒数（10 秒まで）だけ待って、1 回だけ聞き直す（Wikimedia の API の決まり。2026-11-25）。
+  const wait = Number(response.headers.get('retry-after'));
+  if (response.status === 429 && Number.isFinite(wait) && wait >= 0 && wait <= 10) {
+    await new Promise((resolve) => setTimeout(resolve, Math.max(1, wait) * 1_000));
+    response = await ask();
+  }
   if (!response.ok) throw new Error(`ウィキペディアの検索が ${response.status} を返しました。`);
   const data = (await response.json()) as { query?: { searchinfo?: { totalhits?: unknown } } };
   const hits = data.query?.searchinfo?.totalhits;
@@ -89,7 +96,7 @@ export async function eveResearchKeywords(
     if (hits >= 1) evidence.push({ word, hits, source });
     else dropped.push(word);
   }
-  evidence.sort((a, b) => b.hits - a.hits || a.word.localeCompare(b.word));
+  // 並びは、モデルが挙げた順（テーマに近い順）のまま。件数は、言葉が使われている裏付けにだけ使う（件数の順にすると、広すぎる言葉が先に来た。2026-11-25）。
   if (evidence.length < 5) throw new Error(`裏付けのある言葉が 5 個に足りません（${evidence.length} 個）。`);
   return {
     topic,
