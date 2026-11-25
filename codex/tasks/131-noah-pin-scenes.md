@@ -81,3 +81,4 @@
 ## 5. 進み具合
 - （ここに、PR ごとに追記する）
 - 2.1 の保存と取り込みを [PR #73](https://github.com/iceiceice999/rock/pull/73) に出しました。本番 D1 には適用していません。
+- 2.2 の生成を [PR #74](https://github.com/iceiceice999/rock/pull/74) に出しました。実際の生成は、収集機の設定後に行います。
