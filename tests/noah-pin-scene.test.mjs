@@ -15,7 +15,7 @@ import { NOAH_SHELF_SCENE_SOURCE, NOAH_SHELF_SCENES } from '../lib/noah-pin-scen
 import * as diagram from '../lib/noah-pin-diagram.ts';
 import { colorFamilies, rasterContext } from './fixtures/noah/pin-raster.mjs';
 
-const { drawNoahPinDiagram, noahPinHold, NOAH_PIN_ART, noahPinColors, PHI, NOAH_PIN_COLOR_RATIO, NOAH_PIN_POP_SETS, noahPinPopSet } = diagram;
+const { drawNoahPinDiagram, noahPinHold, noahPinLoopFrame, noahPinLoopPeriod, NOAH_PIN_LOOP, NOAH_PIN_ART, noahPinColors, PHI, NOAH_PIN_COLOR_RATIO, NOAH_PIN_POP_SETS, noahPinPopSet } = diagram;
 const require = createRequire(import.meta.url);
 const React = require('react'), { renderToStaticMarkup } = require('react-dom/server');
 const cards = JSON.parse(readFileSync(new URL('../data/noah-shelf-first-cards.json', import.meta.url), 'utf8'));
@@ -172,11 +172,12 @@ void test('every diagram builds itself with the poyon motion as a pure function 
   assert.ok(ratio(root(0.4 + 0.08)) < still * 0.95, '伸びる時に縦長になっていない');
   assert.ok(ratio(root(0.4 + 0.3)) > still * 1.05, '戻る時に横につぶれていない');
   assert.ok(Math.max(...[0.15, 0.2, 0.25].map((t) => root(0.4 + t).size)) > root(4).size * 1.1, '行き過ぎて大きくならない');
-  // 部品: canvas 1 つ。サーバーで描いた時は空の面（字は無い）。読み上げには出さない。画面に入った時に 1 回動き、動きを減らす設定の人には組み上がった形を出す。
+  // 部品: canvas 1 つ。サーバーで描いた時は空の面（字は無い）。読み上げには出さない。見えている間は繰り返し（本人の決定 2026-11-25）、動きを減らす設定の人には組み上がった形を出す。
   const component = readFileSync(new URL('../components/noah-pin-scene.tsx', import.meta.url), 'utf8');
   assert.match(component, /prefers-reduced-motion: reduce/);
   assert.match(component, /IntersectionObserver/);
   assert.match(component, /noahPinHold/);
+  assert.match(component, /noahPinLoopFrame/);
   const code = ts.transpileModule(component, { compilerOptions: { target: ts.ScriptTarget.ES2022, jsx: ts.JsxEmit.ReactJSX, module: ts.ModuleKind.CommonJS } }).outputText;
   const unit = { exports: {} };
   const local = (id) => (id === '@/lib/noah-pin-diagram' ? diagram : id.endsWith('.module.css') ? { default: new Proxy({}, { get: (_, name) => String(name) }) } : require(id));
@@ -186,6 +187,29 @@ void test('every diagram builds itself with the poyon motion as a pure function 
   const html2 = renderToStaticMarkup(React.createElement(unit.exports.default, { scene: NOAH_SHELF_SCENES['pkg:keihi-kamoku'], tone: 3 }));
   assert.equal(html, `<canvas class="art" width="539" height="208" style="background:linear-gradient(135deg, ${noahPinColors(0).bg1}, ${noahPinColors(0).bg2})" data-template="tree" aria-hidden="true"></canvas>`);
   assert.match(html2, new RegExp(`linear-gradient\\(135deg, ${tone.bg1}, ${tone.bg2}\\)`));
+});
+
+void test('while visible, every diagram loops in 5 to 8 seconds: build, hold the finished picture, fade out, build again', () => {
+  // 本人の決定 2026-11-25「見えている間は繰り返す」と、指示「説明動画５〜8秒とか」。
+  for (const [template] of TEMPLATES) {
+    const period = noahPinLoopPeriod(template), hold = noahPinHold(template);
+    assert.ok(period >= 5 && period <= 8, `${template}: 1 周 ${period} 秒`);
+    assert.deepEqual(noahPinLoopFrame(template, 0), { u: 0, fade: 0 });
+    assert.deepEqual(noahPinLoopFrame(template, 1.2), { u: 1.2, fade: 0 }, `${template}: 組み上がる途中`);
+    // 組み上がった形を、消え始めるまで、少なくとも 2 秒見せる。
+    assert.ok(period - NOAH_PIN_LOOP.fade - hold >= 2, `${template}: 見せる時間`);
+    assert.deepEqual(noahPinLoopFrame(template, hold + 1), { u: hold, fade: 0 });
+    // 消える: 最後の fade 秒で 0 から 1 へ。消えた所で、また初めに戻る。
+    const half = noahPinLoopFrame(template, period - NOAH_PIN_LOOP.fade / 2);
+    assert.equal(half.u, hold);
+    assert.ok(Math.abs(half.fade - 0.5) < 1e-9, `${template}: 消える途中 ${half.fade}`);
+    assert.ok(noahPinLoopFrame(template, period - 1e-6).fade > 0.99);
+    assert.deepEqual(noahPinLoopFrame(template, period), { u: 0, fade: 0 });
+    const later = noahPinLoopFrame(template, period * 3 + 1.2);
+    assert.ok(Math.abs(later.u - 1.2) < 1e-9 && later.fade === 0, `${template}: 周ごとに同じ`);
+    assert.ok(Math.abs(noahPinLoopFrame(template, -1).u - Math.min(hold, period - 1)) < 1e-9, `${template}: 負の時刻`);
+    assert.deepEqual(noahPinLoopFrame(template, Number.NaN), { u: 0, fade: 0 });
+  }
 });
 
 void test('every card has a base, a main and an accent color from eight pop sets with no purple, keeps every word readable, and neighbours differ', () => {

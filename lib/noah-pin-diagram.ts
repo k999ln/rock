@@ -20,8 +20,8 @@
  *   元の面 #F1F0EE と青 #2F6BEB の代わりに、配色の黄金比「ベース 70%・メイン 25%・アクセント 5%」の 3 色（noahPinColors。ポップな 8 組からカードごとに選ぶ。
  *   本人の指示 2026-11-25「全体的に紫っぽい」「もっとポップに」）。
  *   塗りの面積が 70:25:5 に近くなるように、各図の形の大きさ・太さ・塗る所を変えた（各図の「配色の黄金比」の行）。
- * - 1 周（4.7 秒）で消えて繰り返す代わりに、画面に入った時に 1 回だけ組み上げて、止める（本人の決定 2026-11-24「画面に入った時に1回」）。
- *   止める時刻は noahPinHold。繰り返しは components/noah-pin-scene.tsx がしない（ここの式は、元と同じく 0〜4.7 秒のどこでも描ける）。
+ * - 元の 1 周（4.7 秒）の代わりに、組み上がった形を少し長く見せてから消える 1 周 約 7 秒で繰り返す（本人の決定 2026-11-25「見えている間は繰り返す」と指示「説明動画５〜8秒とか」。
+ *   その前は 2026-11-24「画面に入った時に1回」で、組み上げて止めていた）。組み上がる時刻は noahPinHold、1 周の時刻は noahPinLoopFrame。
  *
  * 通信も保存もしない。乱数（種のある表を除く）と時計は使わない（同じ u なら、いつも同じ絵）。
  * 仕様: docs/noah/spec-115-pin-grid.md の 9 章。札の数と字の上限は lib/noah-pin-scene.ts の NOAH_PIN_TEMPLATES。
@@ -1293,6 +1293,26 @@ const CELLS: Record<NoahPinTemplate, Cell> = {
 /** 組み上がって止める時刻（秒）。どの図も 4.0 秒までに揺れが収まって止まる（4.1 秒から元の消える動き）。ヒートマップだけは、3.95 秒からマスが消え始めるので 3.9。 */
 export function noahPinHold(template: NoahPinTemplate): number {
   return template === 'heatmap' ? 3.9 : 4;
+}
+
+/**
+ * 見えている間の繰り返し（本人の決定 2026-11-25「見えている間は繰り返す」。前の「画面に入った時に1回」から変わった）。
+ * 1 周 = 組み上がる（noahPinHold）→ 組み上がった形を見せる（show 秒）→ 消える（fade 秒）。1 周は本人の指示「説明動画５〜8秒とか」の 5〜8 秒に収める。
+ */
+export const NOAH_PIN_LOOP = { show: 2.4, fade: 0.6, min: 5, max: 8 } as const;
+
+/** 1 周の長さ（秒）。 */
+export function noahPinLoopPeriod(template: NoahPinTemplate): number {
+  return Math.min(NOAH_PIN_LOOP.max, Math.max(NOAH_PIN_LOOP.min, noahPinHold(template) + NOAH_PIN_LOOP.show + NOAH_PIN_LOOP.fade));
+}
+
+/** 動き始めてから t 秒の時の、描く時刻 u と、消え具合 fade（0 = はっきり、1 = 消えた）。時刻の純関数。 */
+export function noahPinLoopFrame(template: NoahPinTemplate, t: number): { u: number; fade: number } {
+  const period = noahPinLoopPeriod(template);
+  let at = Number.isFinite(t) ? t % period : 0;
+  if (at < 0) at += period;
+  const start = period - NOAH_PIN_LOOP.fade;
+  return { u: Math.min(noahPinHold(template), at), fade: at > start ? Math.min(1, (at - start) / NOAH_PIN_LOOP.fade) : 0 };
 }
 
 /** 1 枚の図解を、時刻 u（秒）の形で、並びの tone 枚目の 3 色（noahPinColors。70:25:5。ポップな 8 組から黄金比の並びで選ぶ）で描く。k は、539×208 の座標で描けるように縮めた（setTransform 済みの）面。前の絵は、ここで塗りつぶす。 */

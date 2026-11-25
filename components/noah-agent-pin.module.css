@@ -20,6 +20,8 @@ button.face[aria-pressed='true'] > span:first-child { box-shadow: inset 0 0 0 3p
 .face[data-shape='2'] > span:first-child { aspect-ratio: 4 / 5; }
 /* 資料の図解のカード（spec-115 の 9 章）だけ、絵を元の図解パックと同じ横長にする。表紙や場面の絵を出す時は上の 3 段のまま。 */
 .face > span:first-child:has(> [data-noah-pin-diagram]) { aspect-ratio: 539 / 208; padding: 0; }
+/* ピンの動画（spec-115 の 10 章）は縦 3:4。 */
+.face > span:first-child:has(> [data-noah-pin-video]) { aspect-ratio: 3 / 4; padding: 0; }
 :is(a,button).face:hover > span:first-child { filter: brightness(.96); }
 .face:focus-visible { outline: 2px solid var(--noah-action, #a14206); outline-offset: 3px; }
 .name,.summary { display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 2; overflow: hidden; overflow-wrap: anywhere; margin-inline: 3px; }
@@ -28,3 +30,27 @@ button.face[aria-pressed='true'] > span:first-child { box-shadow: inset 0 0 0 3p
 .meta { margin: 4px 3px 0; overflow-wrap: anywhere; color: var(--noah-pin-meta, #62626a); font-size: 13px; line-height: 1.4; }
 .actions { min-width: 0; overflow-wrap: anywhere; }
 @media(max-width:560px) { .grid { --column-gap: 8px; } }
+/*
+ * 題名だけのカード（本人の指示 2026-11-25「文章いらない、題名だけ」）。本人の決定（2026-11-25「乗せた時だけ出す」）:
+ * PC は、保存（button）と「その他」（details）を、マウスを乗せた時かキーで選んだ時だけ絵の上に出す。
+ * スマホは、絵に何も重ねず、題名の右の小さな「…」から、保存と「表示しない」を選ぶ（details の中の [data-touch] は、スマホだけの保存）。
+ */
+.card[data-plain] .actions > :is(button, details) { transition: opacity .15s ease; }
+.card[data-plain] .actions > details > div { position: absolute; z-index: 3; top: 40px; inset-inline-start: 0; display: grid; min-width: 148px; padding: 6px; border: 1px solid #ececef; border-radius: 12px; background: #fff; box-shadow: 0 8px 24px #19141f1f; }
+.card[data-plain] .actions > details > div > button { min-height: 44px; padding: 10px 12px; border: 0; border-radius: 8px; background: transparent; color: #202024; font-size: 14px; text-align: start; white-space: nowrap; cursor: pointer; }
+.card[data-plain] .actions > details > div > button:hover { background: #f7f7f8; }
+@media (hover:hover) {
+  .card[data-plain] .actions > :is(button, details) { opacity: 0; pointer-events: none; }
+  .card[data-plain]:is(:hover, :focus-within) .actions > :is(button, details) { opacity: 1; pointer-events: auto; }
+  .card[data-plain] .actions > details [data-touch] { display: none; }
+  .card[data-plain] .actions > details:not(:has([data-hide])) { display: none; }
+}
+@media (hover:none) {
+  .card[data-plain] .name { -webkit-line-clamp: 3; padding-inline-end: 32px; }
+  .card[data-plain] .meta { padding-inline-end: 32px; }
+  .card[data-plain] .actions > button { display: none; }
+  .card[data-plain] .actions > details { top: auto; bottom: 4px; inset-inline-start: auto; inset-inline-end: -8px; }
+  .card[data-plain] .actions > details > summary { width: 44px; height: 44px; background: transparent; color: #4a4a52; }
+  .card[data-plain] .actions > details > div { top: auto; bottom: 46px; inset-inline-start: auto; inset-inline-end: 4px; }
+}
+@media (prefers-reduced-motion: reduce) { .card[data-plain] .actions > :is(button, details) { transition: none; } }

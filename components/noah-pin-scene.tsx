@@ -2,23 +2,24 @@
 /**
  * ピンの絵（バージョン TAKE。spec-115 の 9 章）。lib/noah-pin-scene.ts の 1 枚（図の名前と札の言葉）を、
  * lib/noah-pin-diagram.ts（しょうへいさんの Motion Prompt の図解パックの書き写し。MIT License (c) 2026 Shohei Ohtaki）で、539:208 の canvas に描く。
- * 動き（本人の決定 2026-11-24「画面に入った時に1回」と、指示「もっと可愛いアニメーション」「cuteじゃなくて可愛い」）: 画面に入った時に 1 回だけ、元と同じ順番で、
- * 部品が可愛い動き「ぽよん」（lib/noah-pin-diagram.ts。本人が 3 つから選んだ）で出て組み上がり、組み上がった形で止まる（元のように消えて繰り返さない）。
+ * 動き（本人の決定 2026-11-25「見えている間は繰り返す」。前の決定 2026-11-24「画面に入った時に1回」から変わった。指示「もっと可愛いアニメーション」「cuteじゃなくて可愛い」）:
+ * 画面に見えている間、元と同じ順番で、部品が可愛い動き「ぽよん」で出て組み上がり、組み上がった形を見せてから消え、また組み上がる（1 周 5〜8 秒。noahPinLoopFrame）。
+ * 画面の外に出たら止め、また見えたら続きから動く。
  * 色は、配色の黄金比「ベース 70%・メイン 25%・アクセント 5%」の 3 色（明るい面と鮮やかな面。lib/noah-pin-diagram.ts の noahPinColors。
  * 3 色は、並びの n 枚目 tone ごとに、ポップな 8 組（赤・黄・青・白が中心）から黄金比の並びで選ぶ。本人の指示「黄金比カラーになってない」「もっとポップに」）。
- * 動きを減らす設定の人・見えたかを確かめられない端末には、初めから組み上がった形を出す。サーバーで描いた時は、同じ色の空の面（字も形も無い）。
- * 字は canvas の中なので、読み上げには出さない（aria-hidden。カードの題と説明の字が読まれる）。
+ * 動きを減らす設定の人・見えたかを確かめられない端末には、初めから組み上がった形を出す（noahPinHold の形）。サーバーで描いた時は、同じ色の空の面（字も形も無い）。
+ * 字は canvas の中なので、読み上げには出さない（aria-hidden。カードの題の字が読まれる）。
  * 見張り（IntersectionObserver）・時計（requestAnimationFrame）・大きさ（ResizeObserver）は、ページ全体で 1 つずつ（絵ごとには作らない）。
  */
 import { useEffect, useRef } from 'react';
-import { drawNoahPinDiagram, NOAH_PIN_ART, noahPinColors, noahPinHold } from '@/lib/noah-pin-diagram';
+import { drawNoahPinDiagram, NOAH_PIN_ART, noahPinColors, noahPinHold, noahPinLoopFrame } from '@/lib/noah-pin-diagram';
 import type { NoahPinScene } from '@/lib/noah-pin-scene';
 import css from './noah-pin-scene.module.css';
 
-/** 描いている 1 枚。u は今の時刻（秒）、start は動き始めた時の時計（動いていない時は null）。 */
-type Art = { canvas: HTMLCanvasElement; scene: NoahPinScene; tone: number; u: number; start: number | null; onPlay: () => void };
+/** 描いている 1 枚。u は描く時刻（秒）、fade は消え具合（0〜1）、spent は動いた長さの合計（秒）、start は今回動き始めた時の時計（止まっている時は null）。 */
+type Art = { canvas: HTMLCanvasElement; scene: NoahPinScene; tone: number; u: number; fade: number; spent: number; start: number | null };
 
-/** 今の u の形を、canvas の今の幅（端末の画素の 2 倍まで）で描く。 */
+/** 今の u と fade の形を、canvas の今の幅（端末の画素の 2 倍まで）で描く。消える途中は、薄く描いて、下の同じ色の面を透かす。 */
 function paint(art: Art) {
   const { canvas } = art, width = canvas.clientWidth;
   if (!width) return;
@@ -27,41 +28,44 @@ function paint(art: Art) {
   const k = canvas.getContext('2d');
   if (!k) return;
   k.setTransform(w / NOAH_PIN_ART.width, 0, 0, h / NOAH_PIN_ART.height, 0, 0);
+  k.clearRect(0, 0, NOAH_PIN_ART.width, NOAH_PIN_ART.height);
+  k.globalAlpha = 1 - art.fade;
   drawNoahPinDiagram(k, art.scene, art.u, art.tone);
+  k.globalAlpha = 1;
 }
 
-// 時計: 動いている絵だけを、1 つの requestAnimationFrame でまとめて描く。組み上がったら外す。
+// 時計: 見えている絵だけを、1 つの requestAnimationFrame でまとめて描く。
 const playing = new Set<Art>();
 let clock = 0;
 function tick(now: number) {
   clock = 0;
   for (const art of playing) {
-    const hold = noahPinHold(art.scene.template);
-    art.start ??= now;
-    art.u = Math.min(hold, (now - art.start) / 1000);
+    art.start ??= now - art.spent * 1000;
+    const frame = noahPinLoopFrame(art.scene.template, (now - art.start) / 1000);
+    art.spent = (now - art.start) / 1000; art.u = frame.u; art.fade = frame.fade;
     paint(art);
-    if (art.u >= hold) playing.delete(art);
   }
   if (playing.size) clock = requestAnimationFrame(tick);
 }
+function stop(art: Art) {
+  playing.delete(art);
+  art.start = null;
+}
 
-// 見張り: 4 割が画面に入ったら、1 回だけ動かす。
+// 見張り: 4 割が画面に入ったら動かし、出たら止める（止めた所の形のまま。また入ったら続きから）。
 let seen: IntersectionObserver | null = null;
-const waiting = new Map<Element, Art>();
+const watched = new Map<Element, Art>();
 function watch(art: Art) {
   seen ??= new IntersectionObserver((entries) => {
     for (const entry of entries) {
-      const found = entry.isIntersecting ? waiting.get(entry.target) : undefined;
+      const found = watched.get(entry.target);
       if (!found) continue;
-      waiting.delete(entry.target);
-      seen?.unobserve(entry.target);
-      found.onPlay();
-      found.u = 0; found.start = null;
+      if (!entry.isIntersecting) { stop(found); continue; }
       playing.add(found);
       if (!clock) clock = requestAnimationFrame(tick);
     }
   }, { threshold: 0.4 });
-  waiting.set(art.canvas, art);
+  watched.set(art.canvas, art);
   seen.observe(art.canvas);
 }
 
@@ -77,23 +81,23 @@ function follow(art: Art) {
   sized.observe(art.canvas);
 }
 function forget(art: Art) {
-  playing.delete(art);
-  waiting.delete(art.canvas); seen?.unobserve(art.canvas);
+  stop(art);
+  watched.delete(art.canvas); seen?.unobserve(art.canvas);
   shown.delete(art.canvas); sized?.unobserve(art.canvas);
 }
 
 /**
  * 1 枚の図解。ready は、置き場所が決まったか（グリッドは、置く前のカードを左上に重ねて隠すので、置き終わるまで見張りを始めない）。棚のように初めから置いてある所では省く。
- * 1 度動いた絵は、置き直し（列の幅が変わった時など）でもう一度動かさない（組み上がった形のまま）。tone は、並びの何枚目か（0 から。ポップな 8 組から黄金比の並びで色の組を選ぶ）。
+ * tone は、並びの何枚目か（0 から。ポップな 8 組から黄金比の並びで色の組を選ぶ）。
  */
 export default function NoahPinSceneArt({ scene, className, ready = true, tone = 0 }: { scene: NoahPinScene; className?: string; ready?: boolean; tone?: number }) {
-  const frame = useRef<HTMLCanvasElement>(null), played = useRef(false);
+  const frame = useRef<HTMLCanvasElement>(null);
   useEffect(() => {
     const canvas = frame.current;
     if (!canvas) return;
-    const still = played.current || typeof IntersectionObserver === 'undefined' || typeof requestAnimationFrame === 'undefined'
+    const still = typeof IntersectionObserver === 'undefined' || typeof requestAnimationFrame === 'undefined'
       || Boolean(window.matchMedia?.('(prefers-reduced-motion: reduce)').matches);
-    const art: Art = { canvas, scene, tone, u: still ? noahPinHold(scene.template) : 0, start: null, onPlay: () => { played.current = true; } };
+    const art: Art = { canvas, scene, tone, u: still ? noahPinHold(scene.template) : 0, fade: 0, spent: 0, start: null };
     follow(art);
     paint(art);
     if (!still && ready) watch(art);
