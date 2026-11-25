@@ -34,7 +34,7 @@ function pick(part, ids) {
 }
 
 /** 変わった系列を、上限の中で送る。失敗した回は、そこで止めて、次の巡回で続きから（送り終えた分の印だけを残す）。 */
-export async function importFamilies({ local, origin, key, fetcher, now = Date.now, limits = NOAH_COLLECTOR_IMPORT }) {
+export async function importFamilies({ local, origin, key, fetcher, now = Date.now, limits = NOAH_COLLECTOR_IMPORT, includePins = true, includePinFor }) {
   tables(local.sql);
   const target = new URL(origin);
   if (target.protocol !== 'https:' || target.pathname !== '/' || target.search || target.hash || target.username || target.password || !key || key.length < 32) throw Error('collector_import_configuration');
@@ -43,7 +43,7 @@ export async function importFamilies({ local, origin, key, fetcher, now = Date.n
   const room = Math.max(0, Math.min(limits.familiesPerRun, limits.familiesPerDay - used));
   if (!room) return { status: 'daily_limit', sent: 0, rowsWritten: 0 };
   // 押すだけで試せる物、読むだけの物、応答の速い物の順（noahIntakeExport の並び）。その中で、新しく握手が通った物を先に。
-  const listed = await noahIntakeExport(local.db, at, { limit: Number.MAX_SAFE_INTEGER });
+  const listed = await noahIntakeExport(local.db, at, { limit: Number.MAX_SAFE_INTEGER, includePins, includePinFor });
   const l1 = new Map(listed.checks.map(row => [row.candidate_id, Number(row.l1_at) || 0]));
   const order = new Map(listed.families.map((row, index) => [row.id, index]));
   const sentRows = new Map(local.sql.prepare('SELECT family_id,sha256,listed FROM _noah_collector_sent').all().map(row => [row.family_id, row]));
@@ -55,7 +55,7 @@ export async function importFamilies({ local, origin, key, fetcher, now = Date.n
     .sort((a, b) => (Number(b.one_tap) - Number(a.one_tap)) || (l1.get(b.representative_id) - l1.get(a.representative_id)) || (order.get(a.id) - order.get(b.id)));
   // 手元で載らなくなった系列（握手が通らなくなった・取り下げ）。本番で載せない側へ直すため、今の行を送る。
   const gone = [...sentRows.values()].filter(row => row.listed === 1 && !order.has(row.family_id)).map(row => row.family_id);
-  const delisted = gone.length ? await noahIntakeExport(local.db, at, { ids: gone.slice(0, room) }) : null;
+  const delisted = gone.length ? await noahIntakeExport(local.db, at, { ids: gone.slice(0, room), includePins, includePinFor }) : null;
   // 手元から消えた系列（名寄せで ID が変わった物）は、送る行が無い。印だけを「載っていない」にする（本番の行は、次の名寄せの結果が上書きする）。
   for (const id of gone.slice(0, room)) if (!delisted.families.some(row => row.id === id)) local.sql.prepare('UPDATE _noah_collector_sent SET listed=0,sent_at=? WHERE family_id=?').run(at, id);
   const plan = [
