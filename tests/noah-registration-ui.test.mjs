@@ -59,7 +59,7 @@ void test('registration button grants visible recipient and terms consent, submi
   const h = harness(async (_u,o) => o.method === 'POST' ? Response.json({job:job('needs_user')}) : config()); t.after(() => h.close()); await h.flush();
   assert.equal(h.button('同意して登録').props.disabled,true); h.submit(); await h.flush(); assert.equal(h.calls.filter(c=>c.options.method==='POST').length,0);
   fill(h);
-  assert.match(h.text(), /https:\/\/executor.example.com/); assert.doesNotMatch(h.text(), /synthetic-private-value/);
+  assert.ok(h.nodes().some(n => [n.props?.children].flat().some(value => value === provider.executorOrigin))); assert.doesNotMatch(h.text(), /synthetic-private-value/);
   assert.ok(h.nodes().some(n=>n.props?.href===provider.termsUrl));
   assert.match(h.text(),/登録ボタンで、規約と上記情報の送信に同意/);
   assert.equal(h.nodes().filter(n=>n.type==='input'&&n.props.type==='checkbox').length,0);

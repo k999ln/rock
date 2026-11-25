@@ -1,14 +1,28 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { mkdtempSync, rmSync, readFileSync } from 'node:fs';
+import { mkdtempSync, rmSync, readFileSync, symlinkSync, writeFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
-import { initialize, openRuntime } from '../toolkits/noah-revenue-pack/runtime.mjs';
+import { initialize, openRuntime, readJson } from '../toolkits/noah-revenue-pack/runtime.mjs';
 import { runRevenueStep } from '../lib/noah-revenue-pack.ts';
 
 function setup(t){const root=mkdtempSync(join(tmpdir(),'noah-revenue-')),path=initialize(join(root,'state'));let runtime=openRuntime(path);t.after(()=>{try{runtime.close();}catch{}rmSync(root,{recursive:true,force:true});});return {get runtime(){return runtime;},reopen(){runtime.close();runtime=openRuntime(path);return runtime;}};}
 function provider(onSend=()=>{},body={}){return async(url,init)=>{assert.equal(init.redirect,'manual');if(url.endsWith('/models'))return Response.json([{name:'openai-fast',tier:'anonymous',input_modalities:['text'],output_modalities:['text']}]);assert.equal(url,'https://text.pollinations.ai/openai');assert.equal(init.headers.Authorization,undefined);onSend(JSON.parse(init.body));return Response.json({id:'test-response',model:'gpt-oss-20b',user_tier:'anonymous',choices:[{finish_reason:'stop',message:{content:'試験の下書き'}}],usage:{prompt_tokens:2,completion_tokens:3,total_tokens:5},...body});};}
 const request={id:'test-batch',brief:'架空店舗の紹介文を作る。価格と実績は未確定。',consent:'anonymous-free-direct-v1'};
+
+void test('runtime JSON reads reject symlinks and oversized files without following another target',t=>{
+  const root=mkdtempSync(join(tmpdir(),'noah-revenue-files-'));t.after(()=>rmSync(root,{recursive:true,force:true}));
+  const target=join(root,'target.json'),link=join(root,'link.json');
+  writeFileSync(target,'{"fixture":true}');symlinkSync(target,link);
+  assert.deepEqual(readJson(target),{fixture:true});assert.throws(()=>readJson(link));
+  writeFileSync(target,' '.repeat(65537));assert.throws(()=>readJson(target),/容量上限/);
+});
+void test('repeated stop and pre-existing output never overwrite an existing file or symlink target',async t=>{
+  const {runtime:r}=setup(t),target=join(r.root,'existing.md'),output=join(r.root,'test-batch-offer.md');
+  writeFileSync(target,'keep this existing file');symlinkSync(target,output);
+  await r.run(request,provider());assert.equal(readFileSync(target,'utf8'),'keep this existing file');
+  r.stop();r.stop();assert.equal(readFileSync(join(r.root,'STOP'),'utf8'),'stopped\n');
+});
 
 void test('legacy pack records remain readable and count toward the shared daily cap after main integration',async t=>{
   const {runtime:r}=setup(t);let sends=0;const fetcher=provider(()=>sends++);
