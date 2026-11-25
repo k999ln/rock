@@ -1,19 +1,32 @@
 # 現在の開発・統合状況
 
-更新日: 2026-11-23。開発・PRの正本は [iceiceice999/rock](https://github.com/iceiceice999/rock)。今回の照合対象は main `16a9eae6dac5a40ab0f1bfacc4ecad2de9e34617`。製品方針は[構成正本](docs/structure/00-overview.md)、個別の進捗は[タスク一覧](codex/tasks/00-index.md)に置く。
+更新日: 2026-11-23。開発・PRの正本は [iceiceice999/rock](https://github.com/iceiceice999/rock)。今回の照合対象は main `21518016a125a78307c19b10b50f0e219d29ba20`。製品方針は[構成正本](docs/structure/00-overview.md)、個別の進捗は[タスク一覧](codex/tasks/00-index.md)に置く。
 
 ## 今開発しているもの
 
 6つの大項目で、できたこと・残っていること・関連する後続作業を整理する。担当は各taskの既存担当、台帳の整合は統合・公開担当si。作業者が全項目を同時に実行中という意味ではない。
 
-- **画面をジャックさせない技術（task84・89・91）**: コンテナ/VMの起動引数の検査、画面への接続を許す変更の拒否、画面を閉じてもWorkへ成果が入る回帰試験は現mainに統合済み（[旧PR #329](https://github.com/k999ln/rock/pull/329)、[PR #6](https://github.com/iceiceice999/rock/pull/6)）。残りは利用する画面の分類と、Mac実機で前面アプリ・窓・クリップボード・権限が変わらないことの観測。ココナラ案件探索・提案下書き・保存/停止はMacの限定経路を確認（[PR #11](https://github.com/iceiceice999/rock/pull/11)）。汎用クラウドブラウザの受入は別。
+- **画面をジャックさせない技術（task84・89・91）**: コンテナ/VMの起動引数の検査、画面への接続を許す変更の拒否、画面を閉じてもWorkへ成果が入る回帰試験は現mainに統合済み（[旧PR #329](https://github.com/k999ln/rock/pull/329)、[PR #6](https://github.com/iceiceice999/rock/pull/6)）。[task84](codex/tasks/84-noah-screenless-rule.md)の工程3で、依存・実行記録から必要な画面と入力を分類する関数を実装（[PR #22](https://github.com/iceiceice999/rock/pull/22)）。残りは受付への組み込みと、Mac実機で前面アプリ・窓・クリップボード・権限が変わらないことの観測。ココナラ案件探索・提案下書き・保存/停止はMacの限定経路を確認（[PR #11](https://github.com/iceiceice999/rock/pull/11)）。汎用クラウドブラウザの受入は別。
 - **eSIM導入（task11〜13・102・103）**: 模擬回線での導入・利用権照合、SIM証明の検証/紐付け、iOS導入導線、継続利用の集計は実装・統合の記録がある（[タスク一覧](codex/tasks/00-index.md)）。残りは事業者設定、実回線の発行承認、実回線経由の疎通、iPhone/Androidの導入から成果までの受入。PixelでのNoah確認はWi-Fi経由であり、eSIM受入ではない。
-- **クラウドシステムの設計（task75・101-compute・104・105・125-cloud）**: 実行場所・本人分離・受付/停止・成果保存の設計と、固定CLI6種のLinux隔離試験/コードをmainへ統合（[PR #12](https://github.com/iceiceice999/rock/pull/12)）。費用上限・監視・通知の振り分け・復元練習も実装統合の記録がある。有料Containersの本番配備はWorkers Paidの契約判断待ち。別経路の[PR #18](https://github.com/iceiceice999/rock/pull/18)には無料Workersで公式MCP3種を動かす実装とMemory/Filesystemの実モデル成功記録、[PR #19](https://github.com/iceiceice999/rock/pull/19)には実モデル通信修正と6種の個別成功記録がある。両PRはmain統合済み。Noahの無料経路有効化・画面全閉鎖後の一周とContainers本番受入は残り。本番の通知/cron/バックアップも別途受入する。Memoryと成果ファイルを本人の鍵で暗号化するtask104は設計/タスクがあり、実装完了は未確認。
+- **クラウドシステムの設計（task75・101-compute・104・105・125-cloud）**: 実行場所・本人分離・受付/停止・成果保存の設計と、固定CLI6種のLinux隔離試験/コードをmainへ統合（[PR #12](https://github.com/iceiceice999/rock/pull/12)）。費用上限・監視・通知の振り分け・復元練習も実装統合の記録がある。有料Containersの本番配備はWorkers Paidの契約判断待ち。別経路の[PR #18](https://github.com/iceiceice999/rock/pull/18)には無料Workersで公式MCP3種を動かす実装とMemory/Filesystemの実モデル成功記録、[PR #19](https://github.com/iceiceice999/rock/pull/19)には実モデル通信修正と6種の個別成功記録がある。両PRを統合した公開210で無料3種を有効化。3件ともブラウザを閉じた後に完了し、成果の再表示とファイル保存を確認した。公開211でMemoryを再試験し、Chromeを閉じている間の成果保存、再表示、ダウンロード、保存済み添付の誤注記の解消を確認した（[PR #21の本番受入](https://github.com/iceiceice999/rock/pull/21)）。公開212のPixelでもMemoryを実行し、成果とファイルの受取・再読込を確認。Pixelでのダウンロード操作と、ほかの無料2種の同じ実機試験は残る（[PR #23](https://github.com/iceiceice999/rock/pull/23)）。有料Containersは本番配備待ち。本番の通知/cron/バックアップも別途受入する。Memoryと成果ファイルを本人の鍵で暗号化するtask104は設計/タスクがあり、実装完了は未確認。
 - **Agentを集めるシステム（task85・88・120・121・125-scout）**: 公式台帳の取り込み/名寄せ、複数出所の収集、GitHubの急上昇・Product Huntへの拡張を統合。本番収集を復旧し、毎時の予備実行を設定（[PR #16](https://github.com/iceiceice999/rock/pull/16)）。残りは24時間の鮮度確認、旧mainから新リポジトリへの実行先移行、Xの7日継続掲載。復旧1回を72時間巡回の合格にはしない。作者の本人確認・引き取り・掲載管理はtask81の後続範囲。
-- **Agentの接続（task74・86・87・93・96・123）**: 公開MCPの接続→入力→実処理→保存→再表示を本番で限定確認（[PR #7](https://github.com/iceiceice999/rock/pull/7)）。残りは全掲載Agentの実行対応、OAuth/鍵、接続先別の受入。1,762件の監査や定義取得を全件実行成功とは数えない。更新・版の固定・前の版への復帰・別環境への移行はtask93、Agentの試用/売買/利用権はtask78の後続範囲で、決済はsandbox受入が前提。
-- **受け皿のシステム（Noah、task90・99・100・114ほか）**: 画面・本人別の依頼受付・Work/成果保存・停止/再表示を統合。PixelでAgentboard新規登録→認証付き実行→成果再読込、音・振動を確認（[PR #10](https://github.com/iceiceice999/rock/pull/10)）。残りは仕様表1〜13の同一候補受入、100人同時外部実行、300人の実ユーザー試行。以下の仕事・運営機能もこの受け皿につなぐ。
+- **Agentの接続（task74・86・87・93・96・123）**: 「接続できる」の検索に、有効なクラウド実行環境が対応する公式CLIを含めた。公開212のPixelで公式Memoryの検索→接続→実行→成果再表示に成功した（[PR #23](https://github.com/iceiceice999/rock/pull/23)）。公開MCPの接続→入力→実処理→保存→再表示を本番で限定確認（[PR #7](https://github.com/iceiceice999/rock/pull/7)）。残りは全掲載Agentの実行対応、OAuth/鍵、接続先別の受入。1,762件の監査や定義取得を全件実行成功とは数えない。更新・版の固定・前の版への復帰・別環境への移行はtask93、Agentの試用/売買/利用権はtask78の後続範囲で、決済はsandbox受入が前提。
+- **受け皿のシステム（Noah、task90・99・100・114ほか）**: 画面・本人別の依頼受付・Work/成果保存・停止/再表示を統合。PixelでAgentboard新規登録→認証付き実行→成果再読込、音・振動を確認（[PR #10](https://github.com/iceiceice999/rock/pull/10)）。公開209で登録して保存した成果を、公開210のPixelでもキャッシュなしで再表示できた（[PR #19](https://github.com/iceiceice999/rock/pull/19)）。残りは仕様表1〜13の同一候補受入、100人同時外部実行、300人の実ユーザー試行。以下の仕事・運営機能もこの受け皿につなぐ。
 
-受け皿につなぐ個別の仕事・後続機能:
+### 6項目の設計書の具体度
+
+下表は、実装担当が何を判断でき、検収担当がどう合否を決められるかを示す。各項目の実装・本番受入の進捗は上記のとおり。
+
+| 項目 | 設計書で決まっていること | 具体化・確認が残ること |
+| --- | --- | --- |
+| [画面保護](docs/noah/spec-84-screenless.md) | 入力、5つの面の判定順、配置先、起動引数の検査、Macで観測する4項目。関数と試験単位まで指定 | Macで窓・権限などを観測する方法の確定と汎用経路の実測 |
+| [eSIM](docs/structure/03-esim.md) | 発行結果不明時の照会、回線・本人・端末の照合、紛失・失効時の動作、iPhone／Androidの合格条件 | 事業者の試験条件と端末別に専用回線を選ぶ手段 |
+| [クラウド実行](docs/services/noah-own-device.md) | 依頼単位の分離、入力、版、費用上限、停止・重複・遅延応答、成果の受取を定義 | 無料3種は公開210で閉画面後の成果保存まで確認。公開211でMemoryの添付表示、公開212でPixel上のMemoryの実行・成果受取を確認。有料Containersの配備、運用環境での監視・復元が残る |
+| [Agent収集](docs/services/noah-agent-collection.md) | 出所、重複の統合、接続確認、署名付き掲載、取得制限時の待機、途中再開を定義 | 新しい実行元への移行と、鮮度・継続掲載の期間観測 |
+| [Agent接続](docs/noah/spec-74-one-click-connect.md) | 接続の再試行、重複・競合、解除、入力・実行・保存の判定条件がある。[接続計画](docs/noah/spec-96-connect-plan.md)も参照 | 提供元ごとのOAuth・鍵・実行環境の整備と受入 |
+| [Noahの受け皿](docs/noah/spec-90-phone-only-loop.md) | スマホの自動試験15段と実機受入13項目、応答が途切れた場合の表示・再試行の扱いを定義 | 同一候補で13項目を通す受入、多人数での実行と利用実績 |
+
+### 受け皿につなぐ個別の仕事・後続機能
 
 - **診断・集客・紹介（task101-noah-affiliate）**: WordPress/EC診断2種の本文・保存・再読込はSites208で受入（[PR #14](https://github.com/iceiceice999/rock/pull/14)）。記事/Xの導線・計測は[PR #17](https://github.com/iceiceice999/rock/pull/17)で全7チェック成功・main統合済み。最後の実ASP観測（11-22 22:50 JST）は対象2件とも注文/承認0。ログイン切れで最新成果は未取得。実顧客獲得・次回6時間運用は未実証。
 - **パッケージと商売の工程（task112・122・126）**: 複数Agentで1つの仕事を終えるパッケージを先頭に出す指示書は統合済み（[PR #13](https://github.com/iceiceice999/rock/pull/13)）、実装はこれから。商売の設計図は第1段階の記録があり、検証した能力を当てはめて会社の工程を回す部分は後続。
@@ -24,11 +37,11 @@
 
 ## 検証と再開
 
-前回照合したmain `b56d8e83` は[総合verify](https://github.com/iceiceice999/rock/actions/runs/45038039086)とセキュリティ検査が成功。PR #17もmain統合済み。今回の基準はPR #19とPR #18を統合したmain `16a9eae6`。
+前回照合したmain `b56d8e83` は[総合verify](https://github.com/iceiceice999/rock/actions/runs/45038039086)とセキュリティ検査が成功。PR #17もmain統合済み。PR #18・#19統合後、[PR #20](https://github.com/iceiceice999/rock/pull/20)の最終HEADは[全体検証](https://github.com/iceiceice999/rock/actions/runs/45040967626)を含む7件が成功し、main `6c9b3db6` に統合された。公開211は[PR #21](https://github.com/iceiceice999/rock/pull/21)統合時のmain `8669c94f` と同一tree。公開212は検索の[PR #23](https://github.com/iceiceice999/rock/pull/23)を統合したmain `21518016` と同一tree。
 
 旧PR #329・#330・#332・#339・#335・#342・#344〜#347・#352・#358のHEADが現在のmainに含まれることをGitで照合した。#342・#344〜#347は旧PR自体が未マージで閉じられたため「コード統合済み」と記す。今回の検証手順・結果は[task72](codex/tasks/72-current-code-and-readme.md)、機械可読の照合記録は `data/project-status.json` の `progressLedgerReconciliation` に置く。
 
-再開順は、① PR #18・#19統合後の本番受入の確認、② 収集の継続観測と実行先移行、③ 診断利用から注文・承認までの実測。CLI本番配備などの契約・承認条件は各taskに残す。
+再開順は、① Pixelでの残り2種の実行とダウンロード操作、有料Containersの配備判断、② 収集の継続観測と実行先移行、③ 診断利用から注文・承認までの実測。CLI本番配備などの契約・承認条件は各taskに残す。
 
 [図解設計書](docs/noah/illustrated-specifications.md)と[PDF版](docs/assets/noah-illustrated-specifications.pdf)で、製品全体、機能仕様、事業スキーム、受入の残件を参照できる。
 
@@ -455,5 +468,129 @@
 | ANDROID-PREFULL | OS11 | 有料full build前に単体APK・emulator・純正Pixel offline si・Sky→Zema→Tool→Walletを完走してfreeze | 未合格 | PREVIEW-INSTALL | [記録](docs/phone-preview-20260911.md) · [記録](docs/product-baseline.md) · [記録](.github/workflows/android.yml) · [記録](.github/workflows/local-ai-apk.yml) · [記録](tests/product-baseline.test.mjs) · [記録](tests/test_prepare_phone_build.py) · [記録](tests/test_stage_local_ai_apk.py) · [記録](tests/test_freeze_phone_build_inputs.py) · [記録](docs/evidence/android-pre-full-build-tests-20260915.json) · [記録](docs/evidence/android-local-ai-plan-v2-20260916.json) · [記録](docs/evidence/android-prefull-input-freeze-20260916.json) |
 | DEVICE-INSTALL | RLS02 | 初回flash gate 4/4後、対象1機種でflash・初回起動・OTA rollback・純正復旧を完走 | 未合格 | PREVIEW-INSTALL · ANDROID-PREFULL | [記録](docs/android-first-flash-gate-20260916.md) · [記録](data/android-first-flash-gate.json) · [記録](docs/android-production-signing-custody.md) · [記録](data/android-signing-custody-policy.json) · [記録](docs/android-rollback-index-policy.md) · [記録](data/android-rollback-index-policy.json) · [記録](docs/android-google-stock-recovery.md) · [記録](data/android-stock-recovery-policy.json) · [記録](docs/android-backup-recovery.md) · [記録](data/android-backup-recovery-policy.json) · [記録](docs/android-production-architecture.md) · [記録](data/android-release-architecture-policy.json) · [記録](https://github.com/k999ln/rock/blob/96845e6006c15e39ba5b45495f79c21bdff7399e/docs/release-installation-plan-20260909.md) · [記録](docs/phone-preview-20260911.md) · [記録](scripts/freeze-phone-build-inputs.py) · [記録](docs/evidence/android-prefull-input-freeze-20260916.json) |
 
-次の作業: PR #18・#19統合後の本番受入、収集の24時間鮮度と実行先移行、紹介の実注文/承認を個別に確認する。Containers本番配備・無料CLIのNoah本番受入、全掲載Agent対応、300人の試行は未受入。現行の作業別状態はcodex/tasks/00-index.mdを参照する。
+次の作業: Pixelでの残り2種の実行とダウンロード操作、有料Containersの配備判断、収集の24時間鮮度と実行先移行、紹介の実注文/承認を進める。全掲載Agent対応、300人の試行は未受入。現行の作業別状態はcodex/tasks/00-index.mdを参照する。
 <!-- project-status:end -->
+
+
+## mii別チャットの設計記録（2026-11-26統合、当時の記録を保持）
+
+### mii 設計作業の再開メモ
+
+2026-11-02 / MAT15・OS10・MINI01/02 / 主担当 ROCK。
+既存の全task台帳は [保存済み台帳](archive/root-snapshot-20261029/project.md)、現行の機械可読進捗は [data/project-status.json](data/project-status.json)。本書は今回の設計作業だけを記録し、全taskを複製しない。
+
+- 着手: 最新GitHub main `7bbb4b27ab6ca3b1d42bef4643c9dda8cb8ba0c6`から独立branch `codex/mii-prototype-design-20261102`を作成。共有dirty作業木は保持。
+- 本人の回答「osの中身は一緒」を設計の中心とし、仕事・保存・権限・予算・再開を共通OSへ集約する。
+- 構成判断: 最新mainのTower＋別Hubと従来の単体携帯条件は併記。今回の回答から筐体/表示条件の撤回を推定しない。
+- 作業: 共通OS境界、試作用部品・接続・電力、受入記録、部品提供相談資料を既存 `docs/mii/design/` の14〜17章へ保存。Hubの45W/73W、4 Nodeの2.5GbE集約、IR dutyの不一致を訂正・未受入として明示。
+- 検証: project:update、baseline:check、design:check、相対リンク18文書、計算照合、diff --checkは合格。全verifyは最終exit0（3597件中3593成功/0失敗/4skip、build、Web assets264/欠落0、API1678、CSV/mission/work/bot合格）。初回localhost制限、再試行の依存解決2件失敗、独立依存配置後の合格を区別して記録。詳細は `data/mii-prototype-design-validation.json`。
+- 文書保存: 独立branchへlocal保存。GitHub保存・main統合・実機試験・公開・購入・申請送信は未実施。
+
+次の一件（W1更新）: 18章の選定部品と現物/board版を照合→P0bの入力選択/停止/保存→P1aの単体capture。projector型番、端末内日本語ASRの可用性、Pi初期Wi-Fi/SSH、Node adapter、2台同期は未解決。製品pinout・電池・光学・実機・製造は未受入。
+
+再現コマンド: `npm run project:update`、`npm run baseline:check`、`npm run design:check`、`PATH=/opt/homebrew/opt/openssl@3/bin:$PATH npm run verify`。全ログはGit外 `/private/tmp/mii-design-verify-final.log`、hashと要約はvalidation JSON。実browserの操作・実声/手・実光学の受入を今回追加したものではない。
+
+## 実機配線の具体化（2026-11-02）
+
+本人依頼で共通OSを保持し、型番/端子と組立配線を具体化する。提示画像でMacBook Pro 14-inch（2024年11月）/M4/16GB/macOS Sequoia15.7.4を確認。個体シリアルと画像はGitへ保存しない。P0はこのMacをhost、P1は必要に応じて外付けsensor Nodeとして設計。最終筐体・表示4条件・実機未受入を維持する。公式資料で型番/connector/電源を確認し、BOM・配線図・通電前手順・未実装adapterを同期する。
+
+- 設計判断: Mac＋BRIO 500 960-001493のP0b、Pi 5 4GB＋SC0715のP1aを選定。P1aは1台のfree-running capture用で、2台同期P1bや4 Tower完成ではない。公式製品名/variantを注文照合キーにし、未確認SKUは作らない。
+- 作成: 18章、機械可読BOM（14点/9接続）、reportlab再生成source、A3横3ページのPDF。公式資料18系列を照合。最終3ページをrenderして文字/線/表の重なりがないことを確認。
+- 残作業: 現物受領とW-A01〜04、Node capture adapter、A01等の実入力/保存/復旧、projector型番と光学条件。購入/OS書込/実通電/外部連絡/公開は行っていない。
+
+- W1検証完了: `npm run project:update`、全`npm run verify`はexit0（3597件中3593成功/0失敗/4skip、Web assets264/欠落0、API1678、CSV385、mission/work/bot合格）。BOM14点/9接続の本文一致、19文書の相対リンク欠落0、PDF3ページの抽出/目視、帯域計算、diff checkを確認。要約/文書hashは `data/mii-prototype-wiring-validation.json`、全ログはGit外 `/private/tmp/mii-wiring-verify.log`。
+- 保存区分: 本作業branchで文書・生成sourceをlocal保存。PDFはGit外の再生成artifact。GitHub保存・main統合は未実施。
+
+## mii本体HW1（2026-11-02・着手）
+
+本人の訂正を受け、18章W1はMacを使う開発用検証装置と明示し、本体設計の完成から除外する。本体は現行構造の4 Tower＋専用Hub＋差替表示部。共通OSの仕事/権限/保存は維持し、組立可能なモジュールと配線・機構・電力を19章へ具体化する。製品目標との差、光学4条件、未実装adapter、未実機受入を明記する。外部購入・契約・問い合わせ・端末書込は実施しない。
+
+- HW1設計判断: OAK-D Pro W PoE A00574、Teensy 4.1＋I2S mic×2/SEN0623/SE/温度をTowerへ、USW-Flexのbt入力からcamera/controlへ分配。AGX Orin 64GB Dev Kit＋1TB SSDを専用Hub、4本を10GbE集約、TK710STiへDP→HDMI出力。全31 BOM行・12ネット・14接続系統、6枚の図面を作成。
+- 次の作業（W1再開メモより優先）: HW-A01受領/導通確認、HW-A05試験firmware、共通OS adapter。同じ仕事の実入力/停止/保存復旧へ進む。元の小型寸法/120Hz/8ch同期/radar TDM/C-01携帯/C-02表示は未受入。
+- 検証開始: `python3 docs/mii/design/body-hw1/check.py`の静的整合はPASS。PDF6ページをrenderして全頁目視、全体図の線を別配線として分離。repository全verifyはこの後に実行し、物理試験とは別記する。
+
+- 追加指示: 「RockstarOS｜通信・Web・運用」とmii通信設計を照合。20章と通信BOMに有線WANのUSB31000S/J33を追加し、LTE/IoT SIM・Wi-Fi AP・日米衛星・offline/費用・携帯C-01を保持。印刷図は全7枚。実radio/provider/可搬coreは未受入。
+- 初回全verifyは既存Eveモデルtoolkitのchild PIDファイル読取り競合で1件失敗（空文字のint変換）。本体変更とは別に記録し、該当テスト単独と全体再試行で再現性を確認する。ログ `/private/tmp/mii-body-verify.log` を保持。
+
+- HW1最終検証: 全 `npm run verify` exit0（root3597件中3593pass/0fail/4skip、Web assets264/欠落0、API1678、CSV385、build/mission/work/bot合格）。初回Eve子PID競合→該当単独pass→全体passを別記。最後のMCU着脱socket追記は静的照合・PDF再生成/該当頁目視・metadata/design/link/diff再照合で確認。詳細は `data/mii-body-hardware-validation.json`。
+- 保存: `codex/mii-prototype-design-20261102`へlocal保存。PDFはGit外の再生成artifact、source/BOM/設計書はGit対象。GitHub保存・main統合・購入・開通・通電・OS/firmware書込は未実施。
+
+## 可搬mii P2（2026-11-02・着手）
+
+本人指示でLTE・Wi-Fi・衛星の型番/端子と、取り外して単体通信する本体の電源・ドック配線を具体化する。共通OS契約を維持し、可搬側に演算/保存/本人性/通信/電池を配置する。HW1のTowerセンサー4本へOSを複製せず、固定側の演算は任意の拡張とする設計を検討。通信機能の型番選定と回線契約/開通/実機受入を分け、購入・無線送信・端末書込は行わない。
+
+- P2判断: Pi4B 4GBを可搬Core、PiSugar3 Plus電池、Waveshare17693/SIM7080G＋FXP14、内蔵Wi-Fi、RockBLOCK9704-ANTを選定。12 BOM行・11接続・9論理ネット、全7頁PDFとhardware profileを追加。共通OSは同じ契約。C-01は構成選定済・物理未受入へ進め、固定AGXはP2で任意workerとする。
+- 残条件: P2 adapter/実OS受入、RF同居と日本LTE/日米衛星の条件、電源枠2.68A/USB1.0Aの実測、PSU→UPS入力最大5.2V、電池区画開放での充電、包絡/熱/持続。部品選定を送信可能・量産可能としない。次はP2-A01/02準備とadapter、同居/回線条件の確定。
+- 検証中: P2静的照合PASS、PDF7頁render/全頁目視済み。再現は `python3 docs/mii/design/portable-p2/check.py`、同dir `render.py`、`npm run project:update`、`npm run design:check`、`PATH=/opt/homebrew/opt/openssl@3/bin:$PATH npm run verify`。
+
+- P2検証完了: 全 `npm run verify` exit0（root3597件中3593pass/0fail/4skip、build、Web assets264/欠落0、API1678、CSV385、mission/work/bot合格）。P2と既存HW1の静的照合PASS、相対リンク14文書/欠落0、PDF7頁目視（最終Wi-Fi型番追記後4頁を再確認）。詳細 `data/mii-portable-hardware-validation.json`、ログ `/private/tmp/mii-portable-verify.log`。
+- 保存区分: source/BOM/設計書/要約は独立local branch、PDFはGit外。GitHub保存・main統合・購入・開通・通電・無線送信・OS書込み未実施。最終のWi-Fi型番追記/進捗metadata更新はtargeted static/design/project/diff確認で閉じ、runtimeコードは変更していない。
+
+## 可搬mii P3（2026-11-02・着手）
+
+本人指示で衛星/LTE/Wi-Fiの同一本体利用条件をメーカー資料・地域条件で再照合し、必要ならP2の部品/電源/配線を見直す。共通OSを保持。主担当MAT15/ROCK、MINI-08・NET01・SIM01・OS10。P2の未確認条件を再掲するだけにせず、使える構成と前提・実際の阻害要因を区別して詰める。購入/契約/問い合わせ送信/OS書込み/無線送信は実施しない。
+
+P3最終判断: LTE/NTN共用Murata EVK（Soracom4573326593342）、BU-353N5、Waveshare UPS Module 3S＋指定12.6V2A charger＋P28A×3を選定。17 BOM行/18接続/11外部論理ネット、設計2.78A/USB1.10A。Wi-Fi/LTE/NTNは排他。日本planNT1サービス開始と当該moduleの日本NTN適合を分離。R01同居RF/R02地域適合/R03antenna/R04USB電力と受領・過渡・温度検査は未解決。共通OSは同じ、P3 BSP/adapter/実機は未受入。
+
+電源判断の理由: SC0218公差とDDR-15G-5報告overshoot5.6%はPiSugarの上限に不整合。PiSugar/独自dock回路を除去し、メーカー3S保護/均等化/5V出力と指定chargerへ変更。P28Aの標準充電2.8A・65.2mmをkit2A/67mm未満と照合、M35Aは現行1.7A上限のため不採用。初号は監視・開放充電、閉筐体/無人充電は未受入。次は22章R01〜04の原本回答とP3-A01〜07。
+
+P3検証: 静的配線/電力枠・既存P2照合・`npm run design:check`・`git diff --check`はPASS。6頁PDFは全頁目視済。全 `npm run verify` exit0（root3597件中3593pass/0fail/4skip、API1678、CSV385、Web assets264/欠落0）。全verify後の電源再選定/文書/図面script更新はtargeted検査で確認し、runtimeコード変更なし。詳細 `data/mii-integrated-radio-validation.json`、全ログはGit外 `/private/tmp/mii-integrated-radio-verify.log`。
+
+保存区分: 独立local branchの設計source/BOM/profile/要約。PDFはGit外で再生成可能。GitHub保存・main統合・購入・契約・開通・通電・無線送信・OS flash未実施。次の担当は22章§7の4条件への原本回答を取り込み、§8の同一Core試験を行う。OSを再選択する必要はない。
+
+## 可搬mii P3の調達条件再確認（2026-11-02・着手）
+
+本人指示によりR01無線同居/R02日本NTN/R03アンテナ/R04給電を公開原本と国内販売・運用条件で再確認し、必要なら構成を再選定する。主担当MAT15/ROCK、MINI-08・NET01・SIM01・OS10。共通OSは保持。最新mainは7bbb4b27、作業起点49bb6f5e。実際の購入・契約・問い合わせ送信・実機作業は行わず、調達できる構成と未取得の許可/証拠を分ける。
+
+### P3.1 判断変更・検証
+
+Skyloのmodem電源断/detach制限により通常route切替でmodem OFFする前提を撤回。日本Wi-Fiの初期profileはJP/2.4GHz/20MHz/ch1〜11、RFは純正。23章でQuectel候補の端子/5V範囲とYECN028AAの225mm外形衝突を明示し、全部品調達HOLDを保持。本人が2社への技術問い合わせを承認、Quectelへ1件送信/SENT読戻し済み。その後の会社メール指定を反映し、会社送信環境の確認とSoracom会社名/部署/電話の入力は未完了。個人情報/本文はGit外。
+
+検証: P3静的整合PASS、PDF6頁すべて表示確認、design:check PASS。npm run verifyは最初127.0.0.1待受EPERMで停止、同一検証を待受可能な環境で再実行してexit0（root3597/3593pass/0fail/4skip、API1678、CSV385、Web asset264/missing0）。ログは /private/tmp/mii-p3-review/full-verify-unrestricted.log。最終metadataはproject:update/design:check/diff/追加リンク/hashも照合済み。Soracomは返信先・本文・型番を入力済み、送信未実施。実機/回線/同居RF/日本NTN証明/最大電流は未受入。local保存、GitHub未push、main未統合。
+
+### 会社メールへの訂正と実送信（2026-11-02）
+
+本人が会社アドレスの綴りを訂正し、Chromeで開いた認証済みZohoを使用。Quectelへ同じ照会の再送と今後の会社返信先指定を実施し、送信済み本文と「配信済み」表示を確認。会社送信環境の確認は完了、旧アドレスのアカウント未検出は解消。Soracomの返信先も訂正済みだが、会社名・部署名・電話番号の本人回答待ちで未送信。送信本文/メールURL/連絡先はGit外に保存。共通OS・部品・配線は変更せず、技術回答待ちと調達HOLDを維持する。
+
+会社連絡更新の検証: `npm run project:update`、`npm run design:check`、差分整合とsource hash/連絡先Git除外を確認。ハード/OSコードは変更なし、全verifyは直前P3.1のexit0を参照し、今回の連絡状態変更の検査と区別する。
+
+Soracom送信完了: 本人の会社名・電話番号回答を反映し、部署は指定がないため「未指定」と明示。会社返信先で公式フォームを送信し、受付完了画面を確認した。2社とも技術回答待ち。Quectelの初回個人送信＋会社訂正再送とSoracomフォームの計3送信を、2社への照会として記録する。次は23章§5の回答受領・原本照合と条件が閉じた部分の配線更新。共通OS・調達HOLD・実機未受入を維持する。
+
+## mii火災警報機能 F1（2026-11-02）
+
+本人が火災警報器の代替機能を追加し、住宅／店舗・ビルの対象に「全部」と指定。MAT15／JOINT主担当、OS10・MINI-08・NET01。共通OSを保持し、住宅用／特定小規模施設用／一般建物用を24章へ定義。固定消防機器側の独立した検知・警報・予備電源・連動と、取り外せるmiiの読取／通知を分ける。部品／端子・完成品検定・建物設備受入は未完了、P3通信の合格へ混同しない。
+
+最新GitHub main参照9393ed97fc0333ed3a26be49c86b87fd21254b50を読取確認。作業branchはlocal04de8646起点、remote同名branchなし、CIの新規確認は未実施。公開・購入・新たな外部問い合わせ・施工なし。次は24章F-G01〜03のOEM／対象物件条件と正式図面の照合。main統合前にはmainとの差分を同期する。
+
+F1検証完了: project:update、baseline:check、design:check、profile/gate/リンク/JSON整合、diff checkはPASS。全verifyはOpenSSL 3を指定した最終実行でexit0（root3597件/3593pass/0fail/4skip、API1678、CSV385、Web asset264/欠落0）。初回OpenSSL環境不一致、次回の既存Eve PID読取競合と単独再試験PASSを記録し、テスト／runtimeを変更していない。詳細はdata/mii-fire-alarm-design.json、全ログはGit外。消防認定・製造・現物・施工受入はすべて未実施。
+
+## mii後付け消防ハード F2（2026-11-02）
+
+本人が工事不要の後付けを追加指定。MAT15／JOINTを維持し、新規建物配線・AC100V直結・天井内工事なしを要件化。25章、19行BOM・8接続、5頁PDF生成元、hardware profile、静的照合を作成。住宅用NOHMI FSKJ226系＋FSOJ001B-S→Phidgets1018_3/3060_0を評価選定。施設用S4はメーカー接続制限、ビルは完成mii head未確定。全通信同時USB給電は余裕なしでHOLD。
+
+GitHub main9393ed97fc0333ed3a26be49c86b87fd21254b50を再読取、同名remote branchなし。作業起点33f3c533e、未push／未統合、同一SHA CI未確認。新規の問い合わせ・購入・施工なし。次はF-E01〜05、OEM完成形、対象物件のhead/base/受信機対応表。F2検証は静的19部品/8接続、PDF5頁目視、リンク・baseline・design、全verify exit0（root3597件/3593pass/0fail/4skip、API1678、CSV385、Web264/欠落0）。物理・検定・施工試験はNOT_RUN。全ログは /private/tmp/mii-fire-f2-verify.log。
+
+## mii F3 検定・互換性・独立給電（2026-11-03・着手）
+
+本人の追加指示により、MAT15／JOINTを主担当として、無新規建物配線・共通OSを保持し、完成品検定の条項、既設設備照合、全搭載負荷の給電を詰める。Quectelの部分回答を会社メールで読戻し、YECN028AAは認証antenna list外と判明したため候補から除外。Soracom検索で確認できたのは受付メールのみ。原文・連絡先はGitへ保存しない。現物／物件未指定とOEM完成品未成立を合格へ変換しない。
+
+F3判断変更: A1289のC1→Pi/C2→SC1636、24部品行/20接続、20W設計枠へ更新。市販電池は完成天井製品に不採用。JFEII R8.4.1/e-Gov条項を照合。本人の「いろんな方」を受け4社8系列を比較し、共通Core＋系列別OEM消防部を方針化。既製head/baseの証拠とmii適合は分け、全物理gateをOPENのまま保持。
+
+F3検証完了: 静的24部品/20接続・4社8系列の出典整合PASS、PDF7頁の目視・欄外文字0、追加ローカルリンク22件/欠落0。全verify exit0（root3597件/3593pass/0fail/4skip、API1678、CSV385、Web264/欠落0）。ログ `/private/tmp/mii-fire-f3-verify.log`、要約 `data/mii-fire-alarm-design.json`。最終文書・進捗更新はtargeted再照合で閉じ、OS runtime変更なし。購入・新規問い合わせ・通電・施工・検定は未実施。local branchへ保存、PDFはGit外、未push・未main統合。次はR01〜04の原本回答、F-E01接点保証、4社系列ごとのOEM head/電池/取付設計と実物件・資格区分、全負荷実測／完成品検定。
+
+## 裸眼・工事なしの空間SI調査（2026-11-08・着手）
+
+本人の参考動画を確認し、浮遊資料・立体対象・手操作・会話・仕事再開を調査対象とする。名称SI、共通OSを維持。MAT15／ROCK、MINI01/02・OS10。市販光学の一次資料と価格・端子を照合し、既存設計27章へまとめる。最新main読取値9393ed97fc0333ed3a26be49c86b87fd21254b50とlocal HEAD420f7dcce7c112883869321dfcdec649592c24fcは別。共有差分を保持し、購入・新規外部照会・実機・統合は行わない。
+
+- 2026-11-08 検証完了: [27章](docs/mii/design/27-spatial-si-feasibility.md)にKC-310G／UM890 Pro／YVC-200B／追加D405、端子間接続、2種類の機材費算式、外注工数仮定、全室の未達条件を保存。S1基本はQ310＋232,899～252,899円、深度追加はQ310＋281,649～301,649円＋輸入費。Q310・正確なDC/USB端子はメーカー資料待ち。旧05章の50cm成立境界・輝度等の断定を訂正。
+- `npm run project:update`、費用算術、6文書の相対リンク、`git diff --check`は合格。全`npm run verify`は初回localhost EPERMで停止→同コマンドをlocalhost許可付きで再実行しexit0。ログはGit外 `/private/tmp/mii-spatial-si-verify-full.log`、hashと要約は進捗JSON。最終の文書・metadata追記はtargeted project/design/link/diffで再照合。実機、光学、Noah音声／手操作、購入、外部照会、GitHub保存、main統合は未実施。
+- 次はS1-G01のKC-310G現行見積・付属ケーブル／電源・USB種別／driver・EDID・視域の取得。その後にS1-G02〜05。部屋全域・天井単体・消防代替・無線の未受入を保持し、卓上試作を完成miiへ昇格しない。
+
+## 全室空間SIの新規開発設計（2026-11-08・着手）
+
+本人が卓上案を採用せず、動画のような部屋全体を新規開発の対象と指定。裸眼・工事なし・共通OS・SI名称を固定。MAT15／ROCK、MINI01/02・OS10。既存27章を市販比較として残し、28章へ原理・反証計算・構成・段階予算・中止条件を具体化する。今回の費用は研究計画の仮定で、発注見積や成功保証ではない。GitHub mainは通常ネットワーク制限後の読取再試行で9393ed97を確認、local HEAD420f7dccのまま。
+
+- 28章と研究profileを保存。主経路は追跡型多開口の波面再生、Core／室内worker／展開式出射部。4壁中央0.6m開口の水平60.757度、646視線中28hit、床／天井方向398本を計算。物理完成率ではなく幾何反例。SLM拡大、両眼RGB帯域、眼移動1m/sと30msから70mm必要余裕、予算の再現sourceも追加。
+- 研究予算仮定: 9/36/108/216人月、150～220万円/人月、追加機材・外部評価・予備費25/30/35/35%。原理確認3000～5100万円、全室試作まで累計4.30～7.05億円、少数製品評価まで10.02～16.57億円。見積・成功保証・支出許可ではない。新半導体量産／消防・通信適合等は別。
+- `python3 docs/mii/design/room-rd/calculate.py`、8文書の相対リンク、設計JSONと再計算の一致、diff checkは成功。全`npm run verify`は既存Miniflareの127.0.0.1接続ETIMEDOUTでexit1（3597件中3589pass/4fail/4skip）。失敗した3fileをtest-concurrency=1で再実行すると18件中17pass/1fail、migration-unionだけlocalhost ETIMEDOUT継続。既存testやruntimeを弱めて通していない。詳細は進捗JSON、ログはGit外 `/private/tmp/mii-room-rd-verify.log` と `/private/tmp/mii-room-rd-retry-targeted.log`。全体passとは記録しない。最終metadata／design／links／計算を局所再照合する。
+- 次はR0で展開可能な側方／低位置／上方開口と連続3D両眼到達条件、独立光学評価、部品／共同研究見積を確定。全室・小型・工事不要・光安全・低眩しさの物理成立は未証明。外部照会・購入・実機・GitHub保存・main統合なし。

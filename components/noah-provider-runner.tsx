@@ -278,6 +278,10 @@ export default function NoahProviderRunner({
             <br />
             {t('入力内容を送り、選んだ処理を実行します。')}
             <br />
+            {t('入力の一部と成果は、Noahの仕事履歴に保存されます。')}
+            <br />
+            {t('Noahの中継料は0円。提供元の料金は未確認です。提供元で料金・契約を確認してから実行してください。')}
+            <br />
             {t('成果が届くまで画面を開いたままにしてください。')}
           </p>
           <button className={styles.primary} type="submit" disabled={busy}>

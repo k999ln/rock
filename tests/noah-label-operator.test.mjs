@@ -117,3 +117,32 @@ void test('preflight is reusable as definitions and family receipts resume atomi
     rmSync(root, { recursive: true, force: true });
   }
 });
+
+void test('a model sees grounded choices and unsupported tools retain an empty result', async () => {
+  const unsupported = { name: 'opaque_action', description: '', inputSchema: { type: 'object', examples: [{ csv: 'Example' }] } };
+  const result = await labelNoahFamily(family([csvTool, unsupported]), {
+    label: async (prompt) => {
+      assert.match(prompt, /"materialChoices":\{"inputs":\["csv"\],"outputs":\["cleaned-csv"\]\}/u);
+      assert.doesNotMatch(prompt, /opaque_action/u);
+      return labelReply([csvTool]);
+    },
+    verifier: async (prompt) => {
+      assert.doesNotMatch(prompt, /materialChoices|opaque_action/u);
+      return JSON.stringify({ schema: 'noah-label-verifier-reply/1', judgments: [{ toolName: 'clean_csv', input: true, output: true, noInventedWords: true }] });
+    },
+  });
+  assert.equal(result.acceptedTools, 1);
+  assert.deepEqual(result.rejects, [{ toolName: 'opaque_action', code: 'evidence_empty_description' }]);
+});
+
+void test('duplicate cards are refused without skipping other independently verified tools', async () => {
+  const example = family([csvTool, topicTool]);
+  const reply = JSON.parse(labelReply(example.tools));
+  reply.tools.push(reply.tools[1]);
+  const result = await labelNoahFamily(example, {
+    label: async () => JSON.stringify(reply),
+    verifier: async () => JSON.stringify({ schema: 'noah-label-verifier-reply/1', judgments: [{ toolName: 'clean_csv', input: true, output: true, noInventedWords: true }] }),
+  });
+  assert.equal(result.acceptedTools, 1);
+  assert.deepEqual(result.rejects, [{ toolName: 'summarize_topic', code: 'label_reply_duplicate_tool' }]);
+});

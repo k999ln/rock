@@ -108,6 +108,31 @@ void test('output evidence cannot come from an input phrase, negation, or an exa
   assert.equal(verifyNoahCardProposal(tool, proposal).ok, false);
 });
 
+void test('captures accept schema prose containing undefined and an empty tool description', () => {
+  const original = { ...cleanCsvTool(''), outputSchema: { title: 'undefined is never returned', ...cleanCsvTool().outputSchema } };
+  assert.equal(parseNoahLabelBatch(input(original)).series[0].tools[0].description, '');
+  assert.throws(() => parseNoahLabelBatch(input({ ...original, inputSchema: { title: undefined } })), /not JSON/u);
+  assert.throws(() => parseNoahLabelBatch(input({ ...original, inputSchema: { value: NaN } })), /not JSON/u);
+});
+
+void test('literal evidence survives punctuation around explicit input and output terms', () => {
+  const tool = { name: 'summarize', description: 'Takes a (topic) and returns a **summary**, with metadata.', inputSchema: {} };
+  const proposal = { consumes: ['topic'], produces: 'summary' };
+  assert.equal(verifyNoahCardProposal(tool, proposal).ok, true);
+  assert.equal(verifyNoahCardProposal({ ...tool, description: 'Takes a (topic) and does not return a **summary**.' }, proposal).ok, false);
+});
+
+void test('only used local schema definitions provide evidence for a label', () => {
+  const $defs = { Result: { properties: { summary: { type: 'string' }, nested: { $ref: '#/$defs/Result' } } } };
+  const base = { name: 'summarize', description: '', inputSchema: { properties: { topic: { type: 'string' } } } };
+  const proposal = { consumes: ['topic'], produces: 'summary' };
+  const tool = { ...base, outputSchema: { $defs, $ref: '#/$defs/Result' } };
+  assert.equal(verifyNoahCardProposal(tool, proposal).evidence.produces[0].path, '$.outputSchema#/$defs/Result.properties.summary');
+  for (const outputSchema of [{ $defs }, { $defs, $ref: 'https://example.test/#/$defs/Result' }, { $defs, anyOf: [{ $ref: '#/$defs/Result' }, {}] }]) {
+    assert.equal(verifyNoahCardProposal({ ...base, outputSchema }, proposal).ok, false);
+  }
+});
+
 void test('batch labels use canonical parser, discard raw model text, and resume by fixed manifest', async () => {
   const batch = await prepareNoahLabelBatch(input());
   let calls = 0;

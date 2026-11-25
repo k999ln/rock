@@ -18,6 +18,7 @@ import { boundedNoahBody } from './noah-agent-api.ts';
 import { noahListing } from './noah-intake-listing.ts';
 import { ownerScopeFor, OWNER_SCOPE_HEADER } from './owner-intent.ts';
 import { verifyCollectionSignature } from './noah-collection.ts';
+import { NOAH_PIN_COLUMNS, NOAH_PIN_SKIP_REASONS, parseStoredNoahPin } from './noah-pin-storage.ts';
 
 export const NOAH_INTAKE_IMPORT_SCHEMA = 'noah-intake-import/1';
 /** 1 回の要求で入れる系列の数と、本文の大きさ。 */
@@ -36,7 +37,7 @@ const marks = (n: number) => Array.from({ length: n }, () => '?').join(',');
  * 本番の D1 の書き込みは、新しく入れる系列 1 つで、表と索引を合わせて約 13 行（候補 6・握手 3・系列 4）。書き込みの枠が日ごとに決まっている時は、数を絞って、日を分けて入れる。
  */
 export type NoahIntakeExportOptions = {
-  limit?: number; first?: readonly string[];
+  limit?: number; first?: readonly string[]; includePins?: boolean; includePinFor?: (row: Row) => boolean;
   /** この系列だけを、載っているかに関わらず書き出す（収集機が、載らなくなった系列を本番で載せない側へ直す時。scripts/noah-collector-import.mjs）。 */
   ids?: readonly string[];
 };
@@ -69,9 +70,13 @@ export async function noahIntakeExport(db: Pick<IntakeDb, 'prepare'>, now: numbe
     return { ...out, level: 1, l2_at: null, badge_hint: 'unverified' };
   });
   const ids = new Set(families.map((row) => String(row.id)));
-  const candidates = (await readAll((filter) => `SELECT ${columns(CANDIDATE_COLUMNS.map((c) => `c.${c}`))} FROM noah_intake_candidates c JOIN noah_intake_families f ON f.id = c.family_id
+  const candidates = (await readAll((filter) => `SELECT c.* FROM noah_intake_candidates c JOIN noah_intake_families f ON f.id = c.family_id
     WHERE ${scope('f')} AND ${filter} ORDER BY c.family_id, c.id`))
-    .filter((row) => ids.has(String(row.family_id)));
+    .filter((row) => ids.has(String(row.family_id)))
+    .map((row) => Object.fromEntries([
+      ...CANDIDATE_COLUMNS.map((key) => [key, row[key]]),
+      ...(options.includePins === false || options.includePinFor?.(row) === false ? [] : NOAH_PIN_COLUMNS.filter((key) => row[key] != null).map((key) => [key, row[key]])),
+    ]) as Row);
   const candidateIds = new Set(candidates.map((row) => String(row.id)));
   const checks = (await readAll((filter) => `SELECT ${columns(CHECK_COLUMNS.map((c) => `k.${c}`))} FROM noah_intake_checks k JOIN noah_intake_candidates c ON c.id = k.candidate_id JOIN noah_intake_families f ON f.id = c.family_id
     WHERE ${scope('f')} AND ${filter} ORDER BY k.candidate_id`))
@@ -112,13 +117,21 @@ export function parseNoahIntakeImportPart(value: unknown): NoahIntakeImportPart 
   const part: NoahIntakeImportPart = {
     schema: NOAH_INTAKE_IMPORT_SCHEMA, exportedAt: exportedAt as number,
     families: families.map((row) => shape(row, FAMILY_COLUMNS, '系列')),
-    candidates: candidates.map((row) => shape(row, CANDIDATE_COLUMNS, '候補')),
+    candidates: candidates.map((row) => shape(row, [...CANDIDATE_COLUMNS, ...NOAH_PIN_COLUMNS], '候補')),
     checks: checks.map((row) => shape(row, CHECK_COLUMNS, '握手')),
   };
   const candidateIds = new Set(part.candidates.map((row) => row.id));
   for (const row of part.candidates) {
     if (row.source !== 'mcp-registry') fail('入れられるのは、公式台帳の候補だけです。');
     try { JSON.parse(String(row.record_json)); } catch { fail('候補の記録が JSON ではありません。'); }
+    if (NOAH_PIN_COLUMNS.every((key) => row[key] === null)) continue;
+    const { pin_json: json, pin_source_sha256: source, pin_model: model, pin_at: at, pin_skip: skip } = row;
+    const validPin = json !== null && skip === null && parseStoredNoahPin(json);
+    const validSkip = json === null && NOAH_PIN_SKIP_REASONS.some((reason) => reason === skip);
+    if ((!validPin && !validSkip) || typeof source !== 'string' || !/^[0-9a-f]{64}$/u.test(source)
+      || typeof model !== 'string' || !/^[a-z0-9][a-z0-9._:/-]{0,127}$/iu.test(model)
+      || typeof at !== 'number' || at < 1 || at > part.exportedAt) fail('ピンの記録の形が違います。');
+    if (validPin) row.pin_json = JSON.stringify(validPin);
   }
   for (const row of part.checks) {
     if (!candidateIds.has(row.candidate_id)) fail('握手の行の候補が、この回にありません。');
@@ -182,6 +195,15 @@ export async function noahIntakeImport(db: IntakeDb, value: unknown, now: number
         OR excluded.oauth_json IS NOT noah_intake_checks.oauth_json OR excluded.tools_sha256 IS NOT noah_intake_checks.tools_sha256 OR excluded.tool_count IS NOT noah_intake_checks.tool_count
         OR excluded.read_only IS NOT noah_intake_checks.read_only OR excluded.form_tools IS NOT noah_intake_checks.form_tools OR excluded.one_tap_tools IS NOT noah_intake_checks.one_tap_tools
         OR excluded.result IS NOT noah_intake_checks.result OR excluded.level IS NOT MIN(noah_intake_checks.level, 1))`, ...values));
+  }
+  // 取り込んだ元の文と道具の一覧がそろった後で、ピンを保存します。
+  for (const row of part.candidates) {
+    if (row.pin_at === null) continue;
+    statements.push(prepare(`UPDATE noah_intake_candidates SET ${NOAH_PIN_COLUMNS.map((key) => `${key}=?`).join(',')}
+      WHERE id=? AND name IS ? AND summary IS ? AND summary_ja IS ?
+        AND (SELECT tools_sha256 FROM noah_intake_checks WHERE candidate_id=noah_intake_candidates.id) IS ?
+        AND COALESCE(pin_at, 0) < ?`,
+    ...NOAH_PIN_COLUMNS.map((key) => row[key]), row.id, row.name, row.summary, row.summary_ja, checks.get(row.id)?.tools_sha256 ?? null, row.pin_at));
   }
   // 本番で人が動かした（L2）握手の行を、系列の代表が持っているか（握手の行を書いた後に読む）。
   const ranL2 = 'EXISTS (SELECT 1 FROM noah_intake_checks k WHERE k.candidate_id = excluded.representative_id AND k.level = 2)';

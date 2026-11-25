@@ -1,3 +1,4 @@
+import { NOAH_REGISTRATION_MESSAGES } from './noah-i18n-registration.ts';
 import { NOAH_FLOW_MESSAGES } from './noah-i18n-flow.ts';
 import { NOAH_RESULT_MESSAGES } from './noah-i18n-results.ts';
 import { NOAH_ACCESS_MESSAGES } from './noah-i18n-access.ts';
@@ -34,6 +35,7 @@ export const NOAH_MESSAGES: Record<
   string,
   readonly [string, string, string, string, string]
 > = {
+  ...NOAH_REGISTRATION_MESSAGES,
   ...NOAH_SOCIAL_MESSAGES,
   ...NOAH_EXTRA_MESSAGES,
   ...NOAH_ACCOUNT_MESSAGES,
@@ -430,6 +432,44 @@ export const NOAH_MESSAGES: Record<
     'لغة الجهاز',
   ],
   読み込み中: ['Loading', '加载中', '로딩 중', 'Cargando', 'جارٍ التحميل'],
+  // 読み込み中に遊ぶ「点のトラ」のスケボーゲーム（components/noah-tiger-game.tsx）
+  スペースキーかタップでスタート: [
+    'Press Space or tap to start',
+    '按空格键或点击开始',
+    '스페이스 키나 탭으로 시작',
+    'Pulsa Espacio o toca para empezar',
+    'اضغط على المسافة أو المس للبدء',
+  ],
+  '待っている間、トラのスケボーをどうぞ': [
+    'Skate with the tiger while you wait',
+    '等待时，和老虎一起玩滑板吧',
+    '기다리는 동안 호랑이와 스케이트보드를 타 보세요',
+    'Patina con el tigre mientras esperas',
+    'تزلّج مع النمر أثناء الانتظار',
+  ],
+  'ぶつかった！': ['Crashed!', '撞到了！', '부딪혔어요!', '¡Chocaste!', 'اصطدمت!'],
+  'スペースキーかタップで、もう一度': [
+    'Press Space or tap to try again',
+    '按空格键或点击再来一次',
+    '스페이스 키나 탭으로 다시 하기',
+    'Pulsa Espacio o toca para volver a intentarlo',
+    'اضغط على المسافة أو المس للمحاولة مجددًا',
+  ],
+  '{space} か {up}、またはタップでオーリー（板ごとジャンプ）。長く押すと高く跳びます。': [
+    '{space} or {up}, or tap to ollie (jump with the board). Hold to jump higher.',
+    '按 {space} 或 {up}，或点击来豚跳（连板一起跳）。按住会跳得更高。',
+    '{space} 또는 {up}, 또는 탭으로 알리(보드째 점프). 길게 누르면 더 높이 뛰어요.',
+    '{space} o {up}, o toca para hacer un ollie (saltar con la tabla). Mantén pulsado para saltar más alto.',
+    '{space} أو {up}، أو المس لأداء أولي (القفز مع اللوح). اضغط مطولًا للقفز أعلى.',
+  ],
+  スペース: ['Space', '空格', '스페이스', 'Espacio', 'مسافة'],
+  'トラがスケボーでコーンやハトをよけるゲーム。スペースキーかタップでオーリー（ジャンプ）します。': [
+    'A game where the tiger skateboards past cones and pigeons. Press Space or tap to ollie (jump).',
+    '老虎踩着滑板躲开路锥和鸽子的游戏。按空格键或点击来豚跳（跳跃）。',
+    '호랑이가 스케이트보드로 콘과 비둘기를 피하는 게임. 스페이스 키나 탭으로 알리(점프)해요.',
+    'Un juego en el que el tigre esquiva conos y palomas en monopatín. Pulsa Espacio o toca para hacer un ollie (saltar).',
+    'لعبة يتفادى فيها النمر على لوح التزلج الأقماع والحمام. اضغط على المسافة أو المس لأداء أولي (القفز).',
+  ],
   '読み込んでいます…': [
     'Loading',
     '加载中',

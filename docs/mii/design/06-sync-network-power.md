@@ -1,5 +1,7 @@
 # 06 同期・通信・電源
 
+**組立配線の正本は[19章 HW1](19-body-hardware.md)。** Tower内で1GbE cameraと100Mbps controlを分け、4本を10GbEでHubへ集約。bt/60W入力のUSW-Flexを4台使用する。HW1はPTP精度・4本HW trigger・8ch位相・radar TDMを未実装/未受入とし、以下の同期目標と混同しない。
+
 ## 1. 同期（二重構成）
 
 | 仕組み | 役割 | 目標 |
@@ -16,6 +18,8 @@ t = T_exp + e + Δ  IR OFF
 ```
 
 IR パルスは Node ごとに位相をずらすこともできる（干渉低減）が、三角測量は同時露光が前提なので**基本は全 Node 同時露光・同時 IR**。
+
+IRのpulse時間と03章のduty10%/平均1Wの不一致は[15章](15-prototype-spec.md#irのdutyと電力の未整合)に記録。発光条件・電力・熱は同じ実機で再評価する。
 
 ## 2. レーダー TDM
 
@@ -35,9 +39,9 @@ IR パルスは Node ごとに位相をずらすこともできる（干渉低�
 | 頭 ROI NIR | 320×240×120×8（フル解像度の切出し） | 74 Mbps | そのまま |
 | RGB 文脈 | 1920×1080×60×12（YUV420） | 1.5 Gbps | H.264/HEVC intra 50 Mbps（意味理解用、遅延は許容） |
 | レーダー・音・IMU | — | <20 Mbps | そのまま |
-| 合計 / Node | | | **≈ 750 Mbps → 1GbE で可** |
+| 合計 / Node | | | **733.552 Mbps（payload仮上限）→ 1GbE採否は実測待ち** |
 
-Hub 側は 4 Node で 3 Gbps → 内蔵 PoE+ スイッチ → Hub SoC へ 2.5/10GbE。
+Hub側は4 Nodeでpayload 2.934208Gbps（overhead除外）。**このprofileで2.5GbE集約は不可**。10GbE等を候補にburst/圧縮上限/制御通信を含めて実測する。2.5GbEを使う案は解像度/fps/圧縮を明記した別profileとして再評価する。[計算・未確定encoder](15-prototype-spec.md#4-通信の計算と採否)。
 頭 ROI の位置は前フレームの頭位置から Hub が Node へ指示（1 フレーム遅れで追従、消失時は全身ビニング画像から再検出）。
 
 ## 4. 配線（製品）
@@ -62,7 +66,7 @@ Hub ──PoE+ Cat6A ≤ 30 m──► Node 1
 | 機器 | 入力 | 消費 |
 | --- | --- | --- |
 | Node | PoE+（25.5 W 供給）または 12 V 3 A | 12 W 平均 / 20 W ピーク |
-| Hub（Home） | AC 100–240 V | 25 W ＋ PoE 給電 4×12 W = 73 W 平均、ピーク 110 W |
+| Hub（Home） | AC 100–240 V | 仮演算25W＋Node4×12W = 73W末端負荷小計。AC入力は損失/その他を追加。peakはhost peak＋80W＋損失/その他、旧110W固定は不使用 |
 | Hub（Pro） | AC | 250 W ＋ PoE 8×12 W |
 | 投影エンジン | AC（別電源） | 100–200 W |
 

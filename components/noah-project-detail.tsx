@@ -2,7 +2,7 @@
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import type { NoahAgentSource } from '@/lib/noah-agent-cards';
-import type { NoahProjectDetail as Detail } from '@/lib/noah-project-view';
+import { eveNoahProjectHref, type NoahProjectDetail as Detail } from '@/lib/noah-project-view';
 import { NOAH_COLLECTION_LABELS } from '@/lib/noah-collection';
 import NoahAgentSourceRatings from './noah-agent-source-ratings';
 import NoahReadyDetail from './noah-ready-detail';
@@ -119,6 +119,7 @@ export default function NoahProjectDetail({ id, firstJob }: { id: string; firstJ
           : <NoahProviderRunner key={id} projectId={id}/>}
       </div>
       {sourceNotes}
+      {!!detail.card.sources?.length && <p><Link className={styles.back} href={eveNoahProjectHref(id)}>Eveで使い方を組み立てる</Link></p>}
       {detail.connection.kind === 'cloud' ? null : detail.connection.kind === 'space' ? <><details><summary>提供元の画面を開く</summary><section className={styles.connection} aria-label="Noah内で使う">
         <h2>Noahで使う</h2><p>この画面でAgentの利用画面を開きます。入力は提供者のHugging Face Spaceに送られます。</p>
         <button className={styles.primary} hidden={Boolean(url)} disabled={opening} onClick={() => void openSpace()}>{opening ? '接続先を確認しています…' : '利用画面を開く'}</button>

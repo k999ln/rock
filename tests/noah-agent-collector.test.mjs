@@ -22,6 +22,10 @@ function world(registry = async () => page([entry(1)])) {
   return { server, calls, fetch: async (raw, init) => {
     const url = new URL(raw); calls.push(url);
     if (url.hostname === 'registry.modelcontextprotocol.io') return registry(url, init);
+    if (url.pathname === '/repos/sandbox-quantum/switch/releases/latest') return Response.json({
+      tag_name: 'stable', published_at: new Date(NOW - 8 * 86_400_000).toISOString(), draft: false, prerelease: false,
+      html_url: 'https://github.com/sandbox-quantum/switch/releases/tag/stable',
+    });
     if (url.hostname === 'api.github.com') return Response.json(url.pathname.includes('/search/') ? { items: [github] } : url.pathname.includes('/git/ref/') ? { object: { sha: 'b'.repeat(40) } } : github);
     if (url.hostname === 'huggingface.co') return Response.json(url.pathname === '/api/spaces' ? [hf] : hf);
     return server.fetch(raw, init);

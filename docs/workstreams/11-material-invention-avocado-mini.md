@@ -215,3 +215,41 @@ MAT15/M1の[現行設計追補](../avocado-mini-r5/embedded-portable-connectivit
 ## Proの共通仕事入口の責任境界（2026-10-27）
 
 PRO-02の固定linkはsource workstream05/ROCKで受入れ、[Pro詳細](../rockstaros-avocado-mini-complete-design.md#pro-private-work-entry)へ接続する。既存共通WorkJob/owner/保存/停止を再利用するソフトウェア入口であり、avocadoPro実機/配置/入出力/可搬復旧・物理製造やMini光学の合格ではない。公開・本番仕事は同artifact/本人の別JOINT gateで確認する。
+
+## 共通OSに接続するmii実機試作設計（2026-11-02）
+
+MAT15／OS10／MINI01・MINI02の設計担当ROCK。[設計入口](../mii/design/00-README.md)14〜17章へ共通OS、BOM/端子条件、帯域/電力、A01〜12とO01〜04、部品提供相談資料を追加。既存taskの完了判定は変更しない。EXTERNALは部品/driver、JOINTは同一実機で入力・停止・復旧・光学、OWNERは筐体/予算/試験対象/提供条件。検証は `npm run project:update`、`npm run baseline:check`、`npm run design:check`、`npm run verify`。結果は `data/mii-prototype-design-validation.json`、再開はroot `project.md`。18章でM4 Mac＋BRIOのP0b、Pi 5＋SC0715のP1aを選定し、端子間配線を具体化。次は現物/BOM版の照合→W-A01〜04→共通OS一周。実施状況は `data/mii-prototype-wiring-validation.json`。projector型番、Pi初期接続、Node adapter、同期/光学の未受入を維持する。
+
+### mii本体HW1の配線（2026-11-02）
+
+同じMAT15・MINI01/02・OS10、ROCK主担当で[19章](../mii/design/19-body-hardware.md)を追加。18章は開発用検証装置、本体は4 Tower＋専用Hub＋表示部。EXTERNAL=部品/driver、JOINT=同一実機の組立/測定、OWNER=設置/対象/予算を維持。次はHW-A01の受領/導通とHW-A05の試験firmware、続いて共通OS adapter。静的照合は `python3 docs/mii/design/body-hw1/check.py`、図面は同directoryの `render.py`、repoは `npm run verify`。証拠は `data/mii-body-hardware-validation.json`。120Hz/8ch位相/radar TDM/閉箱/光学は未受入。
+
+通信追加は[20章](../mii/design/20-connectivity.md)。MAT15主担当、MINI-08・NET01・SIM01との接続で、Web接続/UIの証拠と実回線/無線受入を分ける。専用有線WANの2部品/2接続を追加、LTE/Wi-Fi/衛星の既存要件は保持しCOM-A01〜06で追跡。
+
+### 可搬mii P2 — LTE/Wi-Fi/衛星とdock
+
+MAT15主担当ROCK、MINI-08・NET01・SIM01・OS10との接続。[21章](../mii/design/21-portable-connectivity.md)で12 BOM行・11接続・9論理ネットを選定。EXTERNALは部品rev/driver/RF/回線条件、JOINTは同一Coreの着脱/電源/通信/保存、OWNERは機材・回線・試験環境/予算。次はP2-A01/02準備とP2 adapter、9704-ANT同居・国内carrier条件の確定。検証: `python3 docs/mii/design/portable-p2/check.py`、同dir `render.py`、`npm run design:check`、`npm run verify`。結果は `data/mii-portable-hardware-validation.json`。静的図面は物理/RF/OS/光学受入と別。共通OSと既存通信台帳を再利用する。
+
+### 可搬mii P3 — P2より優先する次の作業
+
+MAT15/ROCK、MINI-08・NET01・SIM01・OS10。[22章](../mii/design/22-integrated-radio.md)、17 BOM行/18接続/11ネット。EXTERNALの回答とJOINTの確認でR01同居RF/R02国別機器・回線/R03antenna実品/R04USB電力契約を閉じる。OWNERは予算・機材/契約。購入未実施。本人承認後にQuectelへ会社メールで訂正再送し配信済み、Soracomも公式フォーム受付済み。P3.1の[23章](../mii/design/23-japan-procurement.md)に2社への照会内容と送信状況。Skylo電源断制限を反映し、アプリ経路の排他をRF排他とみなさない。回答後、必要な配線を改版してP3-A01〜07。検証: `python3 docs/mii/design/portable-p3/check.py`、同dir `render.py`、`npm run design:check`、`npm run verify`。記録は `data/mii-integrated-radio-validation.json`。共通OSと既存通信adapterを再利用し、P3実機/光学未合格を保持。
+
+### miiの火災警報器代替設計（2026-11-02）
+
+本人が住宅・店舗／ビルの「全部」を対象に指定。[24章](../mii/design/24-fire-alarm.md)、[要件と未受入条件](../../data/mii-fire-alarm-design.json)。MAT15／JOINT主担当、OS10・MINI-08・NET01に接続。ROCKは独立性の設計と共通OSの読取・保存・通知、EXTERNALはOEM完成形と検定、JOINTは感知・音響・電源・熱／RF・受信機・建物受入、OWNERは対象物件・予算。次は用途別OEM方式とF-G01〜03の条件確定後に正式端子配線。検証は `npm run baseline:check`、`npm run design:check`、`npm run verify` と24章F-A01〜07。設計保存を認定・施工・実機合格にしない。最新main参照9393ed97は読取確認のみで、本branchは未push／未統合。mainへ反映する前に差分を再同期する。
+
+通信2社への照会は[23章](../mii/design/23-japan-procurement.md)でQuectel会社メール配信済み・Soracomフォーム受付済み。消防機器OEMへの問い合わせは今回未送信。
+
+F2：[後付けハード25章](../mii/design/25-retrofit-fire-hardware.md)、[BOM/netlist](../mii/design/fire-f2/bom-netlist.json)、5頁PDF生成元を追加。住宅用接点→絶縁USBを具体化し、施設接続制限、一般ビルOEM head、USB全通信電源をHOLD。新規建物配線・AC100V直結・天井内工事なしを設計入力に追加。次はF-E01〜05と対象物件の機器対応表。静的検証は `python3 docs/mii/design/fire-f2/check.py`、PDFは同dirの `render.py`。実機・検定・設備受入は未実施。
+
+F3（2026-11-03）：[26章](../mii/design/26-fire-certification-power.md)。MAT15／JOINT、OS10・MINI-08・NET01。2系統電源とHub、24部品行/20接続、条項数値と機器互換表を追加。ROCKは評価配線/共通契約、EXTERNALはOEM電池・head・検定、JOINTは電源/熱/RF/建物受入、OWNERは物件選定。`python3 docs/mii/design/fire-f3/check.py` と `render.py`、既存design/verifyを使う。次はR04/接点保証、最終OEM機構・電池、実物件型番。main9393ed97は読取り確認のみ、本branch未push/未統合。
+
+F3の既設互換比較は能美防災・ホーチキ・ニッタン・パナソニックの4社8系列へ拡張。共通Core＋系列別OEM消防部を設計し、メーカー間相互交換・新mii検定・物件受入は未成立。詳細は26章§5.1。
+
+### 裸眼・工事なしの空間SI（2026-11-08）
+
+MAT15／ROCK、MINI01/02・OS10。[27章](../mii/design/27-spatial-si-feasibility.md)でKC-310G／UM890 Pro／YVC-200B／任意D405の接続と条件付き費用を整理。部屋全域・小型天井単体の適合一式は未確認。ROCKは共通仕事・表示入力、EXTERNALは光学unit見積／正確な端子／視域、JOINTは光学・電源・遅延実測、OWNERは用途／予算。次はS1-G01資料と見積、その後S1-G02〜05。C-02・可搬通信・消防代替の未受入を維持。検証は`npm run design:check`／`npm run verify`、実機は別記。
+
+### 全室空間SIの新規光学研究（2026-11-08・後続）
+
+本人が卓上を採らず全室表示を指定。[28章](../mii/design/28-room-scale-si-rd.md)、[再現計算](../mii/design/room-rd/calculate.py)。MAT15／ROCK、MINI01/02・OS10。4壁中央の幅0.6m開口は中央水平60.76度、646試験視線中28本に留まる反例を記録。これは物理完成率ではない。ROCKは共通OS契約・波面／追跡・設計計算、EXTERNALは光学技術／供給、JOINTは開口・光安全・電力・実機、OWNERは展開寸法／予算／外部相談。次はR0の開口配置と室内光学測定。`python3 docs/mii/design/room-rd/calculate.py`、`npm run design:check`、`npm run verify`を使い、全室・工事不要・無線／消防の未受入を維持。予算は段階見積の仮定で、発注や成功保証ではない。

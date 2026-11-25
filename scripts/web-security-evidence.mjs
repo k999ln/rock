@@ -13,6 +13,6 @@ export const WEB_SECURITY_INPUTS = [
   'app/layout.tsx', 'app/connect/eve.webmanifest/route.ts', 'app/connect/done/page.tsx', 'app/os/eve/page.tsx',
   'app/page.tsx', 'lib/os-entry.ts',
   'app/noah/page.tsx', 'components/noah-shell.tsx', 'components/noah-timeline.tsx',
-  'public/rock-icon-192.png', 'public/rock-icon-512.png', 'public/rock-icon-maskable.svg',
+  'public/brand/noah-icon-v2.png', 'public/rock-icon-192.png', 'public/rock-icon-512.png', 'public/rock-icon-maskable.svg',
 ];
 export const securityInputHashes = root => Object.fromEntries(WEB_SECURITY_INPUTS.map(file => [file, createHash('sha256').update(readFileSync(resolve(root, file))).digest('hex')]));

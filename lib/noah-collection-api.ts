@@ -24,7 +24,7 @@ export function createCollectionApi({ bucket, key, now = Date.now }: { bucket?: 
         // 公開する側でも、成人向けの語に当たる紹介は出さない（古い収集機の掲載や、Codex の受け取りの漏れに備える）。
         const records = snapshots.flatMap(snapshot => snapshot?.items ?? []).filter(item => item.expiresAt > now() && !noahCollectionBlocked(item) && (!q || `${item.name} ${item.summary} ${item.author}`.toLowerCase().includes(q)));
         // Several sources may point at the same project; show one card with all its provenance. New and easy first (lib/noah-collection.ts).
-        let all = noahCollectionCards(records, order as 'hot' | 'new').map(card => ({ ...card, status: 'discovered' }));
+        let all = noahCollectionCards(records, order as 'hot' | 'new').map(({ pin: _pin, ...card }) => ({ ...card, status: 'discovered' }));
         if (url.searchParams.get('view') === 'home' && !selected) {
           // The home preview includes each available source instead of being filled by a registry sweep.
           // Each round takes one card per source; the source whose best card ranks higher goes first.

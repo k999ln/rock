@@ -1,5 +1,39 @@
 {
   "schema": "noah-business-capabilities/1",
-  "note": "能力 → その工程を実際にこなすと確かめたエージェントの ID（task 122）。語で当たっただけの候補は入れない。確かめ方は docs/noah/spec-122-business-blueprints.md の 5 章。",
-  "verified": {}
+  "note": "能力 → その工程を実際にこなすと確かめたエージェントの ID（task 122）。語で当たっただけの候補は入れない。確かめ方は docs/noah/spec-122-business-blueprints.md の 5 章。「eve-part:」で始まる物は、Noah の一覧のエージェントではなく、Eve が作った部品（lib/eve-part-*.ts。task 130、2026-11-24）。同じ見本の仕事と Jev の判定に通った版だけを入れる（記録は data/eve-verifications/2026-11-24-parts.json）。LLM を使う部品は手元の Qwen で確かめた版なので、別のモデルで動かす時は確かめ直す。",
+  "verified": {
+    "compliance.check": [
+      "eve-part:ad-check"
+    ],
+    "content.article": [
+      "eve-part:article-writer"
+    ],
+    "content.image": [
+      "eve-part:eyecatch-image"
+    ],
+    "content.script": [
+      "eve-part:script-writer"
+    ],
+    "publish.blog": [
+      "eve-part:blog-package"
+    ],
+    "research.market": [
+      "eve-part:keyword-research"
+    ],
+    "research.offer": [
+      "eve-part:offer-compare"
+    ],
+    "research.terms": [
+      "eve-part:terms-reader"
+    ],
+    "site.build": [
+      "eve-part:lp-builder"
+    ],
+    "site.host": [
+      "eve-part:static-bundle"
+    ],
+    "tracking.results": [
+      "eve-part:results-csv"
+    ]
+  }
 }

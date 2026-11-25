@@ -6,6 +6,8 @@ import * as currencyFormat from '../../../lib/currency-format.ts';
 // 部品のファイルを TypeScript で JS に直し、小さな React の代わり（関数の部品を入れ子で描く・useState・useRef・useEffect を、木の中の場所ごとに持つ）で動かす。
 // fetch・sessionStorage・location・時計（setTimeout・setInterval）は、試験が渡す物。見た目（CSS）は確かめない。確かめるのは、出る文・押せる物・送る要求。
 import * as pins from '../../../lib/noah-pins.ts';
+import * as pinScene from '../../../lib/noah-pin-scene.ts';
+import * as shelfScenes from '../../../lib/noah-pin-scenes-shelf.ts';
 import * as readyView from '../../../lib/noah-ready-view.ts';
 import * as agentShare from '../../../lib/noah-agent-share.ts';
 import { existsSync, readFileSync } from 'node:fs';
@@ -141,6 +143,11 @@ export function screen(options = {}) {
       if (id === '@/lib/noah-tap-sound') return load('lib/noah-tap-sound.ts');
       // 通信も保存もしない、決まった式だけの lib（ピンタレスト風の一覧の分野・形。task 115）は、本物をそのまま渡す。
       if (id === '@/lib/noah-pins') return pins;
+      // ピンの図解の形と、棚の 17 枚の図解（spec-115 の 9 章）。決まった表だけの式なので、本物をそのまま渡す。
+      if (id === '@/lib/noah-pin-scene') return pinScene;
+      if (id === '@/lib/noah-pin-scenes-shelf') return shelfScenes;
+      // ピンの図解を描く式（しょうへいさんの図解パックの書き写し。canvas に描くだけで、通信も保存もしない）。
+      if (id === '@/lib/noah-pin-diagram') return load('lib/noah-pin-diagram.ts');
       if (id === '@/lib/noah-agent-art' || id === './noah-agent-art.ts') return load('lib/noah-agent-art.ts');
       if (id === '@/lib/noah-cover') return load('lib/noah-cover.ts');
       if (id === '@/lib/noah-card-video-paint') return load('lib/noah-card-video-paint.ts');
@@ -149,6 +156,8 @@ export function screen(options = {}) {
       if (id === '@/lib/noah-ready-view') return readyView;
       if (id === '@/lib/noah-detail-guide') return load('lib/noah-detail-guide.ts');
       if (id === '@/lib/noah-project-view') return load('lib/noah-project-view.ts');
+      // 読み込み中に遊ぶ点のトラのゲーム。通信も保存もしない計算だけなので、本物をそのまま渡す。
+      if (id === '@/lib/noah-tiger-game') return load('lib/noah-tiger-game.ts');
 
       if (id === '@/lib/noah-agent-share') return agentShare;
       if (id.startsWith('./')) return load(`components/${id.slice(2)}.${existsSync(new URL(`components/${id.slice(2)}.tsx`, ROOT)) ? 'tsx' : 'ts'}`);

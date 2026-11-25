@@ -54,3 +54,22 @@ Codex はタスクに書かれたフォルダ以外を開かない。特に:
 | 新 Codex タスク | codex/tasks/NN-<slug>.md、00-index.md に 1 行 |
 | 決定の変更 | docs/structure/07 に日付付き 1 行 → 該当 docs/structure/0X を直す |
 | 完了の記録 | CHANGELOG.md 先頭に 1 行（日付・何を・PR 番号） |
+
+## 5. 本人Macの作業先を一本化（2026-11-26）
+
+本人の訂正「統合してほしい、最新状態の形」により、通常の作業先は1か所とする。
+
+| 置き場所 | 役割 |
+| --- | --- |
+| `/Users/kaiya/Documents/ChatGPT/avokdo` | 統合した作業先。取得済み最新`origin/main`を土台に、未取り込みの設計・コードを保持する |
+| ルートの`avokado.code-workspace` | VS Codeの入口。上の1フォルダを「avokado（統合版）」と表示する |
+| `work/workspace-refresh-20261126/main-reference` | 元`/Users/kaiya/Developer/avokado-main`。最新mainに更新後、復元用として退避。通常編集しない |
+| `work/workspace-refresh-20261126/files`・`manifest.json`・`changes.patch` | 更新前の未コミット35ファイルとSHA-256、差分。Git管理外の復元用 |
+
+元の開発ブランチ`codex/noah-isolated-desktop-20261123`は保持。作業中変更はstash `7c9e0326d724e5fd1da1848203dc22d44a9f563a`にも保全した。最新mainにも別履歴で実装が進んでいるため、旧コード全体を再マージせず、今回の未コミット差分を最新の文書・コード構成に載せ直した。旧ブランチ固有の変更を追加採用する場合は、その差分を別途評価する。
+
+統合の基準は2026-11-26に取得した`origin/main` = `141fdb1879`。統合用ブランチは`codex/workspace-latest-20261126`。この記録は自動更新ではない。次の作業時は`git fetch origin`と`git status --short --branch`で確認し、変更を保全してから取り込む。リモートの他の作業ブランチ・未マージPRを「mainの最新版」と混同しない。公開／mainへの反映は別の検証・PRで行う。
+
+2026-11-26追補: 別チャットと未マージPRの統合一覧・旧ブランチの扱い・task番号対応は[task138](../../codex/tasks/138-cross-chat-sync.md)。VS CodeとGitHubの照合は同じcommit/treeを基準に行い、公開版との一致は公開担当が別途確認する。
+
+最終の通常作業ブランチは`codex/chat-sync-20261126`、GitHubの同名branchと[PR #80](https://github.com/iceiceice999/rock/pull/80)が保存先。先のworkspace-latest branchは旧チェックポイントとして保持する。

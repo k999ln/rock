@@ -1,0 +1,143 @@
+{
+  "revision": "R0",
+  "date": "2026-11-08",
+  "scope": "research_budget_not_quote_or_feasibility_proof",
+  "room_m": [
+    4.5,
+    4.5,
+    2.5
+  ],
+  "aperture_test_widths_m": [
+    0.6,
+    1.5,
+    4.5
+  ],
+  "aperture_z_m": [
+    0.4,
+    2.2
+  ],
+  "observer_xy_m": [
+    -0.75,
+    0,
+    0.75
+  ],
+  "observer_eye_z_m": [
+    1.2,
+    1.6
+  ],
+  "target_xy_m": [
+    -1,
+    0,
+    1
+  ],
+  "target_z_m": [
+    0.2,
+    0.8,
+    1.4,
+    2.2
+  ],
+  "phase_slm": {
+    "model": "GAEA-2.1-VIS-158",
+    "pitch_um": 3.74,
+    "width_mm": 15.56,
+    "wavelength_nm": 532,
+    "relay_width_mm": 600,
+    "eye_distance_m": 2.5,
+    "width_px": 3840,
+    "height_px": 2160,
+    "phase_bits": 8,
+    "refresh_hz": 60,
+    "rgb_channels": 3,
+    "eye_channels": 2
+  },
+  "tracking": {
+    "speed_m_s": 1.0,
+    "delay_ms": 30,
+    "position_error_mm": 3,
+    "pupil_radius_mm": 2
+  },
+  "camera": {
+    "width_px": 1920,
+    "height_px": 1200,
+    "bits": 8,
+    "fps": 120,
+    "count": 8
+  },
+  "labor_man_jpy_per_person_month": [
+    150,
+    220
+  ],
+  "phases": [
+    {
+      "id": "R0",
+      "name": "原理と光学単位の成立確認",
+      "months": 3,
+      "person_months": 9,
+      "prototype_man_jpy": [
+        900,
+        1800
+      ],
+      "external_man_jpy": [
+        150,
+        300
+      ],
+      "contingency_percent": 25
+    },
+    {
+      "id": "R1",
+      "name": "部屋の一方向・歩行区間での表示",
+      "months": 6,
+      "person_months": 36,
+      "prototype_man_jpy": [
+        1500,
+        3500
+      ],
+      "external_man_jpy": [
+        300,
+        700
+      ],
+      "contingency_percent": 30
+    },
+    {
+      "id": "R2",
+      "name": "全室・多ヘッド統合試作への挑戦",
+      "months": 12,
+      "person_months": 108,
+      "prototype_man_jpy": [
+        5000,
+        10000
+      ],
+      "external_man_jpy": [
+        1500,
+        3000
+      ],
+      "contingency_percent": 35
+    },
+    {
+      "id": "R3",
+      "name": "工事不要の製品化設計・少数評価機",
+      "months": 18,
+      "person_months": 216,
+      "prototype_man_jpy": [
+        8000,
+        18000
+      ],
+      "external_man_jpy": [
+        2000,
+        5000
+      ],
+      "contingency_percent": 35
+    }
+  ],
+  "excludes": [
+    "new_semiconductor_fab_or_mass_production_process",
+    "fire_certification_and_building_compatibility",
+    "carrier_satellite_contracts_and_rf_certification",
+    "mass_production_inventory",
+    "ongoing_cloud_usage",
+    "tax_and_forex_changes"
+  ],
+  "success_probability": null,
+  "product_feasibility_proven": false,
+  "spending_authorized": false
+}

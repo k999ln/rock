@@ -81,7 +81,18 @@ GitHub ActionsのLinux runnerで5分ごとに期限を確認し、同じ収集�
 | --- | --- | --- |
 | GitHub の急な伸び（`github-rising`） | Agent の道具の話題ごとに、直近 7 日に更新があるスター 300 以上の repo を 100 件。スターの数を残し、1 日に 50 以上かつ全体の 2% 以上伸びた物を拾う。出た時は、Noah が初めて伸びを確かめた時 | 6 時間 |
 | GitHub の新着（`github-mcp`） | MCP に加えて ai-agents・multi-agent・agent-orchestration・claude-code・codex の話題 | 2 時間 |
+| GitHub の公式版（`github-releases`） | 運営が登録した公開リポジトリの公式リリースを確認。最初は [Switch Console](https://github.com/sandbox-quantum/switch/releases/latest) と [Switch Buddyの公式発表](https://www.switchagents.ai/blog-posts/whats-new-in-switch-rooms-november-2026)。公開後7日間、同じリポジトリの紹介を公式版の出典と一枚にまとめる | 2 時間 |
 | Product Hunt（`producthunt`） | 公開の Atom フィード。Agent・AI の道具の語がある物だけ。作った人の名前は載せない | 6 時間 |
 | Noahが読んだ（`noah-read`） | Codex の Luna Max が、Noah 用の X アカウントのリスト「Noah scouts」（`data/noah-scout-curators.json`）を 1 日 1 回読み、投稿・引用元・配布元まで読んで日本語で書いた理解。`data/noah-scout/leads.json` に書き、クラウドの収集機が毎回まとめて載せる（2026-11-23 から。運営の Mac に鍵を置かない）。1 枚のカードの説明の先頭に出る | 1 日 |
 
 本番の受け口が新しい出所をまだ知らない間（Sites の配備の前）は、収集機はその出所を `not_ready` として飛ばし、失敗にしない。
+
+## 図解ピンの生成（task 131）
+
+Noah の収集機は、掲載中の系列と新しい紹介に図解ピンを作ります。モデルには、名前、提供元の説明、日本語要約、握手で取得した先頭 20 個までの道具名と説明を送ります。元の文と道具の定義が同じ候補は再生成しません。道具の定義が記録されていない系列は、次の握手を待ちます。
+
+生成には GPT-5.4 mini の固定版を使います。1 巡で最大 20 件を処理します。月の API 費用の見積もりは最大 50 米ドルです。再試行も見積もりに含めます。料金と見積もりには差が出る場合があります。収集機の状態に、上限で止まった数を出します。
+
+Actions secret に `NOAH_PIN_OPENAI_API_KEY` を設定します。収集機で生成するときはリポジトリ変数 `NOAH_PINS_GENERATE` を有効にします。本番 D1 の個別適用 SQL 0061 は、本人の承認を得て適用します。適用と保存先の確認が済んでから、`NOAH_PINS_IMPORT` を有効にします。
+
+候補詳細の「Eveで使い方を組み立てる」は、公開候補の識別子をEveに渡す。EveはNoahから出典を取得し、本人が選び、接続・試用・成果受取をまとめた依頼文を入力できる。パッケージの工程の組立と公開条件は [task 126](../../codex/tasks/126-noah-packages-first.md) に従う。

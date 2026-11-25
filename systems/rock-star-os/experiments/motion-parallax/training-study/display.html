@@ -1,0 +1,22 @@
+<!doctype html>
+<html lang="ja">
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>mii｜断面理解の比較教材</title>
+<style>
+*{box-sizing:border-box}body{margin:0;background:#f4f3ee;color:#182c33;font:16px system-ui,sans-serif}header,main{max-width:1200px;margin:auto;padding:20px}h1{font-size:26px;margin:0 0 8px}p{line-height:1.6}.bar{display:flex;gap:12px;flex-wrap:wrap;align-items:end}label{display:grid;gap:4px}select,button,input{font:inherit;padding:9px;border:1px solid #6c8087;border-radius:5px;background:white;color:inherit}button{cursor:pointer}button:disabled{opacity:.5}#notice{padding:10px;background:#fce2b2;border-radius:5px}canvas{background:#102630;display:block;width:100%;height:auto;margin:16px auto;border-radius:8px}#stage:fullscreen{background:#102630;display:flex;flex-direction:column;justify-content:center;width:100vw;padding:10px;color:white}#stage:fullscreen canvas{max-height:82vh;object-fit:contain;margin:auto}#stage:fullscreen #status{color:white}#status{font-variant-numeric:tabular-nums}#prompt{font-size:19px}.small{font-size:14px}.fixture-controls{padding:12px;border:2px dashed #a06713}@media(max-width:600px){header,main{padding:12px}h1{font-size:22px}}
+</style>
+<style>#stage.focused{position:fixed;inset:0;z-index:10;background:#102630;color:white;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:16px}#stage.focused canvas{flex-shrink:0;margin:10px auto}#stage.focused #status{font-size:14px;max-width:100%;margin:8px 0}#exit{color:#182c33}body.studyfocus{overflow:hidden}</style>
+<header><h1>mii / 断面を読む</h1><p>成人職業研修・比較教材。工業部品を読む前段階の幾何課題です。</p><p id="notice">読み込み中</p></header>
+<main><div class="bar">
+<label>表示方式<select id="condition"><option value="phone">スマホ</option><option value="wall">通常の壁面投影</option><option value="gen1">頭部追従 Gen1</option></select></label>
+<label>教材セット<select id="form"><option>A</option><option>B</option><option>C</option></select></label>
+<label>場面<select id="phase"><option value="practice">練習（共通例）</option><option value="immediate">当日課題</option></select></label>
+<label>問題<select id="item"><option>1</option><option>2</option><option>3</option><option>4</option></select></label>
+<button id="fullscreen">表示専用画面に</button></div>
+<p id="prompt">切断された面の頂点数と、切断される辺、輪郭の巡回順を紙へ記入してください。</p>
+<div class="bar"><button id="left">左側の補助視点</button><button id="centre">基準の視点</button><button id="right">右側の補助視点</button></div>
+<p class="small">補助視点の3ボタンは全方式で共通。Gen1はさらに実際の頭位置で視点が変わります。ボタン操作は進行者が行います。</p>
+<div id="stage"><button id="exit" hidden>操作画面へ戻る</button><canvas id="scene" width="1200" height="675" aria-label="立方体と切断平面"></canvas><p id="status" role="status"></p></div>
+<div class="fixture-controls" id="fixture" hidden><strong>模擬入力：実参加者のGen1条件には使用不可</strong><label>頭の左右位置（m）<input type="range" id="head" min="-.5" max=".5" step=".01" value="0"></label></div>
+<p id="practiceText"></p><p>解答・参加者情報はこの画面へ入力しません。配布した匿名票とCSVに記録します。正答は翌日の終了後に確認します。</p>
+</main><script type="module" src="/app.js"></script></html>

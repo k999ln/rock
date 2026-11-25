@@ -1542,3 +1542,43 @@ queued → sending → completed、生成前FREE_LIMITとRetry-Afterを確認で
 - 受入範囲: 合成eventと既存codec/暗号化file-backed SQLiteだけ。wholePRO01、実アカウント保存・本番公開・実機・実収益・Providerを受入へ昇格させない。
 
 統合・検収は[evidence](evidence/development-execution/pro-recovery-eve-drain-main-adoption.json)を参照。
+
+## mii 共通OSの実機接続仕様
+
+<a id="mii-common-os-prototype"></a>
+
+2026-11-02、本人の「osの中身は一緒」を[14章](mii/design/14-common-os.md)へ反映。目的は同じ仕事を声/指先/画面から確認・保存・再開すること。ROCKはWorkJob、owner、revision/command、権限/予算/Receiptを共通で管理し、EXTERNALは部品/BSP、JOINTは実機、OWNERは構成/予算/本人承認を担う。入力は候補、出力はjob/revisionと校正/leaseに束縛する。保存結果はevent読戻し、応答不明は自動再送せず照合、競合は保全して再確認、物理停止は独立ACK/測定で判断する。端末間・offline・光学をsource/fixture合格へ昇格しない。[BOM/接続/電力](mii/design/15-prototype-spec.md)、[合格条件と未決定の閉じ方](mii/design/16-prototype-acceptance.md)、[相談資料](mii/design/17-component-evaluation-brief.md)を同じ設計系列とする。
+
+2026-11-02の追加指示により[18章](mii/design/18-parts-wiring.md)へP0b（M4 Mac＋BRIO 500）とP1a（Pi 5＋SC0715）の選定型番、9系統の端子間配線、組立順、印刷図を追加した。仕事・本人性・権限・予算・保存は共通。Piはセンサー取り込みhostであり独立した仕事台帳を持たない。LAN camera adapter、日本語ASR実動作、2台同期、製品光学は未受入。製造/購入/実機通電は未実施。
+
+2026-11-02の本人による本体設計指示を[19章 HW1](mii/design/19-body-hardware.md)に反映。4 Tower（OAK-D Pro W PoE＋Teensy 4.1、mic/radar/温度/SE）と専用AGX Orin Hub、PoE/10GbE、DP→TK710STiを型番・端子・配線で固定した。18章は開発用検証装置。入力は校正/lease/信頼状態を持つ候補、変更は既存WorkJob/Broker/owner/revision/予算/保存を通す。CAMとMCUが別endpointであるためSEだけで全経路認証済みとしない。firmware watchdog、再接続旧frame拒否、同一job保存復旧をHW-A05/06で受入れ、物理/製造/光学は別gate。汎用モジュールの実装差と未達条件は19章§8で閉じる。
+
+[20章 HW1-COM1](mii/design/20-connectivity.md)で本体の外部通信を追補。USB31000S/J33のWANをsensor J17から分離し、既存tethering/controller・LinuxPacketGate・AP/NetworkQuota・MessageAdapter/Serviceを再利用する。SIM登録と本人利用権、配送とTool完了、通信費とAI費を分け、切断/再起動時は旧grant/有料jobの自動再送を拒否する。LTE/SIM・Wi-Fi radio・衛星modem/provider、可搬core/電池は未選定または未受入で、COM-A01〜06を同一実機で確認する。
+
+### 可搬mii P2への共通OS適用
+
+本人の最新指示を[21章](mii/design/21-portable-connectivity.md)へ反映。Pi4/SD/PiSugar/LTE/Wi-Fi/衛星を持ち出すCoreへ集約し、固定AGXは任意workerとする。既存のWorkJob、Broker、owner/revision、費用予約、保存/復旧を共有し、SIM登録やIMT配送ACKを本人性/Tool完了へ昇格しない。電源/I2C/link状態→停止/保存/旧grant失効、PPP/AP→既存packet/quota gate、9704 USB→既存message bridgeをP2 adapterの境界とする。I2C読取不能はunknown、有料fallbackは明示許可、再接続は同じjob/request IDで照会。部品/端子の選定は完了した設計作業で、P2 BSP/adapter/実機受入は未完了。P2-A01〜08を同一実機で確認し、RF同居条件は送信前に解決する。
+
+### 可搬mii P3への共通OS適用
+
+[22章](mii/design/22-integrated-radio.md)はP2の後継条件付き設計。目的は固定Hub/phone回線中継なしで同じjobの有限通信を持ち出すこと。ROCKは既存message/Broker/保存契約にserial socket、GNSS、アプリrouteとmodem網維持、UPS/dock着脱を接続、EXTERNALはkit/FW/antenna/回線、JOINTはRF・電源・同一実機、OWNERは機材/回線/予算を担う。入力は国・位置・subscription・RAT・電源状態、出力は既存jobに紐付く認証message/未確認状態。SIM ready/登録/配送ACKを本人性や仕事完了にしない。位置不明/予算切れ/USB再列挙では旧世代grantを閉じ、LOCALへ退避して同じIDで照会。GNSS位置原文やcredentialをGitへ残さない。明示許可のない有料fallbackは拒否。初号NTNは静止・小容量UDP、Wi-Fiとの同時共有は対象外。R01〜04のメーカー/認証回答とP3-A01〜07の物理証拠で未決を閉じる。P3.1は[23章](mii/design/23-japan-procurement.md)の調達再確認に従い、通常route変更のmodem電源断を撤回。LOCALでも網制御送信が停止したとはみなさず、維持費/正式停止が予算契約と両立するまで接続しない。新OS契約/台帳を作らず、P3 adapter/runtime実装・実機通信は未完了。
+
+<a id="mii-fire-alarm-common-os"></a>
+
+### miiの火災警報機能と共通runtime
+
+[火災警報設計24章](mii/design/24-fire-alarm.md)は住宅・店舗／ビルを対象に追加するhardware profileであり、RockstarOSを別OSへ分岐しない。消防機器側の検知・現場警報・設備連動をruntimeから独立させ、OSは読取専用状態adapter、既存の保存／本人性／通知同意／予算を使う。火災・故障・通信未確認は併存し、画面の既読・job取消・account失効を警報解除へ転用しない。遠隔通知は補助で、監視の代わりではない。実adapterと各用途の消防機器・設備受入は未完了。
+
+mii消防F2：後付けの型番・端子と電源条件は[25章](mii/design/25-retrofit-fire-hardware.md)、[hardware profile](../systems/rock-star-os/targets/mii-fire-f2/README.md)。共通runtimeは維持。初号接点入力は群単位contact_closedだけで、zone/fault/lowBatteryを推測補完しない。完成品検定・runtime adapter・実機受入は未完了。
+
+消防F3は[26章](mii/design/26-fire-certification-power.md)の電源/I/O差分。共通OS不変、保存停止後に充電する。PB停止やCore着脱から固定側消防を独立。単純接点のunknown境界と権限・予算を維持。LTE/NTNは一modemの経路選択であり同時データ転送は未対応。BSP/adapter・実機・完成品検定は未受入。
+
+F3の既設互換比較は能美防災・ホーチキ・ニッタン・パナソニックの4社8系列へ拡張。共通Core＋系列別OEM消防部を設計し、メーカー間相互交換・新mii検定・物件受入は未成立。詳細は26章§5.1。
+
+### mii空間SIの表示worker候補（2026-11-08）
+
+[空間SI調査27章](mii/design/27-spatial-si-feasibility.md)で工事不要の卓上空中像と部屋全域の未成立を区別。可搬Coreの共通OSを保持し、Windows表示worker候補は既存session／job／owner／revision／Broker／予算の契約で入力・描画を接続する。表示・手操作を承認に格上げせず、切断・追跡喪失時は停止、再開時に同じ仕事と校正を照合。目的・体験・責任・入出力・保存・失敗復旧・未決定・受入は27章§1〜6。新runtime・実機・部屋全域表示・無線／消防適合の合格を追加する変更ではない。
+
+### 全室空間SIの研究profile（2026-11-08・後続）
+
+[28章](mii/design/28-room-scale-si-rd.md)で裸眼・工事なし・部屋全体の新規光学研究を設計。Coreの本人／job／revision／Broker／予算／保存を維持し、室内Hubは光学workerとする。入出力にpose不確かさ・校正epoch・frame期限・可視領域を束縛し、物理出力監視・停止はSIやネットワークから独立。状態・保存・失敗復旧は§5、受入・未決定・責任は§6/8を正本にする。研究計算・費用計画の追加であり、新しいruntime、全室表示、実機、光安全、通信／消防適合の完成ではない。

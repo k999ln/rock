@@ -13,6 +13,8 @@
 
 ## 2. 一つの OS の中身（全ハード共通）
 
+2026-11-25本人確定: eSIM接続と本人・利用権の確認を入口に、本人専用の非公開クラウドを用意・復元する。[03 §8〜10](03-esim.md#8-esimで開く本人専用クラウド2026-11-25本人確定)を接続・隔離・安全確認・公的機関への適法な情報提供の正本とする。accountを正本に保ち、閉域回線への接続だけで本人認証・実行権限・予算承認を代用しない。専用クラウドは利用者間の隔離を意味し、公的機関との提携や実運用は未確定。本人用eSIM不要経路と既存Noahの入口は保持する。
+
 ```mermaid
 flowchart LR
   subgraph K[RockstarOS kernel層（共通・ハードで変えない）]
@@ -63,3 +65,15 @@ flowchart LR
 - 2026-09「共通のコアOSと用途別OS」→ 今回「用途別OS」は作らず **hardware profile** に置き換える。用途（ヨガ・工場）は Work と Agent の側。
 - 2026-10-15「account が正本」→ 維持。
 - 「Codex 専用設計」「CIが一人の足を止めている」→ 対象外（Private Pixel の話）。
+
+## 2026-11-02 — miiの実機化に向けた共通OS契約
+
+本人の「osの中身は一緒」を[共通OSと実機接続](../mii/design/14-common-os.md)へ具体化した。同じWorkJob/本人/revision/予算/保存・停止照合を使い、hardware profileが入出力・電源・通信・校正・資源を受け持つ。kernel/image/driverまで同一とはせず、各機種の導入と復旧は別受入。今回runtime実装/実機受入は追加していない。
+
+### 可搬mii P2 hardware profile
+
+[targets/mii-portable-p2](../../systems/rock-star-os/targets/mii-portable-p2/README.md)を追加。Pi4＋電池＋LTE/Wi-Fi/衛星を可搬側に選定し、詳細配線は[21章](../mii/design/21-portable-connectivity.md)。OSの仕事/権限/保存/課金は共通のまま、BSP・I/O・電源・通信・演算/表示上限だけを分ける。固定AGXの空間演算は任意workerで、Coreと二重に仕事を実行しない。新profileは設計のみ、P2 image/adapter/実機/回線/RFは未受入。
+
+### 可搬mii P3 hardware profile（P2の後継設計）
+
+[targets/mii-portable-p3](../../systems/rock-star-os/targets/mii-portable-p3/README.md)と[22章](../mii/design/22-integrated-radio.md)へMurata LTE/NTN共用・USB GNSS・3S UPSと指定chargerを選定。仕事/権限/予算/保存は共通。アプリroute・modem網維持/位置条件/serial socket/UPSがadapter境界。通常route変更でmodemを電源断する旧前提は撤回。R01〜04、実機、BSPは未受入。部品認証をhost合格へ転用しない。

@@ -841,3 +841,41 @@ Mini単体の衛星→Wi-Fi共有について、端末許可/失効、送受信�
 [AP認証・網側上限](../systems/rock-star-os/targets/avocado-mini/tethering/ACCESS.md)の共通adapterを追加。端末固有鍵、管理下hostapdの世代/認証、網側HMAC/TLS予約をLinux転送前に確認する。事業者・modemは本人回答どおり未定。実無線/衛星/請求は未受入、単体携行と表示4条件を維持。
 
 2026-10-15明示要求は[統合設計](service-design/08-mini-connectivity-and-billing.md)と[R5詳細](avocado-mini-r5/embedded-portable-connectivity.md)へ追加。固定dock/可搬core、携帯電源、衛星WAN/Wi-Fi LAN、場所権限、同一job継続、月次usage請求を分離して設計する。実機・本番未受入。
+
+## mii 試作設計と共通OS
+
+<a id="mii-prototype-common-os"></a>
+
+2026-11-02の本人回答「osの中身は一緒」による設計追補。[14章](mii/design/14-common-os.md)が目的・体験・責任・入出力・状態・保存・失敗/復旧・承認・未決定、[15章](mii/design/15-prototype-spec.md)がBOM/接続/電力、[16章](mii/design/16-prototype-acceptance.md)が合格条件、[17章](mii/design/17-component-evaluation-brief.md)が部品評価相談を定義する。既存job/store/Brokerを再利用し、OSをハード別に複製しない。室内Tower＋Hubと単体携帯の構成差はC-01、Gen1投影と板膜なし・少数・上下全域・低眩しさの差はC-02として保持。今回の回答は構成/表示条件の撤回ではない。新runtime・物理試験・製造release・問い合わせ送信は未実施。
+
+2026-11-02の追加指示により[18章](mii/design/18-parts-wiring.md)へP0b（M4 Mac＋BRIO 500）とP1a（Pi 5＋SC0715）の選定型番、9系統の端子間配線、組立順、印刷図を追加した。仕事・本人性・権限・予算・保存は共通。Piはセンサー取り込みhostであり独立した仕事台帳を持たない。LAN camera adapter、日本語ASR実動作、2台同期、製品光学は未受入。製造/購入/実機通電は未実施。
+
+2026-11-02の本人による本体設計指示を[19章 HW1](mii/design/19-body-hardware.md)に反映。4 Tower（OAK-D Pro W PoE＋Teensy 4.1、mic/radar/温度/SE）と専用AGX Orin Hub、PoE/10GbE、DP→TK710STiを型番・端子・配線で固定した。18章は開発用検証装置。入力は校正/lease/信頼状態を持つ候補、変更は既存WorkJob/Broker/owner/revision/予算/保存を通す。CAMとMCUが別endpointであるためSEだけで全経路認証済みとしない。firmware watchdog、再接続旧frame拒否、同一job保存復旧をHW-A05/06で受入れ、物理/製造/光学は別gate。汎用モジュールの実装差と未達条件は19章§8で閉じる。
+
+[20章 HW1-COM1](mii/design/20-connectivity.md)で本体の外部通信を追補。USB31000S/J33のWANをsensor J17から分離し、既存tethering/controller・LinuxPacketGate・AP/NetworkQuota・MessageAdapter/Serviceを再利用する。SIM登録と本人利用権、配送とTool完了、通信費とAI費を分け、切断/再起動時は旧grant/有料jobの自動再送を拒否する。LTE/SIM・Wi-Fi radio・衛星modem/provider、可搬core/電池は未選定または未受入で、COM-A01〜06を同一実機で確認する。
+
+### 可搬mii P2の通信・電池・dock
+
+[21章](mii/design/21-portable-connectivity.md)と[hardware profile](../systems/rock-star-os/targets/mii-portable-p2/README.md)でPi4B 4GB、PiSugar 3 Plus、SIM7080G/FXP14、内蔵Wi-Fi、RockBLOCK9704-ANTを選定。12 BOM行・11接続・9論理ネット、7枚の印刷図で配線を定義。Coreを取り外すとき外す線は外部USB-C給電と任意RJ45だけ。重い空間演算は固定workerへ、仕事/権限/料金/保存は同じ共通OSに残す。LTEはCat-M1、衛星は有限IMT message、STA/APは初号で同時使用しない。電源枠2.68A/USB1.0Aは測定前の設計値、電池区画を開放して充電する。9704-ANTの同居/地域適合、回線、実adapter、電源/熱/包絡、P2-A01〜08は未受入。C-01は構成選定済・物理未受入、C-02表示4条件は維持。
+
+### 可搬mii P3の無線統合
+
+最新の[22章](mii/design/22-integrated-radio.md)は、同一CoreにPi4、Waveshare 3S UPS/P28A、Murata LTE/NTN共用kit、Wi-Fi、USB GNSSを持つ条件付き配線。固定dockは指定12.6V charger、DC5521と任意RJ45を外す。役割/仕事の契約は共通OS14章、入出力・切替・位置・予算・保存/失敗/復旧は22章§6。ROCK/EXTERNAL/JOINT/OWNERの責任は§7に分離。R01同居RF/R02地域回線/R03kit antenna/R04USB電力を閉じてからP3-A01〜07を実測する。P2の9704同居を未確認のまま採用せず、200mm外形/光学C-02も未実証として保持。P3.1の[23章](mii/design/23-japan-procurement.md)で日本適合/給電の再確認と代替kit端子表を追加。Skyloの接続維持要件によりWi-Fi時modem OFF前提を撤回し、同居評価を必須にする。部品/文書合格を単体通信・量産合格にしない。
+
+<a id="mii-fire-alarm"></a>
+
+### miiの火災警報機能と住宅・施設への適合
+
+2026-11-02本人の追加指示と対象回答「全部」を[24章](mii/design/24-fire-alarm.md)へ反映。住宅用／特定小規模施設用／一般建物用の適合仕様を持つ一つのmii製品を目指す。煙・熱等の感知、現場警報、連動、予備電源を専用の消防機器側へ置き、着脱できるmiiの共通OSは読取・保存・補助通知を担う。OS／LLM／回線／課金から警報を独立させ、持出し後も設置場所を監視する。ROCKは状態・権限・費用・保存／再起動、EXTERNALはOEM／検定、JOINTは完成形の感知・熱／RF・受信機互換・施工受入、OWNERは対象建物と予算を担当する。仕様・入出力・失敗／復旧・承認・未決定の閉じ方は24章§3〜6、合格条件F-A01〜07は§7。感知器と受信機等の検定・建物配置は別で、評価用型番と住宅用接点／USB端子は[25章](mii/design/25-retrofit-fire-hardware.md)へ具体化。本人の追加指示により、新規の建物配線・AC100V直結・天井内工事なしを要件とする。施設系の外部接続、一般ビルOEM head、電源同時稼働、実adapter・完成品検定・実機・法定代替は未受入。
+
+F3最新：[26章](mii/design/26-fire-certification-power.md)、[profile](../systems/rock-star-os/targets/mii-fire-f3/README.md)。住宅/ビルの異なる感知時間、音圧・電池低下通知・環境・附属装置の条項とJFEII R8.4.1へ対応付け、既設P/R/base適合表を追加。可搬評価はA1289/SC1636、20Wの設計枠。24部品行/20接続/6頁PDF。重量/温度により現PBは最終天井製品には採らず、専用電池/支持/OEM head/検定/実機/サイトはHOLD。共通OSは不変。
+
+F3の既設互換比較は能美防災・ホーチキ・ニッタン・パナソニックの4社8系列へ拡張。共通Core＋系列別OEM消防部を設計し、メーカー間相互交換・新mii検定・物件受入は未成立。詳細は26章§5.1。
+
+### miiの空間SI光学調査（2026-11-08）
+
+[27章](mii/design/27-spatial-si-feasibility.md)は裸眼・工事なしの浮遊UIをKC-310Gの机上結像面で評価する設計候補。部品・入力・電源・共通OS接続は§2〜4、条件付き費用は§5、責任と受入は§6。部屋全域・天井単体の実現根拠は未確認。表示workerは既存Coreのowner／job／revision／Broker／保存契約を使い、追跡喪失・切断時は操作停止、再接続時はsessionと校正を再確認する。別OS・仕事台帳を作らず、adapterやNoah実声／手入力が実機合格したとはしない。名称SI、光学C-02・無線・消防のgateは維持。
+
+### mii全室空間SIの新規開発（2026-11-08・後続）
+
+本人は卓上ではなく部屋全体を指定。[28章](mii/design/28-room-scale-si-rd.md)に、追跡型多開口の波面再生、側方／低位置／上方の出射面、必要光線・帯域・電力、R0〜R3の仮予算を記録。[研究profile](../systems/rock-star-os/targets/mii-room-rd/README.md)は共通Core＋光学workerのI/Oだけを追加し、実装済みnative対象ではない。目的・体験は§1、部品／出力／給電は§4、状態・保存・停止／復旧・承認は§5、合格／未決定は§6、責任は§8。4細柱の幾何不足は反証済みだが、全室の新構成・光安全・部品確定は未実証。有限計算を既存MINI-02や製品受入に転用しない。

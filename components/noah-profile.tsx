@@ -18,7 +18,16 @@ export default function NoahProfile(){
   const state=useNoahProfile();
   return <main className={styles.page}>
     <Link href="/noah" className={styles.back}><ArrowLeft size={17}/> {t("タイムライン")}</Link>
-    <header className={styles.heading}><h1>{t("登録情報")}</h1></header>
+    <header className={styles.heading}><h1>{t("登録情報")}</h1><p>{t('次のAgentでも、入力は少なく。')}</p></header>
+    <section className={styles.information} aria-label={t('保存・送信・料金')}>
+      <p>{t('全部を埋める必要はありません。Agentを使う途中で、必要な情報だけ追加できます。')}</p>
+      <dl>
+        <div><dt>{t('保存')}</dt><dd>{t('Noahのサーバーに暗号化して保存。再利用はいつでも停止できます。')}</dd></div>
+        <div><dt>{t('送信')}</dt><dd>{t('外部への登録時に、送信先と必要な項目を確認します。')}</dd></div>
+        <div><dt>{t('料金')}</dt><dd>{t('情報の保存で有料実行は始まりません。Agentの利用料は提供元の条件によります。')}</dd></div>
+      </dl>
+      <Link href="/noah/explore">{t('Agentを探す')}<ArrowUpRight size={16}/></Link>
+    </section>
     {state.guest?<div className={styles.empty}><Fingerprint size={32}/><h2>{t("次のAgentでも、入力は少なく。")}</h2><p>{t("保存すると、必要な項目だけ使い回せます。")}</p><Link className={styles.primary} href="/noah/account?returnTo=%2Fnoah%2Fprofile">{t("接続を確認して続ける")}<ArrowUpRight size={17}/></Link></div>:state.profile?<ProfileEditor key={state.profile.ownerScope} profile={state.profile} busy={state.busy} save={state.save} beginFileSelection={state.beginFileSelection} endFileSelection={state.endFileSelection} cancelFileSelection={state.cancelFileSelection}/>:!state.error?<NoahLoading label={t("保存情報を読み込んでいます…")}/>:null}
     {state.error&&<div role="alert" className={styles.error}>{state.error}<button type="button" onClick={()=>void state.reload()}>{t("読み直す")}</button></div>}
     <NoahContractLinks/>

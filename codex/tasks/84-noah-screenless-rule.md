@@ -38,4 +38,21 @@
 
 検証: `npm ci` と `npm ci --prefix sites/avocado-mini` の後、`PATH=/opt/homebrew/opt/openssl@3/bin:$PATH npm run verify` 成功（主テスト4,438成功・既存skip4・失敗0、仕事API1,918項目・CSV保存385項目、build含む）。関連30テスト・設計キット61件・DDL10項目も成功。使い捨てコピーの `terminalContainerArgs` に DISPLAY=:0 を追加した実CLIは終了コード1で拒否。途中の既存ブラウザー試験のタイムアウトは、単独4件成功と全体verifyの再成功を確認した。
 
-残件: 面の分類とMac実機の前面アプリ・窓・クリップボード・権限観測はローンチ後。実機OSの合格ではない。本番migration・配備・切り替えなし。PRは未マージ。GitHubの秘密値検査はmainから引き継いだ過去3コミットの合成テスト入力を検出している（詳細はPR）。検査・履歴・例外設定は変更していない。
+旧PR #329提出時の記録: 面の分類とMac実機の前面アプリ・窓・クリップボード・権限観測はローンチ後。実機OSの合格ではない。本番migration・配備・切り替えなし。PRは未マージ。GitHubの秘密値検査はmainから引き継いだ過去3コミットの合成テスト入力を検出している（詳細はPR）。検査・履歴・例外設定は変更していない。
+
+### 2026-11-23　Agentが必要とする画面と入力の分類
+
+[PR #22](https://github.com/iceiceice999/rock/pull/22)で工程3を `lib/noah-surface-class.ts` に実装。依存・import・コマンドから使う可能性のある面を読み、審査済みの定義や画面なしで成功した試行から、接続要件に書く面を決める。本人端末の操作を必要とする未審査のAgentには実行先を返さない。設計キットも同じ関数を参照する。
+
+分類・隔離・画面を閉じた後の成果保存・設計キットの関連試験12件と、起動引数18構成の検査が成功した。受付への組み込みはtask89。工程6ではMacで前面アプリ、窓、クリップボードの版、権限を同時に観測する。ココナラの限定経路では、Sites 207でタブを閉じた後のMac観測994回でAgentの前面化・表示窓がともに0回。クリップボードと権限を含む工程6は別途観測する。[PR #11の本番受入](https://github.com/iceiceice999/rock/pull/11)
+
+
+## PR #22統合時の過去時点の記録（2026-11-26保全）
+
+以下はPR #22のtask一覧の原文。最新の状態は00-indexを参照する。
+
+| # | ファイル | 一言 | PR #22時点の状態 |
+| --- | --- | --- | --- |
+| 100 | [100-noah-standalone-ui.md](100-noah-standalone-ui.md) | Noahの専用UI・登録Agent・利用人数/王冠/コメント・実行中タブ・接続案内・開発者向けメール相談 | ✅ 現mainにUI・登録・保存・タップ反応を統合（[PR #3](https://github.com/iceiceice999/rock/pull/3)、[PR #6](https://github.com/iceiceice999/rock/pull/6)）。公開203のPixelでAgentboard新規登録→認証付き実行→成果再読込、音・振動を確認（[PR #10](https://github.com/iceiceice999/rock/pull/10)）。公開210のPixelで公開209の保存済み成果を再読込して保持を確認 [PR #19](https://github.com/iceiceice999/rock/pull/19)。過去の公開版別記録はtask100/CHANGELOG。任意サービスのブラウザ登録・100人同時外部実行・実eSIM連携は未受入 |
+| 122 | [122-noah-business-blueprints.md](122-noah-business-blueprints.md) | 稼ぎ方の設計図（分類表から433件・工程の種類と理由・確かめたエージェントだけ当てる・アカウントを作る順・Eveが作る物・稼いだ分だけの予算・続けるか止めるか） | 1段目 #391 |
+| 123 | [123-noah-all-agents-usable.md](123-noah-all-agents-usable.md) | 約7万件のうち使える物を全部使えるようにする（握手済み17,046系列の本番投入・量産の系列・OAuth/鍵・手元の配布のクラウド実行・説明の日本語化・全画面の言語切替・日本語の規約） | 進行中。公開MCPの自動接続・限定本番受入 [PR #7](https://github.com/iceiceice999/rock/pull/7)、CLI6種の実装統合 [PR #12](https://github.com/iceiceice999/rock/pull/12)。全掲載Agentの実行対応、OAuth/鍵、本番CLI全体は未受入。6種の実モデル個別成功はPR #19に記録。無料3種の本番受入はtask125 |

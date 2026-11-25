@@ -904,7 +904,7 @@ export function createNoahLaunchApi(deps: Deps) {
       if (isRunner) {
         const credential = request.headers
           .get('authorization')
-          ?.match(/^Bearer (rock_session_[A-Za-z0-9_-]{43})$/)?.[1];
+          ?.match(/^Bearer ((?:rock_session|noah_runner)_[A-Za-z0-9_-]{43})$/)?.[1];
         if (!credential || request.headers.get('origin'))
           throw new NoahAgentError('Mac Runnerの本人認証が必要です。', 403);
         if (

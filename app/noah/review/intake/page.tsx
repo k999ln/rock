@@ -16,6 +16,7 @@ export default async function Page() {
   } catch { /* Account or service unavailable: never render privileged controls. */ }
   return <main className={styles.page}>
     <h1>Agentの掲載管理</h1>
+    {scope && <p><Link href="/noah/review/pins">図解ピン 200 件の審査</Link></p>}
     {scope ? <NoahIntakeReview ownerScope={scope} /> : <p>掲載担当のアカウントで開いてください。<Link href="/noah/account?returnTo=%2Fnoah%2Freview%2Fintake">ログイン</Link></p>}
   </main>;
 }

@@ -155,7 +155,7 @@ export async function readRunnerConfig(file) {
     )
       throw new Error('本人所有の通常ファイルを権限600で保存してください。');
     const value = JSON.parse(await handle.readFile('utf8'));
-    if (!/^rock_session_[A-Za-z0-9_-]{43}$/.test(value.token))
+    if (!/^(?:rock_session|noah_runner)_[A-Za-z0-9_-]{43}$/.test(value.token))
       throw new Error('Macの認証をやり直してください。');
     return value;
   } finally {
@@ -171,28 +171,28 @@ export async function pairRunner({
   print = console.log,
 }) {
   const api = runnerClient(origin, null, fetcher),
-    started = await api.json('/api/rockstar/device-authorizations', {
+    started = await api.json('/api/noah/devices/pair', {
       action: 'begin',
       deviceName: 'Noah Mac Runner',
     });
   if (
     !/^[A-Z2-9]{8}$/.test(started.userCode) ||
-    !/^rock_device_[A-Za-z0-9_-]{43}$/.test(started.deviceCode)
+    !/^noah_device_[A-Za-z0-9_-]{43}$/.test(started.deviceCode)
   )
     throw new Error('本人確認の応答を確認できません。');
   print(
-    `NoahでこのMacを承認してください: ${origin}/connect/device?user_code=${started.userCode}`,
+    `NoahでこのMacを承認してください: ${origin}/noah/mac/connect?user_code=${started.userCode}`,
   );
   const end = Date.now() + Math.min(started.expiresIn, 600) * 1000;
   while (Date.now() < end) {
     await delay(5000, undefined, { signal });
-    const result = await api.json('/api/rockstar/device-authorizations', {
+    const result = await api.json('/api/noah/devices/pair', {
       action: 'poll',
       deviceCode: started.deviceCode,
     });
     if (result.status === 'authorized') {
       if (
-        !/^rock_session_[A-Za-z0-9_-]{43}$/.test(result.accessToken) ||
+        !/^(?:rock_session|noah_runner)_[A-Za-z0-9_-]{43}$/.test(result.accessToken) ||
         typeof result.ownerUserId !== 'string'
       )
         throw new Error('認証応答が不正です。');

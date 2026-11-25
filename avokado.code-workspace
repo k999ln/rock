@@ -1,0 +1,11 @@
+{
+  "folders": [
+    {
+      "name": "avokado（統合版）",
+      "path": "."
+    }
+  ],
+  "settings": {
+    "window.title": "avokado（統合版） — ${activeEditorShort}${separator}${dirty}"
+  }
+}

@@ -3,6 +3,7 @@ import {runtimeEveTextExport} from '@/lib/eve-runtime-export';
 import EveRuntimeInteraction from './eve-runtime-interaction';
 import EveRuntimeArchive from './eve-runtime-archive';
 import EveAgentComposer from './eve-agent-composer';
+import EveNoahProjectHandoff from './eve-noah-project-handoff';
 import {eveAgentConversationPath} from '@/lib/eve-studio-navigation';
 import {newsSourceNavigation} from '@/lib/eve-noah-navigation';
 import {runtimeEvePendingKey,runtimeEveRestorableWork} from '@/lib/eve-runtime-work-port';
@@ -88,6 +89,7 @@ export default function EveSyncWorkspace({
   const profileKey=useSkyAgentProfileKey();
   const [toolAgentSelection,setToolAgentSelection]=useState<SkyAgentProfileSelection|null>(null);
   const search=useSearchParams();
+  const noahProjectId=search.get('noahProject') ?? '';
   const workbenchQuery=search.toString();
   const [modeOverride,setModeOverrideValue]=useState<{query:string;mode:'work'|'build'}|null>(null);
   const setModeOverride=(mode:'work'|'build')=>setModeOverrideValue({query:workbenchQuery,mode});
@@ -715,6 +717,7 @@ export default function EveSyncWorkspace({
           <div hidden={workbenchMode!=='build'} className={styles.buildPane}>{(buildVisited||workbenchMode==='build')&&<><EveAgentComposer {...composerProps}/><details><summary>設定を編集して作る・保存済みの担当を管理する</summary><SkyAgentLibrary key={connectionOwner||'account-pending'} embedded creator/></details></>}</div>
           <div hidden={workbenchMode!=='work'} className={styles.workContent}>
           <div hidden={resultsView} id="eve-compose" className={styles.composeView}>
+          {/^project-[a-f0-9]{64}$/.test(noahProjectId)&&!profileRequested&&<EveNoahProjectHandoff key={noahProjectId} id={noahProjectId} disabled={busy||signedIn===false||hasUnsentDraft} onDraft={draft=>{discardingDraft.current=false;setConsent(false);setInput(draft);}}/>}
           {incomingNews&&<section id="eve-news-handoff" tabIndex={-1} className={styles.handoffNotice} aria-label="Noahから受け取った記事"><h2>Noahの記事を受け取りました</h2><p>{incomingNews.title}</p><p>この記事を資料メモに使えます。本文・利用権は次の画面で確認してください。</p><nav><button type="button" onClick={()=>openWorkSection('news')}>資料メモへ進む</button><a href={incomingNews.href} target="_blank" rel="noopener noreferrer nofollow" referrerPolicy="no-referrer">原文を開く</a><Link href="/#timeline">Noahのニュースへ戻る</Link></nav></section>}
 {signedIn !== false && <div ref={conversationRef} className={styles.messages} role="log" aria-label="会話" aria-live="polite">
   {item?.before && <button onClick={() => void more()}>以前の発言を読む</button>}

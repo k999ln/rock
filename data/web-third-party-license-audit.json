@@ -2,7 +2,7 @@
   "schema": "rockstaros-web-third-party-license-audit/1",
   "evaluatedAt": "2026-10-01",
   "scope": "PACKAGE_LOCK_INVENTORY_NOT_RUNTIME_BUNDLE_OR_LEGAL_CLEARANCE",
-  "packageLockSha256": "48989e867e98e077689dea204cc54b4ba9195118bdf6d52f8fb8aef31e5b1df1",
+  "packageLockSha256": "d5c45663d37e697f94ec414f6fe1737e88b948233e8fe75a28449567f49a9914",
   "packageEntries": 984,
   "uniqueComponents": 941,
   "missingLicenseMetadata": 0,

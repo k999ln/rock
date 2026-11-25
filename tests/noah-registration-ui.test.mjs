@@ -59,7 +59,7 @@ void test('registration button grants visible recipient and terms consent, submi
   const h = harness(async (_u,o) => o.method === 'POST' ? Response.json({job:job('needs_user')}) : config()); t.after(() => h.close()); await h.flush();
   assert.equal(h.button('同意して登録').props.disabled,true); h.submit(); await h.flush(); assert.equal(h.calls.filter(c=>c.options.method==='POST').length,0);
   fill(h);
-  assert.match(h.text(), /https:\/\/executor.example.com/); assert.doesNotMatch(h.text(), /synthetic-private-value/);
+  assert.ok(h.nodes().some(n => [n.props?.children].flat().some(value => value === provider.executorOrigin))); assert.doesNotMatch(h.text(), /synthetic-private-value/);
   assert.ok(h.nodes().some(n=>n.props?.href===provider.termsUrl));
   assert.match(h.text(),/登録ボタンで、規約と上記情報の送信に同意/);
   assert.equal(h.nodes().filter(n=>n.type==='input'&&n.props.type==='checkbox').length,0);
@@ -168,4 +168,42 @@ void test('a reopened rate limited account hides input and offers only a timed a
  const h=harness(async()=>Response.json({providers:[{...provider,accountState:'cooldown',retryAt:until}]}),[],{now:()=>at});t.after(()=>h.close());await h.flush();
  assert.match(h.text(),/受付再開の目安/);assert.equal(h.button('再読み込み').props.disabled,true);assert.equal(h.nodes().some(n=>n.type==='form'||n.type==='input'),false);
  at=until+1;await h.tick();assert.equal(h.button('再読み込み').props.disabled,false);assert.equal(h.calls.some(c=>c.options?.method==='POST'),false);
+});
+
+void test('using saved details does not rewrite the profile or require optional details', async t => {
+  const p={...provider,fields:[{...provider.fields[0],profileField:'email'},{key:'bio',label:'紹介文',type:'text',required:false,maxLength:100,profileField:'bio'}]};
+  const h=harness(async(_u,o)=>o.method==='POST'?Response.json({job:job('running')}):Response.json({providers:[p]}),[],{profile:{...profileContract.emptyNoahProfile(),available:true,ownerScope:'owner-a',revision:2,reuseEnabled:true,fields:{email:'saved@example.com'}}});
+  t.after(()=>h.close()); await h.flush();
+  const optional=h.nodes().find(n=>n.type==='details'&&JSON.stringify(n.props).includes('任意の情報を追加'));
+  assert.ok(optional); assert.equal(optional.props.open,undefined);
+  assert.equal(h.button('同意して登録').props.disabled,false);
+  assert.match(h.text(),/送信先.*料金.*提供元の条件/s);
+  h.submit(); await h.flush(); assert.equal(h.saves.length,0);
+  const body=JSON.parse(h.calls.find(c=>c.options.method==='POST').options.body);
+  assert.equal(body.profile.revision,2); assert.deepEqual(body.profile.fields,['email']);
+});
+void test('one-time input is sent without a profile write and never stored in session storage',async t=>{
+  const p={...provider,fields:[{...provider.fields[0],profileField:'email'}]};
+  const h=harness(async(_u,o)=>o.method==='POST'?Response.json({job:job('running')}):Response.json({providers:[p]}),[],{profile:{...profileContract.emptyNoahProfile(),available:true,ownerScope:'owner-a'}});
+  t.after(()=>h.close());await h.flush();h.input('email','once@example.com');h.click('保存する');
+  assert.equal(h.nodes().find(n=>n.props?.role==='switch').props['aria-checked'],false);
+  h.submit();await h.flush();assert.equal(h.saves.length,0);
+  assert.equal(JSON.parse(h.calls.find(c=>c.options.method==='POST').options.body).values.email,'once@example.com');
+  assert.doesNotMatch(JSON.stringify([...h.storage]),/once@example/);
+});
+void test('editing a saved value keeps it in the field and submits the changed value once',async t=>{
+  const p={...provider,fields:[{...provider.fields[0],profileField:'email'}]};
+  const h=harness(async(_u,o)=>o.method==='POST'?Response.json({job:job('running')}):Response.json({providers:[p]}),[],{profile:{...profileContract.emptyNoahProfile(),available:true,ownerScope:'owner-a',revision:2,reuseEnabled:true,fields:{email:'saved@example.com'}}});
+  t.after(()=>h.close());await h.flush();h.click('編集');
+  assert.equal(h.nodes().find(n=>n.type==='input'&&n.props.name==='email').props.value,'saved@example.com');
+  h.input('email','changed@example.com');h.submit();await h.flush();
+  assert.equal(h.saves.length,1);assert.equal(h.saves[0].fields.email,'changed@example.com');
+  const posts=h.calls.filter(c=>c.options.method==='POST');assert.equal(posts.length,1);assert.equal(JSON.parse(posts[0].options.body).values.email,'changed@example.com');
+});
+void test('storage, external submission and pricing explanations are translated in all supported languages',async()=>{
+  const {NOAH_REGISTRATION_MESSAGES}=await import('../lib/noah-i18n-registration.ts');
+  const {noahTranslate,NOAH_LOCALES}=await import('../lib/noah-i18n.ts');
+  for(const source of Object.keys(NOAH_REGISTRATION_MESSAGES))for(const locale of NOAH_LOCALES.filter(l=>l!=='ja')){
+    const translated=noahTranslate(locale,source);assert.notEqual(translated,source,`${locale}: ${source}`);assert.ok(translated.length);
+  }
 });

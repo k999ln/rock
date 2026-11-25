@@ -207,8 +207,80 @@ await test('自社MCPから匿名準備票を作り、共通Workへ保存・再�
         wantsConsultation: false,
       },
     };
-    const accepted = await runtime.accept('owner-a', false, input);
-    await accepted.run();
+    const { screen } = await import('./fixtures/noah/screen.mjs');
+    const { createNoahDirectoryApi } = await import('../lib/noah-agent-directory-api.ts');
+    const { createNoahProviderApi } = await import('../lib/noah-provider-api.ts');
+    const { createNoahAskApi } = await import('../lib/noah-ask.ts');
+    const { noahProjectDetail } = await import('../lib/noah-project-api.ts');
+    const { noahCardHref } = await import('../lib/noah-project-view.ts');
+    const ownerIntent = await import('../lib/owner-intent.ts');
+    const askView = await import('../lib/noah-ask-view.ts');
+    const myRoutes = await import('../lib/noah-my-routes.ts');
+    const pageRoutes = await import('../lib/noah-page-routes.ts');
+    const theaterFilms = await import('../lib/noah-theater-films.ts');
+    const unused = { default: () => null };
+    const savedModules = { '@/lib/noah-my-routes': myRoutes, '@/lib/noah-page-routes': pageRoutes,
+      './noah-theater': unused, './noah-library': unused, './noah-boards': {}, './sky-agent-library': unused, './sky-output-center': unused, './noah-result-data': unused };
+    const cloudContract = await import('../lib/noah-cloud-contract.ts');
+    const directory = createNoahDirectoryApi({ ...deps, directory: async () => entries });
+    const provider = createNoahProviderApi(deps), asks = createNoahAskApi(deps);
+    const ui = screen({ width: 390, modules: { ...savedModules, '@/lib/noah-theater-films': theaterFilms,
+      '@/lib/owner-intent': ownerIntent, '@/lib/noah-ask-view': askView, '@/lib/noah-cloud-contract': cloudContract,
+      './noah-timeline': { default: () => null }, './noah-ready-detail': { default: () => null },
+      './noah-agent-source-ratings': { default: () => null },
+      // Geometry belongs to the browser tests; use the real card route here.
+      './noah-pin-grid': { default: ({items}) => items.map(card => ({ type: 'a', props: { href: noahCardHref(card), children: card.name } })) },
+    }, fetch: async ({url, method, body, headers}) => {
+      const target = new URL(url, 'https://noah.test');
+      const request = new Request(target, { method, headers: { ...headers, Origin: target.origin }, ...(body ? { body: JSON.stringify(body) } : {}) });
+      let response;
+      if (target.pathname === '/api/noah/discover') response = await directory(request);
+      else if (target.pathname === '/api/noah/discover/project') {
+        assert.equal(target.searchParams.get('id'), projectId);
+        return { body: noahProjectDetail(entries[0]) };
+      } else if (target.pathname === '/api/noah/provider') response = await provider(request);
+      else if (target.pathname === '/api/noah/ask') response = await asks.collection(request);
+      else if (target.pathname.startsWith('/api/noah/ask/')) response = await asks.item(request, target.pathname.split('/').at(-1));
+      else assert.fail('unexpected request ' + url);
+      return { status: response.status, body: await response.json() };
+    } });
+    const home = ui.mount('components/noah-home.tsx', { mode: 'public' });
+    await home.flush();
+    assert.ok(home.find('a').some(link => link.props.href === '/noah/explore'));
+    assert.equal(home.find('a').some(link => link.props.href?.includes('/business-si')), false);
+    assert.doesNotMatch(home.text(), /siの導入準備を、ここから|3回|10回|UTC/);
+    const search = ui.mount('components/noah-public-catalog.tsx', { embedded: true });
+    await search.flush();
+    await search.change(search.find('input')[0], '研修');
+    const card = search.find('a', entries[0].card.name)[0];
+    assert.equal(card.props.href, noahCardHref(entries[0].card));
+    assert.ok(ui.calls.some(call => new URL(call.url, 'https://noah.test').searchParams.get('q') === '研修'));
+    const detail = ui.mount('components/noah-project-detail.tsx', { id: new URL(card.props.href, 'https://noah.test').searchParams.get('id') });
+    await detail.flush(); await detail.click('使う');
+    assert.doesNotMatch(detail.text(), /3回|10回|UTC/);
+    for (const field of endpoint.fields) {
+      const value = input.input[field.name];
+      if (value === undefined || field.kind === 'fixed' || (field.kind === 'boolean' && value === false)) continue;
+      const node = [...detail.find('input'), ...detail.find('select'), ...detail.find('textarea')].find(node => node.props.id === 'id-' + field.name);
+      assert.ok(node, field.name);
+      await detail.change(node, field.kind === 'choice' ? JSON.stringify(value) : value);
+    }
+    assert.equal(calls, 0, 'searching and preparing a form do not run the tool');
+    await detail.submit(detail.find('form')[0]);
+    assert.equal(ui.visits.length, 1, detail.text());
+    input.id = ui.visits[0].split('/').at(-1);
+    for (let reload = 0; reload < 2; reload++) {
+      const savedHref = myRoutes.noahMyHref('saved', 'results');
+      assert.equal(savedHref, '/noah/my?view=saved&tab=results');
+      const saved = ui.mount('components/noah-my.tsx', { params: Object.fromEntries(new URL(savedHref, 'https://noah.test').searchParams) });
+      await saved.flush();
+      assert.ok(saved.find('a').some(link => link.props.href === `/noah/tasks/${input.id}`));
+      const result = ui.mount('components/noah-task-detail.tsx', { id: input.id });
+      await result.flush(); await result.tick(0);
+      assert.match(result.text(), /公開用の模擬業務を整理します。/);
+      assert.match(result.text(), /相談を希望しないため、整理票だけを作成/);
+      assert.doesNotMatch(result.text(), /(?:1人|本人|全体|1日|日次).{0,8}(?:3回|10回)|UTC|無料枠/);
+    }
     const fresh = createNoahProviderRuntime(deps),
       job = await fresh.get('owner-a', input.id);
     assert.equal(

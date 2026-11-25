@@ -1378,7 +1378,7 @@
   },
   "updatedAt": "2026-11-23",
   "milestone": "Noahの現main統合・限定本番受入・運用と集客の残件を照合",
-  "nextAction": "PR #18・#19統合後の本番受入、収集の24時間鮮度と実行先移行、紹介の実注文/承認を個別に確認する。Containers本番配備・無料CLIのNoah本番受入、全掲載Agent対応、300人の試行は未受入。現行の作業別状態はcodex/tasks/00-index.mdを参照する。",
+  "nextAction": "Pixelでの残り2種の実行とダウンロード操作、有料Containersの配備判断、収集の24時間鮮度と実行先移行、紹介の実注文/承認を進める。全掲載Agent対応、300人の試行は未受入。現行の作業別状態はcodex/tasks/00-index.mdを参照する。",
   "tasks": [
     {
       "id": "AMC02",
@@ -13179,7 +13179,7 @@
   "progressLedgerReconciliation": {
     "updatedAt": "2026-11-23",
     "repository": "iceiceice999/rock",
-    "baseMain": "16a9eae6dac5a40ab0f1bfacc4ecad2de9e34617",
+    "baseMain": "21518016a125a78307c19b10b50f0e219d29ba20",
     "task": "codex/tasks/72-current-code-and-readme.md",
     "owner": "統合・公開担当si",
     "method": "GitHub PR/CIの読取とgit merge-base --is-ancestorによる統合照合。本番操作・過去実機試験の再実行はしていない。",
@@ -13293,7 +13293,10 @@
       "https://github.com/iceiceice999/rock/pull/9",
       "https://github.com/iceiceice999/rock/pull/10",
       "https://github.com/iceiceice999/rock/pull/14",
-      "https://github.com/iceiceice999/rock/pull/16"
+      "https://github.com/iceiceice999/rock/pull/16",
+      "https://github.com/iceiceice999/rock/pull/21",
+      "https://github.com/iceiceice999/rock/pull/19",
+      "https://github.com/iceiceice999/rock/pull/23"
     ],
     "boundaries": [
       "掲載/接続定義取得を全Agent実行成功にしない",
@@ -13313,7 +13316,7 @@
     ],
     "initialBaseMain": "42cf4b619ee19bcb47612250d70539457dec1977",
     "pendingPullRequests": [],
-    "pullRequest": "https://github.com/iceiceice999/rock/pull/20",
+    "pullRequest": "https://github.com/iceiceice999/rock/pull/22",
     "mergedPullRequests": [
       {
         "number": 17,
@@ -13328,16 +13331,498 @@
         "number": 19,
         "url": "https://github.com/iceiceice999/rock/pull/19",
         "state": "MERGED",
-        "scope": "実モデル通信修正と6種の個別成功・応答失敗例、公開209のPixel再確認。Containers本番受入は残る。",
+        "scope": "実モデル通信修正、6種の個別成功と応答失敗例を記録。公開209でPixel登録・保存。公開210で同じ成果のキャッシュなし再読込を確認。有料Containersは本番未配備。",
         "mergeCommit": "4644580cc929d71c1fab7ada714de5d166d48228"
       },
       {
         "number": 18,
         "url": "https://github.com/iceiceice999/rock/pull/18",
         "state": "MERGED",
-        "scope": "無料Workersの公式MCP3種。Memory/Filesystem実モデル成功はPR記録。Noah有効化・全閉画面後の本番一周は未受入。",
+        "scope": "公開210で無料Workersの公式MCP3種を有効化。ブラウザ全閉中のWork完了、再表示とファイル保存を3件確認。",
         "mergeCommit": "16a9eae6dac5a40ab0f1bfacc4ecad2de9e34617"
+      },
+      {
+        "number": 20,
+        "url": "https://github.com/iceiceice999/rock/pull/20",
+        "state": "MERGED",
+        "mergeCommit": "6c9b3db6c663ddab56665c466642dab30e929fbd",
+        "scope": "6分野の進捗台帳。最終HEADの7チェック成功を確認して統合。"
+      },
+      {
+        "number": 21,
+        "url": "https://github.com/iceiceice999/rock/pull/21",
+        "state": "MERGED",
+        "mergeCommit": "8669c94f0c436136fc5268b18c4bbfc3a0906dca",
+        "scope": "公開210で無料3種のブラウザ終了後の成果保存。公開211でMemoryの再表示・ダウンロードと保存済み添付の誤注記の解消を確認（390px Chrome）。"
+      },
+      {
+        "number": 23,
+        "url": "https://github.com/iceiceice999/rock/pull/23",
+        "state": "MERGED",
+        "mergeCommit": "21518016a125a78307c19b10b50f0e219d29ba20",
+        "scope": "公開212で対応済みの公式CLIを検索対象に追加。Pixelで公式Memoryの検索・接続・実行・成果とファイルの受取・再読込を確認。Pixelでのダウンロード操作は試験対象外。"
       }
     ]
+  },
+  "miiPrototypeDesign": {
+    "date": "2026-11-02",
+    "status": "design_validated_physical_not_run",
+    "owner": "ROCK",
+    "primaryWorkstream": "docs/workstreams/11-material-invention-avocado-mini.md",
+    "taskIds": [
+      "MAT15",
+      "OS10",
+      "MINI01",
+      "MINI02"
+    ],
+    "baseMain": "7bbb4b27ab6ca3b1d42bef4643c9dda8cb8ba0c6",
+    "branch": "codex/mii-prototype-design-20261102",
+    "userDirection": "osの中身は一緒",
+    "commonOs": "same WorkJob, identity, permissions, budget, storage and recovery; hardware profile adapters only",
+    "hardwareConfiguration": "room Tower+Hub and earlier portable requirements require reconciliation; user answer did not select a chassis",
+    "physicalAccepted": false,
+    "manufacturingReleased": false,
+    "githubSaved": false,
+    "mainIntegrated": false,
+    "next": "For body hardware use chapter19 HW1; chapter18 remains a development test rig. C-01/C-02 and physical acceptance remain open.",
+    "authority": "docs/mii/design/14-common-os.md",
+    "validation": "data/mii-prototype-design-validation.json",
+    "localDocumentationSaved": true,
+    "verification": "project:update, baseline:check, design:check, links, arithmetic, diff check PASS; full verify exit0 (3593 pass, 0 fail, 4 skip) after isolated dependency repair"
+  },
+  "miiPrototypeWiring": {
+    "date": "2026-11-02",
+    "status": "design_validated_physical_not_run",
+    "owner": "ROCK",
+    "taskIds": [
+      "MAT15",
+      "OS10",
+      "MINI01",
+      "MINI02"
+    ],
+    "baseLocalCommit": "fb3c431379eebaf40a9860051c14b4618c0cd2ea",
+    "baseMain": "7bbb4b27ab6ca3b1d42bef4643c9dda8cb8ba0c6",
+    "userDirection": "Keep the OS common; specify part models and terminals and create assembly wiring diagrams.",
+    "observedHost": {
+      "model": "MacBook Pro 14-inch November 2024",
+      "chip": "Apple M4",
+      "memoryGB": 16,
+      "os": "macOS Sequoia 15.7.4",
+      "evidence": "user-provided screenshot; serial and screenshot intentionally not copied into repository"
+    },
+    "physicalAccepted": false,
+    "purchased": false,
+    "githubSaved": false,
+    "mainIntegrated": false,
+    "authority": "docs/mii/design/18-parts-wiring.md",
+    "bom": "docs/mii/design/wiring/bom.json",
+    "validation": "data/mii-prototype-wiring-validation.json",
+    "wiringRevision": "W1",
+    "partsCount": 14,
+    "connectionsCount": 9,
+    "pdf": "output/pdf/mii-prototype-wiring.pdf",
+    "runtimeChanged": false,
+    "osFlashed": false,
+    "supplierContactSent": false,
+    "localDocumentationSaved": true,
+    "next": "Match physical parts; P0b input selection and common-OS save/restart; P1a initial setup/capture. Node adapter, Japanese on-device ASR, projector model, 2-camera sync and product optics remain unaccepted.",
+    "verification": "Full npm run verify exit 0; BOM/9 connections/19 Markdown link targets/PDF 3 pages checked. No physical tests.",
+    "scope": "Development test rig only; not the mii body. Superseded for body design by HW1 chapter19."
+  },
+  "miiBodyHardware": {
+    "date": "2026-11-02",
+    "status": "design_validated_physical_not_run",
+    "owner": "ROCK",
+    "taskIds": [
+      "MAT15",
+      "MINI01",
+      "MINI02",
+      "OS10"
+    ],
+    "baseMain": "7bbb4b27ab6ca3b1d42bef4643c9dda8cb8ba0c6",
+    "baseLocalCommit": "114d1da4",
+    "userDirection": "mii本体のハードウェア。OSは共通のまま、型番・端子・実際に組める配線図を作る。",
+    "scope": "4 Towers + dedicated Hub + replaceable Gen1 display; chapter18 is only a development rig",
+    "physicalAccepted": false,
+    "purchased": false,
+    "manufacturingReleased": false,
+    "githubSaved": false,
+    "mainIntegrated": false,
+    "authority": "docs/mii/design/19-body-hardware.md",
+    "bom": "docs/mii/design/body-hw1/bom-netlist.json",
+    "validation": "data/mii-body-hardware-validation.json",
+    "pdf": "output/pdf/mii-body-hw1-wiring.pdf",
+    "partsCount": 31,
+    "netsCount": 12,
+    "connectionFamiliesCount": 14,
+    "pdfPages": 7,
+    "runtimeChanged": false,
+    "firmwareAccepted": false,
+    "osFlashed": false,
+    "supplierContactSent": false,
+    "next": "HW-A01 parts/continuity; HW-A05 isolated MCU test firmware; COM-A01 USB WAN/BSP link and sensor isolation; then Hub common-OS adapter. LTE/Wi-Fi/satellite modem/provider and portable core C-01 remain unresolved.",
+    "communicationsAuthority": "docs/mii/design/20-connectivity.md",
+    "communicationsParts": 2,
+    "communicationsConnections": 2,
+    "communications": "Wired WAN via J33/USB31000S selected; existing LTE/SIM, Wi-Fi AP, JP-US satellite and portable core requirements retained; RF/provider/portable acceptance incomplete",
+    "localDocumentationSaved": true,
+    "verification": "Static net/BOM/power/bandwidth/WAN isolation checks PASS; PDF7 rendered/inspected; full npm run verify exit0 after one existing child PID race, targeted retry PASS. Runtime/physical/provider tests not added."
+  },
+  "miiPortableHardware": {
+    "date": "2026-11-02",
+    "status": "design_validated_physical_not_run",
+    "owner": "ROCK",
+    "taskIds": [
+      "MAT15",
+      "MINI-08",
+      "NET01",
+      "SIM01",
+      "OS10"
+    ],
+    "baseMain": "7bbb4b27ab6ca3b1d42bef4643c9dda8cb8ba0c6",
+    "baseLocalCommit": "da176838",
+    "scope": "portable mii core with common OS, LTE, Wi-Fi, satellite, battery and dock wiring",
+    "physicalAccepted": false,
+    "purchased": false,
+    "carrierActivated": false,
+    "manufacturingReleased": false,
+    "githubSaved": false,
+    "mainIntegrated": false,
+    "revision": "P2",
+    "parts": 12,
+    "connections": 11,
+    "logicalNets": 9,
+    "documents": [
+      "docs/mii/design/21-portable-connectivity.md",
+      "docs/mii/design/portable-p2/bom-netlist.json"
+    ],
+    "profile": "systems/rock-star-os/targets/mii-portable-p2/README.md",
+    "runtimeImplemented": false,
+    "rfColocationAccepted": false,
+    "nextActions": [
+      "P2-A01/02 physical preparation and measured power limits",
+      "Implement P2 battery/detach, PPP/AP and satellite adapters using existing contracts",
+      "Resolve 9704-ANT colocation and JP LTE carrier/regional RF conditions before transmission"
+    ],
+    "validation": "data/mii-portable-hardware-validation.json",
+    "checks": {
+      "staticDesign": "PASS",
+      "fullVerify": "PASS",
+      "pdfPages": 7,
+      "visualReview": "ALL_7_PAGES",
+      "physical": "NOT_RUN"
+    }
+  },
+  "miiPortableRfIntegration": {
+    "date": "2026-11-02",
+    "status": "procurement_hold_design_static_checked",
+    "owner": "ROCK",
+    "taskIds": [
+      "MAT15",
+      "MINI-08",
+      "NET01",
+      "SIM01",
+      "OS10"
+    ],
+    "baseMain": "7bbb4b27ab6ca3b1d42bef4643c9dda8cb8ba0c6",
+    "baseLocalCommit": "49bb6f5e",
+    "commonOsUnchanged": true,
+    "physicalAccepted": false,
+    "providerActivated": false,
+    "rfColocationAccepted": false,
+    "revision": "P3.1",
+    "authority": "docs/mii/design/22-integrated-radio.md",
+    "validation": "data/mii-integrated-radio-validation.json",
+    "parts": 17,
+    "connections": 18,
+    "logicalNets": 11,
+    "releaseConditionsOpen": [
+      "R01",
+      "R02",
+      "R03",
+      "R04"
+    ],
+    "japanNtnDeviceAccepted": false,
+    "usbPowerContractAccepted": false,
+    "runtimeImplemented": false,
+    "githubSaved": false,
+    "mainIntegrated": false,
+    "next": "See chapter23: both vendor inquiries sent; await regulatory/provider/antenna/power originals and physical acceptance",
+    "powerSelection": "Waveshare UPS Module 3S / P28A x3 / manufacturer 12.6V2A charger",
+    "verification": {
+      "p3Static": "PASS_STATIC_ONLY_WITH_OPEN_RELEASE_CONDITIONS",
+      "p2RegressionStatic": "PASS",
+      "designCheck": "PASS",
+      "fullVerifyExitCode": 0,
+      "fullVerifyScope": "P3.1: npm run verify exit0 in local-listen-capable environment; final metadata receives targeted checks; no runtime code changed",
+      "physical": "NOT_RUN"
+    },
+    "providerConformanceAccepted": false
+  },
+  "miiPortableProcurementReview": {
+    "date": "2026-11-03",
+    "status": "quectel_antenna_partial_response_received_remaining_questions_pending",
+    "owner": "ROCK",
+    "taskIds": [
+      "MAT15",
+      "MINI-08",
+      "NET01",
+      "SIM01",
+      "OS10"
+    ],
+    "baseLocalCommit": "49bb6f5e",
+    "baseMain": "7bbb4b27ab6ca3b1d42bef4643c9dda8cb8ba0c6",
+    "commonOsUnchanged": true,
+    "purchaseExecuted": false,
+    "vendorMessageSent": true,
+    "physicalAccepted": false,
+    "revision": "P3.1",
+    "authority": "docs/mii/design/23-japan-procurement.md",
+    "vendorMessagesSent": 3,
+    "companySenderRequested": true,
+    "companySenderReady": true,
+    "soracomSent": true,
+    "procurementReleased": false,
+    "providerConformanceAccepted": false,
+    "verification": "P3/P2 static PASS; PDF6 visually reviewed; design:check/project:update/added-link/diff/hash PASS; full verify exit0 after localhost sandbox retry",
+    "next": "Verify Japan NTN certificate annexes for YECT003AA and BG770A; obtain remaining USB/FW/co-location replies; maintain procurement hold",
+    "companySenderStatus": "Authenticated company Zoho sender used; Quectel contact correction and repeated technical inquiry sent, Sent body and Delivered status verified",
+    "soracomFormPrepared": true,
+    "quectelCompanyFollowupSent": true,
+    "vendorsContacted": 2,
+    "soracomReceipt": "Official form accepted; confirmation page observed",
+    "quectelAntennaResponseReceived": true,
+    "rejectedAntenna": "YECN028AA",
+    "candidateAntenna": "YECT003AA",
+    "soracomTechnicalResponseReceived": false,
+    "currentReviewEvidence": "data/mii-fire-alarm-design.json (F3 full verify PASS; radio and product acceptance remain pending)"
+  },
+  "miiFireAlarm": {
+    "date": "2026-11-03",
+    "taskIds": [
+      "MAT15",
+      "OS10",
+      "MINI-08",
+      "NET01"
+    ],
+    "primaryOwner": "JOINT",
+    "status": "f3_power_wiring_and_certification_matrix_prepared_final_product_pending",
+    "authority": "docs/mii/design/24-fire-alarm.md",
+    "data": "data/mii-fire-alarm-design.json",
+    "commonOsUnchanged": true,
+    "runtimeImplemented": false,
+    "certificationAccepted": false,
+    "physicalAccepted": false,
+    "replacementAccepted": false,
+    "githubSaved": false,
+    "mainIntegrated": false,
+    "next": "R04 exact modem USB and Japan NTN certificates; F-E01 contact guarantee; OEM common-Core plus manufacturer-specific fire head, final battery/mount, site choice and qualification review; physical power/thermal/RF/certification",
+    "verification": {
+      "status": "PASS_DESIGN_AND_REPOSITORY_ONLY",
+      "fireF3Static": "PASS_24_PARTS_20_CONNECTIONS",
+      "compatibility": "4_manufacturers_8_reference_families_no_mii_or_site_acceptance",
+      "pdf": "7_pages_visually_checked",
+      "fullVerifyExitCode": 0,
+      "physical": "NOT_RUN"
+    },
+    "revision": "F3",
+    "hardwareAuthority": "docs/mii/design/26-fire-certification-power.md"
+  },
+  "miiSpatialSiFeasibility": {
+    "date": "2026-11-08",
+    "taskIds": [
+      "MAT15",
+      "MINI01",
+      "MINI02",
+      "OS10"
+    ],
+    "primaryOwner": "ROCK",
+    "status": "primary_source_review_and_conditional_design_verified_physical_pending",
+    "authority": "docs/mii/design/27-spatial-si-feasibility.md",
+    "commonOsUnchanged": true,
+    "terminology": "SI",
+    "physicalAccepted": false,
+    "roomWideFreeSpaceAccepted": false,
+    "fireReplacementAccepted": false,
+    "runtimeImplemented": false,
+    "githubSaved": false,
+    "mainIntegrated": false,
+    "next": "Superseded as product direction by room-scale research in 28; retain S1 as commercial comparison only",
+    "hardwareCandidate": [
+      "KC-310G",
+      "UM890 Pro 32GB/1TB",
+      "YVC-200B",
+      "D405 optional"
+    ],
+    "cost": {
+      "currency": "JPY",
+      "usdJpyAssumption": 150,
+      "baseExcludingDisplayQuote": [
+        232899,
+        252899
+      ],
+      "depthExcludingDisplayQuoteAndImport": [
+        281649,
+        301649
+      ],
+      "displayQuoteReceived": false,
+      "completeMiiTotalEstablished": false
+    },
+    "verification": {
+      "projectUpdateExitCode": 0,
+      "designCheck": "PASS_IN_FULL_VERIFY",
+      "costArithmetic": "PASS",
+      "relativeLinks": "6_documents_no_missing_targets",
+      "fullVerifyExitCode": 0,
+      "firstAttempt": "sandbox_EPERM_localhost_in_sky_a2a_workflow_test",
+      "retry": "same_verify_with_localhost_permission_passed",
+      "log": "/private/tmp/mii-spatial-si-verify-full.log",
+      "logSha256": "46085fd5ebf1fbcead7fc842bd5a252dc1e6929e588e0035c511393b9b5e32e3",
+      "physical": "NOT_RUN"
+    }
+  },
+  "miiRoomScaleSiResearch": {
+    "date": "2026-11-08",
+    "taskIds": [
+      "MAT15",
+      "MINI01",
+      "MINI02",
+      "OS10"
+    ],
+    "primaryOwner": "ROCK",
+    "authority": "docs/mii/design/28-room-scale-si-rd.md",
+    "status": "rd_design_and_calculation_recorded_physical_feasibility_open",
+    "commonOsUnchanged": true,
+    "nakedEyeRequired": true,
+    "constructionFreeRequired": true,
+    "desktopIsProductTarget": false,
+    "physicalAccepted": false,
+    "productFeasibilityProven": false,
+    "budgetAuthorizedForSpending": false,
+    "next": "R0: solve deployable aperture coverage including low and upper directions within allowed footprint, then independently validate wave optics, brightness/safety and power; no automatic R1 spend",
+    "geometryScope": "necessary_ray_counterexamples_only_no_wave_optics_or_physical_acceptance",
+    "calculationResult": {
+      "scope": "necessary_geometry_and_budget_only_not_physical_acceptance",
+      "central_horizontal_coverage_deg": 60.7571,
+      "central_horizontal_coverage_fraction": 0.16877,
+      "sampled_geometry": [
+        {
+          "width_m_each_of_4": 0.6,
+          "hits": 28,
+          "rays": 646,
+          "fraction": 0.043344
+        },
+        {
+          "width_m_each_of_4": 1.5,
+          "hits": 52,
+          "rays": 646,
+          "fraction": 0.080495
+        },
+        {
+          "width_m_each_of_4": 4.5,
+          "hits": 176,
+          "rays": 646,
+          "fraction": 0.272446
+        }
+      ],
+      "floor_or_ceiling_exit_rays": 398,
+      "slm_native_full_angle_deg": 8.15698,
+      "simple_relay_full_angle_deg": 0.21136,
+      "simple_relay_cone_span_mm_at_eye_distance": 9.2223,
+      "phase_payload_gbps_per_channel": 3.981312,
+      "phase_payload_gbps_rgb_two_independent_eyes": 23.887872,
+      "sequential_rgb_two_eye_subframes_hz": 360,
+      "tracking_eyebox_minimum_mm_under_assumptions": 70.0,
+      "raw_camera_payload_gbps_8_cameras": 17.69472,
+      "phases": [
+        {
+          "id": "R0",
+          "labor_man_jpy": [
+            1350,
+            1980
+          ],
+          "incremental_man_jpy": [
+            3000.0,
+            5100.0
+          ],
+          "cumulative_man_jpy": [
+            3000.0,
+            5100.0
+          ]
+        },
+        {
+          "id": "R1",
+          "labor_man_jpy": [
+            5400,
+            7920
+          ],
+          "incremental_man_jpy": [
+            9360.0,
+            15756.0
+          ],
+          "cumulative_man_jpy": [
+            12360.0,
+            20856.0
+          ]
+        },
+        {
+          "id": "R2",
+          "labor_man_jpy": [
+            16200,
+            23760
+          ],
+          "incremental_man_jpy": [
+            30645.0,
+            49626.0
+          ],
+          "cumulative_man_jpy": [
+            43005.0,
+            70482.0
+          ]
+        },
+        {
+          "id": "R3",
+          "labor_man_jpy": [
+            32400,
+            47520
+          ],
+          "incremental_man_jpy": [
+            57240.0,
+            95202.0
+          ],
+          "cumulative_man_jpy": [
+            100245.0,
+            165684.0
+          ]
+        }
+      ],
+      "sequential_months_all_gates_pass": 39,
+      "physical_accepted": false,
+      "success_probability": null
+    },
+    "verification": {
+      "calculation": "PASS_reproduced_geometry_bandwidth_power_and_budget_arithmetic",
+      "relativeLinks": "PASS_8_documents",
+      "fullVerifyExitCode": 1,
+      "fullVerifyFailure": "existing_Miniflare_localhost_ETIMEDOUT_in_3_test_files_4_test_results",
+      "fullTestCounts": {
+        "tests": 3597,
+        "pass": 3589,
+        "fail": 4,
+        "skip": 4
+      },
+      "targetedRetry": {
+        "testConcurrency": 1,
+        "tests": 18,
+        "pass": 17,
+        "fail": 1,
+        "remaining": "tests/migration-union.test.mjs_Miniflare_connect_ETIMEDOUT"
+      },
+      "log": "/private/tmp/mii-room-rd-verify.log",
+      "logSha256": "b13e8eefa4ecd0d4de1beb33fb27dfae559b0e4b656777c70e35b046a17d40d9",
+      "targetedLog": "/private/tmp/mii-room-rd-retry-targeted.log",
+      "physical": "NOT_RUN",
+      "fullVerifyPassed": false
+    }
   }
 }

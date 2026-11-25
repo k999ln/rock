@@ -1,7 +1,10 @@
 'use client';
 import { useEffect, useRef, useState } from 'react';
 import { resolveNoahAgentArt } from '@/lib/noah-agent-art';
+import type { NoahPinScene } from '@/lib/noah-pin-scene';
+import type { NoahPinVideo } from '@/lib/noah-pin-video';
 import { NoahAgentScene } from './noah-agent-scene';
+import NoahPinSceneArt from './noah-pin-scene';
 import styles from './noah-art-motion.module.css';
 
 // The poster is present on first paint. Each illustration plays once when it comes into view.
@@ -65,15 +68,60 @@ function AuthorVideo({ cover, onError }: { cover: NoahCoverView; onError: () => 
   return <video ref={ref} className={styles.coverMedia} muted playsInline preload="metadata" onError={onError} aria-hidden="true" />;
 }
 
-export function NoahPinMotion({ id, name, summary, cover }: { id: string; name: string; summary?: string; cover?: NoahCoverView }) {
+/**
+ * ピンの動画（spec-115 の 10 章）。GIF と同じ見た目の、音なしの短いループ。本人の決定（2026-11-25）「見えている間は繰り返す」。
+ * 画面に見えている間だけ読み込んで繰り返し、外に出たら止める。動きを減らす設定の人には、最初の絵（poster）だけを出す（動画は読まない）。
+ */
+function PinLoopVideo({ video, onError }: { video: NoahPinVideo; onError: () => void }) {
+  const ref = useRef<HTMLVideoElement>(null);
+  useEffect(() => {
+    const element = ref.current;
+    if (!element) return;
+    const reduced = window.matchMedia('(prefers-reduced-motion: reduce)');
+    let visible = false;
+    let pending = false;
+    const sync = () => {
+      if (visible && !reduced.matches && !element.getAttribute('src')) element.src = video.url;
+      if (!visible || document.hidden || reduced.matches) element.pause();
+      else if (!pending) {
+        pending = true;
+        void element.play().catch(() => {}).finally(() => { pending = false; });
+      }
+    };
+    const observer = typeof IntersectionObserver !== 'undefined' ? new IntersectionObserver(([entry]) => {
+      visible = entry.isIntersecting; sync();
+    }, { threshold: .15 }) : null;
+    if (observer) observer.observe(element);
+    else { visible = true; sync(); }
+    reduced.addEventListener('change', sync);
+    document.addEventListener('visibilitychange', sync);
+    return () => {
+      observer?.disconnect(); reduced.removeEventListener('change', sync); document.removeEventListener('visibilitychange', sync);
+      element.pause(); element.removeAttribute('src'); element.load();
+    };
+  }, [video.url]);
+  return <video ref={ref} className={styles.coverMedia} muted loop playsInline preload="none" poster={video.poster} onError={onError} aria-hidden="true" />;
+}
+
+/** 資料の図解（spec-115 の 9 章）。scene は Luna Max が書いて確かめた 1 枚、tone は並びの何枚目か（色を回す）。 */
+export type NoahPinDiagramView = { scene: NoahPinScene; tone: number };
+
+// 絵の順: 作者が選んだ表紙 → ピンの動画（本人の指示 2026-11-25「こういう動画をgifにしてピン画像にする」）→ 図解 → 場面の絵。
+// 前の物が無いか読めない時に、次の物を出す（本人の決定 2026-11-25「作者の表紙→図解→場面」に、動画を図解の前に足した）。
+export function NoahPinMotion({ id, name, summary, cover, diagram, video }: { id: string; name: string; summary?: string; cover?: NoahCoverView; diagram?: NoahPinDiagramView; video?: NoahPinVideo }) {
   const ref = useArtEntrance();
-  const [failed, setFailed] = useState('');
-  const source = cover && failed !== cover.url ? cover : undefined;
-  return <span ref={ref} className={styles.pinArt} data-noah-motion="pin" aria-hidden="true">
+  const [failed, setFailed] = useState<string[]>([]);
+  const fail = (url: string) => setFailed((old) => (old.includes(url) ? old : [...old, url]));
+  const source = cover && !failed.includes(cover.url) ? cover : undefined;
+  const loop = !source && video && !failed.includes(video.url) ? video : undefined;
+  const drawn = !source && !loop && diagram ? diagram : undefined;
+  return <span ref={ref} className={styles.pinArt} data-noah-motion="pin" data-noah-pin-video={loop ? '' : undefined} data-noah-pin-diagram={drawn ? '' : undefined} aria-hidden="true">
     {source ? source.type.startsWith('video/') ?
-      <AuthorVideo key={source.url} cover={source} onError={() => setFailed(source.url)} /> :
+      <AuthorVideo key={source.url} cover={source} onError={() => fail(source.url)} /> :
       /* oxlint-disable-next-line next/no-img-element -- Private author covers use their authenticated, same-origin URL. */
-      <img className={styles.coverMedia} src={source.url} alt="" loading="lazy" onError={() => setFailed(source.url)} /> :
+      <img className={styles.coverMedia} src={source.url} alt="" loading="lazy" onError={() => fail(source.url)} /> :
+      loop ? <PinLoopVideo key={loop.url} video={loop} onError={() => fail(loop.url)} /> :
+      drawn ? <NoahPinSceneArt scene={drawn.scene} tone={drawn.tone} /> :
       <NoahAgentScene art={resolveNoahAgentArt(id,name,summary)} name={name} summary={summary} />}
   </span>;
 }

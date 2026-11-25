@@ -422,3 +422,12 @@ GitHub受入先: [PR #3](https://github.com/iceiceice999/rock/pull/3)。main `a0
 PR #24の追補で、受付可能な目的を「お店・会社のサイト運営」「自分のメモ整理」にまとめ、仕事の成果を誰がどう使うかを6言語で表示。空の区分を出さない回帰試験を追加した。[法人・個人それぞれの受入方法](../../docs/noah/first-use-architecture.md#法人と個人に何を届けるか)と[Eve・定期便・報酬の仕様](../../docs/noah/eve-distribution-and-rewards.md)を参照。
 
 [Eve・Noah 図解設計書](../../docs/noah/illustrated-specifications.md)と[共有用PDF](../../docs/assets/noah-illustrated-specifications.pdf)に、画面からAPI・権限・保存先・受入までと、売上・報酬・物流を接続する条件をまとめた（[PR #24](https://github.com/iceiceice999/rock/pull/24)）。
+
+
+### 2026-11-23 研修検索とCLI上限後の成果閲覧（PR #39）
+
+[PR #39](https://github.com/iceiceice999/rock/pull/39)でPR #37のストア・マイAgentを保持し、未収録の回帰をテスト3ファイルへ追加。通常ホームから「研修」を検索し、共通カード・提供元入力フォーム・ローカルの実MCPで準備票を作り、`/noah/my?view=saved&tab=results`から同じWork本文を再表示する。Tool実行は1回、相談希望false、本人分離と同一IDの再送非実行を確認。
+
+公式CLIの無料枠は本人3回・全体10回・UTC日次として再起動と日付切替も検査。上限後は429で実行予約・モデル呼出が0、画面の60秒自動再送が0、失敗WorkのchargeMinorが0。マイAgentの保存一覧・詳細の再表示は実行器を呼ばない。法人専用ホーム枠を復活させず、準備票にCLI上限を案内しない。
+
+検証: `PATH=/opt/homebrew/opt/openssl@3/bin:$PATH npm run verify`（検査対象`5421b8fdd`）が全工程exit 0。主要5,237成功・5skip・0失敗、仕事API1,918、CSV385、型検査・lint・ビルド・資産検査・bot:check成功。初回は新規worktreeのココナラ専用playwright-core不足で後段1件が500となり、同toolkitのlockfileどおり依存を補って単独3件と全体を再実行した。テストの削除・無効化なし。追加導線を含む8関連ファイルは65成功。証拠はGit外`work/noah-store-quota-regressions-20261123/work/entry-quota-evidence/`のreport.json、regression.log、full-verify-final.log。画面はReact操作ハーネス、WorkerはMiniflareの合成入力によるローカル検査であり、CSS・実機・本番の受入ではない。本番配備・実行枠消費なし。

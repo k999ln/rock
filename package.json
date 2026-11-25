@@ -115,7 +115,9 @@
     "game:bridge": "node --experimental-strip-types toolkits/fivem-bridge/server.mjs",
     "sky:linux:pixel:build": "node scripts/build-sky-linux-pixel.mjs",
     "web:security:record": "node scripts/record-web-security-evidence.mjs",
-    "noah:mac:package": "node scripts/package-noah-mac.mjs"
+    "noah:mac:package": "node scripts/package-noah-mac.mjs",
+    "noah:revenue:package": "node scripts/package-noah-revenue.mjs",
+    "noah:revenue:test": "node --experimental-strip-types --test tests/noah-revenue-*.test.mjs"
   },
   "dependencies": {
     "@base-ui/react": "1.7.0",
@@ -161,6 +163,7 @@
     "@modelcontextprotocol/server-memory": "2.2.1",
     "@modelcontextprotocol/server-sequential-thinking": "2.2.0",
     "@openai/sites-vite-plugin": "0.2.0",
+    "@resvg/resvg-wasm": "2.4.0",
     "@tailwindcss/postcss": "4.2.1",
     "@types/node": "22.19.19",
     "@types/react": "19.2.14",
@@ -173,6 +176,7 @@
     "oxfmt": "0.72.0",
     "oxlint": "1.76.0",
     "oxlint-tsgolint": "7.0.2001",
+    "satori": "0.16.0",
     "tailwindcss": "4.2.1",
     "typescript": "5.9.3",
     "vite": "8.2.2",

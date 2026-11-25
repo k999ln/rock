@@ -6,7 +6,7 @@ import { runInNewContext } from 'node:vm';
 const ts = createRequire(new URL('../package.json', import.meta.url))('typescript');
 const compile = (path) => ts.transpileModule(readFileSync(new URL(path, import.meta.url), 'utf8'), { compilerOptions: { target: ts.ScriptTarget.ES2022, esModuleInterop: true, jsx: ts.JsxEmit.ReactJSX, module: ts.ModuleKind.CommonJS } }).outputText;
 const a = 'ABCDEFGH', b = 'JKLMNPQR';
-function harness(initialReply) {
+function harness(initialReply, props = {}) {
   const slots = [], effects = [], requests = [], replies = initialReply ? [initialReply] : [], controllers = [];
   let cursor = 0, tree;
   const changed = (old, next) => !old || old.length !== next.length || old.some((v, i) => !Object.is(v, next[i]));
@@ -45,7 +45,7 @@ function harness(initialReply) {
   } });
   function nodes(node, out = []) { if (Array.isArray(node)) node.forEach((v) => nodes(v, out)); else if (node && typeof node === 'object') { out.push(node); nodes(node.props?.children, out); } return out; }
   const text = (node) => typeof node === 'string' ? node : Array.isArray(node) ? node.map(text).join('') : node && typeof node === 'object' ? text(node.props?.children) : '';
-  function render() { cursor = 0; tree = exports.RockstarDeviceAuthorization({ initialCode: a }); effects.splice(0).forEach((fn) => fn()); }
+  function render() { cursor = 0; tree = exports.RockstarDeviceAuthorization({ initialCode: a, ...props }); effects.splice(0).forEach((fn) => fn()); }
   async function flush() { for (let i = 0; i < 4; i++) { await new Promise((r) => setImmediate(r)); render(); } }
   const find = (type) => nodes(tree).find((n) => n.type === type);
   const button = (name) => nodes(tree).find((n) => n.type === 'button' && text(n) === name);
@@ -56,7 +56,10 @@ function harness(initialReply) {
   };
 }
 void test('editing a device code invalidates the previously inspected device before approval', async () => {
-  const h = harness(); await h.flush(); await h.inspect(); assert.ok(h.text().includes('Device A'));
+  const h = harness(); await h.flush();
+  assert.ok(h.text().includes('NoahにMacを接続'));
+  assert.ok(!/RockstarOS|Rockstar ID/.test(h.text()));
+  await h.inspect(); assert.ok(h.text().includes('Device A'));
   await h.code(b); assert.ok(!h.button('この端末を承認'));
   assert.ok(!h.text().includes('Device A'));
   await h.inspect(); assert.ok(h.text().includes('Device B')); await h.click('この端末を承認');
@@ -139,4 +142,18 @@ void test('auth loss during consumed-code readback removes stale device details'
   assert.ok(!h.text().includes('Old device'));
   assert.ok(!h.button('この端末を承認'));
   assert.equal(h.requests.filter(r => r.body).length, 0);
+});
+
+void test('Noah pairing stays in Noah and does not send the browser to account sign-in', async () => {
+  const h = harness(undefined, { noah: true }); await h.flush();
+  assert.equal(h.requests[0].path, '/api/noah/devices');
+  assert.match(h.text(), /新しい会員登録は不要/);
+  assert.doesNotMatch(h.text(), /Eve|アカウント|クラウドAPI/);
+  assert.ok(h.links().every(link => link.props.href.startsWith('/noah')));
+  await h.inspect(); await h.click('この端末を承認');
+  const mutation = h.requests.find(r => r.body?.action === 'approve');
+  assert.equal(mutation.path, '/api/noah/devices');
+  const unavailable = harness({ status: 401, body: {} }, { noah: true }); await unavailable.flush();
+  assert.doesNotMatch(unavailable.text(), /サインイン|Rockstar|会員登録して/);
+  assert.ok(unavailable.links().every(link => link.props.href.startsWith('/noah')));
 });

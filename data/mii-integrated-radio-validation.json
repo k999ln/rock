@@ -1,0 +1,246 @@
+{
+  "date": "2026-11-02",
+  "revision": "P3.1",
+  "status": "design_verified_procurement_hold_external_originals_pending",
+  "branch": "codex/mii-prototype-design-20261102",
+  "baseMain": "7bbb4b27ab6ca3b1d42bef4643c9dda8cb8ba0c6",
+  "baseLocalCommit": "49bb6f5e",
+  "scope": "Common OS unchanged; application route separated from modem maintenance; Japanese procurement review and authorized vendor inquiry; no physical acceptance",
+  "commonOsUnchanged": true,
+  "runtimeImplemented": false,
+  "physicalAccepted": false,
+  "rfColocationAccepted": false,
+  "japanNtnDeviceAccepted": false,
+  "usbPowerContractAccepted": false,
+  "manufacturingReleased": false,
+  "staticDesign": {
+    "result": "PASS_STATIC_ONLY_WITH_OPEN_RELEASE_CONDITIONS",
+    "parts": 17,
+    "connections": 18,
+    "logicalNets": 11,
+    "designA": 2.78,
+    "usbDesignA": 1.1,
+    "upsMarginA": 2.22,
+    "piInputMarginA": 0.22,
+    "usbMarginA": 0.1,
+    "openReleaseConditions": 4,
+    "physicalAccepted": false,
+    "usbPowerContractAccepted": false
+  },
+  "openConditions": [
+    {
+      "id": "R01",
+      "status": "OPEN",
+      "condition": "host co-location including Wi-Fi plus modem control-plane transmissions; country RF evaluation"
+    },
+    {
+      "id": "R02",
+      "status": "OPEN",
+      "condition": "JP NTN certificates, band-fw-carrier, subscription, Skylo attach/stop/TN priority and bounded maintenance cost"
+    },
+    {
+      "id": "R03",
+      "status": "OPEN",
+      "condition": "exact kit and antenna MPN-gain-bands-size"
+    },
+    {
+      "id": "R04",
+      "status": "OPEN",
+      "condition": "EVK USB power contract; supplied UPS charger identity, 5V transients, cell matching, temperature and cable acceptance"
+    }
+  ],
+  "physicalAcceptance": [
+    {
+      "id": "P3-A01",
+      "status": "NOT_RUN"
+    },
+    {
+      "id": "P3-A02",
+      "status": "NOT_RUN"
+    },
+    {
+      "id": "P3-A03",
+      "status": "NOT_RUN"
+    },
+    {
+      "id": "P3-A04",
+      "status": "NOT_RUN"
+    },
+    {
+      "id": "P3-A05",
+      "status": "NOT_RUN"
+    },
+    {
+      "id": "P3-A06",
+      "status": "NOT_RUN"
+    },
+    {
+      "id": "P3-A07",
+      "status": "NOT_RUN"
+    }
+  ],
+  "power": {
+    "chosen": "Waveshare UPS Module 3S + specified 12.6V2A charger + Molicel INR-18650-P28A x3",
+    "rejected": "PiSugar + SC0218/DDR due input tolerance/transient mismatch; M35A current limit and PiJuice output limit do not fit",
+    "evidence": "Waveshare manufacturer interface figures pp11-13 visually read; Molicel v1.3 charge/length checked",
+    "unattendedChargeAccepted": false,
+    "sealedProductAccepted": false,
+    "temperatureProtectionVerified": false,
+    "waveformsMeasured": false
+  },
+  "verification": {
+    "initialAttempt": {
+      "command": "PATH=/opt/homebrew/opt/openssl@3/bin:$PATH npm run verify",
+      "exitCode": 1,
+      "reason": "Sandbox blocked localhost listen at sky:a2a:workflow:test with EPERM",
+      "log": "/private/tmp/mii-p3-review/full-verify.log",
+      "logSha256": "2ebac2039a3a5e6f393e835151ee85bc4459bc9abbe8933a033ccadd68f98c3d"
+    },
+    "fullVerify": {
+      "command": "PATH=/opt/homebrew/opt/openssl@3/bin:$PATH npm run verify",
+      "exitCode": 0,
+      "rootTests": 3597,
+      "rootPass": 3593,
+      "rootFail": 0,
+      "rootSkipped": 4,
+      "apiAssertions": 1678,
+      "csvAssertions": 385,
+      "webAssets": 264,
+      "missingWebAssets": 0,
+      "log": "/private/tmp/mii-p3-review/full-verify-unrestricted.log",
+      "logSha256": "ad121d8582877c2fb1b8e11b130652c25d3332500b2c8f6594edf60bf99177db",
+      "scopeNote": "P3.1 source checks in environment permitting local loopback; later documentation/status updates receive targeted checks. No RF, power-waveform or physical acceptance."
+    },
+    "targeted": [
+      {
+        "command": "python3 docs/mii/design/portable-p3/check.py",
+        "exitCode": 0
+      },
+      {
+        "command": "python3 docs/mii/design/portable-p2/check.py",
+        "exitCode": 0
+      },
+      {
+        "command": "npm run design:check",
+        "exitCode": 0
+      },
+      {
+        "command": "npm run project:update",
+        "exitCode": 0
+      },
+      {
+        "command": "git diff --check",
+        "exitCode": 0
+      }
+    ],
+    "links": {
+      "scope": "Added Markdown links in changed/new documents",
+      "checked": 27,
+      "missing": [],
+      "result": "PASS"
+    }
+  },
+  "pdf": {
+    "path": "output/pdf/mii-portable-p3-wiring.pdf",
+    "pages": 6,
+    "sha256": "bf51095a3db86200eab0b58d371e45727d9478de097177aaa1fe312861c8d677",
+    "visualReview": "All six P3.1 final pages viewed, no clipping/overlap; no physical assembly evidence",
+    "gitTracked": false,
+    "regenerate": "python3 docs/mii/design/portable-p3/render.py"
+  },
+  "sourceConfidence": {
+    "manufacturerDocuments": "Murata module datasheet, Murata hardware guidelines (FCC document mirror), Waveshare maker-authored PDF mirror and official indexed product, Molicel official v1.3",
+    "serviceDocuments": "Soracom current service/configuration + Japan July 2026 announcement; older Skylo band examples not substituted for current provider configuration",
+    "unresolved": "exact host grant/co-location, Japan NTN device certificate/fw/band, supplied antenna MPN/gain/bands, EVK USB power/host conditions, charger label and physical acceptance",
+    "newPrimarySources": [
+      "Skylo Device Conformance §2.4",
+      "Soracom Japanese planNT1 announcement and updated module guide",
+      "Quectel TE-B v1.0.0 Preliminary (maker authored, distributor hosted)",
+      "Quectel YECN028AA v3.0, NTN gain table visually checked"
+    ],
+    "wifi": "Official Pi4 Japan certificate listing found; image-PDF body not successfully read back, no certificate number inferred",
+    "japanCertificate": "BG770A-SN 003-250340 is an unverified inquiry lead; MIC original could not be read. No JP NTN compliance acceptance"
+  },
+  "externalActions": {
+    "purchase": false,
+    "vendorMessageSent": true,
+    "contract": false,
+    "simActivation": false,
+    "radioTransmission": false,
+    "osFlash": false,
+    "githubPush": false,
+    "mainMerge": false,
+    "vendorMessagesSent": 1
+  },
+  "next": [
+    "Use user-designated company sender; obtain primary login or authenticated webmail without requesting passwords in chat. Do not send more mail from personal Gmail.",
+    "Complete Soracom required company/department/phone, send the already-authorized inquiry; use company sender for Quectel follow-up.",
+    "Obtain original JP NTN certificates and approved antenna/host-power/provider procedures, then revise BOM/wiring and test P3-A01..07 on one actual unit."
+  ],
+  "sourceHashes": {
+    ".gitignore": "623d07315b92323a16376ca707a57dfc2e3d28c97fac3eaac3a050d9bdc37bb1",
+    "CHANGELOG.md": "13121bcf2f074910f04dfcfde2d28029d3ed21f408136ed342b0f97aefca8854",
+    "README.md": "7e1da07efeec60fc68f2e018a4c84b4bd40fcff4b0462234d3c89f2c8728ace6",
+    "data/design-document-index.json": "c315cd8f49a68a4b330c4ede04366b7b339794edddf72aa2396982c42a06f16e",
+    "data/project-status.json": "1038af941f9cd070257b62785c16dddfd9808d1ac17c83616192277386d256a0",
+    "docs/mii/design/00-README.md": "4912c786ac4ba32f485f516fdf329dd9e3a4331e8cbae6e7c577879e788c82fc",
+    "docs/mii/design/22-integrated-radio.md": "6dd644c97bbe036408dc4631f96413d3b27b5375c4ef7868db9e8a587408e612",
+    "docs/mii/design/portable-p3/bom-netlist.json": "20f6a0c8935045d905eff334ea499ed1849022416fe8619b3f6c89d6265f3577",
+    "docs/mii/design/portable-p3/check.py": "cc32efcb02dc008f2845f8fa6572c8020c56c0c5d5b678a64a40306aa03b2574",
+    "docs/mii/design/portable-p3/render.py": "1eb87879673824daf3166dde3904e1f0a020f4b4a898824ae173dccc5c796f1e",
+    "docs/rockstaros-avocado-mini-complete-design.md": "3a50286ee8435e497fe2df60326e706958c05291a0e3d23b3c73bd715e0437d1",
+    "docs/rockstaros-complete-design.md": "73a4242bcf6b8d01a012eea131475c2b1bd84c56c904c7084c548d91dfb50a2a",
+    "docs/structure/01-mii.md": "b2aac9acf45a6584ffe8a240f26131cfd13e3bb1f00f04fa90a12dc5a9228146",
+    "docs/structure/02-rockstaros.md": "b288b3bcbc107ff89bb6ac460b65ca38471a5021ff1cc62d572ea71eac818b12",
+    "docs/structure/07-decisions-from-minutes.md": "377f857c71964741ca06932797b7d8b5fe1ad2a2938b150e1e67dfdcb1dd463f",
+    "docs/workstreams/11-material-invention-avocado-mini.md": "499e983c9d336121b7dfbc9ac48bbc4d9c4093ab0c7960ae4c817ef20871a80b",
+    "project.md": "0222ea1f6c895f8d27eae4894281822d20dce7b122579a5d4a3fdeff3990cdaf",
+    "systems/rock-star-os/targets/mii-portable-p3/README.md": "f9f92e075b44a1eeaa3282065fa43d5205aea0b02f13a919b42922835774e896",
+    "docs/mii/design/23-japan-procurement.md": "a616b555f28d26ed7e0a34f623d638c3cca6fbe480c27e9889f726f6aeb416b5"
+  },
+  "priorRevisionEvidence": {
+    "revision": "P3",
+    "commit": "49bb6f5e",
+    "path": "data/mii-integrated-radio-validation.json",
+    "scope": "Historical checks and PDF at that commit; superseded provider-control assumption"
+  },
+  "providerConformanceAccepted": false,
+  "procurementReleased": false,
+  "inquiries": {
+    "approval": "User explicitly approved two technical inquiries in this chat; later required company email",
+    "quectel": {
+      "sent": true,
+      "sentReadbackVerified": true,
+      "sentBeforeCompanySenderDirection": true,
+      "responseReceived": false,
+      "companyFollowupSent": false
+    },
+    "soracom": {
+      "sent": false,
+      "reason": "Required company name, department and phone not supplied"
+    },
+    "companySender": {
+      "ready": false,
+      "status": "Zoho account identifier not found on sign-in; may be alias; primary login or webmail requested"
+    },
+    "privateDraftPath": "output/inquiries/mii-vendor-inquiries.md",
+    "containsPurchaseAuthorization": false
+  },
+  "correspondenceUpdate": {
+    "date": "2026-11-02",
+    "scope": "Company Quectel delivery and Soracom official form acceptance verified; both technical responses pending. Hardware/runtime unchanged.",
+    "physical": "NOT_RUN",
+    "validation": "project:update/design:check/diff/source-hash/contact-exclusion PASS; prior full verify retained, no runtime changes"
+  },
+  "vendorReplyReview20261103": {
+    "quectel": "Partial antenna response read in authenticated company mailbox; YECN028AA not in BG770A certification antenna list; 5 alternatives suggested",
+    "candidate": "YECT003AA subject to Japan NTN certificate/antenna conditions",
+    "remainingQuestionsPending": true,
+    "soracom": "Receipt only found; technical response not verified",
+    "additionalMessagesSent": 0,
+    "commonOsUnchanged": true,
+    "procurementReleased": false,
+    "powerAuthority": "docs/mii/design/26-fire-certification-power.md"
+  },
+  "sourceHashScope": "Historical P3.1 checkpoint; current F3 revisions are hashed in data/mii-fire-alarm-design.json"
+}

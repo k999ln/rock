@@ -1,0 +1,826 @@
+{
+  "revision": "HW1",
+  "date": "2026-11-02",
+  "scope": "4 Tower + dedicated Hub + Gen1 display; modular body assembly design",
+  "status": "design_only",
+  "tower_count": 4,
+  "physical_accepted": false,
+  "firmware_accepted": false,
+  "manufacturing_released": false,
+  "parts": [
+    {
+      "id": "CAM",
+      "group": "tower",
+      "per_unit": 1,
+      "total": 4,
+      "model": "Luxonis OAK-D Pro W PoE / IMX378 / A00574",
+      "connection": "M12 X-coded 8pin PoE; M8 aux capped NC",
+      "sources": [
+        "S01",
+        "S02"
+      ]
+    },
+    {
+      "id": "MCU",
+      "group": "tower",
+      "per_unit": 1,
+      "total": 4,
+      "model": "PJRC Teensy 4.1 / Ethernet PHY搭載版",
+      "connection": "VIN 5V; GPIO 3.3V; Ethernet kit; NE版不可",
+      "sources": [
+        "S04",
+        "S06",
+        "S31"
+      ]
+    },
+    {
+      "id": "ETH",
+      "group": "tower",
+      "per_unit": 1,
+      "total": 4,
+      "model": "PJRC ETHERNET_KIT",
+      "connection": "純正2×3/2mm header・ribbon・MagJackを一式使用",
+      "sources": [
+        "S05"
+      ]
+    },
+    {
+      "id": "MCU-SOCKET",
+      "group": "tower",
+      "per_unit": 1,
+      "total": 4,
+      "model": "2.54mm 1×24 male header×2＋1×24 female socket×2 / 1組",
+      "connection": "Teensy着脱用; female高さ8.5mm以上、Ethernet裏面部品と干渉しないこと",
+      "sources": [
+        "DESIGN"
+      ]
+    },
+    {
+      "id": "MIC-L",
+      "group": "tower",
+      "per_unit": 1,
+      "total": 4,
+      "model": "Adafruit 3421 / SPH0645LM4H",
+      "connection": "I2S left, SEL=GND",
+      "sources": [
+        "S07",
+        "S28"
+      ]
+    },
+    {
+      "id": "MIC-R",
+      "group": "tower",
+      "per_unit": 1,
+      "total": 4,
+      "model": "Adafruit 3421 / SPH0645LM4H",
+      "connection": "I2S right, SEL=3.3V",
+      "sources": [
+        "S07",
+        "S28"
+      ]
+    },
+    {
+      "id": "RAD",
+      "group": "tower",
+      "per_unit": 1,
+      "total": 4,
+      "model": "DFRobot SEN0623 / C1001",
+      "connection": "5V VIN; 3.3V IO2 presence; UART NC",
+      "sources": [
+        "S08"
+      ]
+    },
+    {
+      "id": "SE",
+      "group": "tower",
+      "per_unit": 1,
+      "total": 4,
+      "model": "Adafruit 4314 / ATECC608 breakout",
+      "connection": "I2C VIN=3.3V; 鍵書込・lock未実施",
+      "sources": [
+        "S09",
+        "S29"
+      ]
+    },
+    {
+      "id": "TMP",
+      "group": "tower",
+      "per_unit": 1,
+      "total": 4,
+      "model": "Adafruit 1782 / MCP9808",
+      "connection": "I2C VIN=3.3V; address 0x18",
+      "sources": [
+        "S10",
+        "S30"
+      ]
+    },
+    {
+      "id": "FLEX",
+      "group": "tower",
+      "per_unit": 1,
+      "total": 4,
+      "model": "Ubiquiti USW-Flex",
+      "connection": "port1 PoE++ in; port2 CAM; port3 control",
+      "sources": [
+        "S11"
+      ]
+    },
+    {
+      "id": "SPL",
+      "group": "tower",
+      "per_unit": 1,
+      "total": 4,
+      "model": "Adafruit 3785 / MicroUSB 5V 2.4A isolated PoE splitter",
+      "connection": "100Mbps data only; minimum load 100mA",
+      "sources": [
+        "S15"
+      ]
+    },
+    {
+      "id": "USB",
+      "group": "tower",
+      "per_unit": 1,
+      "total": 4,
+      "model": "Adafruit 1833 / USB Micro-B breakout",
+      "connection": "VBUS / GNDのみ使用",
+      "sources": [
+        "S16"
+      ]
+    },
+    {
+      "id": "SW",
+      "group": "tower",
+      "per_unit": 1,
+      "total": 4,
+      "model": "Pololu 2810 / Mini MOSFET Slide Switch LV",
+      "connection": "radar power; slide OFF固定; ON=MCU3",
+      "sources": [
+        "S17"
+      ]
+    },
+    {
+      "id": "F1",
+      "group": "tower",
+      "per_unit": 1,
+      "total": 4,
+      "model": "Littelfuse RXEF110 / radial PPTC",
+      "connection": "hold 1.1A at 20°C; thermal derating; 5V枝のみ",
+      "sources": [
+        "S18"
+      ]
+    },
+    {
+      "id": "RLOAD",
+      "group": "tower",
+      "per_unit": 1,
+      "total": 4,
+      "model": "43Ω ±5%, 2W以上, 難燃リード抵抗",
+      "connection": "最小負荷用; 5Vで約0.58W; 浮かせて実装",
+      "sources": [
+        "DESIGN"
+      ]
+    },
+    {
+      "id": "RPD",
+      "group": "tower",
+      "per_unit": 2,
+      "total": 8,
+      "model": "100kΩ ±5%, 0.25W リード抵抗",
+      "connection": "radar ON / IO2のpulldown各1",
+      "sources": [
+        "DESIGN"
+      ]
+    },
+    {
+      "id": "CIN",
+      "group": "tower",
+      "per_unit": 1,
+      "total": 4,
+      "model": "100µF 16V 電解capacitor",
+      "connection": "+5V_NODE-GND; +極は5V",
+      "sources": [
+        "DESIGN"
+      ]
+    },
+    {
+      "id": "COUT",
+      "group": "tower",
+      "per_unit": 1,
+      "total": 4,
+      "model": "10µF 16V 電解capacitor",
+      "connection": "+5V_RADAR-GND; +極は5V",
+      "sources": [
+        "DESIGN"
+      ]
+    },
+    {
+      "id": "CBYP",
+      "group": "tower",
+      "per_unit": 2,
+      "total": 8,
+      "model": "100nF X7R 25V以上 リードcapacitor",
+      "connection": "SW VIN-GND / radar VIN-GND各1",
+      "sources": [
+        "DESIGN"
+      ]
+    },
+    {
+      "id": "PROTO",
+      "group": "tower",
+      "per_unit": 1,
+      "total": 4,
+      "model": "Adafruit 1609 / Perma-Proto half size",
+      "connection": "低圧配電と受動部品; 全機器を一枚に載せない",
+      "sources": [
+        "S27"
+      ]
+    },
+    {
+      "id": "M12",
+      "group": "tower",
+      "per_unit": 1,
+      "total": 4,
+      "model": "Luxonis M12 X-coded male to RJ45 male Ethernet Cable / 2m variant",
+      "connection": "CAM専用; ページ名3mでも2m variantを照合",
+      "sources": [
+        "S03"
+      ]
+    },
+    {
+      "id": "UPLINK",
+      "group": "tower",
+      "per_unit": 1,
+      "total": 4,
+      "model": "StarTech NLBL-10M-CAT6A-PATCH",
+      "connection": "10m RJ45 male-male / PoE++ 100W対応",
+      "sources": [
+        "S25"
+      ]
+    },
+    {
+      "id": "CTRL-CABLE",
+      "group": "tower",
+      "per_unit": 1,
+      "total": 4,
+      "model": "StarTech NLBL-2M-CAT6A-PATCH",
+      "connection": "2m FLEX3→SPL input",
+      "sources": [
+        "S26"
+      ]
+    },
+    {
+      "id": "HUB",
+      "group": "hub",
+      "per_unit": 1,
+      "total": 1,
+      "model": "NVIDIA Jetson AGX Orin 64GB Developer Kit",
+      "connection": "carrier / factory cooler / included PSU一式; module単体不可",
+      "sources": [
+        "S19",
+        "S20"
+      ]
+    },
+    {
+      "id": "SSD",
+      "group": "hub",
+      "per_unit": 1,
+      "total": 1,
+      "model": "Samsung 980 PRO 1TB / MZ-V8P1T0BW",
+      "connection": "M.2 2280 NVMe; HUB J1; data用",
+      "sources": [
+        "S21"
+      ]
+    },
+    {
+      "id": "PSE",
+      "group": "hub",
+      "per_unit": 1,
+      "total": 1,
+      "model": "Ubiquiti USW-Pro-24-PoE",
+      "connection": "17–20=4 Tower; 25=SFP+ 10G; budget400W",
+      "sources": [
+        "S12",
+        "S13"
+      ]
+    },
+    {
+      "id": "SFP",
+      "group": "hub",
+      "per_unit": 1,
+      "total": 1,
+      "model": "Ubiquiti UACC-CM-RJ45-MG-US",
+      "connection": "PSE25 SFP+→10GBASE-T RJ45",
+      "sources": [
+        "S14"
+      ]
+    },
+    {
+      "id": "HUB-CABLE",
+      "group": "hub",
+      "per_unit": 1,
+      "total": 1,
+      "model": "StarTech NLBL-2M-CAT6A-PATCH",
+      "connection": "2m SFP→HUB J17, dataのみ",
+      "sources": [
+        "S26"
+      ]
+    },
+    {
+      "id": "DP",
+      "group": "display",
+      "per_unit": 1,
+      "total": 1,
+      "model": "StarTech DP2HD4K60S",
+      "connection": "active DP1.4 male→HDMI2.0 female",
+      "sources": [
+        "S23"
+      ]
+    },
+    {
+      "id": "HDMI",
+      "group": "display",
+      "per_unit": 1,
+      "total": 1,
+      "model": "StarTech HDMM2M",
+      "connection": "2m HDMI male-male; HW1 1080p60",
+      "sources": [
+        "S24"
+      ]
+    },
+    {
+      "id": "PJ",
+      "group": "display",
+      "per_unit": 1,
+      "total": 1,
+      "model": "BenQ TK710STi",
+      "connection": "HDMI1; factory power cord; 1面表示",
+      "sources": [
+        "S22"
+      ]
+    }
+  ],
+  "sources": {
+    "S01": {
+      "title": "Luxonis OAK-D Pro W PoE",
+      "url": "https://docs.luxonis.com/hardware/products/OAK-D%20Pro%20W%20PoE",
+      "accessed": "2026-11-02"
+    },
+    "S02": {
+      "title": "Luxonis product / IMX378 variant A00574",
+      "url": "https://shop.luxonis.com/products/oak-d-pro-w-poe",
+      "accessed": "2026-11-02"
+    },
+    "S03": {
+      "title": "Luxonis M12 to RJ45 cable / select 2m",
+      "url": "https://shop.luxonis.com/products/ethernet-cable-m12-rj45-3m-cable",
+      "accessed": "2026-11-02"
+    },
+    "S04": {
+      "title": "PJRC Teensy 4.1",
+      "url": "https://www.pjrc.com/store/teensy41.html",
+      "accessed": "2026-11-02"
+    },
+    "S05": {
+      "title": "PJRC Ethernet Kit",
+      "url": "https://www.pjrc.com/store/ethernet_kit.html",
+      "accessed": "2026-11-02"
+    },
+    "S06": {
+      "title": "PJRC Teensy 4.1 pin card",
+      "url": "https://www.pjrc.com/teensy/card11a_rev4_web.pdf",
+      "accessed": "2026-11-02"
+    },
+    "S07": {
+      "title": "Adafruit SPH0645LM4H microphone pinout",
+      "url": "https://learn.adafruit.com/adafruit-i2s-mems-microphone-breakout/pinouts",
+      "accessed": "2026-11-02"
+    },
+    "S08": {
+      "title": "DFRobot SEN0623 C1001 pinout",
+      "url": "https://wiki.dfrobot.com/sen0623",
+      "accessed": "2026-11-02"
+    },
+    "S09": {
+      "title": "Adafruit ATECC608 pinout",
+      "url": "https://learn.adafruit.com/adafruit-atecc608-breakout/pinouts",
+      "accessed": "2026-11-02"
+    },
+    "S10": {
+      "title": "Adafruit MCP9808 pinout",
+      "url": "https://learn.adafruit.com/adafruit-mcp9808-precision-i2c-temperature-sensor-guide/pinouts",
+      "accessed": "2026-11-02"
+    },
+    "S11": {
+      "title": "Ubiquiti USW-Flex",
+      "url": "https://techspecs.ui.com/unifi/switching/usw-flex",
+      "accessed": "2026-11-02"
+    },
+    "S12": {
+      "title": "Ubiquiti USW-Pro-24-PoE QSG",
+      "url": "https://dl.ui.com/qsg/USW-Pro-24-POE/USW-Pro-24-POE_EN.html",
+      "accessed": "2026-11-02"
+    },
+    "S13": {
+      "title": "Ubiquiti PoE budget",
+      "url": "https://dl.ui.com/ds/usw_pro_poe_ds.pdf",
+      "accessed": "2026-11-02"
+    },
+    "S14": {
+      "title": "Ubiquiti UACC-CM-RJ45-MG",
+      "url": "https://techspecs.ui.com/unifi/accessories/uacc-cm-rj45-mg",
+      "accessed": "2026-11-02"
+    },
+    "S15": {
+      "title": "Adafruit 3785 PoE splitter",
+      "url": "https://www.adafruit.com/product/3785",
+      "accessed": "2026-11-02"
+    },
+    "S16": {
+      "title": "Adafruit 1833 Micro-B breakout",
+      "url": "https://www.adafruit.com/product/1833",
+      "accessed": "2026-11-02"
+    },
+    "S17": {
+      "title": "Pololu 2810 power switch",
+      "url": "https://www.pololu.com/product/2810",
+      "accessed": "2026-11-02"
+    },
+    "S18": {
+      "title": "Littelfuse RXEF datasheet",
+      "url": "https://www.littelfuse.com/assetdocs/littelfuse_ptc_radial_leaded_rxef_datasheet?assetguid=e9a7b6b3-79ce-478c-a39a-0a70ee48ccec",
+      "accessed": "2026-11-02"
+    },
+    "S19": {
+      "title": "NVIDIA AGX Orin developer kit connector layout",
+      "url": "https://docs.nvidia.com/jetson/agx-orin-devkit/user-guide/latest/hardware_layout.html",
+      "accessed": "2026-11-02"
+    },
+    "S20": {
+      "title": "NVIDIA AGX Orin developer kit quick start",
+      "url": "https://docs.nvidia.com/jetson/agx-orin-devkit/user-guide/latest/quick_start.html",
+      "accessed": "2026-11-02"
+    },
+    "S21": {
+      "title": "Samsung 980 PRO datasheet",
+      "url": "https://download.semiconductor.samsung.com/resources/data-sheet/Samsung-NVMe-SSD-980-PRO-Data-Sheet_Rev.2.1_230509_10129505081019.pdf",
+      "accessed": "2026-11-02"
+    },
+    "S22": {
+      "title": "BenQ TK710STi specifications",
+      "url": "https://www.benq.eu/en-uk/projector/gaming/tk710sti/spec.html",
+      "accessed": "2026-11-02"
+    },
+    "S23": {
+      "title": "StarTech DP2HD4K60S",
+      "url": "https://media.startech.com/cms/pdfs/dp2hd4k60s_datasheet.pdf",
+      "accessed": "2026-11-02"
+    },
+    "S24": {
+      "title": "StarTech HDMM2M",
+      "url": "https://media.startech.com/cms/pdfs/hdmm2m_datasheet.pdf",
+      "accessed": "2026-11-02"
+    },
+    "S25": {
+      "title": "StarTech 10m Cat6A PoE++ cable",
+      "url": "https://media.startech.com/cms/pdfs/nlbl-10m-cat6a-patch_datasheet.pdf",
+      "accessed": "2026-11-02"
+    },
+    "S26": {
+      "title": "StarTech 2m Cat6A cable",
+      "url": "https://media.startech.com/cms/pdfs/nlbl-2m-cat6a-patch_datasheet.pdf",
+      "accessed": "2026-11-02"
+    },
+    "S27": {
+      "title": "Adafruit Perma-Proto half size",
+      "url": "https://www.adafruit.com/product/1609",
+      "accessed": "2026-11-02"
+    },
+    "S28": {
+      "title": "Adafruit microphone 3421",
+      "url": "https://www.adafruit.com/product/3421",
+      "accessed": "2026-11-02"
+    },
+    "S29": {
+      "title": "Adafruit secure element 4314",
+      "url": "https://www.adafruit.com/product/4314",
+      "accessed": "2026-11-02"
+    },
+    "S30": {
+      "title": "Adafruit temperature sensor 1782",
+      "url": "https://www.adafruit.com/product/1782",
+      "accessed": "2026-11-02"
+    },
+    "S31": {
+      "title": "PJRC Teensy power / backside pin card",
+      "url": "https://www.pjrc.com/teensy/card11b_rev4_web.pdf",
+      "accessed": "2026-11-02"
+    },
+    "S32": {
+      "title": "Luxonis mechanical envelopes",
+      "url": "https://github.com/luxonis/luxonis-isaac-sim/blob/main/README.md",
+      "accessed": "2026-11-02"
+    }
+  },
+  "nets": [
+    {
+      "id": "P00",
+      "name": "5V_IN",
+      "nominal_v": 5,
+      "endpoints": [
+        "USB.VBUS",
+        "F1.1"
+      ]
+    },
+    {
+      "id": "P01",
+      "name": "5V_NODE",
+      "nominal_v": 5,
+      "endpoints": [
+        "F1.2",
+        "MCU.VIN",
+        "SW.VIN",
+        "RLOAD.1",
+        "CIN.+",
+        "CBYP-A.1"
+      ]
+    },
+    {
+      "id": "P02",
+      "name": "5V_RADAR",
+      "nominal_v": 5,
+      "endpoints": [
+        "SW.VOUT",
+        "RAD.VIN",
+        "COUT.+",
+        "CBYP-B.1"
+      ]
+    },
+    {
+      "id": "P03",
+      "name": "3V3",
+      "nominal_v": 3.3,
+      "endpoints": [
+        "MCU.3V3",
+        "MIC-L.3V",
+        "MIC-R.3V",
+        "MIC-R.SEL",
+        "SE.VIN",
+        "TMP.VIN"
+      ]
+    },
+    {
+      "id": "P04",
+      "name": "GND",
+      "nominal_v": 0,
+      "endpoints": [
+        "USB.GND",
+        "MCU.GND",
+        "SW.GND",
+        "RAD.GND",
+        "MIC-L.GND",
+        "MIC-R.GND",
+        "MIC-L.SEL",
+        "SE.GND",
+        "TMP.GND",
+        "RLOAD.2",
+        "RPD-A.2",
+        "RPD-B.2",
+        "CIN.-",
+        "COUT.-",
+        "CBYP-A.2",
+        "CBYP-B.2"
+      ]
+    },
+    {
+      "id": "S01",
+      "name": "I2S_BCLK",
+      "nominal_v": 3.3,
+      "endpoints": [
+        "MCU.21",
+        "MIC-L.BCLK",
+        "MIC-R.BCLK"
+      ]
+    },
+    {
+      "id": "S02",
+      "name": "I2S_LRCLK",
+      "nominal_v": 3.3,
+      "endpoints": [
+        "MCU.20",
+        "MIC-L.LRCL",
+        "MIC-R.LRCL"
+      ]
+    },
+    {
+      "id": "S03",
+      "name": "I2S_DATA",
+      "nominal_v": 3.3,
+      "endpoints": [
+        "MIC-L.DOUT",
+        "MIC-R.DOUT",
+        "MCU.8"
+      ]
+    },
+    {
+      "id": "S04",
+      "name": "I2C_SDA",
+      "nominal_v": 3.3,
+      "endpoints": [
+        "MCU.18",
+        "SE.SDA",
+        "TMP.SDA"
+      ]
+    },
+    {
+      "id": "S05",
+      "name": "I2C_SCL",
+      "nominal_v": 3.3,
+      "endpoints": [
+        "MCU.19",
+        "SE.SCL",
+        "TMP.SCL"
+      ]
+    },
+    {
+      "id": "S06",
+      "name": "RADAR_ENABLE",
+      "nominal_v": 3.3,
+      "endpoints": [
+        "MCU.3",
+        "SW.ON",
+        "RPD-A.1"
+      ]
+    },
+    {
+      "id": "S07",
+      "name": "RADAR_PRESENCE",
+      "nominal_v": 3.3,
+      "endpoints": [
+        "RAD.IO2",
+        "MCU.4",
+        "RPD-B.1"
+      ]
+    }
+  ],
+  "connections": [
+    {
+      "id": "E01",
+      "source": "PSE.17-20",
+      "destination": "FLEX.1",
+      "cable_part": "UPLINK",
+      "mode": "1GbE + 802.3bt, T1..T4 respectively"
+    },
+    {
+      "id": "E02",
+      "source": "FLEX.2",
+      "destination": "CAM.M12",
+      "cable_part": "M12",
+      "mode": "1GbE + 802.3af/at; factory cable"
+    },
+    {
+      "id": "E03",
+      "source": "FLEX.3",
+      "destination": "SPL.PoE_IN",
+      "cable_part": "CTRL-CABLE",
+      "mode": "100Mbps + 802.3af"
+    },
+    {
+      "id": "E04",
+      "source": "SPL.RJ45_OUT",
+      "destination": "ETH.RJ45",
+      "cable_part": "SPL",
+      "mode": "attached RJ45 male, DATA ONLY"
+    },
+    {
+      "id": "E05",
+      "source": "ETH.ribbon",
+      "destination": "MCU.ETHERNET_2x3",
+      "cable_part": "ETH",
+      "mode": "factory kit orientation; solder per PJRC"
+    },
+    {
+      "id": "E06",
+      "source": "SPL.MicroUSB_OUT",
+      "destination": "USB.MicroB",
+      "cable_part": "SPL",
+      "mode": "attached Micro-B male; POWER ONLY"
+    },
+    {
+      "id": "H01",
+      "source": "PSE.25",
+      "destination": "SFP.SFP+",
+      "cable_part": "SFP",
+      "mode": "10G SFP+ module insertion"
+    },
+    {
+      "id": "H02",
+      "source": "SFP.RJ45",
+      "destination": "HUB.J17",
+      "cable_part": "HUB-CABLE",
+      "mode": "10GBASE-T data only"
+    },
+    {
+      "id": "H03",
+      "source": "HUB.J1",
+      "destination": "SSD.M2",
+      "cable_part": "SSD",
+      "mode": "M-key 2280, unpowered insertion"
+    },
+    {
+      "id": "H04",
+      "source": "HUB.J18",
+      "destination": "DP.DP",
+      "cable_part": "DP",
+      "mode": "DisplayPort source"
+    },
+    {
+      "id": "H05",
+      "source": "DP.HDMI",
+      "destination": "PJ.HDMI1",
+      "cable_part": "HDMI",
+      "mode": "1080p60 / audio; EDID readback"
+    },
+    {
+      "id": "H06",
+      "source": "HUB.factory_PSU",
+      "destination": "HUB.J24",
+      "cable_part": "HUB",
+      "mode": "included USB-C PD PSU; connector above DC jack"
+    },
+    {
+      "id": "H07",
+      "source": "AC.approved_outlet",
+      "destination": "PSE.AC_IN",
+      "cable_part": "PSE",
+      "mode": "included AC power cord"
+    },
+    {
+      "id": "H08",
+      "source": "AC.approved_outlet",
+      "destination": "PJ.AC_IN",
+      "cable_part": "PJ",
+      "mode": "included AC power cord"
+    }
+  ],
+  "nc": [
+    "USB.D-",
+    "USB.D+",
+    "USB.ID",
+    "RAD.TX",
+    "RAD.RX",
+    "RAD.IO1",
+    "TMP.ALERT",
+    "MCU.23",
+    "CAM.M8_all_pins",
+    "FLEX.4",
+    "FLEX.5",
+    "HUB.J30",
+    "HUB.J40"
+  ],
+  "profiles": {
+    "initial": {
+      "mono_width": 640,
+      "mono_height": 400,
+      "mono_fps": 60,
+      "mono_channels": 2,
+      "mono_bits": 8,
+      "rgb_encoded_mbps_cap": 8,
+      "audio_hz": 44100,
+      "audio_channels": 2,
+      "audio_slot_bits": 32,
+      "control_reserve_mbps": 2,
+      "display": "1920x1080@60"
+    },
+    "power": {
+      "central_poe_budget_w": 400,
+      "tower_upstream_reservation_w": 60,
+      "flex_downstream_budget_w": 46,
+      "camera_reservation_w": 15.4,
+      "control_reservation_w": 15.4,
+      "control_5v_max_a": 0.6,
+      "splitter_output_a": 2.4,
+      "external_3v3_budget_a": 0.05,
+      "flex_per_port_max_w": 25,
+      "camera_poe_class": 3
+    }
+  },
+  "mechanical": {
+    "tower_height_mm": 1000,
+    "head_mm": [
+      180,
+      180,
+      220
+    ],
+    "pole_outer_diameter_mm": 60,
+    "pole_wall_mm": 3,
+    "base_diameter_mm": 320,
+    "base_height_mm": 70,
+    "base_steel_thickness_mm": 6,
+    "initial_operation": "secured to rigid fixture; no free-standing acceptance",
+    "hub_mounting_panel_mm": [
+      600,
+      400
+    ],
+    "pole_exposed_length_mm": 710
+  }
+}

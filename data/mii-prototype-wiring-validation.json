@@ -1,0 +1,78 @@
+{
+  "schema": "mii-prototype-wiring-validation/1",
+  "date": "2026-11-02",
+  "revision": "W1",
+  "scope": "documentation_and_generated_assembly_drawings",
+  "baseMain": "7bbb4b27ab6ca3b1d42bef4643c9dda8cb8ba0c6",
+  "baseLocalCommit": "fb3c431379eebaf40a9860051c14b4618c0cd2ea",
+  "branch": "codex/mii-prototype-design-20261102",
+  "documents": {
+    "docs/mii/design/00-README.md": "034fa0621b5ef5d9193d02580ffd3a6bd1eca963f0a4bd88d6f4950959c9adbb",
+    "docs/mii/design/15-prototype-spec.md": "d96f2df2a25b50369133bbc10475b36d2215a8f3eef09cbadd3dda829867950f",
+    "docs/mii/design/16-prototype-acceptance.md": "f971aed0b10f3be291b13b48e9a335c2c474566697a13786e58a220aac42385e",
+    "docs/mii/design/17-component-evaluation-brief.md": "e9d9414d69a15dfdd5c6c157e951c451df0a9f1e98ffb4871e000bdbbe158caf",
+    "docs/mii/design/18-parts-wiring.md": "b4cc8b818a957eb107898d0edc63fc285c1ce566461e54629a5ea3565490e697",
+    "docs/mii/design/wiring/bom.json": "d6fc46ffca4938d9cf10fcdbd15e638e5ba6baf9a70ec87fa867c5879db526ad",
+    "docs/mii/design/wiring/render-wiring.py": "0c0368906a1c954cd7c3d8c03e4d13d077b35c789a0dc7aeff5743e39f6b4ec9",
+    "docs/structure/01-mii.md": "61fa81afff8a9267315b43a94a56c7ff976170fba2c84de59cd43bf3824e3a77",
+    "docs/structure/07-decisions-from-minutes.md": "c1a683aba6d93c67b8f99eb9b8bb54e7b56e2129d50d7a8e41bf6544aa8b7303",
+    "docs/rockstaros-complete-design.md": "ba28497bb9816feaaee24792debabfc5bb4fee019e885c0e99a7af7ee51a8b1a",
+    "docs/rockstaros-avocado-mini-complete-design.md": "ad01ca9419f8db7c26be06fe2268cc1e370ef88e5d16924d966f2196ab815987",
+    "data/design-document-index.json": "b296ca3bdb45bfc703444ffa05e849ce3f801cf767b38f8006a80abcade04828"
+  },
+  "pdf": {
+    "path": "output/pdf/mii-prototype-wiring.pdf",
+    "sha256": "3274d882db5dc2cbc9dbd740ea0b7b8dc11e166825025015f1eb858c9069491c",
+    "pages": 3,
+    "gitTracked": false,
+    "reproduction": "python3 docs/mii/design/wiring/render-wiring.py --output output/pdf/mii-prototype-wiring.pdf",
+    "visualInspection": "PASS; all 3 final pages rendered with pdftoppm at 90 dpi and inspected; connector lines separated, no overlapping labels/table clipping"
+  },
+  "checks": [
+    {
+      "command": "npm run project:update",
+      "result": "PASS; task states unchanged"
+    },
+    {
+      "command": "PATH=/opt/homebrew/opt/openssl@3/bin:$PATH npm run verify",
+      "result": "PASS exit 0; 3597 root tests / 3593 passed / 0 failed / 4 skipped; typecheck/lint/build, design/baseline checks, nested suites, 264 asset references / 0 missing, API 1678, CSV 385, mission/work/bot passed",
+      "logOutsideGit": "/private/tmp/mii-wiring-verify.log",
+      "logSha256": "3d1733bea5d59c5bd044a20fa92ef8253b5f3f1e2e342f9f52d36213446889d6"
+    },
+    {
+      "command": "BOM/connection text readback and Markdown relative-link audit",
+      "result": "PASS; 14 parts, unique W01-W09, exact models/endpoints match chapter 18; 19 chapter files / 0 missing relative targets"
+    },
+    {
+      "command": "pypdf final PDF text and page inspection",
+      "result": "PASS; 3 pages; key models/ports/W09/unaccepted state present; no replacement glyph"
+    },
+    {
+      "command": "Bandwidth arithmetic recalculation",
+      "result": "PASS; full raw10 1456x1088x60 = 950.4768 Mbps; planned grayscale 640x480x30x8 = 73.728 Mbps, both exclude overhead and are not measured transport"
+    },
+    {
+      "command": "git diff --check",
+      "result": "PASS"
+    }
+  ],
+  "physicalTestsRun": false,
+  "runtimeChanged": false,
+  "purchased": false,
+  "osFlashed": false,
+  "supplierContactSent": false,
+  "manufacturingReleased": false,
+  "publicDeploymentChanged": false,
+  "githubSaved": false,
+  "mainIntegrated": false,
+  "unresolved": [
+    "Actual received part labels/revisions and local electrical plug variant",
+    "P0 browser camera/mic selection and installed on-device Japanese ASR",
+    "Pi initial Wi-Fi/SSH setup and physical capture/link measurement",
+    "Authenticated remote camera adapter and time/calibration/lease path",
+    "Two-camera synchronization and full four-Node product networking",
+    "Projector exact model/EDID and C-01 chassis / C-02 four optical conditions"
+  ],
+  "status": "design_validated_physical_not_run",
+  "historicalScope": "W1 development-rig snapshot at local commit 114d1da4. Later chapter labeling and HW1 body edits have separate validation; these hashes are not current-head assertions."
+}
