@@ -1,5 +1,7 @@
 ## 2026-11-26
 
+- Noahの設計に掲載・本人用登録・経路別の成果判定を反映。11月25日の2,428件再調査と本番の再開条件を記録。パッケージの単一ボタン開始、月間成果、eSIMの接続枠案を仕様化（task123・126、[PR #79](https://github.com/iceiceice999/rock/pull/79)）。
+
 - VS Codeを「avokado（統合版）」の単一workspaceへ切り替え、最新eSIM設計・統合ブランチ・ウインドウ1件を画面確認（task133、PR未作成）。
 
 - 最新`origin/main`を土台にローカル設計・収益パックを`avokdo`へ統合。旧`avokado-main`と35ファイルを復元用に保全し、VS Codeの単一入口`avokado.code-workspace`と配置表を追加。ローカルtask番号を131・132へ整理（task133、PR未作成）。
