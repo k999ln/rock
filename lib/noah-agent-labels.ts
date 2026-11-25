@@ -233,21 +233,26 @@ export type NoahLabelBatchResult = {
 };
 
 const object = (value: unknown): value is Record<string, unknown> => !!value && typeof value === 'object' && !Array.isArray(value);
-const assertString = (value: unknown, name: string, max: number, allowControl = false): string => {
-  if (typeof value !== 'string' || value.length < 1 || value.length > max || (!allowControl && CONTROL.test(value))) throw new Error(`${name} is invalid`);
+const assertString = (value: unknown, name: string, max: number): string => {
+  if (typeof value !== 'string' || value.length < 1 || value.length > max || CONTROL.test(value)) throw new Error(`${name} is invalid`);
   return value;
 };
-const assertJson = (value: unknown, name: string): unknown => {
-  // JSON.parse input is acyclic.  canonicalJson additionally gives us a stable
-  // serialization, and this check rejects undefined/function values from callers.
-  try {
-    const json = canonicalJson(value);
-    if (json.includes('undefined')) throw new Error('undefined');
-  } catch {
-    throw new Error(`${name} is not JSON`);
-  }
-  return value;
-};
+function isJson(value: unknown, ancestors = new Set<object>()): boolean {
+  if (value === null || typeof value === 'string' || typeof value === 'boolean') return true;
+  if (typeof value === 'number') return Number.isFinite(value);
+  if (typeof value !== 'object' || ancestors.has(value)) return false;
+  const prototype = Object.getPrototypeOf(value);
+  if (!Array.isArray(value) && prototype !== Object.prototype && prototype !== null) return false;
+  ancestors.add(value);
+  const children = Array.isArray(value) ? Array.from(value) : Object.values(value);
+  const valid = Object.getOwnPropertySymbols(value).length === 0 && children.every((child) => isJson(child, ancestors));
+  ancestors.delete(value);
+  return valid;
+}
+
+function assertJson(value: unknown, name: string) {
+  if (!isJson(value)) throw new Error(`${name} is not JSON`);
+}
 const assertSha = (value: unknown, name: string) => {
   if (typeof value !== 'string' || !HEX64.test(value)) throw new Error(`${name} is not a sha256`);
   return value;
@@ -258,7 +263,7 @@ const uniqueSorted = (values: readonly string[]) => [...new Set(values)].sort(co
 function validateTool(tool: NoahLabelToolInput): NoahLabelToolInput {
   if (!object(tool) || Object.keys(tool).some((key) => !['name', 'description', 'inputSchema', 'outputSchema'].includes(key))) throw new Error('tool has unknown fields');
   assertString(tool?.name, 'tool.name', NOAH_LABEL_BATCH_LIMITS.maxToolNameChars);
-  assertString(tool?.description, 'tool.description', NOAH_LABEL_BATCH_LIMITS.maxToolDescriptionChars, true);
+  if (typeof tool.description !== 'string' || tool.description.length > NOAH_LABEL_BATCH_LIMITS.maxToolDescriptionChars) throw new Error('tool.description is invalid');
   assertJson(tool?.inputSchema, 'tool.inputSchema');
   if (tool.outputSchema !== undefined) assertJson(tool.outputSchema, 'tool.outputSchema');
   return {
@@ -454,19 +459,45 @@ export function buildNoahLabelPrompt(work: NoahLabelWorkItem): string {
 }
 
 type EvidenceSource = { path: string; text: string; source: NoahLabelEvidenceMatch['source'] };
-const normalize = (value: string) => value.toLocaleLowerCase('en-US').replace(/\p{Cc}/gu, ' ').replace(/[_./:-]+/gu, ' ').replace(/\s+/gu, ' ').trim();
-function schemaLeaves(value: unknown, path: string, source: EvidenceSource['source'], out: EvidenceSource[]): void {
-  if (!object(value)) return;
-  for (const key of ['description', 'title', 'format']) {
-    const text = value[key];
-    if (typeof text === 'string') out.push({ path: `${path}.${key}`, text, source });
+const normalize = (value: string) => value.toLocaleLowerCase('en-US').replace(/[\p{Cc}\p{P}]+/gu, ' ').replace(/\s+/gu, ' ').trim();
+function localSchemaDefinition(root: unknown, reference: string): unknown {
+  if (!/^#\/(?:\$defs|definitions)\//u.test(reference)) return undefined;
+  let pointer: string;
+  try { pointer = decodeURIComponent(reference.slice(2)); } catch { return undefined; }
+  let value = root;
+  for (const segment of pointer.split('/')) {
+    if (/~(?![01])/u.test(segment)) return undefined;
+    const key = segment.replace(/~1/gu, '/').replace(/~0/gu, '~');
+    if (!object(value) || !Object.hasOwn(value, key)) return undefined;
+    value = value[key];
   }
-  if (object(value.properties)) for (const [name, property] of Object.entries(value.properties)) {
-    const field = `${path}.properties.${name}`;
-    out.push({ path: field, text: name, source });
-    schemaLeaves(property, field, source, out);
+  return value;
+}
+
+function schemaLeaves(root: unknown, rootPath: string, source: EvidenceSource['source'], out: EvidenceSource[]): void {
+  const seen = new Set<string>();
+  function visit(value: unknown, path: string, local: boolean, depth: number) {
+    if (!object(value) || depth > 64) return;
+    // A nested identifier changes the reference base. Keep the literal node,
+    // but do not resolve its references against this document's root.
+    const localBase = local && (value === root || (!Object.hasOwn(value, '$id') && !Object.hasOwn(value, 'id')));
+    for (const key of ['description', 'title', 'format']) {
+      const text = value[key];
+      if (typeof text === 'string') out.push({ path: `${path}.${key}`, text, source });
+    }
+    if (object(value.properties)) for (const [name, property] of Object.entries(value.properties)) {
+      const field = `${path}.properties.${name}`;
+      out.push({ path: field, text: name, source });
+      visit(property, field, localBase, depth + 1);
+    }
+    visit(value.items, `${path}.items`, localBase, depth + 1);
+    const reference = value.$ref;
+    if (localBase && typeof reference === 'string' && !seen.has(reference)) {
+      seen.add(reference);
+      visit(localSchemaDefinition(root, reference), `${rootPath}${reference}`, true, depth + 1);
+    }
   }
-  schemaLeaves(value.items, `${path}.items`, source, out);
+  visit(root, rootPath, true, 0);
 }
 
 /** Conservative, literal aliases.  The verifier does not use embeddings or synonyms. */
@@ -517,17 +548,38 @@ function descriptionEvidence(text: string, role: 'consume' | 'produce'): string[
   });
 }
 
-function evidenceFor(material: NoahMaterial, leaves: readonly EvidenceSource[], role: 'consume' | 'produce'): NoahLabelEvidenceMatch[] {
+function evidenceLeaves(tool: NoahLabelToolInput, role: 'consume' | 'produce'): EvidenceSource[] {
+  const leaves = descriptionEvidence(tool.description, role).map((text): EvidenceSource => ({ path: '$.description', text, source: 'description' }));
+  if (role === 'consume') schemaLeaves(tool.inputSchema, '$.inputSchema', 'input-schema', leaves);
+  if (role === 'produce') schemaLeaves(tool.outputSchema, '$.outputSchema', 'output-schema', leaves);
+  return leaves;
+}
+
+function evidenceFor(material: NoahMaterial, leaves: readonly EvidenceSource[]): NoahLabelEvidenceMatch[] {
   const tokens = MATERIAL_TOKENS[material];
   const matches: NoahLabelEvidenceMatch[] = [];
+  const descriptionToken = tokens.find((token) => leaves.some((leaf) => leaf.source === 'description' && tokenMatches(leaf.text, token)));
+  if (descriptionToken) matches.push({ path: '$.description', token: descriptionToken, source: 'description' });
   for (const leaf of leaves) {
-    if (leaf.source === 'tool-name') continue;
-    const text = leaf.source === 'description' ? descriptionEvidence(leaf.text, role) : [leaf.text];
-    const direct = tokens.find((token) => text.some((part) => tokenMatches(part, token)));
+    if (leaf.source === 'description') continue;
+    const direct = tokens.find((token) => tokenMatches(leaf.text, token));
     if (!direct) continue;
     matches.push({ path: leaf.path, token: direct, source: leaf.source });
   }
   return matches;
+}
+
+/** The labeler may choose from literal evidence already recognized by the verifier. */
+export function noahLabelMaterialChoices(tool: NoahLabelToolInput): { inputs: NoahMaterial[]; outputs: NoahMaterial[] } {
+  const input = evidenceLeaves(tool, 'consume');
+  const output = evidenceLeaves(tool, 'produce');
+  const materials = Object.keys(NOAH_MATERIALS) as NoahMaterial[];
+  const inputs = materials.filter((material) => evidenceFor(material, input).length > 0);
+  const outputs = materials.filter((material) => evidenceFor(material, output).length > 0);
+  return {
+    inputs: inputs.filter((material) => outputs.some((candidate) => candidate !== material)),
+    outputs: outputs.filter((material) => inputs.some((candidate) => candidate !== material)),
+  };
 }
 
 function schemaValueAtPath(schema: unknown, path: string): unknown {
@@ -577,18 +629,10 @@ function portsFor(tool: NoahLabelToolInput, proposal: { consumes: readonly NoahM
  * a literal match in the corresponding input/output evidence.
  */
 export function verifyNoahCardProposal(tool: NoahLabelToolInput, proposal: { consumes: readonly NoahMaterial[]; produces: NoahMaterial }): NoahLabelVerification {
-  const consumeLeaves: EvidenceSource[] = [
-    { path: '$.name', text: tool.name, source: 'tool-name' },
-    { path: '$.description', text: tool.description, source: 'description' },
-  ];
-  schemaLeaves(tool.inputSchema, '$.inputSchema', 'input-schema', consumeLeaves);
-  const produceLeaves: EvidenceSource[] = [
-    { path: '$.name', text: tool.name, source: 'tool-name' },
-    { path: '$.description', text: tool.description, source: 'description' },
-  ];
-  if (tool.outputSchema !== undefined) schemaLeaves(tool.outputSchema, '$.outputSchema', 'output-schema', produceLeaves);
-  const consumes = Object.fromEntries(proposal.consumes.map((material) => [material, evidenceFor(material, consumeLeaves, 'consume')])) as Record<NoahMaterial, NoahLabelEvidenceMatch[]>;
-  const produces = evidenceFor(proposal.produces, produceLeaves, 'produce');
+  const consumeLeaves = evidenceLeaves(tool, 'consume');
+  const produceLeaves = evidenceLeaves(tool, 'produce');
+  const consumes = Object.fromEntries(proposal.consumes.map((material) => [material, evidenceFor(material, consumeLeaves)])) as Record<NoahMaterial, NoahLabelEvidenceMatch[]>;
+  const produces = evidenceFor(proposal.produces, produceLeaves);
   const evidence: NoahLabelEvidence = { consumes, produces };
   const ports = portsFor(tool, proposal, evidence);
   if (proposal.consumes.some((material) => consumes[material].length === 0)) return { ok: false, reason: 'consume_not_evidenced', ...ports, evidence };

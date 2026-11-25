@@ -72,6 +72,7 @@
 - Noah の札なし説明で、握手と版が一致する道具を接続と依頼の間に表示する。入力は定義上の項目名・型、出力定義がなければ「未確認」。Sites v227 の公開済み画面も正本へ統合。 [PR #50](https://github.com/iceiceice999/rock/pull/50)
 - Noah の道具一覧を Claude v2 に切り替える。つなぐ → 頼む → Agent が道具を使う段ごとに、提供者の説明と受け取る項目を表示する。本番台帳とハッシュ・道具数が一致した定義を使う。 [PR #52](https://github.com/iceiceice999/rock/pull/52)
 - 0060 未適用の Noah で Agent・棚・審査者の説明の段を表示し、入出力の札は既定で非表示にする。0059 の手元 D1 と 390px・1280px の6画面で確認。 [PR #48](https://github.com/iceiceice999/rock/pull/48)
+- Noah の札付けで、道具の定義の形式誤検出を直し、根拠候補を札付け役に示す。握手成功106件から抽出した20件の結果と本番D1の所在を [task 128](codex/tasks/128-noah-agent-explain.md#92-最初の握手成功106件から20件を点検) に記録。 [PR #47](https://github.com/iceiceice999/rock/pull/47)
 - Noah の遷移先で各工程の入出力、名前付きのデータの線、並行・合流・点検を表示する。札用の `0060_noah_intake_tool_labels` を追加し、記事番号と運用手順を [task 128](codex/tasks/128-noah-agent-explain.md#9-graph-engineering-with-claude-の使い方) に記録。実データの受入と本番反映は運用記録で追う。 [PR #45](https://github.com/iceiceice999/rock/pull/45)
 - Noah の無料のクラウドを、件数（全体 1 日 10 件・本人 3 件）ではなく、Workers AI の無料割当の中で使ったモデルの量（neuron）で数えるようにした（Opus / Noelle。本人「クラウドのシステム作って」「cloudflareでいいから最初は」、Workers Paid はまだ申し込まない）: 全体 8,000・本人 2,400・1 件 1,200 neuron。1 件ごとの使った量を Work に残し、画面に有料プランの値段での額を並べる。上限を超える呼び出しは呼ぶ前に止め、失敗として結果を返す（[PR #44](https://github.com/iceiceice999/rock/pull/44)）。
 - CallMCPの詳細に依頼例・返答の見本・送信先・提供元の料金を追加し、検索と共有から同じ内容を読めるようにした。[PR #41](https://github.com/iceiceice999/rock/pull/41)
