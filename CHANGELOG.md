@@ -1,3 +1,22 @@
+## 2026-11-26
+
+- VS Codeを「avokado（統合版）」の単一workspaceへ切り替え、最新eSIM設計・統合ブランチ・ウインドウ1件を画面確認（task133、PR未作成）。
+
+- 最新`origin/main`を土台にローカル設計・収益パックを`avokdo`へ統合。旧`avokado-main`と35ファイルを復元用に保全し、VS Codeの単一入口`avokado.code-workspace`と配置表を追加。ローカルtask番号を131・132へ整理（task133、PR未作成）。
+
+## 2026-11-25
+
+- eSIMから本人専用の非公開クラウドを使う方針と、人の確認・法的手続き後の公的機関への必要最小限の情報提供を`docs/structure/03-esim.md` §8〜10へ反映。02・04・専用端末設計・READMEへ接続し、提携／実装／運用は未確定と明記（task132、PR未作成）。
+
+- 本人用収益3担当のクラウドalarm実行器を`services/noah-revenue-runtime`へ追加。6試験通過、無料プラン確認・配備・実携帯受入待ち（PR未作成）。
+
+- 本人Pixel 10へWi-Fi ADBで収益業務パックを接続し、携帯のVanadiumから3担当の開始・成果表示を実測。loopback限定・一回接続・本人cookie・Origin確認・停止の操作画面と10試験を追加。登録情報は不要で保存なし。クラウド常駐とは区別（task131、PR未作成）。
+
+- 本人用収益業務パックを追加（`toolkits/noah-revenue-pack/`、`lib/noah-revenue-pack.ts`）。公開MIT定義3件を固定し、eSIM不要の匿名無料クラウドで3担当の応答と生成使用額0を確認。Work保存・重複防止・停止・無料枠待機を7試験で検証し、全体verify成功。モデルが補った未確認情報は別途修正し、実売上・クラウド常駐・スマホ起動は未受入（task131、PR未作成）。
+
+
+- avokadoの事業設計プロンプト（`docs/prompts/avokado-business-design.md`）に、eSIMから自社管理クラウドを使う標準導入、従量料金の確認、外部Agentの提供元クラウドを明記した。4テーマの生成時に `scripts/build-avokado-business-prompt.mjs` が両リポジトリの資料を取得し、正本からeSIMと外部実行の根拠も添える（ローカル作成、PR未作成）。
+
 ## 2026-11-24
 - マイAgentのブラウザー保存先から、同じ本人の収益記録を作成・再表示できるようにした（[PR #68](https://github.com/iceiceice999/rock/pull/68)）。
 - マイAgentで収益系Agentの成果を開くと、同じ仕事の承認額・実入金・最終費用と作者20%の確定状況を確認できるようにした。証憑の連携前も表示する（[PR #67](https://github.com/iceiceice999/rock/pull/67)）。

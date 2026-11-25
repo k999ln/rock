@@ -178,6 +178,8 @@ Agentの成果データは `/noah/data` でリモートの完了した仕事を�
 
 ### 本人用セレクト・リセール
 
+[本人用の収益業務パック](toolkits/noah-revenue-pack/README.md)は、公開MIT定義を使った商品設計・納品サンプル・提案書の3担当を順番に実行します。推論はeSIM不要の匿名無料クラウド、順序管理とWork保存は本人Macです。無料枠を待機し、応答不明時は停止、有料切替はありません。接続済みAndroidからWi-Fi ADB経由で依頼・進捗・成果・停止を操作できます。[Mac停止中のクラウド実行器](services/noah-revenue-runtime/README.md)を追加し、無料プラン確認後の配備・実受入を待っています。account同期・実受注は未対応です。[範囲と検証条件](docs/services/noah-revenue-pack.md)。
+
 ストリート、アーカイブ、オブジェの3担当が、候補・採算・共有予算・在庫・出品原稿・収支を扱います。Webの入口は `/noah/resale`。CLIのデモは外部通信なしで動きます。
 
 ```sh
@@ -380,6 +382,8 @@ Eveに頼んだ仕事を別の画面で開くために、RockstarOSは本人の�
 <details>
 <summary>専用eSIMでクラウドを使い始める手順と使用料金</summary>
 
+目指す体験は、eSIM接続と本人・利用権の確認で、本人専用の非公開クラウドが使えることです。閉域接続、暗号化、利用者別の隔離を組み合わせます。犯罪の具体的な兆候への協力は、人の確認と法的手続きを経た必要最小限の情報提供とし、安全確認・提供条件を利用者に明示します。provider・対象国・警察等との提携・運用条件は未確定です。[接続と安全確認の設計](docs/structure/03-esim.md#8-esimで開く本人専用クラウド2026-11-25本人確定)。
+
 手持ちのスマホに専用eSIMを追加し、普段のWi-FiやSIMを使い続けながら、RockstarOSの通信だけを専用回線へ流すことを目指しています。パッケージの操作や成果の取得には、本人の専用回線を通ることが条件です。eSIMを配るだけで自動的に振り分ける方法は、一般のiPhone・Androidでは確認できていません。対応機種・事業者と実機での検証が必要です。[端末別の自動振り分けの条件](docs/structure/03-esim.md#普段の回線を変えずに使う条件)
 
 一般のAgentでは、最初に使いたいパッケージを選びます。カード上で仕事内容・実行予定・使うデータ・料金上限を確認して開始します。スマホを閉じた後も承認した予定をNoahのクラウドで実行し、必要なときに結果・使用額・停止を開ける設計です。実回線の発行、実機での導入、一般Agentのクラウド実行と本番請求は受入前です。[eSIMから成果が届くまでのクラウド構成図](docs/services/noah-own-device.md#クラウドで依頼して受け取るまで) · [eSIMの初回設定](docs/structure/03-esim.md#esimから最初の仕事まで) · [料金と使用量](docs/sky-billing.md) · [導入試作](toolkits/esim-bootstrap/README.md)
@@ -418,6 +422,8 @@ miiの販売・予約は受け付けておらず、価格と発売日は未定�
 ## 開発と検証
 
 ### この作業フォルダで始める
+
+本人Macの作業先は`/Users/kaiya/Documents/ChatGPT/avokdo`に統合しています。VS Codeでは[avokado.code-workspace](avokado.code-workspace)を開きます。取得済み最新mainを土台にローカル作業を保持しており、mainへの取り込み・公開とは区別します。元の`avokado-main`と旧作業の復元先は[配置表](docs/structure/09-repo-layout.md#5-本人macの作業先を一本化2026-11-26)を参照してください。
 
 複数の作業フォルダを使うときは、最初に `git status -sb` で現在のブランチと未コミットの変更を確認します。開発とPRは `iceiceice999/rock` に集約します。共通の作業方針は[GitHubのmainのREADME](https://github.com/iceiceice999/rock/blob/main/README.md)で確認できます。
 

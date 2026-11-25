@@ -113,6 +113,9 @@
 
 | # | ファイル | 一言 | 状態 |
 | --- | --- | --- | --- |
+| 133 | [133-workspace-consolidation.md](133-workspace-consolidation.md) | 最新mainとローカル作業をavokdoへ一本化 | ✅ ファイル統合・型・lint・17試験成功。VS Codeはavokado統合版1ウインドウを確認、PR未作成 |
+| 131 | [131-noah-revenue-pack.md](131-noah-revenue-pack.md) | 本人用収益Agent・無料クラウド直接接続 | 3担当無料推論・Pixel Wi-Fi起動を受入。クラウド実行器6試験通過、無料プラン確認・配備待ち。PR未作成 |
+| 132 | [132-esim-private-cloud-design.md](132-esim-private-cloud-design.md) | eSIMから本人専用クラウド・適法な犯罪予防への協力 | ✅ ローカル設計反映・文書検証・VS Code表示確認。実装／提携は未実施、PR未作成 |
 | 99 | [99-noah-result-data.md](99-noah-result-data.md) | 成果の本人用検索・出力と同意付き運営提供・撤回 | ✅ PR #334 |
 | 100 | [100-noah-standalone-ui.md](100-noah-standalone-ui.md) | Noahの専用UI・登録Agent・利用人数/王冠/コメント・実行中タブ・接続案内・開発者向けメール相談 | ✅ 現mainにUI・登録・保存・タップ反応を統合（[PR #3](https://github.com/iceiceice999/rock/pull/3)、[PR #6](https://github.com/iceiceice999/rock/pull/6)）。公開203のPixelでAgentboard新規登録→認証付き実行→成果再読込、音・振動を確認（[PR #10](https://github.com/iceiceice999/rock/pull/10)）。過去の公開版別記録はtask100/CHANGELOG。任意サービスのブラウザ登録・100人同時外部実行・実eSIM連携は未受入。[PR #24](https://github.com/iceiceice999/rock/pull/24)で目的別の初回導線を追加。初見利用者の評価は[受入手順](../../docs/noah/first-use-architecture.md)で確認する。✅ オレンジのストアとマイAgent、専用Linuxと利用明細（[PR #37](https://github.com/iceiceice999/rock/pull/37)）。 ✅ Today特集、Agent一覧の共通ピン・商品詳細・登録時の表紙動画生成（[PR #41](https://github.com/iceiceice999/rock/pull/41)）。 |
 | 101 | [101-compute-placement.md](101-compute-placement.md) | 黒殿の 1 ノードを Linux 版 runner の host にし、従量の引き金を測る | 項目 1・4 [#370](https://github.com/k999ln/rock/pull/370)（main への統合は [PR #414](https://github.com/k999ln/rock/pull/414)） |

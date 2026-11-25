@@ -40,6 +40,7 @@ flowchart TD
 ## 既存の実行契約
 
 - 本人が言う一言: 「みんながこの noah を使って agent を当たり前に自分の専用の端末に繋げて利用できるようにしたい」「pc の前じゃダメ」（11-20）「携帯は『リモコン感覚』。メインの動きは違うハードウェアで済ます」（10-10）
+- 2026-11-25本人確定: eSIMから本人専用の非公開クラウドを利用する接続・隔離と、安全確認・公的機関への適法な協力は[03 §8〜10](../structure/03-esim.md#8-esimで開く本人専用クラウド2026-11-25本人確定)を正本とする。本書は実行先の契約であり、回線接続を無制限の常駐・実行承認に置き換えない。本人用eSIM不要経路は保持。provider・クラウド契約・提携・実データでの安全確認と情報提供は未受入。
 - Goal（Eveが作る）: 目的＝Agent を、本人専用の、画面の無い端末で動かす。本人の手元は頼む所と受け取る所にする / 入力＝固定版（hash）、依頼文、承認済みの上限 / 期待成果＝既存 Work の成果と使用量 / 予算上限＝無料枠、または本人の月の上限 / 要る権限＝その版が宣言した権限
 - Noaがつなぐもの: `noah-terminal/1`、`noah-isolation/1`、`/api/noah/runner`（取りに来る・lease・heartbeat・finish）、`noah_runner_devices`、`noah_runner_commands`、モデルの中継、既存 Work、Wallet の予約、接続計画（[noah-one-click-connect.md](noah-one-click-connect.md)）
 - AMCの工程:
