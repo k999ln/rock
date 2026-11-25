@@ -89,6 +89,7 @@
 - NoahでTodayの特集を先頭に置き、「注目のAgent」に以前の2列のピン表示を採用。Agentの商品詳細とストアのナビゲーションを更新。 [PR #41](https://github.com/iceiceice999/rock/pull/41)
 - NoahのAgent詳細と棚のカードに、検査済みの札と接続計画から「渡す物 → 返る物」と工程の待ち順を表示する。6言語対応、審査者の設計図と表示を共用。実データの札付け・200系列の目視・一般公開は未完了（task 128（旧 127）、[PR #27](https://github.com/iceiceice999/rock/pull/27)）。
 - Noahの稼ぎ方の設計図に「何を待つか」の段と審査者向け詳細を移植し、Agent 説明画面の引継ぎ（旧 task 127、現 task 128）を追加（[PR #25](https://github.com/iceiceice999/rock/pull/25)）。
+- Noahの研修検索→準備票→マイAgentの成果再表示と、無料CLIの上限到達後に再送せず保存成果を読める回帰を追加。全体verify成功、本番変更なし（[PR #39](https://github.com/iceiceice999/rock/pull/39)）。
 - Noahのストア、専用eSIMの仕事別利用明細、提供元の選択、専用Linux仮想画面でのagent-desktop実行を追加。[実行仕様](docs/services/noah-managed-desktop.md) · [PR #37](https://github.com/iceiceice999/rock/pull/37)
 - avoado.si の React 関連 3 パッケージを 19.2.9 に統一し、CVE-2026-126187 と shadcn CLI の依存脆弱性を修正（[PR #36](https://github.com/iceiceice999/rock/pull/36)）。
 - Noah の「Noahが読んだ」を、リポジトリのファイル `data/noah-scout/leads.json` からクラウドの収集機が載せる形にした（task 125、Opus / Noelle）。読んだ人（Codex の Luna Max・Claude）はファイルに足す PR を出すだけで、運営の Mac に掲載の鍵を置かなくてよい。ファイルに無い出所は送らないので、前の掲載を空で上書きしない。最初の 1 件として、本人が「これいれて」と言った Switch（sandbox-quantum/switch）を、README・LICENSE・公式の手順書まで読んで日本語で書いた。 [正本 PR #34](https://github.com/iceiceice999/rock/pull/34)・[旧PR #426](https://github.com/k999ln/rock/pull/426)

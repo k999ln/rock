@@ -264,3 +264,70 @@ void test('owned jobs stay stoppable after catalog removal while new work and ot
   w.owner('another-owner');
   assert.equal((await w.request({action:'stop',jobId:id(700)})).status,404);
 });
+
+void test('CLI quota rejection does not retry or charge and saved results remain readable through the common result UI', async t => {
+  const { createNoahAskApi } = await import('../lib/noah-ask.ts');
+  const { parseNoahFlags } = await import('../lib/noah-flags.ts');
+  const { screen } = await import('./fixtures/noah/screen.mjs');
+  const cloudContract = await import('../lib/noah-cloud-contract.ts');
+  const ownerIntent = await import('../lib/owner-intent.ts');
+  const askView = await import('../lib/noah-ask-view.ts');
+  const myRoutes = await import('../lib/noah-my-routes.ts');
+  const pageRoutes = await import('../lib/noah-page-routes.ts');
+  const unused = { default: () => null };
+  const savedModules = { '@/lib/noah-my-routes': myRoutes, '@/lib/noah-page-routes': pageRoutes,
+    './noah-library': unused, './noah-boards': {}, './sky-agent-library': unused, './sky-output-center': unused, './noah-result-data': unused };
+  const w = await world(t);
+  await w.request({ action: 'start', jobId: id(800), connectionId: id(801), prompt: 'saved input' });
+  await w.deliver({ id: id(800), profile: 'hermes', version, distribution, mode: 'run', state: 'returned', calls: 1,
+    result: { text: 'quota-independent saved result', files: [], exitCode: 0 } });
+  w.admission(429);
+  const asks = createNoahAskApi({ ...w.f.deps, authenticate: async () => 'owner-a', reviewers: [],
+    flags: parseNoahFlags({ NOAH_INTAKE_PUBLIC: 'true', NOAH_ASK_FORM: 'true' }), cloudApi: w.api });
+  const ui = screen({ modules: { ...savedModules, './noah-ready-detail': { default: () => null }, '@/lib/noah-cloud-contract': cloudContract, '@/lib/owner-intent': ownerIntent, '@/lib/noah-ask-view': askView },
+    fetch: async ({url, method, body}) => {
+      let response;
+      if (method === 'POST') response = await w.request(body);
+      else if (url.startsWith('/api/noah/cloud-agents')) {
+        response = await w.api(new Request(origin + url));
+        const data = await response.json();
+        // The fixture runtime has no connection handshake; supply the already connected UI state.
+        return { status: response.status, body: { ...data, connection: { id: id(801), state: 'connected' } } };
+      } else {
+        const request = new Request(origin + url);
+        response = url === '/api/noah/ask' ? await asks.collection(request) : await asks.item(request, url.split('/').at(-1));
+      }
+      return { status: response.status, body: await response.json() };
+    } });
+  const page = ui.mount('components/noah-cloud-agent.tsx', { projectId: project, profile: 'hermes', providerFamilyId: null });
+  await page.flush(); await page.tick(0);
+  await page.change(page.find('textarea')[0], 'another request');
+  await page.submit(page.find('form')[0]);
+  assert.match(page.text(), /利用枠が埋まっています/);
+  assert.match(page.text(), /quota-independent saved result/);
+  assert.equal(page.find('button', '停止').length, 0);
+  const requests = ui.calls.filter(call => call.method === 'POST');
+  assert.equal(requests.length, 1);
+  const rejected = JSON.parse(w.f.sql.prepare('SELECT payload FROM work_jobs WHERE id=?').get(requests[0].body.jobId).payload);
+  assert.equal(rejected.noahRemote.state, 'failed');
+  assert.equal(rejected.noahRemote.chargeMinor, 0);
+  const calls = w.calls();
+  await page.tick(60000);
+  assert.equal(ui.calls.filter(call => call.method === 'POST').length, 1);
+  assert.equal(w.calls(), calls);
+  // Even explicit replay of that exact rejected request never dispatches again.
+  assert.equal((await w.request(requests[0].body)).status, 200);
+  assert.equal(w.calls(), calls);
+  for (let reload = 0; reload < 2; reload++) {
+    const savedHref = myRoutes.noahMyHref('saved', 'results');
+    assert.equal(savedHref, '/noah/my?view=saved&tab=results');
+    const saved = ui.mount('components/noah-my.tsx', { params: Object.fromEntries(new URL(savedHref, 'https://noah.test').searchParams) });
+    await saved.flush();
+    assert.match(saved.text(), /quota-independent saved result/);
+    assert.ok(saved.find('a').some(link => link.props.href === `/noah/tasks/${id(800)}`));
+    const detail = ui.mount('components/noah-task-detail.tsx', { id: id(800) });
+    await detail.flush(); await detail.tick(0);
+    assert.match(detail.text(), /quota-independent saved result/);
+  }
+  assert.equal(w.calls(), calls, 'saved-result reads must not consult the CLI runtime or budget');
+});
