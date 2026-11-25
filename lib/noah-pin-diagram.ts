@@ -16,8 +16,9 @@
  *   ぽよん・ぴょこっ・ふわっ の 3 つを動画で見比べて、本人がぽよんを選んだ）。同じ作者の Motion Prompt の動きの数から作った:
  *   #001 ポップイン（ばね 1 − e^(−6.5t)·cos(15t)）＋ #011 スクワッシュ＆ストレッチ（縦横を逆に伸び縮み・体積を保つ）。
  *   線を引く動き（矢印・枝）と、出てくる順番は元のまま。
- * - 色を、Mac の App Store の絵のような、1 枚ずつ違う色にした（本人の指示 2026-11-24「色味がダサい」「こんな感じにして」「こんな感じの色味にして　今のやつじゃ飽きるから黄金比を活用して」「黄金比カラーになってない」）。
- *   元の面 #F1F0EE と青 #2F6BEB の代わりに、配色の黄金比「ベース 70%・メイン 25%・アクセント 5%」の 3 色（noahPinColors。カードごとに黄金角ずつ回す）。
+ * - 色を、1 枚ずつ違う色にした（本人の指示 2026-11-24「色味がダサい」「こんな感じにして」「こんな感じの色味にして　今のやつじゃ飽きるから黄金比を活用して」「黄金比カラーになってない」）。
+ *   元の面 #F1F0EE と青 #2F6BEB の代わりに、配色の黄金比「ベース 70%・メイン 25%・アクセント 5%」の 3 色（noahPinColors。ポップな 8 組からカードごとに選ぶ。
+ *   本人の指示 2026-11-25「全体的に紫っぽい」「もっとポップに」）。
  *   塗りの面積が 70:25:5 に近くなるように、各図の形の大きさ・太さ・塗る所を変えた（各図の「配色の黄金比」の行）。
  * - 1 周（4.7 秒）で消えて繰り返す代わりに、画面に入った時に 1 回だけ組み上げて、止める（本人の決定 2026-11-24「画面に入った時に1回」）。
  *   止める時刻は noahPinHold。繰り返しは components/noah-pin-scene.tsx がしない（ここの式は、元と同じく 0〜4.7 秒のどこでも描ける）。
@@ -69,30 +70,46 @@ function bg(k: K, w: number, h: number) {
 }
 function fade(u: number) { return 1 - easeInOut(P(u, 4.1, 4.5)); }              // the whole figure fades out at the end of the cycle
 
-// 色（Noah で足した部分。本人の指示 2026-11-24「こんな感じの色味にして　今のやつじゃ飽きるから黄金比を活用して」「黄金比カラーになってない」と、Mac の App Store の画面の録画）。
+// 色（Noah で足した部分。本人の指示 2026-11-24「こんな感じの色味にして　今のやつじゃ飽きるから黄金比を活用して」「黄金比カラーになってない」と、
+// 2026-11-25「ちょっと全体的に紫っぽいから」「もっとポップにポケモンセンターみたいな感じにして」）。
 // 配色の黄金比「ベース 70%・メイン 25%・アクセント 5%」（面積の割合）で、1 枚の絵を 3 つの色だけで描く（本人の決定 2026-11-24「1 枚の絵の中」「カードごとに変える」）。
 // - ベース（約 70%）: 面と、同じ色相の淡い・濃い色（図の骨組み・空のマス・札の地。役割 g2・g3・g4・card）。
-// - メイン（約 25%）: 図の形（役割 blueM と、その淡い色 blueL）。色相はベースの隣（+28°。黄色が暗く濁る所は −28°）。
-// - アクセント（約 5%）: いちばん大事な所だけ（役割 blue）。色相はベースの反対（補色。+180°）。
-// 面積の割合は、24 種類の図を本物のブラウザで描いて画素を数えて確かめた（spec-115 の 9 章に表）。
-// カードごとの 3 色は、並びの n 枚目ごとにベースの色相を黄金角（360° ÷ φ² ≈ 137.5°）ずつ回して変える（隣は必ず違う色・何枚でも同じ色に戻らない）。
-// ベースの色相で、絵の種類を決める（Mac の App Store の絵と同じ 3 種類）: 青〜紫は深い色、赤紫〜赤〜朱は鮮やかな色、橙〜黄〜緑〜青緑〜空色は淡い色。
+// - メイン（約 25%）: 図の形（役割 blueM と、その淡い色 blueL）。
+// - アクセント（約 5%）: いちばん大事な所だけ（役割 blue）。
+// 3 色は、ポップな 8 組（POP_SETS）から選ぶ: 赤・黄・青・白を中心に、空色・橙・緑。紫・赤紫は使わない（本人「紫っぽい」）。
+// おもちゃ屋・子ども向けの店のような、明るい原色の組み合わせ（特定の店の色や絵柄は写さない）。
+// 面積の割合は、24 種類の図を描いて画素を数えて確かめる（spec-115 の 9 章に表。試験 tests/noah-pin-scene.test.mjs）。
+// カードごとの組は、並びの n 枚目ごとに黄金比の並び（n × φ の小数部分）で選ぶ（4 枚以内の隣は必ず違う組で、8 組が偏らずに出る）。
 // 色は OKLCH（人の目に揃った明るさ）で作り、字が読める明るさ（WCAG 4.5 以上）まで、明るさだけを動かす。字の濃さと形の見分けは試験が確かめる。
-/** 黄金比 φ と黄金角（度）。 */
+/** 黄金比 φ。 */
 export const PHI = (1 + Math.sqrt(5)) / 2;
-export const GOLDEN_ANGLE = 360 / (PHI * PHI);
 /** 配色の黄金比（ベース・メイン・アクセントの面積の割合）。 */
 export const NOAH_PIN_COLOR_RATIO = { base: 0.7, main: 0.25, accent: 0.05 } as const;
-/** 1 枚目のベースの色相（OKLCH の度。夜空の青）。 */
-const HUE0 = 262;
-type Kind = 'deep' | 'vivid' | 'pale';
+type Kind = 'vivid' | 'pale';
+/** 色相（OKLCH の度）: 赤・橙・黄・黄緑・緑・空色・青。 */
+const HUE = { red: 28, orange: 55, yellow: 95, lime: 125, green: 148, sky: 232, blue: 262 } as const;
+type Hue = keyof typeof HUE;
+/**
+ * ポップな 8 組。base = ベースの色（淡い = 明るい面に黒い字、鮮やか = 濃い面に白い字）、main = メイン、accent = アクセント。
+ * 並びは、黄金比の並びで隣同士に来やすい組が、似ないように置いた。
+ */
+export const NOAH_PIN_POP_SETS: readonly { name: string; kind: Kind; base: Hue | 'cream'; main: Hue | 'cream'; accent: Hue }[] = [
+  { name: '黄と青', kind: 'pale', base: 'yellow', main: 'blue', accent: 'red' },
+  { name: '空色と赤', kind: 'pale', base: 'sky', main: 'red', accent: 'blue' },
+  { name: '白と赤', kind: 'pale', base: 'cream', main: 'red', accent: 'blue' },
+  { name: '橙と赤', kind: 'pale', base: 'orange', main: 'red', accent: 'blue' },
+  { name: '緑と青', kind: 'pale', base: 'green', main: 'blue', accent: 'red' },
+  { name: '赤と白', kind: 'vivid', base: 'red', main: 'cream', accent: 'yellow' },
+  { name: '青と空色', kind: 'vivid', base: 'blue', main: 'sky', accent: 'yellow' },
+  { name: '黄緑と緑', kind: 'pale', base: 'lime', main: 'green', accent: 'red' },
+];
 /**
  * 1 枚の、図の役割ごとの色。ベース = bg1・bg2・stage・g2・g3・g4・card、メイン = blueM・blueL、アクセント = blue。
  * 字の色 = mark（地の上）・sub（薄い字）・accentText（地の上のアクセントの字）・onBlue・onM・onL（アクセント・メイン・淡いメインの上）・chip（形の上の小さな印）。
- * hues = ベース・メイン・アクセントの色相。
+ * set = 8 組の何番目か、hues = ベース・メイン・アクセントの色相（cream は、ほぼ白の暖かい色）。
  */
 export type NoahPinColors = {
-  kind: Kind; dark: boolean; hue: number; hues: { base: number; main: number; accent: number };
+  kind: Kind; dark: boolean; set: number; name: string; hues: { base: number; main: number; accent: number };
   bg1: string; bg2: string; stage: string; blue: string; blueM: string; blueL: string; g2: string; g3: string; g4: string;
   mark: string; sub: string; onBlue: string; onM: string; onL: string; card: string; chip: string;
   /** アクセントの色相の字（面の上で 4.5 以上で読める）。鮮やかな面では、白に近い色（形のアクセントより明るい）。 */
@@ -119,48 +136,48 @@ function seek(L: number, c: number, h: number, step: number, ok: (hex: string) =
   for (let i = 1; i <= 80 && !ok(hex); i++) hex = oklch(clamp(L + step * i), c, h);
   return hex;
 }
-const turn = (h: number) => ((h % 360) + 360) % 360;
-/** ベースの色相から、絵の種類（深い・鮮やか・淡い）。 */
-function kindOf(h: number): Kind { return h >= 235 && h < 305 ? 'deep' : h >= 305 || h < 40 ? 'vivid' : 'pale'; }
 const WHITE = '#FFFFFF', INK = '#1C1C1E';
-/** 黄色（OKLCH 70〜125°）は、とても明るい時しか黄色に見えない（暗くすると芥子色・茶色になる）。 */
-const yellow = (h: number) => h >= 70 && h < 125;
-/** n 枚目（0 から。負の数も可）の 3 色。ベースの色相 = 1 枚目 + n × 黄金角。メイン = その隣、アクセント = その反対。 */
+/** n 枚目が使う組の番号（0〜7）。黄金比の並び: n × φ の小数部分を 8 等分する（4 枚以内の隣は必ず違う組。どの組も同じくらい出る）。 */
+export function noahPinPopSet(n: number) {
+  const k = NOAH_PIN_POP_SETS.length, f = ((Math.trunc(n) * PHI + 0.05) % 1 + 1) % 1;
+  return Math.min(k - 1, Math.floor(f * k));
+}
+/** n 枚目（0 から。負の数も可）の 3 色。 */
 function colorsAt(n: number): NoahPinColors {
-  const hue = turn(HUE0 + n * GOLDEN_ANGLE), kind = kindOf(hue), dark = kind !== 'pale';
-  // メインは、淡い面では濃く使う（暗い黄色は濁る）ので、黄色に当たる時は反対の隣へ。
-  const hm = kind === 'pale' && yellow(turn(hue + 28)) ? turn(hue - 28) : turn(hue + 28), ha = turn(hue + 180);
+  const set = noahPinPopSet(n), pop = NOAH_PIN_POP_SETS[set], kind = pop.kind, dark = kind === 'vivid';
+  const hueOf = (x: Hue | 'cream') => (x === 'cream' ? 85 : HUE[x]);
+  const hb = hueOf(pop.base), hm = hueOf(pop.main), ha = HUE[pop.accent];
   const mark = dark ? WHITE : INK, light = dark ? WHITE : '#000000';
-  // ベース: 面の 2 色（同じ色相の、深さだけ違う 2 色）。字（mark）が 4.5 以上で読める。
+  // ベース: 面の 2 色（同じ色相の、明るさだけ違う 2 色）。字（mark）が読める。淡い面は明るく軽く、鮮やかな面は原色に近く。
   let bg1: string, bg2: string;
-  if (kind === 'deep') { bg1 = oklch(0.26, 0.09, hue); bg2 = oklch(0.34, 0.12, hue); }
-  else if (kind === 'vivid') { const ok = (x: string) => contrast(WHITE, x) >= 4.6; bg1 = seek(0.5, 0.2, hue, -0.01, ok); bg2 = seek(0.56, 0.19, hue, -0.01, ok); }
-  else { const ok = (x: string) => contrast(INK, x) >= 12; bg1 = seek(0.97, 0.03, hue, 0.005, ok); bg2 = seek(0.92, 0.06, hue, 0.005, ok); }
+  if (dark) { const ok = (x: string) => contrast(WHITE, x) >= 4.6; bg1 = seek(0.6, 0.21, hb, -0.01, ok); bg2 = seek(0.66, 0.2, hb, -0.01, ok); }
+  else if (pop.base === 'cream') { bg1 = oklch(0.985, 0.012, hb); bg2 = oklch(0.955, 0.03, hb); }
+  else { const c = pop.base === 'yellow' ? 0.14 : pop.base === 'lime' ? 0.11 : 0.075; bg1 = oklch(0.955, c * 0.6, hb); bg2 = seek(0.905, c, hb, 0.005, (x) => contrast(INK, x) >= 11); }
   const stage = mix(bg1, bg2, 0.5);
-  const inks = [mark, dark ? bg1 : WHITE, INK, WHITE];
+  const inks = [mark, INK, WHITE];
   const onAny = (x: string) => contrast(readable(x, ...inks), x) >= 4.6;
   // ベースの淡い・濃い色（同じ色相）: 字を置く g2・g3・card は字が読め、形として面から見分けられる。
-  const tintOf = (L: number, c: number, step: number, see: number, text: boolean) => seek(L, c, hue, step, (x) => contrast(x, stage) >= see && (!text || contrast(mark, x) >= 4.6));
-  const g2 = kind === 'deep' ? tintOf(0.36, 0.09, 0.01, 1.15, true) : kind === 'vivid' ? tintOf(0.45, 0.17, -0.01, 1.15, true) : tintOf(0.99, 0.015, -0.005, 1.12, true);
-  const g3 = kind === 'deep' ? tintOf(0.42, 0.09, 0.01, 1.3, true) : kind === 'vivid' ? tintOf(0.41, 0.16, -0.01, 1.3, true) : tintOf(0.86, 0.04, -0.01, 1.3, true);
-  const g4 = kind === 'deep' ? tintOf(0.6, 0.07, 0.01, 1.9, false) : kind === 'vivid' ? tintOf(0.76, 0.1, 0.01, 1.9, false) : tintOf(0.66, 0.05, -0.01, 1.9, false);
-  const card = kind === 'deep' ? tintOf(0.38, 0.08, 0.01, 1.2, true) : kind === 'vivid' ? tintOf(0.43, 0.16, -0.01, 1.2, true) : tintOf(0.995, 0.01, -0.005, 1.1, true);
+  const bc = pop.base === 'cream' ? 0.015 : dark ? 0.18 : 0.05;
+  const tintOf = (L: number, c: number, step: number, see: number, text: boolean) => seek(L, c, hb, step, (x) => contrast(x, stage) >= see && (!text || contrast(mark, x) >= 4.6));
+  const g2 = dark ? tintOf(0.54, bc, -0.01, 1.15, true) : tintOf(0.995, 0.01, -0.005, 1.1, true);
+  const g3 = dark ? tintOf(0.5, bc, -0.01, 1.3, true) : tintOf(0.86, bc, -0.01, 1.3, true);
+  const g4 = dark ? tintOf(0.82, bc * 0.5, 0.01, 1.9, false) : tintOf(0.68, bc, -0.01, 1.9, false);
+  const card = dark ? tintOf(0.52, bc, -0.01, 1.2, true) : tintOf(0.998, 0.006, -0.005, 1.08, true);
   // メイン: 図の形。面から見分けられ（1.7 以上）、上の字が 4.5 以上。淡いメイン（blueL）は、メインとも見分けられる。
-  const blueM = kind === 'deep' ? seek(0.8, 0.11, hm, 0.01, (x) => contrast(x, stage) >= 1.7 && onAny(x))
-    : kind === 'vivid' ? seek(0.88, 0.08, hm, 0.01, (x) => contrast(x, stage) >= 1.7 && onAny(x))
-      : seek(0.68, 0.15, hm, -0.01, (x) => contrast(x, stage) >= 1.7 && onAny(x));
-  const blueL = seek(kind === 'deep' ? 0.56 : kind === 'vivid' ? 0.72 : 0.85, kind === 'pale' ? 0.08 : 0.11, hm, kind === 'pale' ? -0.01 : 0.01,
-    (x) => contrast(x, stage) >= 1.3 && contrast(x, blueM) >= 1.3 && onAny(x));
-  // アクセント: 形として面からはっきり見え（2 以上）、上に字を置ける（4.5 以上）。深い面と淡い面では、そのまま面の上の字にもなる（左上 4.5・右下 3.5 以上）。
-  // 鮮やかな面（中くらいの明るさ）の上で 4.5 以上の字は白に近い色しか無いので、字だけ別の明るい色（accentText）にして、形は色のあるアクセントにする。
+  const mc = pop.main === 'cream' ? 0.03 : 0.2;
+  const blueM = dark ? seek(pop.main === 'cream' ? 0.97 : 0.86, pop.main === 'cream' ? 0.03 : 0.1, hm, 0.01, (x) => contrast(x, stage) >= 1.7 && onAny(x))
+    : seek(0.6, mc, hm, -0.01, (x) => contrast(x, stage) >= 1.7 && onAny(x));
+  const blueL = dark ? seek(pop.main === 'cream' ? 0.86 : 0.76, pop.main === 'cream' ? 0.06 : 0.1, pop.main === 'cream' ? HUE.orange : hm, 0.01, (x) => contrast(x, stage) >= 1.3 && contrast(x, blueM) >= 1.15 && onAny(x))
+    : seek(0.82, 0.09, hm, -0.01, (x) => contrast(x, stage) >= 1.3 && contrast(x, blueM) >= 1.3 && onAny(x));
+  // アクセント: 形として面からはっきり見え（2 以上）、上に字を置ける（4.5 以上）。淡い面では、そのまま面の上の字にもなる（左上 4.5・右下 3.5 以上）。
+  // 鮮やかな面の上で 4.5 以上の字は白に近い色しか無いので、字だけ別の明るい色（accentText）にして、形は色のあるアクセントにする。
   const onBg = (x: string) => contrast(x, bg1) >= 4.6 && contrast(x, bg2) >= 3.6;
-  const blue = kind === 'deep' ? seek(0.85, 0.16, ha, 0.01, (x) => onBg(x) && onAny(x))
-    : kind === 'vivid' ? seek(0.84, 0.15, ha, 0.01, (x) => contrast(x, stage) >= 2.2 && onAny(x))
-      : seek(0.55, 0.2, ha, -0.01, (x) => onBg(x) && onAny(x));
-  const accentText = kind === 'vivid' ? seek(0.95, 0.06, ha, 0.01, onBg) : blue;
+  const blue = dark ? seek(0.9, 0.18, ha, 0.01, (x) => contrast(x, stage) >= 2.2 && onAny(x))
+    : seek(ha === HUE.orange ? 0.62 : 0.56, 0.21, ha, -0.01, (x) => onBg(x) && onAny(x) && contrast(x, blueM) >= 1.2);
+  const accentText = dark ? seek(0.96, 0.08, ha, 0.01, onBg) : blue;
   return {
-    kind, dark, hue, hues: { base: hue, main: hm, accent: ha }, bg1, bg2, stage, blue, blueM, blueL, g2, g3, g4,
-    mark, sub: mix(stage, light, dark ? 0.68 : 0.58), accentText, onBlue: readable(blue, ...inks), onM: readable(blueM, ...inks), onL: readable(blueL, ...inks), card,
+    kind, dark, set, name: pop.name, hues: { base: hb, main: hm, accent: ha }, bg1, bg2, stage, blue, blueM, blueL, g2, g3, g4,
+    mark, sub: mix(stage, light, dark ? 0.72 : 0.6), accentText, onBlue: readable(blue, ...inks), onM: readable(blueM, ...inks), onL: readable(blueL, ...inks), card,
     chip: readable(blueM, WHITE, INK) === WHITE ? mix(blueM, WHITE, 0.7) : mix(blueM, INK, 0.45),
   };
 }
@@ -1278,7 +1295,7 @@ export function noahPinHold(template: NoahPinTemplate): number {
   return template === 'heatmap' ? 3.9 : 4;
 }
 
-/** 1 枚の図解を、時刻 u（秒）の形で、並びの tone 枚目の 3 色（noahPinColors。70:25:5。カードごとに黄金角ずつ回す）で描く。k は、539×208 の座標で描けるように縮めた（setTransform 済みの）面。前の絵は、ここで塗りつぶす。 */
+/** 1 枚の図解を、時刻 u（秒）の形で、並びの tone 枚目の 3 色（noahPinColors。70:25:5。ポップな 8 組から黄金比の並びで選ぶ）で描く。k は、539×208 の座標で描けるように縮めた（setTransform 済みの）面。前の絵は、ここで塗りつぶす。 */
 export function drawNoahPinDiagram(k: CanvasRenderingContext2D, scene: Pick<NoahPinScene, 'template' | 'labels'>, u: number, tone = 0): void {
   const before = C;
   C = noahPinColors(tone);

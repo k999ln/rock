@@ -5,7 +5,7 @@
  * 並びと、載せるかどうかは、サーバーが決める（GET /api/noah/shelf）。ここは、返った順に出すだけ。閉じている・読めない・載る物が無い時は、何も出さない。
  * サインインした本人は、カードを「表示しない」にできる（その本人の棚から外れる。POST /api/noah/shelf の hide）。
  * カードの上には、何をする仕事かの資料の図解（lib/noah-pin-scenes-shelf.ts。spec-115 の 9 章。バージョン TAKE）。絵が無いカードは、今まで通り字だけ。
- * 絵の色は、配色の黄金比 70:25:5 の 3 色。3 色は、棚の上から数えた n 枚目ごとにベースの色相を黄金角（約 137.5°）ずつ回して変える（lib/noah-pin-diagram.ts の noahPinColors(n)。3 段を通して続ける）。
+ * 絵の色は、配色の黄金比 70:25:5 の 3 色。3 色は、棚の上から数えた n 枚目ごとに、ポップな 8 組から黄金比の並びで選ぶ（lib/noah-pin-diagram.ts の noahPinColors(n)。3 段を通して続ける）。
  * 仕様: docs/noah/spec-110-shelf.md の 10 章。
  */
 import { useEffect, useState } from 'react';

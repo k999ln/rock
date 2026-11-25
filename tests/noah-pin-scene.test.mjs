@@ -1,7 +1,7 @@
 // ピンの図解（バージョン TAKE。spec-115 の 9 章）の試験: 形の確かめ（図の名前・札の数・図ごとの字の上限・余計な項目）・棚の 17 枚（形が通る・札はカードの文にある言葉だけ・同じ図は 2 枚まで）・
 // 全部の図が描ける（札が 1 回ずつ絵に出る・絵の外へはみ出さない・字が小さすぎない・作り話の数が無い・壊れた数が無い）・
 // 動き「ぽよん」（時刻 u の純関数・初めは札が無い・途中が動く・止める時には揺れが収まっている）・
-// 色（配色の黄金比 ベース 70%・メイン 25%・アクセント 5% の 3 色。カードごとに黄金角ずつ回す。何枚目でも字が読め、隣は違う色）・全部の図の面積の割合・しょうへいさんの図解パックの許諾の表示・Luna Max への説明・Luna Max が書く 1 枚（題・入れる物・返る物・図解）の確かめ。
+// 色（配色の黄金比 ベース 70%・メイン 25%・アクセント 5% の 3 色。ポップな 8 組を黄金比の並びで選ぶ。紫を使わない。何枚目でも字が読め、隣は違う組）・全部の図の面積の割合・しょうへいさんの図解パックの許諾の表示・Luna Max への説明・Luna Max が書く 1 枚（題・入れる物・返る物・図解）の確かめ。
 // 絵は canvas に描くので、node の中では、描く命令を書き留める小さな代わり（recorder）で確かめる。字の幅は noahPinLabelWidth と同じ数え方（英字 0.6・他 1）。
 // 本物のブラウザでの見た目（390px と 1280px・動き）は、作った人が画面で確かめた（docs/noah/spec-115-pin-grid.md の 9 章）。
 import test from 'node:test';
@@ -15,7 +15,7 @@ import { NOAH_SHELF_SCENE_SOURCE, NOAH_SHELF_SCENES } from '../lib/noah-pin-scen
 import * as diagram from '../lib/noah-pin-diagram.ts';
 import { colorFamilies, rasterContext } from './fixtures/noah/pin-raster.mjs';
 
-const { drawNoahPinDiagram, noahPinHold, NOAH_PIN_ART, noahPinColors, PHI, GOLDEN_ANGLE, NOAH_PIN_COLOR_RATIO } = diagram;
+const { drawNoahPinDiagram, noahPinHold, NOAH_PIN_ART, noahPinColors, PHI, NOAH_PIN_COLOR_RATIO, NOAH_PIN_POP_SETS, noahPinPopSet } = diagram;
 const require = createRequire(import.meta.url);
 const React = require('react'), { renderToStaticMarkup } = require('react-dom/server');
 const cards = JSON.parse(readFileSync(new URL('../data/noah-shelf-first-cards.json', import.meta.url), 'utf8'));
@@ -188,43 +188,42 @@ void test('every diagram builds itself with the poyon motion as a pure function 
   assert.match(html2, new RegExp(`linear-gradient\\(135deg, ${tone.bg1}, ${tone.bg2}\\)`));
 });
 
-void test('every card has a base, a main and an accent color, keeps every word readable, and turns by the golden angle so neighbours differ', () => {
+void test('every card has a base, a main and an accent color from eight pop sets with no purple, keeps every word readable, and neighbours differ', () => {
   // WCAG の比（明るい方 + 0.05）÷（暗い方 + 0.05）。
   const lum = (hex) => { const [r, g, b] = [1, 3, 5].map((i) => { const v = parseInt(hex.slice(i, i + 2), 16) / 255; return v <= 0.03928 ? v / 12.92 : ((v + 0.055) / 1.055) ** 2.4; }); return 0.2126 * r + 0.7152 * g + 0.0722 * b; };
   const contrast = (a, b) => { const [x, y] = [lum(a), lum(b)].sort((p, q) => q - p); return (x + 0.05) / (y + 0.05); };
-  // 黄金比 φ と黄金角（360° ÷ φ²）。
+  // 黄金比 φ。ポップな 8 組（本人の指示 2026-11-25「ちょっと全体的に紫っぽいから」「もっとポップに」）。
   assert.ok(Math.abs(PHI - 1.6180339887) < 1e-9);
-  assert.ok(Math.abs(GOLDEN_ANGLE - 137.5077640500) < 1e-9);
+  assert.equal(NOAH_PIN_POP_SETS.length, 8);
+  assert.equal(new Set(NOAH_PIN_POP_SETS.map((set) => set.name)).size, 8);
   const kinds = new Set();
   for (let n = -30; n < 400; n++) {
     const c = noahPinColors(n);
     assert.deepEqual(noahPinColors(n), c, `${n} 枚目: 同じ番号で色が違う`);
     for (const value of [c.bg1, c.bg2, c.stage, c.blue, c.blueM, c.blueL, c.g2, c.g3, c.g4, c.mark, c.sub, c.accentText, c.onBlue, c.onM, c.onL, c.card, c.chip]) assert.match(value, /^#[0-9A-F]{6}$/i, `${n} 枚目: 色の形 ${value}`);
     kinds.add(c.kind);
-    const name = `${n} 枚目（${c.kind} ${c.hue.toFixed(1)}°）`;
-    // 3 色の色相: メインはベースの隣（±28°）、アクセントはベースの反対（補色。180°）。
-    const apart = (a, b) => { const d = Math.abs(a - b) % 360; return Math.min(d, 360 - d); };
-    assert.ok(Math.abs(apart(c.hues.main, c.hues.base) - 28) < 1e-6, `${name}: メインの色相 ${c.hues.main}`);
-    assert.ok(Math.abs(apart(c.hues.accent, c.hues.base) - 180) < 1e-6, `${name}: アクセントの色相 ${c.hues.accent}`);
+    const name = `${n} 枚目（${c.name}）`;
+    assert.equal(c.set, noahPinPopSet(n));
+    // 紫・赤紫（OKLCH の色相 275〜340°）は、ベースにもメインにもアクセントにも使わない。
+    for (const [what, hue] of Object.entries(c.hues)) assert.ok(hue < 275 || hue >= 340, `${name}: ${what}の色相 ${hue}° が紫`);
     for (const [what, text, ground, need] of [
       ['字 / 面の左上', c.mark, c.bg1, 4.5], ['字 / 面の右下', c.mark, c.bg2, 4.5], ['アクセントの字 / 面の左上', c.accentText, c.bg1, 4.5], ['アクセントの字 / 面の右下', c.accentText, c.bg2, 3.5],
       ['アクセントの上の字', c.onBlue, c.blue, 4.5], ['メインの上の字', c.onM, c.blueM, 4.5], ['淡いメインの上の字', c.onL, c.blueL, 4.5],
       ['ベースの濃い色の上の字', c.mark, c.g3, 4.5], ['ベースの淡い色の上の字', c.mark, c.g2, 4.5], ['札の上の字', c.mark, c.card, 4.5], ['薄い字 / 面', c.sub, c.stage, 3],
     ]) assert.ok(contrast(text, ground) >= need, `${name}: ${what} が ${contrast(text, ground).toFixed(2)}（${need} 以上が要る）`);
     // 形の色は、面から見分けられる（元の図の弱い差し色 #C9D8FB と面 #F1F0EE の比 約 1.26 を下回らない）。メインと淡いメインも見分けられる。
-    for (const [what, shape, ground, need] of [['アクセント', c.blue, c.stage, 2], ['メイン', c.blueM, c.stage, 1.6], ['淡いメイン', c.blueL, c.stage, 1.25], ['淡いメインとメイン', c.blueL, c.blueM, 1.25],
-      ['ベースの淡い色', c.g2, c.stage, 1.1], ['ベースの濃い色', c.g3, c.stage, 1.25], ['ベースのいちばん濃い色', c.g4, c.stage, 1.8]]) {
+    for (const [what, shape, ground, need] of [['アクセント', c.blue, c.stage, 2], ['メイン', c.blueM, c.stage, 1.6], ['淡いメイン', c.blueL, c.stage, 1.25], ['淡いメインとメイン', c.blueL, c.blueM, 1.15],
+      ['ベースの淡い色', c.g2, c.stage, 1.08], ['ベースの濃い色', c.g3, c.stage, 1.25], ['ベースのいちばん濃い色', c.g4, c.stage, 1.8]]) {
       assert.ok(contrast(shape, ground) >= need, `${name}: ${what}が面に溶ける（${contrast(shape, ground).toFixed(2)}）`);
     }
-    // 面の色相は、n 枚目ごとに黄金角ずつ回る。グリッドで隣や上下に並ぶ（4 枚以内の）カードは、色相が 50° 以上離れる。
-    const step = ((noahPinColors(n + 1).hue - c.hue) % 360 + 360) % 360;
-    assert.ok(Math.abs(step - GOLDEN_ANGLE) < 1e-6, `${name}: 次の枚との色相の差が ${step}`);
-    for (let k = 1; k <= 4; k++) { const d = Math.abs(noahPinColors(n + k).hue - c.hue) % 360; assert.ok(Math.min(d, 360 - d) >= 50, `${name}: ${k} 枚先と色相が ${Math.min(d, 360 - d).toFixed(1)}° しか離れない`); }
+    // グリッドで隣や上下に並ぶ（4 枚以内の）カードは、違う組。
+    for (let k = 1; k <= 4; k++) assert.notEqual(noahPinColors(n + k).set, c.set, `${name}: ${k} 枚先と同じ組`);
   }
-  // 深い・鮮やか・淡いの 3 種類が、どれも出る。1000 枚並べても、同じ色相に戻らない（φ は無理数）。
-  assert.deepEqual([...kinds].sort((a, b) => a.localeCompare(b)), ['deep', 'pale', 'vivid']);
-  const hues = Array.from({ length: 1000 }, (_, n) => noahPinColors(n).hue.toFixed(2));
-  assert.equal(new Set(hues).size, 1000, '同じ色相に戻った');
+  // 明るい面（黒い字）と鮮やかな面（白い字）の両方が出る。1000 枚並べると、8 組が同じくらい出る（黄金比の並び）。
+  assert.deepEqual([...kinds].sort((a, b) => a.localeCompare(b)), ['pale', 'vivid']);
+  const counts = Array.from({ length: 8 }, () => 0);
+  for (let n = 0; n < 1000; n++) counts[noahPinColors(n).set]++;
+  for (const count of counts) assert.ok(Math.abs(count - 125) <= 3, `組の出る数 ${counts.join(',')}`);
   // 範囲の外・小数の番号も描ける（整数にして使う）。
   assert.deepEqual(noahPinColors(2.7), noahPinColors(2));
   assert.deepEqual(noahPinColors(Number.NaN), noahPinColors(0));
@@ -237,11 +236,12 @@ void test('every diagram paints about 70% base, 25% main and 5% accent (the gold
   assert.equal(new Set(scenes.map((item) => item.template)).size, TEMPLATES.length);
   const sum = { base: 0, main: 0, accent: 0 };
   let count = 0;
-  // 深い（0・8）・鮮やか（1・3）・淡い（2・4）の 3 種類の面で。
-  for (const item of scenes) for (const n of [0, 1, 2, 3, 4, 8]) {
+  // 8 組の全部の面で（n = 0〜7 は、8 組が 1 つずつ出る）。
+  assert.equal(new Set([0, 1, 2, 3, 4, 5, 6, 7].map((n) => noahPinColors(n).set)).size, 8);
+  for (const item of scenes) for (const n of [0, 1, 2, 3, 4, 5, 6, 7]) {
     const raster = rasterContext(colorFamilies(noahPinColors(n)), noahPinLabelWidth);
     drawNoahPinDiagram(raster.k, item, noahPinHold(item.template), n);
-    const share = raster.shares(), name = `${item.template}（${n} 枚目 ${noahPinColors(n).kind}）`, pct = (v) => `${(v * 100).toFixed(1)}%`;
+    const share = raster.shares(), name = `${item.template}（${n} 枚目 ${noahPinColors(n).name}）`, pct = (v) => `${(v * 100).toFixed(1)}%`;
     assert.ok(share.base >= 0.64 && share.base <= 0.77, `${name}: ベースが ${pct(share.base)}（64〜77%）`);
     assert.ok(share.main >= 0.2 && share.main <= 0.3, `${name}: メインが ${pct(share.main)}（20〜30%）`);
     assert.ok(share.accent >= 0.03 && share.accent <= 0.07, `${name}: アクセントが ${pct(share.accent)}（3〜7%）`);

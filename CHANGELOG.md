@@ -1,4 +1,5 @@
 ## 2026-11-25
+- Noahのピンの図解の色を、紫をやめて、赤・黄・青・白を中心にしたポップな 8 組にした（本人の指示「全体的に紫っぽい」「もっとポップにポケモンセンターみたいな感じにして」）。1 枚ずつ黄金比の並びで組を選び、隣は違う組。配色の黄金比 70:25:5 と字の読みやすさは 8 組の全部で試験が確かめる（`lib/noah-pin-diagram.ts`・`tests/noah-pin-scene.test.mjs`）。
 - Noahのピンの図解の枝に、最新の main（kaiya.kk の作者が選ぶ表紙・場面の絵・共通のカード `NoahAgentPin`）を取り込んだ（Opus / Noelle。本人の決定「作者の表紙→図解→場面」「main のカードに図解を入れる」、本人「この3日間の成果ぜんぶgitにあげて」）: カードの絵は、作者の表紙 → 資料の図解（`pin` がある時。絵は横長 539:208）→ 場面の絵の順（`components/noah-art-motion.tsx` の `NoahPinMotion`）。字の大きさと並びは main のカードに合わせ、前の App Store 型のカードの CSS は外した。main で task 130 が eve.si に使われていたので、ピンの指示書は [task 131](codex/tasks/131-noah-pin-scenes.md) にした。 [PR #70](https://github.com/iceiceice999/rock/pull/70)
 
 ## 2026-11-24

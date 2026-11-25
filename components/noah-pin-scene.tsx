@@ -4,8 +4,8 @@
  * lib/noah-pin-diagram.ts（しょうへいさんの Motion Prompt の図解パックの書き写し。MIT License (c) 2026 Shohei Ohtaki）で、539:208 の canvas に描く。
  * 動き（本人の決定 2026-11-24「画面に入った時に1回」と、指示「もっと可愛いアニメーション」「cuteじゃなくて可愛い」）: 画面に入った時に 1 回だけ、元と同じ順番で、
  * 部品が可愛い動き「ぽよん」（lib/noah-pin-diagram.ts。本人が 3 つから選んだ）で出て組み上がり、組み上がった形で止まる（元のように消えて繰り返さない）。
- * 色は、配色の黄金比「ベース 70%・メイン 25%・アクセント 5%」の 3 色（Mac の App Store の絵のような、深い・鮮やか・淡い面。lib/noah-pin-diagram.ts の noahPinColors。
- * 3 色は、並びの n 枚目 tone ごとにベースの色相を黄金角ずつ回して変える。本人の指示「こんな感じの色味にして　今のやつじゃ飽きるから黄金比を活用して」「黄金比カラーになってない」）。
+ * 色は、配色の黄金比「ベース 70%・メイン 25%・アクセント 5%」の 3 色（明るい面と鮮やかな面。lib/noah-pin-diagram.ts の noahPinColors。
+ * 3 色は、並びの n 枚目 tone ごとに、ポップな 8 組（赤・黄・青・白が中心）から黄金比の並びで選ぶ。本人の指示「黄金比カラーになってない」「もっとポップに」）。
  * 動きを減らす設定の人・見えたかを確かめられない端末には、初めから組み上がった形を出す。サーバーで描いた時は、同じ色の空の面（字も形も無い）。
  * 字は canvas の中なので、読み上げには出さない（aria-hidden。カードの題と説明の字が読まれる）。
  * 見張り（IntersectionObserver）・時計（requestAnimationFrame）・大きさ（ResizeObserver）は、ページ全体で 1 つずつ（絵ごとには作らない）。
@@ -84,7 +84,7 @@ function forget(art: Art) {
 
 /**
  * 1 枚の図解。ready は、置き場所が決まったか（グリッドは、置く前のカードを左上に重ねて隠すので、置き終わるまで見張りを始めない）。棚のように初めから置いてある所では省く。
- * 1 度動いた絵は、置き直し（列の幅が変わった時など）でもう一度動かさない（組み上がった形のまま）。tone は、並びの何枚目か（0 から。色を黄金角ずつ回す）。
+ * 1 度動いた絵は、置き直し（列の幅が変わった時など）でもう一度動かさない（組み上がった形のまま）。tone は、並びの何枚目か（0 から。ポップな 8 組から黄金比の並びで色の組を選ぶ）。
  */
 export default function NoahPinSceneArt({ scene, className, ready = true, tone = 0 }: { scene: NoahPinScene; className?: string; ready?: boolean; tone?: number }) {
   const frame = useRef<HTMLCanvasElement>(null), played = useRef(false);
