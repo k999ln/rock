@@ -23,4 +23,3 @@ export function noahPinReviewCounts(batch: NoahPinReviewBatch) {
   }
   return { reviewed, matches, reasons, passed: batch.entries.length === NOAH_PIN_REVIEW_SIZE && reviewed === NOAH_PIN_REVIEW_SIZE && matches >= NOAH_PIN_REVIEW_MIN_MATCHES };
 }
-
