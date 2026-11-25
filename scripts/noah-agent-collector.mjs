@@ -14,15 +14,17 @@ import { collectionSnapshots, publishCollection } from './noah-collector-publish
 import { collectFeeds, feedLeads, feedStatus } from './noah-collector-feeds.mjs';
 import { importFamilies, importedFamilies } from './noah-collector-import.mjs';
 import { readScoutFile } from './noah-collector-social.mjs';
+import { addCollectorPins, collectorPinFilter, prepareCollectorPins, writeCollectorPins } from './noah-collector-pins.mjs';
 import { fileURLToPath } from 'node:url';
 
 /** 読んだ紹介のファイル data/noah-scout/leads.json（task 125）。Codex・Claude が読んで理解した紹介を書き、収集機が毎回まとめて載せる。 */
 export const NOAH_SCOUT_LEADS_PATH = fileURLToPath(new URL('../data/noah-scout/leads.json', import.meta.url));
 
 /** One bounded pass. Provider failures retain their own checkpoints and retry deadlines. */
-export async function collectAgents({ local, directory, fetcher, now = Date.now, budget = NOAH_PATROL_BUDGET, signal, xToken, publishOrigin, publishKey, importOrigin, smitheryKey, githubToken, scoutPath = NOAH_SCOUT_LEADS_PATH }) {
+export async function collectAgents({ local, directory, fetcher, now = Date.now, budget = NOAH_PATROL_BUDGET, signal, xToken, publishOrigin, publishKey, importOrigin, smitheryKey, githubToken, pinWriter, pinEnabled = !!pinWriter, pinImportEnabled = false, scoutPath = NOAH_SCOUT_LEADS_PATH }) {
   const startedAt = now(), steps = {}, errors = [];
-  const intake = createIntakeStore({ db: local.db, fetcher, now, budget });
+  const capture = pinWriter ? prepareCollectorPins(local) : undefined;
+  const intake = createIntakeStore({ db: local.db, fetcher, now, budget, onCommittedRepresentativeHandshake: capture });
   const discovery = createDiscoveryStore({ db: local.db, fetcher, now });
   // Each source fails independently. Database/lease failures remain fatal.
   if (!signal?.aborted) steps.discovery = await discovery.sync();
@@ -33,24 +35,33 @@ export async function collectAgents({ local, directory, fetcher, now = Date.now,
   const x = !signal?.aborted ? await collectXAgents({ local, fetcher, token: xToken, now }) : { status: 'stopped', items: [] };
   steps.x = { status: x.status, collected: x.items.length, nextAt: x.nextAt ?? null };
   local.assertLease();
-  const exportedAt = now();
-  const exported = await noahIntakeExport(local.db, exportedAt);
-  // 握手の済んだ系列を、本番の一覧へ入れる（--import の時。上限の中で、変わった物だけ）。紹介のカードの「スマホで今すぐ」は、入れ終えた物だけ。
-  if (importOrigin && !signal?.aborted) {
-    try { steps.import = await importFamilies({ local, origin: importOrigin, key: publishKey, fetcher, now }); }
-    catch (error) { steps.import = { status: 'failed' }; errors.push({ source: 'import', code: error.message.startsWith('collector_') ? error.message : 'unavailable' }); }
-    if (steps.import?.status?.startsWith('http_')) errors.push({ source: 'import', code: steps.import.status });
-  }
   const candidates = local.sql.prepare(`SELECT c.id,c.provider,c.repository,c.revision,c.checked_at,c.first_seen_at,v.metadata_json FROM noah_discovery_candidates c
     JOIN noah_discovery_versions v ON v.candidate_id=c.id AND v.revision=c.revision WHERE c.state='active' ORDER BY c.provider,c.id`).all()
     .map(({ metadata_json, ...row }) => ({ ...row, metadata: JSON.parse(metadata_json), verified: false }));
-  writeCollectorJson(join(directory, 'discovery.json'), { schema: 'noah-discovery-export/1', exportedAt, candidates });
-  writeCollectorJson(join(directory, 'import.json'), exported);
-  const scout = readScoutFile(scoutPath, exportedAt);
+  const at = now(), scout = readScoutFile(scoutPath, at), leads = feedLeads(local, at);
   steps.scout = { collected: scout.items.length, rejected: scout.rejected };
   if (scout.rejected.file) errors.push({ source: 'scout', code: 'invalid_file' });
-  const snapshots = collectionSnapshots({ exported, discoveries: candidates, x, now: exportedAt, leads: feedLeads(local, exportedAt), sent: importedFamilies(local.sql), xConfigured: !!xToken, scout: scout.items });
+  const snapshotsFor = (exported, now) => collectionSnapshots({ exported, discoveries: candidates, x, now, leads,
+    sent: importedFamilies(local.sql), xConfigured: !!xToken, scout: scout.items });
+  if (pinEnabled && !pinWriter) steps.pins = { status: 'needs_credentials' };
+  if (pinWriter && !signal?.aborted) {
+    const preview = snapshotsFor(await noahIntakeExport(local.db, at, { includePins: false }), at);
+    steps.pins = await writeCollectorPins({ local, snapshots: preview, writer: pinWriter, now, signal });
+  }
+  const exportedAt = now();
+  const includePinFor = pinWriter ? collectorPinFilter(local) : undefined;
+  const exported = await noahIntakeExport(local.db, exportedAt, { includePins: !!pinWriter, includePinFor });
+  if (importOrigin && !signal?.aborted) {
+    try { steps.import = await importFamilies({ local, origin: importOrigin, key: publishKey, fetcher, now, includePins: !!pinWriter && pinImportEnabled, includePinFor }); }
+    catch (error) { steps.import = { status: 'failed' }; errors.push({ source: 'import', code: error.message.startsWith('collector_') ? error.message : 'unavailable' }); }
+    if (steps.import?.status?.startsWith('http_')) errors.push({ source: 'import', code: steps.import.status });
+  }
+  writeCollectorJson(join(directory, 'discovery.json'), { schema: 'noah-discovery-export/1', exportedAt, candidates });
+  writeCollectorJson(join(directory, 'import.json'), exported);
+  const snapshots = snapshotsFor(exported, exportedAt);
+  if (pinWriter) addCollectorPins(local, snapshots, exported);
   writeCollectorJson(join(directory, 'collection.json'), { snapshots });
+  if (pinEnabled && ['needs_credentials', 'unavailable'].includes(steps.pins?.status)) errors.push({ source: 'pins', code: steps.pins.status });
   const sources = [...collectorSources(local.sql), ...feedStatus(local.sql)];
   for (const source of collectorSources(local.sql)) if (source.error_code) errors.push({ source: source.id, code: source.error_code });
   for (const [id, feed] of Object.entries(steps.feeds ?? {})) if (feed.status === 'invalid_response') errors.push({ source: id, code: feed.status });
@@ -65,7 +76,7 @@ export async function collectAgents({ local, directory, fetcher, now = Date.now,
   return state;
 }
 
-export async function runCollector({ directory, watch = false, signal, fetcher, now = Date.now, budget = NOAH_PATROL_BUDGET, onStatus = () => {}, wait = sleep, xToken, publishOrigin, publishKey, importOrigin, smitheryKey, githubToken }) {
+export async function runCollector({ directory, watch = false, signal, fetcher, now = Date.now, budget = NOAH_PATROL_BUDGET, onStatus = () => {}, wait = sleep, xToken, publishOrigin, publishKey, importOrigin, smitheryKey, githubToken, pinEnabled, pinImportEnabled, pinWriter }) {
   const local = openCollectorStore(directory, { now });
   const network = fetcher ? null : createCollectorNetwork();
   const controller = new AbortController();
@@ -80,7 +91,7 @@ export async function runCollector({ directory, watch = false, signal, fetcher, 
   try {
     do {
       if (stop.aborted) break;
-      last = await collectAgents({ local, directory, fetcher: transport, now, budget, signal: stop, xToken, publishOrigin, publishKey, importOrigin, smitheryKey, githubToken });
+      last = await collectAgents({ local, directory, fetcher: transport, now, budget, signal: stop, xToken, publishOrigin, publishKey, importOrigin, smitheryKey, githubToken, pinEnabled, pinImportEnabled, pinWriter });
       if (leaseError) throw leaseError;
       onStatus(last);
       if (!watch || stop.aborted) break;

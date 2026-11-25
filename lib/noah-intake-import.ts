@@ -37,7 +37,7 @@ const marks = (n: number) => Array.from({ length: n }, () => '?').join(',');
  * 本番の D1 の書き込みは、新しく入れる系列 1 つで、表と索引を合わせて約 13 行（候補 6・握手 3・系列 4）。書き込みの枠が日ごとに決まっている時は、数を絞って、日を分けて入れる。
  */
 export type NoahIntakeExportOptions = {
-  limit?: number; first?: readonly string[];
+  limit?: number; first?: readonly string[]; includePins?: boolean; includePinFor?: (row: Row) => boolean;
   /** この系列だけを、載っているかに関わらず書き出す（収集機が、載らなくなった系列を本番で載せない側へ直す時。scripts/noah-collector-import.mjs）。 */
   ids?: readonly string[];
 };
@@ -75,7 +75,7 @@ export async function noahIntakeExport(db: Pick<IntakeDb, 'prepare'>, now: numbe
     .filter((row) => ids.has(String(row.family_id)))
     .map((row) => Object.fromEntries([
       ...CANDIDATE_COLUMNS.map((key) => [key, row[key]]),
-      ...NOAH_PIN_COLUMNS.filter((key) => row[key] != null).map((key) => [key, row[key]]),
+      ...(options.includePins === false || options.includePinFor?.(row) === false ? [] : NOAH_PIN_COLUMNS.filter((key) => row[key] != null).map((key) => [key, row[key]])),
     ]) as Row);
   const candidateIds = new Set(candidates.map((row) => String(row.id)));
   const checks = (await readAll((filter) => `SELECT ${columns(CHECK_COLUMNS.map((c) => `k.${c}`))} FROM noah_intake_checks k JOIN noah_intake_candidates c ON c.id = k.candidate_id JOIN noah_intake_families f ON f.id = c.family_id

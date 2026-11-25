@@ -9,6 +9,7 @@ import { collectionSignature } from '../lib/noah-collection.ts';
 import { NOAH_CHECKPOINT_PATH, NOAH_CHECKPOINT_BYTES, NOAH_CHECKPOINT_CHUNK_CHARS, checkpointChunkHash } from '../lib/noah-collector-checkpoint.ts';
 import { createCollectorNetwork } from './noah-collector-network.mjs';
 import { runCollector } from './noah-agent-collector.mjs';
+import { createNoahPinWriter } from './noah-collector-pins.mjs';
 import { publishCollection } from './noah-collector-publish.mjs';
 
 const SQLITE_LIMIT = 256 * 1024 * 1024;
@@ -103,7 +104,7 @@ export function collectorAlerts(status, repeat = COLLECTOR_ALERT_REPEAT) {
   const alerts = [], warnings = [];
   for (const error of status.errors ?? []) {
     const count = failures.get(error.source) ?? 0;
-    const actionable = ['import', 'publication'].includes(error.source) || error.code === 'invalid_response' || count >= repeat
+    const actionable = ['import', 'publication'].includes(error.source) || error.code === 'invalid_response' || error.source === 'pins' && error.code === 'needs_credentials' || count >= repeat
       || (error.source === 'x' && ['needs_credentials', 'quota_required'].includes(error.code));
     (actionable ? alerts : warnings).push(count ? { ...error, failures: count } : error);
   }
@@ -116,6 +117,7 @@ export function collectorSummary(result) {
   lines.push('| 台帳 | 有効 | 握手した | 一覧に載る | まだ確かめていない |', '| ---: | ---: | ---: | ---: | ---: |',
     `| ${cell(counts.registry)} | ${cell(counts.active)} | ${cell(counts.handshake)} | ${cell(counts.listed)} | ${cell(counts.unchecked)} |`, '');
   if (result.import) lines.push(`本番の一覧へ入れた: ${cell(result.import.status)}（送った系列 ${cell(result.import.sent)}・書いた行 ${cell(result.import.rowsWritten)}・待っている ${cell(result.import.waiting)}）`, '');
+  if (result.pins) lines.push(`図解ピンの生成は ${cell(result.pins.status)} です。作成 ${cell(result.pins.written)} 件、見送り ${cell(result.pins.skipped)} 件、形式違反 ${cell(result.pins.invalid)} 件です。今回の上限で ${cell(result.pins.perRunStopped)} 件、月の上限で ${cell(result.pins.monthStopped)} 件が残りました。`, '');
   if (result.published?.length) {
     lines.push('| 出所 | 載せた数 | 集める先の状態 |', '| --- | ---: | --- |');
     for (const item of result.published) lines.push(`| ${cell(item.source)} | ${cell(item.items)} | ${cell(result.feeds?.[item.source] ?? '')} |`);
@@ -131,7 +133,7 @@ export function collectorSummary(result) {
   return lines.join('\n') + '\n';
 }
 
-export async function runCloudCollector({ directory, origin, key, xToken, runId, fetcher, now = Date.now, collect = runCollector, bootstrap, importIntake = false, smitheryKey, githubToken }) {
+export async function runCloudCollector({ directory, origin, key, xToken, runId, fetcher, now = Date.now, collect = runCollector, bootstrap, importIntake = false, smitheryKey, githubToken, pinEnabled = false, pinImportEnabled = false, pinKey }) {
   if (!/^(bootstrap|[0-9]{1,25})$/.test(runId)) throw Error('cloud_run_id');
   const network = fetcher ? null : createCollectorNetwork();
   const transport = fetcher ?? network.fetch;
@@ -147,14 +149,14 @@ export async function runCloudCollector({ directory, origin, key, xToken, runId,
     if (!saved?.etag || !saved.checkpoint) throw Error('cloud_checkpoint_missing');
     restoreCheckpoint(directory, saved.checkpoint, now());
     // 収集機の鍵と同じ鍵で、握手の済んだ系列を一覧へ入れる（--import。紹介の掲載より前に入れ、カードの「スマホで今すぐ」を入れ終えた物に合わせる）。
-    const status = await collect({ directory, fetcher: transport, now, xToken, smitheryKey, githubToken, ...(importIntake ? { importOrigin: origin, publishKey: key } : {}) });
+    const status = await collect({ directory, fetcher: transport, now, xToken, smitheryKey, githubToken, pinEnabled, pinImportEnabled, pinWriter: pinEnabled && pinKey ? createNoahPinWriter(pinKey, fetcher) : undefined, ...(importIntake ? { importOrigin: origin, publishKey: key } : {}) });
     const checkpoint = encodeCheckpoint(directory, runId, Math.max(now(), saved.checkpoint.updatedAt + 1));
     // Commit progress before publishing. A stale runner cannot publish its snapshot.
     await request({ action: 'write', etag: saved.etag, checkpoint });
     const { snapshots } = JSON.parse(readFileSync(join(directory, 'collection.json'), 'utf8'));
     const published = await publishCollection({ snapshots, origin, key, fetcher: transport, now });
     return { runId, updatedAt: checkpoint.updatedAt, previousRunId: saved.checkpoint.runId, counts: status.counts, errors: status.errors, ...collectorAlerts(status), x: status.steps.x.status,
-      feeds: Object.fromEntries(Object.entries(status.steps.feeds ?? {}).map(([id, feed]) => [id, feed.status])), import: status.steps.import ?? null, published };
+      feeds: Object.fromEntries(Object.entries(status.steps.feeds ?? {}).map(([id, feed]) => [id, feed.status])), import: status.steps.import ?? null, pins: status.steps.pins ?? null, published };
   } finally { await network?.close(); }
 }
 async function main() {
@@ -162,7 +164,7 @@ async function main() {
   if (!values.dir || !values.origin) throw Error('cloud_arguments');
   const result = await runCloudCollector({ directory: resolve(values.dir), origin: values.origin, bootstrap: values.bootstrap && resolve(values.bootstrap),
     key: process.env.NOAH_COLLECTION_KEY, xToken: process.env.NOAH_X_BEARER_TOKEN, runId: values.bootstrap ? 'bootstrap' : process.env.GITHUB_RUN_ID,
-    importIntake: !!values.import, smitheryKey: process.env.SMITHERY_API_KEY || undefined, githubToken: process.env.GITHUB_TOKEN || undefined });
+    importIntake: !!values.import, smitheryKey: process.env.SMITHERY_API_KEY || undefined, githubToken: process.env.GITHUB_TOKEN || undefined, pinEnabled: process.env.NOAH_PINS_GENERATE === 'true', pinImportEnabled: process.env.NOAH_PINS_IMPORT === 'true', pinKey: process.env.NOAH_PIN_OPENAI_API_KEY });
   console.log(JSON.stringify(result));
   if (process.env.GITHUB_STEP_SUMMARY && !result.seeded) appendFileSync(process.env.GITHUB_STEP_SUMMARY, collectorSummary(result));
   // 落ちた扱いにするのは、人が見る失敗の時だけ（1 回きりの失敗は、次の回が続きから動く）。
