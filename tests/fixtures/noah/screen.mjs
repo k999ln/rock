@@ -156,6 +156,8 @@ export function screen(options = {}) {
       if (id === '@/lib/noah-ready-view') return readyView;
       if (id === '@/lib/noah-detail-guide') return load('lib/noah-detail-guide.ts');
       if (id === '@/lib/noah-project-view') return load('lib/noah-project-view.ts');
+      // 読み込み中に遊ぶ点のトラのゲーム。通信も保存もしない計算だけなので、本物をそのまま渡す。
+      if (id === '@/lib/noah-tiger-game') return load('lib/noah-tiger-game.ts');
 
       if (id === '@/lib/noah-agent-share') return agentShare;
       if (id.startsWith('./')) return load(`components/${id.slice(2)}.${existsSync(new URL(`components/${id.slice(2)}.tsx`, ROOT)) ? 'tsx' : 'ts'}`);
