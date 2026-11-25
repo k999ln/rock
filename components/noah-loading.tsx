@@ -16,7 +16,7 @@ export default function NoahLoading({ label = '読み込み中', compact = false
   // 全画面の読み込みでは、待っている間に点のトラのスケボーゲームで遊べる
   if (fullPage) return <output aria-live="polite" className={styles.page}>
     <span className={styles.srOnly}>{locale==='ja'?label:t('読み込み中')}</span>
-    <NoahTigerLoading label={label} />
+    <NoahTigerLoading />
   </output>;
   return <output aria-live="polite" className={cards ? styles.cards : compact ? styles.compact : fullPage ? styles.page : styles.loading}>
     <span className={styles.srOnly}>{locale==='ja'?label:t('読み込み中')}</span>

@@ -37,22 +37,17 @@ function readHi(key: string): number {
 }
 
 /**
- * 全画面の読み込み中に出す画面。上に「Noah」と読み込みの文と流れる帯、その下で点のトラのスケボーゲーム。
+ * 全画面の読み込み中に出す画面。上に「Noah」、その下で点のトラのスケボーゲーム。
  * 見本: design/references/components/noah-tiger-loading.html / noah-tiger-loading-hard.html
  */
-export default function NoahTigerLoading({ label, offline = false, preset = NOAH_TIGER_ACTIVE }: { label: string; offline?: boolean; preset?: NoahTigerPreset }) {
+export default function NoahTigerLoading({ offline = false, preset = NOAH_TIGER_ACTIVE }: { offline?: boolean; preset?: NoahTigerPreset }) {
   const { t } = useNoahLocale();
   const hint = t('{space} か {up}、またはタップでオーリー（板ごとジャンプ）。長く押すと高く跳びます。');
   return (
     <div className={styles.screen}>
-      <div className={styles.status} aria-hidden={offline ? undefined : true}>
-        <span className={styles.brand}>Noah</span>
-        {!offline && <span className={styles.bar}><span /></span>}
-        <span className={styles.message}>
-          {offline ? label : label.replace(/[….。]+$/u, '')}
-          {!offline && <span className={styles.dots} />}
-        </span>
-      </div>
+      <span className={styles.brand} aria-hidden={offline ? undefined : true}>
+        Noah{offline && <> · {t('オフラインです')}</>}
+      </span>
       <NoahTigerGame preset={preset} />
       <p className={styles.hint}>
         {hint.split(/(\{space\}|\{up\})/).map((part, i) =>
@@ -67,7 +62,7 @@ export function NoahTigerOffline() {
   const { t } = useNoahLocale();
   return (
     <main className={styles.offlinePage}>
-      <NoahTigerLoading label={t('オフラインです')} offline />
+      <NoahTigerLoading offline />
       <button className={styles.reload} type="button" onClick={() => window.location.reload()}>
         {t('再読み込み')}
       </button>
