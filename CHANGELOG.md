@@ -5,6 +5,7 @@
 - 最新`origin/main`を土台にローカル設計・収益パックを`avokdo`へ統合。旧`avokado-main`と35ファイルを復元用に保全し、VS Codeの単一入口`avokado.code-workspace`と配置表を追加。ローカルtask番号を131・132へ整理（task133、PR未作成）。
 
 ## 2026-11-25
+
 - Eve を、組み合わせを本物の部品で回せる所まで作った（Opus / Noelle。本人「eveも完成品作って」。task 130）。残りの部品 6 つ（案件を比べる・記事・見出し画像・LP・置き場・ブログに出す）を Eve が作り、手元の Qwen と Jev の判定で確かめた（すべて通過）。公開の公式の頁だけから需要の台帳に 2 件を入れ、A8.net × 登録済みのブログ × ロリポップ！AIエージェントクラウドの組み合わせを「本番に出せる」にした。本番の実行役（`scripts/eve-run.mjs`）で 1 回回し、記事・画像・LP を作って、本人の番（A8.net の登録）で止まっている。公開・登録・申請・送金はしていない（[PR #78](https://github.com/iceiceice999/rock/pull/78)）。
 
 - 2026-11-25 のノエルとかいやの会話（本人が貼った書き起こし 2 本）を設計書に取り込んだ（Opus / Noelle。本人「これ取り入れて全部しっかりちゃんと」）: 07 に会話の 6 行と未決 5 行（定期便の形・利用者のお金・会員登録・配る率と売値・データ）。05 に収益の候補「安全の早期発見」と、出口・組織・時間（6 章）、先の事業の構想（7 章）。spec-124 と 04 の配給に「1円も取らない」「一人当たりの予算の中で買い物」「食材・生活必需品・伝統工芸品」。trial-300 に招待と登録の見せ方。登録Agent に iPhone の連絡先からの自動入力。spec-115 につないだアカウントからの推薦の候補。01 に没入の映像の構想（8 章）。03 に通信の秘密。新しい下書き [services/noah-safety-early-warning.md](docs/services/noah-safety-early-warning.md)。会話は決定と意向を分けて書き、前の決め事と合わない所は本人の回答待ちにした。コードの変更はなし。 [PR #77](https://github.com/iceiceice999/rock/pull/77)
@@ -24,9 +25,21 @@
 
 - avokadoの事業設計プロンプト（`docs/prompts/avokado-business-design.md`）に、eSIMから自社管理クラウドを使う標準導入、従量料金の確認、外部Agentの提供元クラウドを明記した。4テーマの生成時に `scripts/build-avokado-business-prompt.mjs` が両リポジトリの資料を取得し、正本からeSIMと外部実行の根拠も添える（ローカル作成、PR未作成）。
 
+- Noahのピンのカードを題名だけにし、絵を見えている間繰り返すようにした。保存は PC でマウスを乗せた時だけ、スマホは題の右の「…」から出す（本人の指示「文章いらない、題名だけ」、本人の決定「見えている間は繰り返す」「乗せた時だけ出す」）。ピンの動画（集めた動画を 5〜8 秒・縦 3:4・音なしのループにした物）を、作者の表紙の次に出せるようにし、変換の道具 `scripts/noah-pin-video.mjs` と、Agent ごとに動画を選ぶ式を足した。集めて割り当てるのは task 132（本人の指示「こういう動画をgifにしてピン画像にする」）。
+- Noahのピンの図解の色を、紫をやめて、赤・黄・青・白を中心にしたポップな 8 組にした（本人の指示「全体的に紫っぽい」「もっとポップにポケモンセンターみたいな感じにして」）。1 枚ずつ黄金比の並びで組を選び、隣は違う組。配色の黄金比 70:25:5 と字の読みやすさは 8 組の全部で試験が確かめる（`lib/noah-pin-diagram.ts`・`tests/noah-pin-scene.test.mjs`）。
+- Noahのピンの図解の枝に、最新の main（kaiya.kk の作者が選ぶ表紙・場面の絵・共通のカード `NoahAgentPin`）を取り込んだ（Opus / Noelle。本人の決定「作者の表紙→図解→場面」「main のカードに図解を入れる」、本人「この3日間の成果ぜんぶgitにあげて」）: カードの絵は、作者の表紙 → 資料の図解（`pin` がある時。絵は横長 539:208）→ 場面の絵の順（`components/noah-art-motion.tsx` の `NoahPinMotion`）。字の大きさと並びは main のカードに合わせ、前の App Store 型のカードの CSS は外した。main で task 130 が eve.si に使われていたので、ピンの指示書は [task 131](codex/tasks/131-noah-pin-scenes.md) にした。 [PR #70](https://github.com/iceiceice999/rock/pull/70)
+
 ## 2026-11-24
+
 - Eve の部品を 5 つ作った（Opus / Noelle。本人「全部任せるから最後までやって」。task 130）: 規約を読む（引用が規約に文字どおりある項目だけ）、検索の言葉（ウィキペディアの件数で裏付け）、台本（広告の表示と言い切りを決まった式で守る）、広告の表示・表現の点検、成果・売上を読む（レントラックスの売上一覧の CSV）。手元の Qwen と同じ見本・Jev の判定で 1 回ずつ確かめ、5 つとも通った（落ちた版も記録）。設計図の規約の確かめを research.terms に分け、470 通りすべてを止める能力は 0 になった。レントラックスと登録済みの媒体を使う組み合わせ（affiliate:ai-tools:blog:rentracks。部品 5 工程。元の組み合わせは変えない）。
 - Eve の能力の確かめを本物の候補へ送った（Opus / Noelle。本人回答 13:54「全部送ってよい」。task 130）。Noah の 205 件から能力の語で当たった 54 件のうち、読むだけで見本を入れられる道具を持つ 29 件へ 1 回ずつ送り、Jev の判定に通った物は 0 件。送信・購入・電話・申込などの道具は呼ばない。`scripts/eve-verify-run.mjs`、記録は `data/eve-verifications/2026-11-24.json`。
+
+- Noahのピンの図解の色とカードを、Mac の App Store のようにした（本人の指示「こんな感じの色味にして　今のやつじゃ飽きるから黄金比を活用して」「黄金比カラーになってない」と画面の録画）。1 枚の絵を、配色の黄金比「ベース 70%・メイン 25%・アクセント 5%」の 3 色で描き、24 種類の図の形を塗りの面積が 70:25:5 に近くなるまで直した（ならして 72:24:4）。カードごとの 3 色は、ベースの色相を黄金角ずつ回して変える（隣は必ず違う色）。カードは白い地に色の絵、その下に分野・題・入れる物 → 返る物。字はどの枚でも WCAG 4.5 以上（`lib/noah-pin-diagram.ts`・`components/noah-pin-grid.tsx`・`components/noah-pins.module.css`・`components/noah-shelf.tsx`。試験 `tests/noah-pin-scene.test.mjs`・`tests/fixtures/noah/pin-raster.mjs`）。
+- Noahのピンの図解の色を、App Store の Today のカードのような、1 枚ずつ違う深い色の組（12 組。夜空・苔・琥珀・葡萄・深い青緑・金・炎・霧・ピーチ・レモン・空・ラベンダー）にした（本人の指示「色味がダサい」「こんな感じにして」）。カードは色の組の 1 枚で、図解の下の同じ色の帯に題・説明・保存。字はどの組でも WCAG 4.5 以上、並んだカードは同じ色にしない（`lib/noah-pin-diagram.ts`・`components/noah-pin-grid.tsx`・`components/noah-pins.module.css`。試験 `tests/noah-pin-scene.test.mjs`）。
+- Noahのピンの図解の部品の出方を、可愛い動き「ぽよん」にした（本人の指示「もっと可愛いアニメーション」「cuteじゃなくて可愛い」。Motion Prompt の #001 ポップインのばね＋#011 スクワッシュ＆ストレッチ。ぽよん・ぴょこっ・ふわっ の 3 つを見比べて、本人がぽよんを選んだ）。図の形・色・順番は元のまま（`lib/noah-pin-diagram.ts`。試験は全部の図で、札・はみ出し・伸び縮み・止める時に揺れが収まっている事を確かめる）。
+- Noahのピンの図解（バージョン TAKE）を、しょうへい（@showheyohtaki）さんが MIT License で公開している Motion Prompt の図解パック（#217〜240）のコードの書き写しにした（`lib/noah-pin-diagram.ts`。canvas。面・色・形・組み上がる速さは元のまま、仮の字は Agent の札に、作り話の数は描かない、画面に入った時に1回組み上げて止める）。許諾は `vendor/motion-prompt/`。グリッドの図解のカードは元のギャラリーと同じ並び（絵の下に太い題と灰色の行。保存は絵に重ねない）。棚の17枚の図と札を選び直した。試験 `tests/noah-pin-scene.test.mjs`（本人の指示「この人のレポジトリかなんか公開してるんじゃないの真似して欲しいんだけど」）。
+- Noahのピンの絵をバージョン TAKE に作り直した: 資料の図解（しょうへいさんの「資料で使う図解・グラフの名前」の24種類。ロジックツリー・フローチャート・ゲージなど）から、その仕事に合う図を選び、札は元の文にある言葉だけ。灰色の面に青1色、画面に入った時に1回描かれていく。棚の17枚を16種類の図で描き直し、Luna Max の指示書（task131）を24種類から選ぶ形に直した（本人指示「バージョン1って名前で保存して次のやつはバージョンTAKEで保存して全部作り直して」。バージョン1は枝 `claude/noah-pins-version-1`。`lib/noah-pin-scene.ts`・`components/noah-pin-scene.tsx`・spec-115 の 9 章）。
+- Noahのピンの場面の絵が、画面に入った時に1回だけ、その仕事を絵の中で演じて止まるようにした（本人の決定「画面に入った時に1回」。見本集 motion-prompt の動きを型ごとに1つ。CSSだけ・動きを減らす設定では止まった絵）。スマホの2列で保存のボタンに隠れていた ✓・！・地図のピン・施設の札・硬貨を移し、字が入らない事を試験で確かめる（`components/noah-pin-scene.tsx`・`components/noah-pin-scene.module.css`・spec-115 の 9 章）。
 - マイAgentのブラウザー保存先から、同じ本人の収益記録を作成・再表示できるようにした（[PR #68](https://github.com/iceiceice999/rock/pull/68)）。
 - マイAgentで収益系Agentの成果を開くと、同じ仕事の承認額・実入金・最終費用と作者20%の確定状況を確認できるようにした。証憑の連携前も表示する（[PR #67](https://github.com/iceiceice999/rock/pull/67)）。
 - Noah の道具カタログを掲載中の系列に合わせて再採取した。接続先の説明の冒頭と入力項目を同梱し、取得・照合の結果は [task 128](codex/tasks/128-noah-agent-explain.md#95-掲載系列の道具定義を再取得) に記録。 [PR #65](https://github.com/iceiceice999/rock/pull/65)
@@ -61,6 +74,7 @@
 - NoahのAgent一覧を共通のピンにそろえ、特集画像とピンに短いアニメーションを追加。端末の「動きを減らす」設定に対応。 [PR #41](https://github.com/iceiceice999/rock/pull/41)
 
 ## 2026-11-23
+
 - Noah Agent Store の行の評価の札（30px）と「その他の操作」（38px）、詳細の「利用条件を見る」（40px）を、スマホの幅と触れる画面で 44px にした（Opus / Noelle。task 129 の D7。[PR #43](https://github.com/iceiceice999/rock/pull/43)）。
 - Noah の日本語の検索で、よく頼まれる仕事の語 70 個のうち 0 件だった 15 個（プレゼン・予約・価格・SNS・タスク・メモ・電話など）を英語の語幹に広げ、全部 1 件以上にした（Opus / Noelle。task 129 の D11。`lib/noah-search-terms.ts`。[PR #43](https://github.com/iceiceice999/rock/pull/43)）。
 - Noah の主な画面に残っていた小さい押す所（「下書きを再開・新規登録」「下書きの保存量」「Agentを確認する →」「Agentを探す」「タイムラインへ戻る」）を 44px 以上にした（Opus / Noelle。task 129 の D7。[PR #43](https://github.com/iceiceice999/rock/pull/43)）。
@@ -87,6 +101,8 @@
 - NoahのWordPress/EC集客記事と直接導線を改善し、自社Xで紹介を公開。入口の経路別集計と6時間の集客改善を接続。実顧客の申込・承認は未確認（task101、[PR #17](https://github.com/iceiceice999/rock/pull/17)）。
 
 ## 2026-11-22
+
+- Noahのピンを、構図100選のような場面の絵（16の型）と本物の題で描く部品を足し、棚の17枚に絵を付けた。グリッドは、確かめた日本語の題と絵（pin）がある時に出す。約1.7万件は Luna Max の指示書（task131）（Opus / Noelle。本人指示「この方向でいい」「lunamaxにやらせる指示書書いて」。`lib/noah-pin-scene.ts`・`components/noah-pin-scene.tsx`・`lib/noah-pin-scenes-shelf.ts`・spec-115 の 9 章）。
 - デザイン参照ライブラリを rock に入れた（Opus / Noelle。本人指示「実際に使えるように参照ライブラリの雛形を作って…AGENTS.mdに追記する文も入れて」）。Codex の雛形（ノエルの Mac の中だけにあった）を、Noah の実際の参照 4 枚（図解のカード・余白の写真の並び・今のピンのグリッド・よりみちのタイムラインとトーク）で埋め、`design/references/` に置いた。AGENTS.md に「9. 画面を作る時」を足した（[PR #42](https://github.com/iceiceice999/rock/pull/42)）。
 - Noah のボードに「このボードに合う Agent」を足した（Opus / Noelle。本人指示「どのボードに保存したかでおすすめが変わるようにして。ボードごとの違いを実際に触って見たい」）。ボードの保存を起点に、他の人のボードから Pixie で行き着く物を出す。ボードが違えば違う物が出て、保存するとその場で変わる。学習なし・5 人より少ない人の保存からは出さない）（[PR #40](https://github.com/iceiceice999/rock/pull/40)）。
 - Noah の Agent 収集で、1 回きりの出所の失敗（GitHub の一時的な不調・混雑）で実行全体が「失敗」になっていたのを直した（Opus / Noelle。本人の問い「毎日更新してくれるシステム作ってって前いったけどできた？」）。本番への取り込み・掲載の失敗、形が変わった応答、X の鍵、同じ出所が 6 回続けて失敗した時だけを「人が見る失敗」にする。毎回の実行の要約に、台帳・握手・一覧に載る数と、出所ごとの数と失敗を出す）（[PR #38](https://github.com/iceiceice999/rock/pull/38)）。
@@ -374,11 +390,7 @@
 - 公開assetの正規URLをWorker経由へ修正し、CIの一時ブラウザーでローカル接続権限と実Tool再確認を明示。v144の公開ヘッダー8ルートと検索→Mac版への移動を実測（[PR #319](https://github.com/k999ln/rock/pull/319)）。
 - 統合Noahタイムラインをavoado.siの公開入口に接続。ドメイン直下からNoahを開き、既存の共有URLとMac版への導線を保持（公開v143を実URLで確認、[PR #319](https://github.com/k999ln/rock/pull/319)）。
 
-## 2026-11-18
-
 - Noahをニュース・投稿・コミュニティー・Agentの混合タイムラインへ統一。種別ラベルとMac版への案内を追加（本人指示で未公開、PR未作成）。
-
-## 2026-11-18
 
 - avoado.si/noahに公開カタログ・検索・詳細とMac版への導線を追加。私有データ/本番DBは変更しない（Sites用ソース、本人指示で公開せず準備まで、PR未作成）。
 
@@ -638,3 +650,4 @@ Offline apply now requires an owned private0700 parent for both source copy and 
 開発者向け: PR248でmain統合・同SHA CI確認済みのservice attachment検証は、入力から分離したsnapshotを返します。フィールド・署名wire・API引数・TTLは維持し、object identityの同一性を前提にせずfieldを扱います。成功値をdispatch許可にせず、現在factsと既存atomic gateを確認してください。[契約](docs/rockstaros-complete-design.md#esim-attachment-async-binding)。
 
 開発の現在primaryはmiiの成立判断1件です。実行queueと所有・証拠段階は[data/development-model-routing.json](data/development-model-routing.json)のcurrentExecution、運用と残gateは[Git作業入口](docs/workstreams/10-git-ci-operations.md#execution-recovery-20261028)を参照してください。`npm run mission:check`は宣言の矛盾を拒否しますが、実GitHub/物理受入の証明は独立検収で確認します。
+

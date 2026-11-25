@@ -159,3 +159,5 @@
 
 | 132 | [132-noah-revenue-pack-phone.md](132-noah-revenue-pack-phone.md) | 本人無料収益3担当・Mac非依存・携帯とPCの共通Noah | ✅ 3周検証と良否記録。品質/UI修正・公開受入は未完了 [PR #76](https://github.com/iceiceice999/rock/pull/76) |
 | 131 | [131-noah-registration-ux.md](131-noah-registration-ux.md) | Agent利用中の情報登録・再利用、保存/送信/料金の説明 | ✅ 実装・合成APIで390px/1280px確認・全体検証 [PR #63](https://github.com/iceiceice999/rock/pull/63)。未公開・本番外部登録は未実施 |
+| 131 | [131-noah-pin-scenes.md](131-noah-pin-scenes.md) | 約1.7万件のピンに日本語の題と資料の図解（バージョン TAKE。図解はしょうへいさんの Motion Prompt の図解パック（MIT）の書き写し。Luna Max が説明から 24 種類の図を選んで札を書く・確かめ・200件の目視で95%・本番 migration は本人の許可後。バージョン 1 の場面の絵は枝 `claude/noah-pins-version-1`） | 指示書 |
+| 132 | [132-noah-pin-videos.md](132-noah-pin-videos.md) | ピンの動画: 格好いい AI 動画（Higgsfield。本人は許可を取ってあると言った）を集め、5〜8 秒・縦 3:4・音なしのループ（GIF と同じ見た目の mp4）にして、Agent ごとに中身で割り当てる。カードは題名だけ。無作為の 200 件で 95% 以上が合うまで一般には出さない |
