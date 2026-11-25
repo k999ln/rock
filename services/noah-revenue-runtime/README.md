@@ -8,7 +8,7 @@
 
 管理者のランダムな32byte以上の秘密を`NOAH_REVENUE_ADMIN`としてWorker secretへ保存する。リポジトリ・ログ・コマンド引数へ値を残さず、CLIの標準入力を使う。管理者秘密は利用者のパスワードや第三者APIキーではない。
 
-`POST /admin/pair`（Bearer認証、空JSON）で5分・一回限りの`pairUrl`を発行し、本人携帯で開く。URL fragmentを同一Originの`POST /api/pair`へ交換し、Secure/HttpOnly/SameSite=Strictの30日cookieを設定する。接続後URLからキーを除去する。生成URLをチャットや共有ログに出さない。新端末・cookie削除・30日後は管理者から再接続が必要。
+`POST /admin/pair`（Bearer認証、空JSON）で5分・一回限りの`pairUrl`を発行し、本人携帯で開く。公開NoahのURL fragmentを同一Originの`POST /api/noah/revenue-pack/pair`（固定Workerへのproxy）へ交換し、Secure/HttpOnly/SameSite=Strictの30日cookieを設定する。接続後URLからキーを除去する。生成URLをチャットや共有ログに出さない。新端末・cookie削除・30日後は管理者から再接続が必要。
 
 携帯はHTTPSの本人用ページで依頼入力、匿名無料送信への同意、開始、成果確認、停止を行う。ADB reverseは不要。停止は送信済み処理を取り消さず、次段を止める。新しい依頼は同じ携帯から開始できる。
 
@@ -26,6 +26,6 @@
 
 無料プラン確認後、同じ設定でdeployしsecretを追加する。配備後に匿名アクセス拒否、携帯の一回接続、クラウドだけでの3担当完了と停止を実測して受入記録を残す。既存D1のmigrationは行わない。既存`noah-test-runtime`は変更しない。
 
-現在: クラウド6試験（収益業務全体16試験）、型・lint・dry-run・全体verify通過。無料プラン確認待ち、未配備・実携帯クラウド受入未完了。管理者秘密はまだ生成・登録していない。
+2026-11-25: Cloudflare画面でFree・$0を確認し、Workerと管理者secretを配備済み。Mac runner停止・ADB reverse削除後、認証済み検証クライアントで3担当の保存完了を確認。元の16試験に共通Noahのproxy境界4試験を追加した。共通画面の公開・実携帯からの開始はtask132で別途記録する。
 
 料金根拠: https://developers.cloudflare.com/durable-objects/platform/pricing/

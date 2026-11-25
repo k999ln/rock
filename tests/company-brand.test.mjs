@@ -20,7 +20,7 @@ void test('compiled Web/PWA/native/product assets match their manifest and prese
  assert.deepEqual([icon.readUInt32BE(16),icon.readUInt32BE(20)],[512,512]);
  const small=read('public/rock-icon-192.png');assert.deepEqual([small.readUInt32BE(16),small.readUInt32BE(20)],[192,192]);
  for(const path of ['public/favicon.svg','public/company-mark-192.svg','public/rock-icon-maskable.svg']){
-  const svg=read(path).toString(),match=svg.match(/href="data:image\/png;base64,([A-Za-z0-9+/=]+)"/);assert.ok(match,path);assert.deepEqual(Buffer.from(match[1],'base64'),icon);
+  const svg=read(path).toString(),match=svg.match(/href="data:image\/png;base64,([A-Za-z0-9+/=]+)"/);assert.ok(match,path);assert.deepEqual(Buffer.from(match[1],'base64'),path === 'public/favicon.svg' ? read('public/brand/noah-icon-v2.png') : icon);
  }
  assert.equal(assets.publicDeployed,false);assert.equal(assets.pixelInstalled,false);
 });

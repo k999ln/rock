@@ -28,7 +28,8 @@ async function folder(t) {
   t.after(() => rm(dir, { recursive: true, force: true }));
   return dir;
 }
-void test('runner prepares reviewed bytes, executes only one claimed request, and acknowledges teardown', async (t) => {
+void test('Noah-scoped runner prepares reviewed bytes, executes once, and acknowledges teardown', async (t) => {
+  const credential = 'noah_runner_' + 'x'.repeat(43);
   const f = await launchFixture(t);
   await f.approved();
   const root = await folder(t);

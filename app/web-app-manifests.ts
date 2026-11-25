@@ -1,5 +1,15 @@
 import type { MetadataRoute } from 'next';
 
+/** Public web identity; legacy hardware manifests keep their existing identifiers. */
+export function noahWebManifest(): MetadataRoute.Manifest {
+  return {
+    ...rockstarOsManifest(), name: 'Noah', short_name: 'Noah',
+    description: 'NoahでAgentを見つけ、Eveと相談し、仕事の成果を受け取る。',
+    start_url: '/noah',
+    icons: [{ src: '/brand/noah-icon-v2.png', sizes: '512x512', type: 'image/png', purpose: 'any' }],
+  };
+}
+
 export default function rockstarOsManifest(): MetadataRoute.Manifest {
   return {
     id: '/',

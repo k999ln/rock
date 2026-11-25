@@ -5,6 +5,9 @@
 - 最新`origin/main`を土台にローカル設計・収益パックを`avokdo`へ統合。旧`avokado-main`と35ファイルを復元用に保全し、VS Codeの単一入口`avokado.code-workspace`と配置表を追加。ローカルtask番号を131・132へ整理（task133、PR未作成）。
 
 ## 2026-11-25
+- 本人用収益パックを同一コードで3周検証し、実携帯3回・クラウド出力の良否と未修正の入口/入力保持/事実性の問題を [task132](codex/tasks/132-noah-revenue-pack-phone.md) に記録。公開受入は未完了（[PR #76](https://github.com/iceiceice999/rock/pull/76)）。
+- 最新mainと公開版241の差分を保全し、本人用の無料クラウド3担当を携帯・PC共通のNoah画面へ接続した。公開・実携帯の受入は [task132](codex/tasks/132-noah-revenue-pack-phone.md) に分けて記録（[PR #76](https://github.com/iceiceice999/rock/pull/76)）。
+
 
 - eSIMから本人専用の非公開クラウドを使う方針と、人の確認・法的手続き後の公的機関への必要最小限の情報提供を`docs/structure/03-esim.md` §8〜10へ反映。02・04・専用端末設計・READMEへ接続し、提携／実装／運用は未確定と明記（task132、PR未作成）。
 

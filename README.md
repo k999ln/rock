@@ -90,6 +90,8 @@ npm run amc:cycle -- demo
 
 ## Noahで、仕事に合うAgentを探す
 
+本人用の[収益業務パック](docs/services/noah-revenue-pack.md)は、携帯とPCで共通のNoah画面から商品設計・納品サンプル・提案書の3担当を実行します。本人用クラウドに成果を保存し、Macの起動は不要です。無料枠を超えると待機・停止します。出力は確認用の下書きで、販売・応募・入金の完了を表しません。
+
 <a href="https://avoado.si/noah"><img src="docs/assets/readme/noah-store-today.webp" alt="NoahのTodayでMemoryの特集と注目のAgentを選ぶスマホ画面" width="272"></a>
 
 [登録フォームで生成した「法人のsi導入準備」の表紙を見る（4秒）](docs/assets/readme/noah-agent-motion.mp4)

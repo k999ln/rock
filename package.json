@@ -115,7 +115,9 @@
     "game:bridge": "node --experimental-strip-types toolkits/fivem-bridge/server.mjs",
     "sky:linux:pixel:build": "node scripts/build-sky-linux-pixel.mjs",
     "web:security:record": "node scripts/record-web-security-evidence.mjs",
-    "noah:mac:package": "node scripts/package-noah-mac.mjs"
+    "noah:mac:package": "node scripts/package-noah-mac.mjs",
+    "noah:revenue:package": "node scripts/package-noah-revenue.mjs",
+    "noah:revenue:test": "node --experimental-strip-types --test tests/noah-revenue-*.test.mjs"
   },
   "dependencies": {
     "@base-ui/react": "1.7.0",
