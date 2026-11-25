@@ -14,6 +14,7 @@
   --tiger-hole: #202024;
   --tiger-thing: #8e8998;
   --tiger-cloud: #e9e6ee;
+  --tiger-magic: #7342a8;
   width: 100%;
   max-width: 720px;
   margin: 0 auto;
@@ -52,6 +53,7 @@
   font-variant-numeric: tabular-nums; letter-spacing: .08em;
 }
 .now { color: var(--tiger-fg); }
+.wizard { position: absolute; top: 4px; left: 0; color: var(--tiger-magic); font-size: 13px; }
 .flash .now { animation: tiger-flash .25s steps(1, end) 4; }
 @keyframes tiger-flash { 50% { visibility: hidden; } }
 .callout {
@@ -72,4 +74,27 @@
 @media (prefers-reduced-motion: reduce) {
   .dots::after { animation: none; content: '...'; }
   .bar > span { animation: none; width: 100%; opacity: .35; }
+}
+
+.offlinePage {
+  box-sizing: border-box;
+  width: 100%;
+  min-height: 100dvh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 24px;
+  padding: 24px;
+  background: #fff;
+}
+.reload {
+  min-height: 44px;
+  padding: 0 16px;
+  border: 1px solid #76727f;
+  border-radius: 8px;
+  background: #fff;
+  color: #202024;
+  font: inherit;
+  cursor: pointer;
 }

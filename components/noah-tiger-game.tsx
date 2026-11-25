@@ -6,10 +6,12 @@ import {
   CLOUD,
   DOT,
   GROUND,
+  MAGIC_STAR,
   NOAH_TIGER_ACTIVE,
   STAGE_H,
   STAGE_W,
   TIGER_X,
+  WIZARD_HAT,
   createNoahTigerGame,
   currentTigerSprite,
   pigeonFrame,
@@ -38,19 +40,17 @@ function readHi(key: string): number {
  * 全画面の読み込み中に出す画面。上に「Noah」と読み込みの文と流れる帯、その下で点のトラのスケボーゲーム。
  * 見本: design/references/components/noah-tiger-loading.html / noah-tiger-loading-hard.html
  */
-export default function NoahTigerLoading({ label, preset = NOAH_TIGER_ACTIVE }: { label: string; preset?: NoahTigerPreset }) {
+export default function NoahTigerLoading({ label, offline = false, preset = NOAH_TIGER_ACTIVE }: { label: string; offline?: boolean; preset?: NoahTigerPreset }) {
   const { t } = useNoahLocale();
   const hint = t('{space} か {up}、またはタップでオーリー（板ごとジャンプ）。長く押すと高く跳びます。');
   return (
     <div className={styles.screen}>
-      <div className={styles.status} aria-hidden="true">
+      <div className={styles.status} aria-hidden={offline ? undefined : true}>
         <span className={styles.brand}>Noah</span>
-        <span className={styles.bar}>
-          <span />
-        </span>
+        {!offline && <span className={styles.bar}><span /></span>}
         <span className={styles.message}>
-          {label.replace(/[….。]+$/u, '')}
-          <span className={styles.dots} />
+          {offline ? label : label.replace(/[….。]+$/u, '')}
+          {!offline && <span className={styles.dots} />}
         </span>
       </div>
       <NoahTigerGame preset={preset} />
@@ -63,6 +63,18 @@ export default function NoahTigerLoading({ label, preset = NOAH_TIGER_ACTIVE }: 
   );
 }
 
+export function NoahTigerOffline() {
+  const { t } = useNoahLocale();
+  return (
+    <main className={styles.offlinePage}>
+      <NoahTigerLoading label={t('オフラインです')} offline />
+      <button className={styles.reload} type="button" onClick={() => window.location.reload()}>
+        {t('再読み込み')}
+      </button>
+    </main>
+  );
+}
+
 export function NoahTigerGame({ preset = NOAH_TIGER_ACTIVE }: { preset?: NoahTigerPreset }) {
   const { t } = useNoahLocale();
   const stageRef = useRef<HTMLDivElement>(null);
@@ -71,6 +83,7 @@ export function NoahTigerGame({ preset = NOAH_TIGER_ACTIVE }: { preset?: NoahTig
   const scoreRef = useRef<HTMLDivElement>(null);
   const [phase, setPhase] = useState<'idle' | 'run' | 'over'>(preset.autoStart ? 'run' : 'idle');
   const [hi, setHi] = useState(0);
+  const [wizardSeconds, setWizardSeconds] = useState(0);
 
   useEffect(() => {
     const stage = stageRef.current;
@@ -79,13 +92,14 @@ export function NoahTigerGame({ preset = NOAH_TIGER_ACTIVE }: { preset?: NoahTig
     if (!stage || !canvas || !ctx) return;
     const game = createNoahTigerGame(preset);
     let best = readHi(preset.hiScoreKey);
+    let lastWizardSeconds = 0;
     setHi(best);
     if (preset.autoStart) startNoahTigerGame(game);
 
     const colors: Record<string, string> = {};
     const readColors = () => {
       const cs = getComputedStyle(stage);
-      for (const name of ['fg', 'tiger', 'hole', 'thing', 'cloud']) colors[name] = cs.getPropertyValue('--tiger-' + name).trim();
+      for (const name of ['fg', 'tiger', 'hole', 'thing', 'cloud', 'magic']) colors[name] = cs.getPropertyValue('--tiger-' + name).trim();
     };
     readColors();
 
@@ -124,7 +138,11 @@ export function NoahTigerGame({ preset = NOAH_TIGER_ACTIVE }: { preset?: NoahTig
       for (const o of game.obstacles) {
         sprite(o.kind === 'thing' ? o.rows : pigeon, o.x, o.y, { '#': colors.thing });
       }
+      for (const star of game.magicStars) sprite(MAGIC_STAR, star.x, star.y, { '#': colors.magic });
       sprite(currentTigerSprite(game), TIGER_X, game.y, { '#': colors.tiger, o: colors.hole, b: colors.fg });
+      if (game.wizardFrames > 0) {
+        sprite(WIZARD_HAT, TIGER_X + 14 * DOT, game.y - 5 * DOT, { '#': colors.magic });
+      }
     }
 
     const reduce = window.matchMedia('(prefers-reduced-motion: reduce)');
@@ -135,6 +153,11 @@ export function NoahTigerGame({ preset = NOAH_TIGER_ACTIVE }: { preset?: NoahTig
       lastT = now;
       const before = game.phase;
       const { crashed, milestone } = stepNoahTigerGame(game, dt, { reduceMotion: reduce.matches });
+      const seconds = Math.ceil(game.wizardFrames / 60);
+      if (seconds !== lastWizardSeconds) {
+        lastWizardSeconds = seconds;
+        setWizardSeconds(seconds);
+      }
       if (before === 'run' && nowRef.current) nowRef.current.textContent = pad(game.score);
       if (milestone && scoreRef.current) {
         const el = scoreRef.current;
@@ -212,6 +235,9 @@ export function NoahTigerGame({ preset = NOAH_TIGER_ACTIVE }: { preset?: NoahTig
           00000
         </span>
       </div>
+      {wizardSeconds > 0 && <output className={styles.wizard}>
+        {t('魔法使い・無敵')} <span aria-hidden="true">{wizardSeconds}s</span>
+      </output>}
       {phase !== 'run' && (
         <div className={styles.callout}>
           {phase === 'over' ? t('ぶつかった！') : t('スペースキーかタップでスタート')}

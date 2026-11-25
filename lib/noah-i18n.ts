@@ -149,6 +149,7 @@ export const NOAH_MESSAGES: Record<
   すべて: ['All', '全部', '전체', 'Todos', 'الكل'],
   保存済み: ['Saved', '已保存', '저장됨', 'Guardado', 'محفوظ'],
   読み直す: ['Retry', '重试', '다시 시도', 'Reintentar', 'إعادة المحاولة'],
+  オフラインです: ['You’re offline', '你已离线', '오프라인 상태입니다', 'Sin conexión', 'أنت غير متصل بالإنترنت'],
   再読み込み: ['Reload', '重新加载', '새로 고침', 'Recargar', 'إعادة التحميل'],
   再試行: ['Retry', '重试', '다시 시도', 'Reintentar', 'إعادة المحاولة'],
   クリア: ['Clear', '清除', '지우기', 'Borrar', 'مسح'],
@@ -448,6 +449,7 @@ export const NOAH_MESSAGES: Record<
     'تزلّج مع النمر أثناء الانتظار',
   ],
   'ぶつかった！': ['Crashed!', '撞到了！', '부딪혔어요!', '¡Chocaste!', 'اصطدمت!'],
+  '魔法使い・無敵': ['Wizard · Invincible', '魔法师 · 无敌', '마법사 · 무적', 'Mago · Invencible', 'ساحر · منيع'],
   'スペースキーかタップで、もう一度': [
     'Press Space or tap to try again',
     '按空格键或点击再来一次',
