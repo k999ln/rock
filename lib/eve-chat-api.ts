@@ -36,6 +36,7 @@ export function createEveChatApi(deps: Dependencies) {
       if (!result) return json({ error: '設計案を読み取れませんでした。もう一度送信してください。' }, 502);
       return json({ ...result, candidates, ownerScope });
     } catch (error) {
+      if (error instanceof Error && error.message === 'UNAUTHORIZED') return json({ error: 'Noahを読み直して利用を開始してください。' }, 401);
       return json({ error: error instanceof NoahAgentError ? error.message : 'Eveに接続できませんでした。入力は端末に残ります。' }, error instanceof NoahAgentError ? error.status : error instanceof SyntaxError ? 400 : 503);
     }
   };
