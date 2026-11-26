@@ -12,7 +12,7 @@ export async function noahAgentDirectory(target?: { id: string; family: string |
   };
   const listed = noahAllowed(parseNoahFlags(config), 'list', false);
   const [collected, revenue, verified] = await Promise.all([
-    readNoahDirectory({ db: database(), bucket: config.BUCKET, listed }),
+    readNoahDirectory({ db: database(), bucket: config.BUCKET, listed }, target),
     listed && (!target || (!target.family && await isNoahRevenueProject(target.id))) ? noahRevenueDirectory() : Promise.resolve([]),
     listed ? noahVerifiedDirectory() : Promise.resolve([]),
   ]);

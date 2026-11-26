@@ -33,7 +33,7 @@ export function noahFamilyUrl(row: Pick<Family, 'repository' | 'record_json' | '
     return noahProjectUrl(record.repository?.url || row.repository || record.websiteUrl || connect?.target?.url);
   } catch { return null; }
 }
-export async function readNoahDirectory(deps: DirectoryDependencies): Promise<DirectoryEntry[]> {
+export async function readNoahDirectory(deps: DirectoryDependencies, target?: { id: string; family: string | null }): Promise<DirectoryEntry[]> {
   const now = (deps.now ?? Date.now)();
   const [rows, snapshots] = await Promise.all([
     deps.listed ? deps.db.prepare(`SELECT f.id,c.name,c.summary,c.external_key,c.repository,c.record_json,k.connect_json
@@ -49,8 +49,15 @@ export async function readNoahDirectory(deps: DirectoryDependencies): Promise<Di
   const entries = new Map<string, DirectoryEntry>();
   const base = (id: string, name: string, summary: string, provider: string, url: string | null): NoahAgentCard => ({ id, name, summary, provider,
     host: url ? new URL(url).hostname : null, users: 0, oneTap: false, savedIn: [], topic: noahPinTopic(name, summary), shape: noahPinShape(id) });
-  for (const row of rows.results) {
-    const url = noahFamilyUrl(row), feedbackId = await noahCardIdentity(url, row.id);
+  // Resolve identities concurrently, then preserve the database's stable family order.
+  const families = await Promise.all(rows.results.map(async row => {
+    const url = noahFamilyUrl(row);
+    return { row, url, feedbackId: await noahCardIdentity(url, row.id) };
+  }));
+  const targetId = target?.family ? families.find(item => item.row.id === target.family)?.feedbackId : target?.id;
+  if (target?.family && !targetId) return [];
+  for (const { row, url, feedbackId } of families) {
+    if (target && feedbackId !== targetId) continue;
     const existing = entries.get(feedbackId);
     if (existing) { existing.families.push(row.id); continue; }
     entries.set(feedbackId, { families: [row.id], observedAt: 0, card: { ...base(row.id, row.name, row.summary, row.external_key.split('/')[0], url), feedbackId } });
@@ -60,9 +67,13 @@ export async function readNoahDirectory(deps: DirectoryDependencies): Promise<Di
     .filter(item => item.expiresAt > now && !noahCollectionBlocked(item))
     .map(item => ({ ...item, url: noahProjectUrl(item.url) ?? item.url,
       run: item.run === 'phone' && !listedIds.has(item.familyId ?? '') ? undefined : item.run }));
-  for (const item of noahCollectionCards(records)) {
+  const urls = [...new Set(records.map(item => item.url))];
+  const projectIds = new Map(await Promise.all(urls.map(async url => [url, await noahCardIdentity(url, '')] as const)));
+  // A detail lookup must not build, score, and sort thousands of unrelated cards.
+  const selected = target ? records.filter(item => projectIds.get(item.url) === targetId) : records;
+  for (const item of noahCollectionCards(selected)) {
     const url = item.url;
-    const feedbackId = await noahCardIdentity(url, item.id);
+    const feedbackId = projectIds.get(url)!;
     const entry: DirectoryEntry = entries.get(feedbackId) ?? { families: [], observedAt: item.observedAt,
       card: { ...base(feedbackId, item.name, item.summary, item.author, url), feedbackId, href: url, external: true } };
     const seen = new Set<string>();

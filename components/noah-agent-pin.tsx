@@ -56,12 +56,14 @@ export function NoahAgentPinFace({ id, name, href, prefetch, topic, shape, summa
   const openDetail = useContext(NoahDetailNavigation);
   const category = topic ?? noahPinTopic(name, summary ?? '');
   const attributes = { className: `${styles.face} ${pins.tone}`, 'data-shape': shape ?? noahPinShape(id), 'data-topic': category };
+  const videoTitle = Boolean(video || cover?.type.startsWith('video/'));
   const contents = <>
-    <span className={pins.panel} aria-hidden="true">
+    <span className={`${pins.panel} ${videoTitle ? styles.videoPanel : ''}`}>
       <NoahPinMotion id={id} name={name} summary={summary} cover={cover} diagram={diagram} video={video} />
+      {videoTitle && <span className={styles.videoTitle}><strong>{name}</strong>{summary && <span>{summary}</span>}</span>}
     </span>
-    <strong className={styles.name}>{name}</strong>
-    {summary && !plain && <span className={styles.summary}>{summary}</span>}
+    {!videoTitle && <strong className={styles.name}>{name}</strong>}
+    {summary && !plain && !videoTitle && <span className={styles.summary}>{summary}</span>}
   </>;
   if (href) return <Link {...attributes} href={href} prefetch={noahDetailTarget(href) ? false : prefetch} onClick={event => {
     const preview = { id, name, summary: summary ?? '' };
