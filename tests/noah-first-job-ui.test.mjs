@@ -27,78 +27,35 @@ const modules = { ...sharedModules, './noah-ready-detail': quiet };
 const pageReply = firstJobs => ({ items: [], total: 0, nextCursor: null, ownerScope: null, firstJobs });
 const detail = (ui, firstJob) => ui.mount('components/noah-project-detail.tsx', { id: project, firstJob });
 
-void test('the public home opens available tasks directly with their expected outputs and a focusable return target', async () => {
-  const ui = screen({ modules, width: 320, fetch: async ({url}) => {
-    const params = new URL(url, 'https://noah.test').searchParams;
-    assert.equal(params.get('firstJobs'), '1');
-    return { body: pageReply(choices.map((job, index) => index === 0 ? { ...job, href: null } : job)) };
-  } });
-  const home = ui.mount('components/noah-home.tsx', { mode: 'public' });
-  await home.flush();
-  const region = home.find('section').find(s => s.props.id === 'first-jobs');
-  assert.equal(region.props.tabIndex, -1);
-  assert.equal(home.find('section')[0], region);
-  assert.equal(home.find('h1', 'Today').length, 0);
-  assert.equal(home.find('time').length, 1);
-  assert.equal(home.find('h1', 'この仕事、誰の担当だっけ？').length, 1);
-  assert.ok(home.find('h2').some(h => h.props.id === region.props['aria-labelledby']));
-  assert.equal(home.find('a', '専用クラウドを開く')[0].props.href, '/api/noah/cloud-work');
-  assert.equal(home.find('a', 'eSIMでつなぐ専用クラウド')[0].props.href, '/connect');
-  assert.equal(home.find('a', 'Agentを買う')[0].props.href, '/noah/marketplace');
-  const engineering = home.find('a', 'Agentエンジニアリング');
-  assert.deepEqual(engineering.map(link => link.props.href), ['/noah/engineering']);
-  assert.ok(home.nodes(home.find('header')[0]).includes(engineering[0]));
-  assert.ok(!home.find('a').some(link => ['/noah/agents/new', '/noah/registration', '/noah/publisher'].includes(link.props.href)));
-  assert.equal(home.find('a', 'ピックアップ')[0].props.href, choices.find(job => job.id === 'memory').href);
-  const links = home.nodes(region).filter(n => n.type === 'a');
-  assert.deepEqual(links.map(link => link.props.href), [...choices.slice(1).map(job => job.href), '/noah#noah-collection', '/noah/saved?tab=results']);
-  for (const [index, job] of choices.slice(1).entries()) {
-    assert.equal(home.text(links[index]), job.title + job.output);
-    assert.equal(links[index].props.target, undefined);
+void test('the public home has one collection and available task links inside their matching card', async () => {
+  const realModules = { ...modules }; delete realModules['./noah-pin-grid'];
+  const items = [{id:'family-memory',feedbackId:project,name:'Memory',topic:'data',external:false,savedIn:[],shape:1}];
+  const ui = screen({modules:realModules, fetch:async()=>({body:{...pageReply(choices.slice(1)),items,total:1}})});
+  const home = ui.mount('components/noah-home.tsx',{mode:'public'}); await home.flush();
+  const grids=home.find('ul').filter(node=>node.props['data-agent-pin-grid']);
+  assert.equal(grids.length,1);
+  assert.equal(home.find('h1','Agentを見つける').length,1);
+  assert.doesNotMatch(home.text(),/Today|注目のAgent|何をしたいですか|フォロー中/);
+  assert.equal(home.find('section').length,1);
+  const card=home.find('li').find(node=>node.props['data-agent-pin-id']==='family-memory');
+  for(const job of choices.slice(1)) {
+    const link=home.find('a',job.title)[0];
+    assert.equal(link.props.href,job.href); assert.ok(home.nodes(card).includes(link));
   }
-  assert.equal(home.text(region).includes(choices[0].title), false);
-  assert.equal(ui.calls.length, 1);
-  assert.equal(ui.calls[0].method, 'GET');
+  assert.equal(home.find('a',choices[0].title).length,0);
+  assert.equal(home.find('a','専用クラウドを開く')[0].props.href,'/api/noah/cloud-work');
+  assert.equal(ui.calls.length,1); assert.equal(ui.calls[0].method,'GET');
 });
 
-void test('The store places a real featured job and the catalog ahead of store services', async () => {
-  const memory = choices.find(job => job.id === 'memory');
-  const directoryId = 'project-' + 'b'.repeat(64);
-  const directoryHref = '/noah/discover/agent?id=' + directoryId;
-  const items = [
-    { id: project, name: 'memory', topic: 'data', external: true },
-    { id: directoryId, name: 'A published agent', topic: 'dev', shape: 1, external: true, summary: 'Catalog description' },
-    ...['c', 'd', 'e', 'f'].map((key, index) => ({
-      id: 'project-' + key.repeat(64), name: 'Research ' + key,
-      topic: 'research', shape: index % 3, external: true,
-    })),
-  ];
-  for (const available of [[memory], []]) {
-    const page = { ...pageReply(available), total: items.length, items };
-    const ui = screen({ modules, locale: 'en', fetch: async () => ({ body: page }) });
-    const home = ui.mount('components/noah-home.tsx', { mode: 'public' });
-    await home.flush();
-    const anchors = home.find('a');
-    const feature = home.find('a', 'Featured')[0];
-    const directory = home.find('a', 'A published agent')[0];
-    const services = home.find('a', 'Buy agents')[0];
-    assert.equal(home.find('a', 'Agent Engineering')[0].props.href, '/noah/engineering');
-    assert.equal(feature.props.href, available.length ? memory.href : '/noah/discover/agent?id=' + project);
-    assert.equal(home.find('h1', 'Who’s working on what?').length, available.length);
-    assert.equal(directory.props.href, directoryHref);
-    const shelf = home.find('section').find(node => node.props['aria-labelledby'] === 'noah-featured-agents-title');
-    const shelfNodes = home.nodes(shelf);
-    const pins = shelfNodes.filter(node => node.type === 'li');
-    assert.deepEqual(pins.map(pin => pin.props['data-shape']), [1, 0, 1, 2]);
-    assert.deepEqual(pins.map(pin => pin.props['data-topic']), ['dev', 'research', 'research', 'research']);
-    assert.deepEqual(pins.map(pin => home.nodes(pin).find(node => node.type === 'a').props.href),
-      items.slice(1, 5).map(item => '/noah/discover/agent?id=' + item.id));
-    assert.equal(home.nodes(pins[0]).find(node => node.props?.['data-agent-art'])?.props['data-agent-art'], 'signature');
-    assert.equal(home.nodes(pins[0]).some(node => node.type === 'canvas'), true);
-    assert.equal(shelfNodes.some(node => node.type === 'button'), false);
-    assert.equal(home.find('a', 'See all')[0].props.href, '/noah#noah-collection');
-    assert.ok(anchors.indexOf(feature) < anchors.indexOf(directory));
-    assert.ok(anchors.indexOf(directory) < anchors.indexOf(services));
+void test('catalog cards appear once with or without an available featured job', async () => {
+  const realModules = { ...modules }; delete realModules['./noah-pin-grid'];
+  const items=['a','b','c','d','e','f'].map(key=>({id:'project-'+key.repeat(64),name:'Agent '+key,topic:'dev',external:true,savedIn:[]}));
+  for(const jobs of [[choices.find(job=>job.id==='memory')],[]]) {
+    const ui=screen({modules:realModules,fetch:async()=>({body:{...pageReply(jobs),items,total:items.length}})});
+    const home=ui.mount('components/noah-home.tsx',{mode:'public'});await home.flush();
+    assert.deepEqual(home.find('li').filter(node=>node.props['data-agent-pin-id']).map(node=>node.props['data-agent-pin-id']),items.map(item=>item.id));
+    assert.equal(home.find('ul').filter(node=>node.props['data-agent-pin-grid']).length,1);
+    assert.ok(ui.calls.every(call=>call.url.startsWith('/api/noah/discover?')));
   }
 });
 
@@ -130,22 +87,14 @@ void test('every page of catalog results uses pins and keeps the catalog actions
   assert.equal(last.some(node => node.type === 'button'), false);
 });
 
-void test('the public home shows a purpose section only when it has a usable task', async () => {
-  const memory = choices.find(job => job.id === 'memory');
-  const sites = choices.filter(job => job.operation);
-  for (const [available, visible, hidden] of [
-    [[memory], '自分のメモ整理', 'お店・会社のサイト運営'],
-    [sites, 'お店・会社のサイト運営', '自分のメモ整理'],
-  ]) {
-    const ui = screen({ modules, fetch: async () => ({ body: pageReply(available) }) });
-    const home = ui.mount('components/noah-home.tsx', { mode: 'public' });
-    await home.flush();
-    assert.equal(home.find('h3', visible).length, 1);
-    assert.equal(home.find('h3', hidden).length, 0);
-    for (const lang of NOAH_LOCALES.filter(lang => lang !== 'ja')) {
-      assert.notEqual(noahTranslate(lang, visible), visible);
-    }
-  }
+void test('only available matching tasks are passed to the shared grid without a separate purpose section', async () => {
+  const memory=choices.find(job=>job.id==='memory');
+  let passed;
+  const ui=screen({modules:{...modules,'./noah-pin-grid':{default:props=>{passed=props.jobs;return null;}}},fetch:async()=>({body:pageReply([memory,{...choices[0],href:null}])})});
+  const home=ui.mount('components/noah-home.tsx',{mode:'public'});await home.flush();
+  assert.deepEqual(passed,[memory]);
+  assert.equal(home.find('h3').length,0);
+  assert.ok(home.find('span').some(node=>node.props.id==='first-jobs'&&node.props.tabIndex===-1));
 });
 
 void test('all unavailable and a failed lookup both preserve exploration and saved results; the local home does not request choices', async () => {
@@ -154,15 +103,16 @@ void test('all unavailable and a failed lookup both preserve exploration and sav
     const home = ui.mount('components/noah-home.tsx', { mode: state === 'local' ? 'local' : 'public' });
     await home.flush();
     assert.equal(ui.calls[0].url.includes('firstJobs'), state !== 'local');
-    const region = home.find('section').find(s => s.props.id === 'first-jobs');
-    if (state === 'local') { assert.equal(region, undefined); continue; }
-    assert.deepEqual(home.nodes(region).filter(n => n.type === 'a').map(n => n.props.href), ['/noah#noah-collection', '/noah/saved?tab=results']);
-    assert.match(home.text(region), state === 'unavailable' ? /選べる仕事はありません/ : /確認できませんでした/);
+    assert.equal(home.find('section').length,1);
+    assert.equal(home.find('h1','Agentを見つける').length,1);
+    if(state==='error') { assert.match(home.text(),/offline/); assert.equal(home.find('button','再試行').length,1); }
+    else assert.match(home.text(),/この条件のAgentはまだありません/);
   }
 });
 
 void test('loading the next page of cards preserves the selected task links without another availability lookup', async () => {
-  const ui = screen({ modules, fetch: async ({url}) => {
+  let passed;
+  const ui = screen({ modules:{...modules,'./noah-pin-grid':{default:props=>{passed=props.jobs;return null;}}}, fetch: async ({url}) => {
     const params = new URL(url, 'https://noah.test').searchParams;
     return params.get('cursor') === '0'
       ? { body: { ...pageReply(choices), nextCursor: '20' } }
@@ -173,15 +123,15 @@ void test('loading the next page of cards preserves the selected task links with
   await home.click('もっと見る');
   assert.equal(ui.calls.length, 2);
   assert.ok(!ui.calls[1].url.includes('firstJobs'));
-  const region = home.find('section').find(section => section.props.id === 'first-jobs');
-  assert.deepEqual(home.nodes(region).filter(node => node.type === 'a').slice(0, choices.length).map(link => link.props.href), choices.map(job => job.href));
+  assert.deepEqual(passed, choices);
 });
 
 void test('hiding a card reached on a later page also removes its matching task from the home', async () => {
   const otherId = 'project-' + 'b'.repeat(64), retained = { ...choices[1], href: choices[1].href.replace(project, otherId) };
-  const ui = screen({ modules: { ...modules, './noah-pin-grid': { default: ({items, onHide}) => items.map(item => ({
+  let passed;
+  const ui = screen({ modules: { ...modules, './noah-pin-grid': { default: ({items, onHide,jobs}) => {passed=jobs;return items.map(item => ({
     type: 'button', props: { children: 'Hide ' + item.id, onClick: () => onHide(item.id) },
-  })) } }, fetch: async ({url, method, body}) => {
+  }));} } }, fetch: async ({url, method, body}) => {
     if (method === 'POST') { assert.equal(body.familyId, 'family-hidden'); return { body: {} }; }
     const cursor = new URL(url, 'https://noah.test').searchParams.get('cursor');
     return cursor === '0' ? { body: { ...pageReply([choices[0], retained]), nextCursor: '20' } }
@@ -190,7 +140,7 @@ void test('hiding a card reached on a later page also removes its matching task 
   const home = ui.mount('components/noah-home.tsx', { mode: 'public' });
   await home.flush(); await home.click('もっと見る'); await home.click('Hide family-hidden');
   assert.equal(home.find('a', choices[0].title).length, 0);
-  assert.equal(home.find('a', retained.title)[0].props.href, retained.href);
+  assert.deepEqual(passed,[retained]);
 });
 
 for (const job of choices.filter(job => job.operation)) {

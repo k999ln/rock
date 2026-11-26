@@ -15,7 +15,7 @@ import { NoahAgentPin, NoahAgentPinGrid } from './noah-agent-pin';
 
 const hrefFor = (card: NoahAgentCard) => noahCardHref(card) ?? noahReadyDetailHref(card.id);
 
-function StoreHeader() {
+function TodayHeading() {
   const { locale, t } = useNoahLocale();
   const [today, setToday] = useState<Date | null>(null);
   useEffect(() => {
@@ -34,9 +34,12 @@ function StoreHeader() {
     <div className={styles.date}>{today && <time>{new Intl.DateTimeFormat(locale, {
       weekday: 'long', month: 'long', day: 'numeric',
     }).format(today)}</time>}</div>
-    <Link className={styles.engineering} href="/noah/engineering">
-      <SquareTerminal size={18} aria-hidden="true" />{t('Agentエンジニアリング')}
-    </Link>
+    <div className={styles.titleRow}>
+      <h1>{t('Today')}</h1>
+      <Link className={styles.engineering} href="/noah/engineering">
+        <SquareTerminal size={18} aria-hidden="true" />{t('Agentエンジニアリング')}
+      </Link>
+    </div>
   </header>;
 }
 
@@ -59,16 +62,16 @@ export default function NoahStoreEntry({ jobs, items }: { jobs?: (NoahFirstJob &
   } : null;
   const related = items.filter(item => item !== card && item.name).slice(0, 4);
   return <div className={styles.entry}>
-    <StoreHeader />
+    <TodayHeading />
     {feature && <div className={styles.showcase} data-related={related.length > 0 || undefined}>
       <article className={styles.feature}>
         <Link className={styles.coverLink} href={feature.href}>
           <div className={styles.featureArt} data-memory={memory || undefined}>
             <div className={styles.featureStage}><NoahPinMotion id={project ?? card?.id ?? feature.name} name={feature.name} summary={card?.summary ?? feature.subtitle} /></div>
             <small>{t('ピックアップ')}</small>
-            <h1 aria-label={feature.title}>{memory && locale === 'ja'
+            <h2 aria-label={feature.title}>{memory && locale === 'ja'
               ? feature.title.split(/(?<=、)/u).map(phrase => <span className={styles.phrase} key={phrase}>{phrase}</span>)
-              : feature.title}</h1>
+              : feature.title}</h2>
           </div>
           <div className={styles.featureFoot}>
             <NoahAppIcon name={feature.name} topic={card?.topic} className={styles.featureIcon} />
