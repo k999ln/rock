@@ -5,19 +5,24 @@
  * 未サインインの人が「接続」を押した後、サインインから戻った時は、この画面が、同じ操作 ID で続ける（押し直さない）。
  * 仕様: docs/noah/spec-74-one-click-connect.md の 11.4・11.5。
  */
-import { useEffect, useRef, useState, type ReactNode } from 'react';
+import { useEffect, useId, useRef, useState, type ReactNode } from 'react';
 import { useNoahLocale } from './noah-locale';
 import NoahAgentVisual from './noah-agent-visual';
+import NoahAppIcon from './noah-app-icon';
 import NoahDetailTemplate from './noah-detail-template';
-import { ChevronLeft, ArrowUpRight, PhoneOutgoing } from 'lucide-react';
+import { PhoneCall, ArrowUpRight, PhoneOutgoing } from 'lucide-react';
+import { noahPinTopic } from '@/lib/noah-pins';
 import { noahDetailGuide } from '@/lib/noah-detail-guide';
+import { noahDetailStarter } from '@/lib/noah-detail-starter';
 import pageStyles from './noah-detail-overview.module.css';
 import NoahAgentShare from './noah-agent-share';
-import NoahLoading from './noah-loading';
+import NoahDetailPending from './noah-detail-pending';
+import { useNoahBrowserReady } from './noah-browser-ready';
+import type { NoahDetailPreview } from '@/lib/noah-detail-preview';
 import Link from 'next/link';
 import { NOAH_REPORT_CONTACT } from '@/lib/noah-bot-notice';
 import { OWNER_SCOPE_HEADER } from '@/lib/owner-intent';
-import { NOAH_READY_TEXT, noahBadgeText, noahCheckedText, noahConnectionStateText, noahPriceText, noahUsersText, type NoahReadyConnection, type NoahReadyItem } from '@/lib/noah-ready-view';
+import { NOAH_CONNECT_HANDOFF_MS, NOAH_READY_TEXT, noahBadgeText, noahCheckedText, noahConnectionStateText, noahPriceText, noahUsersText, type NoahReadyConnection, type NoahReadyItem } from '@/lib/noah-ready-view';
 import NoahRegistrationSheet from './noah-registration-sheet';
 import NoahAsk from './noah-ask';
 import NoahWorkList from './noah-work-list';
@@ -33,22 +38,60 @@ type Detail = NoahReadyItem & { listed: boolean; website: string | null; connect
 // A schematic waveform for the example, independent of calls or audio recordings.
 const WAVEFORM = [8, 14, 20, 10, 29, 44, 24, 17, 36, 56, 70, 51, 32, 59, 85, 68, 47, 29, 39, 72, 100, 78, 55, 74, 47, 28, 41, 66, 49, 33, 23, 39, 51, 30, 18, 11, 23, 16, 9, 5];
 type Loaded = { state: 'loading' } | { state: 'missing' } | { state: 'error' } | { state: 'ready'; detail: Detail };
+const requestTarget = 'noah-agent-request';
+const askIntentKey = (id: string) => `noah-agent-first-request:${id}`;
 
 /** tool: 最初に選んでおく道具（棚のカードから来た時。/noah/ready/agent?tool=…）。from: そのカードの ID（試行の本人の報告を、下に出す）。 */
-export default function NoahReadyDetail({ id, tool = null, from = null, internalOnly = false, sourceNotes, trailer, mediaId }: { id: string; tool?: string | null; from?: string | null; internalOnly?: boolean; sourceNotes?: ReactNode; trailer?: ReactNode; mediaId?: string }) {
+export default function NoahReadyDetail({ id, tool = null, from = null, internalOnly = false, sourceNotes, trailer, mediaId, feedbackId, preview: cardPreview }: { id: string; tool?: string | null; from?: string | null; internalOnly?: boolean; sourceNotes?: ReactNode; trailer?: ReactNode; mediaId?: string; feedbackId?: string; preview?: NoahDetailPreview }) {
   const {t, locale}=useNoahLocale();
+  const browserReady = useNoahBrowserReady();
   // 読んだ詳細は、何回目の読み取りの物かと一緒に持つ（「読み直す」を押したら、届くまでは「読み込み中」）。
   const [result, setResult] = useState<{ attempt: number; loaded: Loaded } | null>(null), [connection, setConnection] = useState<NoahReadyConnection | null>(null);
   const [cutting, setCutting] = useState(false), [error, setError] = useState(''), [attempt, setAttempt] = useState(0);
   // 頼むたびに進める数（下の「仕事」が、すぐ読み直す）。
   const [asked, setAsked] = useState(0);
+  const connectForm = useId();
+  const request = useRef<HTMLDivElement>(null);
+  const askIntent = useRef<{ id: string; example: boolean } | null>(null);
+  const [exampleConnection, setExampleConnection] = useState<string | null>(null);
   const epoch = useRef(0);
   // 形の違う ID は、問い合わせずに「見つかりません」。
   const valid = id.length >= 3 && id.length <= 400;
   const loaded: Loaded = !valid ? { state: 'missing' } : result?.attempt === attempt ? result.loaded : { state: 'loading' };
+  const connectedId = connection?.state === 'connected' ? connection.id : null;
+  const activeAgentId = loaded.state === 'ready' ? loaded.detail.id : null;
+
+  function focusRequest() {
+    request.current?.focus({ preventScroll: true });
+    request.current?.scrollIntoView({ block: 'start' });
+  }
+
+  function rememberAsk(agentId: string, example: boolean) {
+    askIntent.current = { id: agentId, example };
+    try {
+      // Only the choice of an editorial example crosses sign-in, never input values.
+      window.sessionStorage.setItem(askIntentKey(agentId), JSON.stringify({ example, at: Date.now() }));
+    } catch { /* The current view can still continue without browser storage. */ }
+  }
 
   useEffect(() => {
-    if (!valid) return;
+    if (!connectedId || !activeAgentId) return;
+    const agentId = activeAgentId;
+    let example = askIntent.current?.id === agentId ? askIntent.current.example : null;
+    if (askIntent.current?.id === agentId) askIntent.current = null;
+    try {
+      const key = askIntentKey(agentId);
+      const saved = JSON.parse(window.sessionStorage.getItem(key) ?? 'null') as { example?: boolean; at?: number } | null;
+      window.sessionStorage.removeItem(key);
+      if (example === null && typeof saved?.example === 'boolean' && typeof saved.at === 'number' && Date.now() - saved.at < NOAH_CONNECT_HANDOFF_MS) example = saved.example;
+    } catch { /* A request can still be opened from the header. */ }
+    if (example === null) return;
+    if (example) setExampleConnection(connectedId);
+    focusRequest();
+  }, [connectedId, activeAgentId]);
+
+  useEffect(() => {
+    if (!valid || !browserReady) return;
     const current = ++epoch.current;
     const done = (next: Loaded) => { if (current === epoch.current) setResult({ attempt, loaded: next }); };
     void fetch(`/api/noah/intake?${new URLSearchParams({ id }).toString()}`, { cache: 'no-store' }).then(async (response) => {
@@ -59,12 +102,10 @@ export default function NoahReadyDetail({ id, tool = null, from = null, internal
       done({ state: 'ready', detail: body });
       setConnection(body.connection ?? null);
     }).catch(() => done({ state: 'error' }));
-  }, [id, attempt, valid]);
+  }, [id, attempt, valid, browserReady]);
 
-  const back = <p className={pageStyles.back}><Link href="/noah/explore"><ChevronLeft size={18} aria-hidden="true" />{t('Agentを探す')}</Link></p>;
+  if (loaded.state === 'loading') return <NoahDetailPending href={`/noah/ready/agent?${new URLSearchParams({ id })}`} card={cardPreview} />;
   if (loaded.state !== 'ready') return <main className={`${base.page} ${styles.page} ${pageStyles.page}`}>
-    {back}
-    {loaded.state === 'loading' && <p className={base.loading}><NoahLoading label={t("読み込んでいます…")} /></p>}
     {loaded.state === 'missing' && <p className={base.empty}>{t(NOAH_READY_TEXT.missing)}</p>}
     {loaded.state === 'error' && <div className={base.empty} role="alert"><p>{t(NOAH_READY_TEXT.unavailable)}</p><button type="button" onClick={() => setAttempt((n) => n + 1)}>{t("読み直す")}</button></div>}
   </main>;
@@ -74,6 +115,11 @@ export default function NoahReadyDetail({ id, tool = null, from = null, internal
   const checked = noahCheckedText(detail.checkedAt);
   const guide = noahDetailGuide(detail.id, locale);
   const preview = guide?.examples[0];
+  const starter = !from && !tool ? noahDetailStarter(detail.id, detail.host, locale) : null;
+  const translated = locale === 'ja' ? detail.summaryJa : null;
+  const lead = guide?.summary || starter?.summary || translated || detail.summary;
+  const pitch = guide?.headline || starter?.headline;
+  const connected = live?.state === 'connected';
   const facts = [noahBadgeText(detail.connect), detail.connect.placeLabel, guide?.priceLabel || noahPriceText(detail.connect.price), noahUsersText(detail.users), detail.tools > 0 ? `道具 ${detail.tools} 個` : null].filter((text): text is string => !!text);
 
   async function cut(current: NoahReadyConnection) {
@@ -105,24 +151,38 @@ export default function NoahReadyDetail({ id, tool = null, from = null, internal
     }).catch(() => undefined);
   }
 
+  const starterExample = starter && <section className={pageStyles.starter}>
+    <h2>{t('依頼例')}</h2>
+    <p>{starter.input}</p>
+    {connected ? <button type="button" className={pageStyles.starterAction} onClick={() => { setExampleConnection(connectedId); focusRequest(); }}>{t('この例を使う')}</button>
+      : detail.listed && !live && <button type="submit" form={connectForm} value="example" className={pageStyles.starterAction}>{t('この例を使う')}</button>}
+  </section>;
+
   return <NoahDetailTemplate id={detail.id} mediaId={mediaId} name={guide?.name || detail.name} provider={detail.provider || undefined}
-    summary={guide?.summary || (locale === 'ja' && detail.summaryJa) || detail.summary || t('（説明はありません）')}
-    feedbackId={detail.listed ? detail.id : undefined} expanded={Boolean(live)}
+    summary={lead || t('（説明はありません）')} overviewTitle={pitch}
+    feedbackId={detail.listed ? feedbackId ?? detail.id : undefined} expanded={Boolean(live)}
+    detailsLabel={detail.explanation ? t('操作の流れと道具') : undefined}
+    icon={guide ? <span className={pageStyles.phoneMark} aria-hidden="true"><PhoneCall size={26} strokeWidth={1.8} /></span>
+      : <NoahAppIcon name={detail.name} topic={noahPinTopic(detail.name, detail.summary)} className={pageStyles.appMark} />}
     meta={<>{guide ? <a href="#noah-guide-terms">{guide.priceLabel}</a> : <span>{t(noahPriceText(detail.connect.price))}</span>}{detail.host && <span>{t('送信先: {host}',{host:detail.host})}</span>}</>}
-    action={<NoahConnectButton agentId={detail.id} listed={detail.listed} signedIn={signedIn} ownerScope={detail.ownerScope} connection={live} onChange={setConnection} resume askAs="none" packageId={from} initialTool={tool} />}>
+    action={<>
+      {connected && <a className={styles.primary} href={`#${requestTarget}`} onClick={(event) => { event.preventDefault(); focusRequest(); }}>{t('依頼する')}</a>}
+      <NoahConnectButton agentId={detail.id} listed={detail.listed} signedIn={signedIn} ownerScope={detail.ownerScope} connection={live} onChange={setConnection} resume askAs="none" packageId={from} initialTool={tool} onboarding={{ formId: starter ? connectForm : undefined, host: detail.host, beforeConnect: (example) => rememberAsk(detail.id, example) }} />
+    </>}
+    intro={starterExample}
+    requestForm={connected && <div id={requestTarget} ref={request} tabIndex={-1} className={pageStyles.request}>
+      <NoahAsk agentId={detail.id} agentName={detail.name} key={live.id} connectionId={live.id} initialTool={tool} starter={exampleConnection === live.id ? starter : null} ownerScope={detail.ownerScope} onUnusable={() => refresh(live)} onAsked={() => setAsked((n) => n + 1)} />
+    </div>}>
     <article className={pageStyles.overview}>
-      <div className={pageStyles.intro} data-preview={Boolean(preview) || undefined}>
-        {guide && <h2 className={pageStyles.pitch}>{guide.headline}</h2>}
-        {preview && <figure className={pageStyles.memo} aria-label={t('通話メモの見本')}>
-          <figcaption><PhoneOutgoing size={19} strokeWidth={1.8} aria-hidden="true" />{t('通話メモの見本')}</figcaption>
-          <div className={pageStyles.wave} aria-hidden="true">{WAVEFORM.map((height, i) => <i key={i} style={{ height: height + '%' }} />)}</div>
-          <h3>{preview.title}</h3>
-          <dl className={pageStyles.sample}>
-            <div><dt>{t('依頼例')}</dt><dd>{preview.input}</dd></div>
-            <div><dt>{t('返答の例')}</dt><dd>{preview.output}</dd></div>
-          </dl>
-        </figure>}
-      </div>
+      {preview && <figure className={pageStyles.memo} aria-label={t('通話メモの見本')}>
+        <figcaption><PhoneOutgoing size={19} strokeWidth={1.8} aria-hidden="true" />{t('通話メモの見本')}</figcaption>
+        <div className={pageStyles.wave} aria-hidden="true">{WAVEFORM.map((height, i) => <i key={i} style={{ height: height + '%' }} />)}</div>
+        <h3>{preview.title}</h3>
+        <dl className={pageStyles.sample}>
+          <div><dt>{t('依頼例')}</dt><dd>{preview.input}</dd></div>
+          <div><dt>{t('返答の例')}</dt><dd>{preview.output}</dd></div>
+        </dl>
+      </figure>}
       {trailer}
       {guide && <>
         {guide.examples.length > 1 && <section className={pageStyles.block} aria-labelledby="noah-guide-examples">
@@ -141,17 +201,16 @@ export default function NoahReadyDetail({ id, tool = null, from = null, internal
           {guide.sources.length > 0 && <div className={pageStyles.links}>{guide.sources.map(source => <a key={source.href} href={source.href} target="_blank" rel="noopener noreferrer nofollow">{source.label}<ArrowUpRight size={15} aria-hidden="true" /></a>)}</div>}
         </section>
       </>}
-      {detail.explanation && <NoahExplanationSection explanation={detail.explanation} summary={detail.summary} summaryJa={detail.summaryJa} connected={live?.state === 'connected'} />}
+      {detail.explanation && <NoahExplanationSection explanation={detail.explanation} summary="" connected={connected} />}
       {from && <NoahPackageExplanation key={from} id={from} familyId={detail.id} tool={tool} />}
       {live?.state!=='connected' && <NoahRegistrationSheet agentId={detail.id}/>}
     </article>
 
-    {live?.state === 'connected' && <NoahAsk agentId={detail.id} agentName={detail.name} key={live.id} connectionId={live.id} initialTool={tool} ownerScope={detail.ownerScope} onUnusable={() => refresh(live)} onAsked={() => setAsked((n) => n + 1)} />}
     {/* 仕事（この Agent への依頼と成果）。つないでいない時・切った後も、前に受け取った成果を出す。サインインしていない人には、出さない。 */}
     {signedIn && <div id="noah-agent-work" tabIndex={-1}><NoahWorkList key={`work:${detail.id}`} agentId={detail.id} ownerScope={detail.ownerScope} refresh={asked} /></div>}
     <details className={styles.agentDetails}>
       <summary>{t('Agentの詳細')}</summary>
-      <p className={styles.description}>{detail.summary || t('（説明はありません）')}</p>
+      {detail.summary && detail.summary !== lead && <p className={styles.description}>{detail.summary}</p>}
       {!guide && <NoahAgentVisual name={detail.name} summary={detail.summary}/>}
       <ul className={styles.facts} aria-label={t("つなぎ方")}>{facts.map((text, index) => <li key={text} className={index === 0 ? styles.badge : undefined}>{t(text)}</li>)}</ul>
       {checked && <p className={styles.quiet}>{t(checked)}</p>}

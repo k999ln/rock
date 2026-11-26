@@ -142,7 +142,7 @@ for (const coexisting of [false, true]) {
 
 void test('prebuild checks legacy data before any build preparation or output cleanup', () => {
   const manifest = JSON.parse(readFileSync(new URL('../package.json', import.meta.url), 'utf8'));
-  assert.equal(manifest.scripts.prebuild, 'node scripts/local-web-state.mjs && node scripts/generate-private-modules.mjs');
+  assert.equal(manifest.scripts.prebuild.split(' && ')[0], 'node scripts/local-web-state.mjs');
 });
 
 for (const { name, args, config, environment } of [

@@ -57,7 +57,8 @@ void test('the public home has one collection and available task links inside th
     assert.equal(link.props.href,job.href); assert.ok(home.nodes(card).includes(link));
   }
   assert.equal(home.find('a',choices[0].title).length,0);
-  assert.equal(home.find('a','専用クラウドを開く')[0].props.href,'/api/noah/cloud-work');
+  assert.equal(home.find('a','eSIM専用クラウド（準備中）')[0].props.href,'/connect');
+  assert.equal(home.find('a','接続状況を確認')[0].props.href,'/api/noah/cloud-work');
   assert.equal(ui.calls.length,1); assert.equal(ui.calls[0].method,'GET');
 });
 
@@ -333,7 +334,7 @@ function assertTrainingVideo(page, fullscreen = false) {
     assert.equal(target.props.tabIndex, -1);
     assert.ok(page.nodes().indexOf(video) < page.nodes().indexOf(target));
     assert.equal(page.find('a', '詳細 ↓').length, 0);
-    assert.equal(page.find('a', 'Agentを探す')[0].props.href, '/noah');
+    assert.equal(page.find('a', 'Agentを探す').length, 0);
     assert.ok(page.find('summary', '使い方を読む').length);
     return video;
   }
@@ -408,8 +409,10 @@ void test('the ready training project keeps its connect button and renders the f
   const [connect] = page.find('button', '接続');
   assert.ok(connect);
   assert.ok(page.nodes().indexOf(video) < page.nodes().indexOf(connect));
-  const readPaths = ['/api/noah/discover/project', '/api/noah/intake', '/api/noah/registration', '/api/noah/pins'];
+  const readPaths = ['/api/noah/discover/project', '/api/noah/intake', '/api/noah/registration', '/api/noah/pins', '/api/noah/feedback'];
   assert.ok(ui.calls.every(call => call.method === 'GET' && readPaths.includes(call.url.split('?')[0])));
+  assert.equal(ui.calls.filter(call => call.url.startsWith('/api/noah/discover/project')).length, 1);
+  assert.ok(ui.calls.some(call => call.url === '/api/noah/feedback?agent=' + trainingId));
 });
 
 void test('a same-named project, a first-job entry, and a failed detail load have no training video', async () => {

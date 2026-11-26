@@ -56,11 +56,13 @@ void test('the intake administration page exposes controls only to its authentic
   const {readFileSync}=await import('node:fs');
   const {runInNewContext}=await import('node:vm');
   const ts=(await import('typescript')).default;
+  const navigation=await import('../lib/noah-navigation.ts');
   const jsx=(type,props)=>({type,props});
   const source=ts.transpileModule(readFileSync(new URL('../app/noah/review/intake/page.tsx',import.meta.url),'utf8'),{compilerOptions:{jsx:ts.JsxEmit.ReactJSX,module:ts.ModuleKind.CommonJS,target:ts.ScriptTarget.ES2022}}).outputText;
   for(const owner of ['approved-owner','other-owner',null]) {
     const deps=noahReviewerAccess(async request=>{assert.equal(request.headers.get('cookie'),'session-fixture');if(!owner)throw Error('UNAUTHORIZED');return owner;},'',await ownerScopeFor('approved-owner'));
     const modules={'react/jsx-runtime':{jsx,jsxs:jsx},'next/headers':{headers:async()=>new Headers({cookie:'session-fixture'})},'next/link':{default:'a'},'@/components/noah-intake-review':{default:'intake-controls'},'@/lib/noah-intake-server':{noahIntakeDependencies:()=>deps},'@/lib/owner-intent':{ownerScopeFor},'@/components/noah-service.module.css':{default:{}}};
+    modules['@/lib/noah-navigation']=navigation;
     const exports={};runInNewContext(source,{exports,Request,require:name=>{assert.ok(name in modules,name);return modules[name];}});
     const tree=await exports.default(); const control=tree.props.children.find(node=>node?.type==='intake-controls');
     assert.equal(Boolean(control),owner==='approved-owner');

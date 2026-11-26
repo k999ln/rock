@@ -6,7 +6,7 @@ import { Search, X } from 'lucide-react';
 import NoahPinHome from './noah-pin-home';
 import styles from './noah-pins.module.css';
 import { useNoahLocale } from './noah-locale';
-export default function NoahPublicCatalog({basePath='/noah',embedded=false,initialQuery='',initialSource='noah',onQueryChange,via=''}:{basePath?:string;embedded?:boolean;initialQuery?:string;initialSource?:string;onQueryChange?:(query:string)=>void;via?:string}) {
+export default function NoahPublicCatalog({basePath='/noah',embedded=false,initialQuery='',initialSource='',onQueryChange,via=''}:{basePath?:string;embedded?:boolean;initialQuery?:string;initialSource?:string;onQueryChange?:(query:string)=>void;via?:string}) {
   const params=useSearchParams(),{t}=useNoahLocale();
   const [query,setQuery]=useState(initialQuery||params.get('collectionQuery')||'');
   function search(value:string){

@@ -1,11 +1,13 @@
 'use client';
-import { useLayoutEffect, useRef, type ReactNode } from 'react';
+import { useContext, useLayoutEffect, useRef, type ReactNode } from 'react';
 import Link from 'next/link';
 import { noahPinShape, noahPinTopic, type NoahPinTopic } from '@/lib/noah-pins';
 import { NoahPinMotion, type NoahCoverView, type NoahPinDiagramView } from './noah-art-motion';
 import type { NoahPinVideo } from '@/lib/noah-pin-video';
 import pins from './noah-pins.module.css';
 import styles from './noah-agent-pin.module.css';
+import { NOAH_DETAIL_PREVIEW_KEY, noahDetailPreviewRecord, noahDetailTarget } from '@/lib/noah-detail-preview';
+import { NoahDetailNavigation } from './noah-detail-navigation';
 
 export function NoahAgentPinGrid({ children, compact = false }: { children: ReactNode; compact?: boolean }) {
   const list = useRef<HTMLUListElement>(null);
@@ -16,10 +18,20 @@ export function NoahAgentPinGrid({ children, compact = false }: { children: Reac
     // including the independent save buttons, ratings and any expanded actions.
     const resize = (article: Element, height: number) => {
       const item = article.parentElement;
-      if (item) item.style.gridRowEnd = `span ${Math.max(1, Math.ceil(height / 4))}`;
+      const span = `span ${Math.max(1, Math.ceil(height / 4))}`;
+      if (item && item.style.gridRowEnd !== span) item.style.gridRowEnd = span;
     };
+    const pending = new Map<Element, number>();
+    let frame = 0;
     const observer = new ResizeObserver(entries => {
-      for (const entry of entries) resize(entry.target, entry.borderBoxSize?.[0]?.blockSize ?? entry.target.getBoundingClientRect().height);
+      for (const entry of entries) pending.set(entry.target, entry.borderBoxSize?.[0]?.blockSize ?? entry.target.getBoundingClientRect().height);
+      // Writing grid spans inside the observer can trigger another layout in the
+      // same delivery cycle. Coalesce writes into the next frame instead.
+      if (!frame) frame = requestAnimationFrame(() => {
+        frame = 0;
+        for (const [article, height] of pending) resize(article, height);
+        pending.clear();
+      });
     });
     const articles = Array.from(grid.children, item => item.firstElementChild).filter((article): article is Element => article !== null);
     const heights = articles.map(article => article.getBoundingClientRect().height);
@@ -28,7 +40,7 @@ export function NoahAgentPinGrid({ children, compact = false }: { children: Reac
       observer.observe(article, { box: 'border-box' });
     });
     grid.dataset.measured = 'true';
-    return () => observer.disconnect();
+    return () => { observer.disconnect(); cancelAnimationFrame(frame); pending.clear(); };
   }, [children]);
   return <ul className={styles.grid} data-agent-pin-grid={compact ? 'compact' : 'list'} ref={list}>{children}</ul>;
 }
@@ -41,16 +53,24 @@ type PinFaceProps = {
 };
 
 export function NoahAgentPinFace({ id, name, href, prefetch, topic, shape, summary, cover, diagram, video, onSelect, disabled, pressed, plain }: PinFaceProps) {
+  const openDetail = useContext(NoahDetailNavigation);
   const category = topic ?? noahPinTopic(name, summary ?? '');
   const attributes = { className: `${styles.face} ${pins.tone}`, 'data-shape': shape ?? noahPinShape(id), 'data-topic': category };
+  const videoTitle = Boolean(video || cover?.type.startsWith('video/'));
   const contents = <>
-    <span className={pins.panel} aria-hidden="true">
+    <span className={`${pins.panel} ${videoTitle ? styles.videoPanel : ''}`}>
       <NoahPinMotion id={id} name={name} summary={summary} cover={cover} diagram={diagram} video={video} />
+      {videoTitle && <span className={styles.videoTitle}><strong>{name}</strong>{summary && <span>{summary}</span>}</span>}
     </span>
-    <strong className={styles.name}>{name}</strong>
-    {summary && !plain && <span className={styles.summary}>{summary}</span>}
+    {!videoTitle && <strong className={styles.name}>{name}</strong>}
+    {summary && !plain && !videoTitle && <span className={styles.summary}>{summary}</span>}
   </>;
-  if (href) return <Link {...attributes} href={href} prefetch={prefetch}>{contents}</Link>;
+  if (href) return <Link {...attributes} href={href} prefetch={noahDetailTarget(href) ? false : prefetch} onClick={event => {
+    const preview = { id, name, summary: summary ?? '' };
+    const record = noahDetailPreviewRecord(href, preview);
+    if (record) try { window.sessionStorage.setItem(NOAH_DETAIL_PREVIEW_KEY, record); } catch { /* Browsing still works without storage. */ }
+    if (record && !event.metaKey && !event.ctrlKey && !event.shiftKey && !event.altKey && event.button === 0) openDetail(href, preview);
+  }}>{contents}</Link>;
   if (onSelect) return <button {...attributes} type="button" onClick={onSelect} disabled={disabled} aria-pressed={pressed}>{contents}</button>;
   return <div {...attributes}>{contents}</div>;
 }

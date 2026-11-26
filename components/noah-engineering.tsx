@@ -3,7 +3,7 @@
 import { useEffect, useState } from 'react';
 import { ArrowLeft, ArrowRight, BookOpen, ChevronDown, Code2, Monitor, Plug, Play, Store } from 'lucide-react';
 import type { NoahUpload } from '@/lib/noah-agent-store';
-import { noahAccountHref } from '@/lib/noah-navigation';
+import { noahSignInHref } from '@/lib/noah-navigation';
 import { eveEngineeringNavigation } from '@/lib/eve-engineering-navigation';
 import { noahEngineeringHref, noahEngineeringSteps, type NoahEngineeringStep } from '@/lib/noah-engineering';
 import NoahAgentUploadForm from './noah-agent-upload-form';
@@ -57,7 +57,7 @@ function RegisteredAgent({ step, agent }: { step: 'test' | 'publish'; agent: str
     return () => controller.abort();
   }, [agent, attempt]);
 
-  if (result.status === 'signedOut') return <a className={styles.textLink} href={noahAccountHref(returnTo)}>{t('サインインして続ける')} <ArrowRight size={16} /></a>;
+  if (result.status === 'signedOut') return <a className={styles.textLink} href={noahSignInHref(returnTo)}>{t('サインインして続ける')} <ArrowRight size={16} /></a>;
   if (result.status === 'error') return <div className={styles.status} role="alert">
     {t('自分のAgentを読み込めませんでした。')} <button type="button" onClick={() => { setResult({ status: 'loading' }); setAttempt(value => value + 1); }}>{t('読み直す')}</button>
   </div>;

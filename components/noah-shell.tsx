@@ -4,7 +4,7 @@ import { useEffect, useId, useRef, useState, type ReactNode } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import { usePathname, useSearchParams } from 'next/navigation';
-import { Bot, Home, UserRound, RefreshCw, ArrowLeft, Globe, Bookmark, MoreHorizontal, Search, SquareTerminal } from 'lucide-react';
+import { Bot, Home, UserRound, RefreshCw, Globe, Bookmark, MoreHorizontal, Search, SquareTerminal } from 'lucide-react';
 import { noahLegacyHref, type NoahSurfaceMode } from '@/lib/noah-surface';
 import { NOAH_PROFILE_PATH, noahShortPageDestination } from '../services/sky-web/noah-page-routes.mjs';
 import { useNoahLocale } from './noah-locale';
@@ -12,11 +12,23 @@ import styles from './noah-service-shell.module.css';
 import { NoahRevenuePackMenuItem } from './noah-revenue-pack';
 import { NoahSurfaceContext } from './noah-surface-context';
 import { useNoahAppearance } from './noah-appearance';
+import { NoahDetailNavigation } from './noah-detail-navigation';
+import NoahDetailPending from './noah-detail-pending';
+import type { NoahDetailPreview } from '@/lib/noah-detail-preview';
 
 export default function NoahShell({ children, mode = 'local' }: { children: ReactNode; mode?: NoahSurfaceMode }) {
   const browserPath = usePathname();
   const pathname = noahShortPageDestination(browserPath)?.split('?')[0] ?? browserPath;
   const searchParams = useSearchParams();
+  const [opening, setOpening] = useState<{ href: string; card: NoahDetailPreview } | null>(null);
+  const destination = opening ? new URL(opening.href, 'https://avoado.si') : null;
+  const navigating = destination && (pathname !== destination.pathname || searchParams.get('id') !== destination.searchParams.get('id'));
+  useEffect(() => {
+    if (!opening) return;
+    // A failed route must not leave a display-only preview covering the usable page.
+    const timeout = window.setTimeout(() => setOpening(null), navigating ? 15000 : 0);
+    return () => window.clearTimeout(timeout);
+  }, [opening, navigating]);
   const appearance = useNoahAppearance();
   const { t } = useNoahLocale();
   const preview = pathname.startsWith('/noah/public');
@@ -43,13 +55,11 @@ export default function NoahShell({ children, mode = 'local' }: { children: Reac
   const publicStore = effectiveMode === 'public';
   const brandName = publicStore ? 'Nöah' : 'Noah';
   const profileHref = publicStore && !preview ? NOAH_PROFILE_PATH : `${base}/profile`;
-  const localPath = pathname.startsWith(base + '/') ? pathname.slice(base.length + 1) : '';
   const localPrimary = [
     { href: base, label: 'ホーム', Icon: Home, selected: isTimeline },
     { href: `${base}/activity`, label: '実行中', Icon: RefreshCw, selected: pathname.endsWith('/activity') },
     { href: `${base}/saved`, label: '保存', Icon: Bookmark, selected: pathname.endsWith('/saved') },
   ];
-  const isMain = isTimeline || ['explore','my','activity','saved'].includes(localPath);
   const secondary = [
     ...(publicStore ? [
       { href: '/noah/engineering', label: 'Agentエンジニアリング', Icon: SquareTerminal },
@@ -74,18 +84,17 @@ export default function NoahShell({ children, mode = 'local' }: { children: Reac
           event.preventDefault();
           const params=new URLSearchParams(window.location.search),data=new FormData(event.currentTarget);
           const word=data.get('q');
-          const next=new URLSearchParams({q:typeof word==='string'?word:'',collectionSource:params.get('collectionSource')??(params.get('tab')==='catalog'?'':'noah')});
+          const next=new URLSearchParams({q:typeof word==='string'?word:'',collectionSource:params.get('collectionSource')??''});
           const topic=params.get('collectionTopic'); if(topic) next.set('collectionTopic',topic);
           window.location.assign(`${base}?${next}#noah-collection`);
         }}>
           <Search size={18} aria-hidden="true" /><input aria-label={t('Agentを探す')} name="q" key={searchParams.get('q') ?? searchParams.get('collectionQuery') ?? ''} defaultValue={searchParams.get('q') ?? searchParams.get('collectionQuery') ?? ''} maxLength={200} placeholder={t('Agentを探す')} type="search" />
         </form>;
-  return <NoahSurfaceContext.Provider value={{ mode: effectiveMode, base, hash }}>
+  return <NoahDetailNavigation.Provider value={(href, card) => setOpening({ href, card })}><NoahSurfaceContext.Provider value={{ mode: effectiveMode, base, hash }}>
     <div className={styles.shell} data-theme={appearance} data-noah-surface={effectiveMode} data-noah-standalone>
       <a href="#noah-content" className={styles.skip}>{t('メインコンテンツへ')}</a>
       <header className={styles.gridTopbar} data-store-header={(publicStore && gridHome) || undefined} data-detail-header={!gridHome || undefined}>
-        {!isMain && <Link href={base} className={styles.back} aria-label={t('戻る')}><ArrowLeft size={22}/></Link>}
-        <a href={base} className={styles.gridBrand}><Image className={styles.mark} src="/brand/noah-icon-v2.png" width={40} height={40} alt="" unoptimized/><strong>{brandName}</strong></a>
+        <a href={base} className={styles.gridBrand} aria-label={brandName}><Image className={styles.mark} src="/brand/noah-icon-v2.png" width={40} height={40} alt="" unoptimized/><strong>{brandName}</strong></a>
         <search className={styles.gridSearchSlot}>{searchForm}</search>
         {publicStore && <>
           <button type="button" className={styles.mobileStoreSearch} aria-label={t('Agentを探す')} popoverTarget={storeSearchId}><Search size={21}/></button>
@@ -94,7 +103,7 @@ export default function NoahShell({ children, mode = 'local' }: { children: Reac
         {menu}
         <Link href={profileHref} className={styles.gridAccount} aria-label={t('登録情報を見る')} title={t('登録情報')}><UserRound size={22}/></Link>
       </header>
-      <div className={gridHome ? styles.gridBody : styles.content} id="noah-content" tabIndex={-1}>{children}</div>
+      <div className={gridHome ? styles.gridBody : styles.content} id="noah-content" tabIndex={-1}>{navigating && opening ? <NoahDetailPending href={opening.href} card={opening.card} /> : children}</div>
     </div>
-  </NoahSurfaceContext.Provider>;
+  </NoahSurfaceContext.Provider></NoahDetailNavigation.Provider>;
 }

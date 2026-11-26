@@ -1,3 +1,4 @@
+import { noahSignInHref } from '@/lib/noah-navigation';
 import { headers } from 'next/headers';
 import Link from 'next/link';
 import NoahIntakeReview from '@/components/noah-intake-review';
@@ -17,6 +18,6 @@ export default async function Page() {
   return <main className={styles.page}>
     <h1>Agentの掲載管理</h1>
     {scope && <p><Link href="/noah/review/pins">図解ピン 200 件の審査</Link></p>}
-    {scope ? <NoahIntakeReview ownerScope={scope} /> : <p>掲載担当のアカウントで開いてください。<Link href="/noah/account?returnTo=%2Fnoah%2Freview%2Fintake">ログイン</Link></p>}
+    {scope ? <NoahIntakeReview ownerScope={scope} /> : <p>掲載担当のアカウントで開いてください。<a href={noahSignInHref('/noah/review/intake')}>ログイン</a></p>}
   </main>;
 }

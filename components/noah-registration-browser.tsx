@@ -1,4 +1,5 @@
 'use client';
+import { noahSignInHref } from '@/lib/noah-navigation';
 import { useNoahLocale } from './noah-locale';
 import {useCallback,useEffect,useRef,useState} from 'react';
 import Link from 'next/link';
@@ -14,7 +15,7 @@ export default function NoahRegistrationBrowser({job,provider}:{job:string;provi
   const vault=useNoahProfile(),query=new URLSearchParams({job,provider}).toString();
   return <section className={styles.root}>
     <header><Link href="/noah/registration">{t("← 登録へ戻る")}</Link><h1>{t("本人確認をお願いします")}</h1><p>{t("必要な確認が終わったら「確認できた」を押してください。")}</p></header>
-    {vault.error?<p role="alert">{vault.error} <button onClick={()=>void vault.reload()}>{t("再読み込み")}</button></p>:vault.guest?<Link href={`/noah/account?returnTo=${encodeURIComponent(`/noah/registration/browser?${query}`)}`}>{t("サインインして続ける")}</Link>:vault.profile?<BrowserSession key={`${query}:${vault.profile.ownerScope}`} query={query} ownerScope={vault.profile.ownerScope}/>:<NoahLoading label={t("登録画面を読み込み中")}/>}
+    {vault.error?<p role="alert">{vault.error} <button onClick={()=>void vault.reload()}>{t("再読み込み")}</button></p>:vault.guest?<a href={noahSignInHref(`/noah/registration/browser?${query}`)}>{t("サインインして続ける")}</a>:vault.profile?<BrowserSession key={`${query}:${vault.profile.ownerScope}`} query={query} ownerScope={vault.profile.ownerScope}/>:<NoahLoading label={t("登録画面を読み込み中")}/>}
   </section>;
 }
 function BrowserSession({query,ownerScope}:{query:string;ownerScope:string}){

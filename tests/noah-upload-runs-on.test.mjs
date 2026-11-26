@@ -3,6 +3,7 @@ import { readFileSync } from 'node:fs';
 import { runInNewContext } from 'node:vm';
 import test from 'node:test';
 import ts from 'typescript';
+import * as navigation from '../lib/noah-navigation.ts';
 import { noahUploadPath } from '../lib/noah-surface.ts';
 
 const code = ts.transpileModule(readFileSync(new URL('../components/noah-agent-upload-form.tsx', import.meta.url), 'utf8'), {
@@ -32,6 +33,7 @@ function harness(fetcher, search = '?launch=1') {
       if (id === '@/lib/noah-surface') return { noahUploadPath };
       if (id === '@/lib/noah-agent-upload') return { NOAH_PERMISSIONS: [], noahAgentTemplate: { permissions: [] } };
       if (id === '@/lib/owner-intent') return { OWNER_SCOPE_HEADER: 'X-Rock-Owner-Scope' };
+      if (id === '@/lib/noah-navigation') return navigation;
       if (['@/lib/noah-terminal-template', '@/lib/noah-upload-processing-client'].includes(id)) return {};
       if (id === './noah-cover-picker') return { default: 'cover-picker', coverReady: ({ kind }) => kind === 'later' };
       if (id === './noah-draft-storage') return { default: 'draft-storage' };

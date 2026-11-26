@@ -9,11 +9,11 @@
 .screen {
   --tiger-fg: #202024;
   --tiger-muted: #76727f;
-  --tiger-line: #e6e3eb;
   --tiger-tiger: #f7931e;
   --tiger-hole: #202024;
   --tiger-thing: #8e8998;
   --tiger-cloud: #e9e6ee;
+  --tiger-magic: #7342a8;
   width: 100%;
   max-width: 720px;
   margin: 0 auto;
@@ -24,15 +24,7 @@
   color: var(--tiger-fg);
 }
 
-.status { display: grid; grid-template-columns: 1fr; gap: 10px; }
 .brand { font-size: 22px; letter-spacing: .02em; }
-.message { font-size: 15px; color: var(--tiger-muted); min-width: 0; }
-.dots::after { content: ''; animation: tiger-dots 1.2s steps(4, end) infinite; }
-@keyframes tiger-dots { 0% { content: ''; } 25% { content: '.'; } 50% { content: '..'; } 75% { content: '...'; } }
-/* 本当の進み具合は分からないので、帯は流れるだけ */
-.bar { display: block; position: relative; height: 6px; background: var(--tiger-line); overflow: hidden; }
-.bar > span { position: absolute; inset: 0 auto 0 0; width: 30%; background: var(--tiger-tiger); animation: tiger-bar 1.8s steps(12, end) infinite; }
-@keyframes tiger-bar { 0% { transform: translateX(-100%); } 100% { transform: translateX(340%); } }
 
 .stage {
   position: relative;
@@ -52,6 +44,7 @@
   font-variant-numeric: tabular-nums; letter-spacing: .08em;
 }
 .now { color: var(--tiger-fg); }
+.wizard { position: absolute; top: 4px; left: 0; color: var(--tiger-magic); font-size: 13px; }
 .flash .now { animation: tiger-flash .25s steps(1, end) 4; }
 @keyframes tiger-flash { 50% { visibility: hidden; } }
 .callout {
@@ -65,11 +58,29 @@
 
 @media (max-width: 480px) {
   .brand { font-size: 19px; }
-  .message { font-size: 13px; }
   .callout { font-size: 14px; top: 20%; }
   .score { font-size: 12px; gap: 12px; }
 }
-@media (prefers-reduced-motion: reduce) {
-  .dots::after { animation: none; content: '...'; }
-  .bar > span { animation: none; width: 100%; opacity: .35; }
+
+.offlinePage {
+  box-sizing: border-box;
+  width: 100%;
+  min-height: 100dvh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 24px;
+  padding: 24px;
+  background: #fff;
+}
+.reload {
+  min-height: 44px;
+  padding: 0 16px;
+  border: 1px solid #76727f;
+  border-radius: 8px;
+  background: #fff;
+  color: #202024;
+  font: inherit;
+  cursor: pointer;
 }

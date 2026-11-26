@@ -14,6 +14,8 @@ export const TIGER_X = 22;
 export const TIGER_W = 24 * DOT;
 export const TIGER_H = 10 * DOT;
 export const TIGER_GROUND_Y = GROUND - TIGER_H;
+export const MAGIC_CHANCE = 1 / 404;
+export const MAGIC_DURATION = 8 * 60;
 
 const JUMP_VELOCITY = -8.6;
 const RELEASE_VELOCITY = -4;
@@ -99,9 +101,11 @@ export const PIGEON: readonly [Sprite, Sprite] = [
   ['........', '........', '##o####.', '.#######', '...###..'],
 ];
 export const CLOUD: Sprite = ['...####...', '.########.', '##########'];
+export const MAGIC_STAR: Sprite = ['..#..', '.###.', '#####', '.###.', '.#.#.'];
+export const WIZARD_HAT: Sprite = ['....#....', '...##....', '...###...', '..####...', '..#####..', '#########'];
 
 export type NoahTigerPreset = {
-  id: 'normal' | 'hard';
+  id: 'normal' | 'medium' | 'hard';
   startSpeed: number;
   maxSpeed: number;
   acceleration: number;
@@ -132,11 +136,17 @@ export const NOAH_TIGER_HARD: NoahTigerPreset = {
   hiScoreKey: 'noah-tiger-hi-hard',
 };
 
-/**
- * 今使う難しさ。本人の指示（2026-11-24 07:05）「めちゃめちゃ難しくして…今の状態は保存して後で復旧できる状態で」。
- * ふつう版へ戻す時は、ここを NOAH_TIGER_NORMAL にするだけでよい。
- */
-export const NOAH_TIGER_ACTIVE: NoahTigerPreset = NOAH_TIGER_HARD;
+export const NOAH_TIGER_MEDIUM: NoahTigerPreset = {
+  id: 'medium',
+  startSpeed: 6.8,
+  maxSpeed: 12,
+  acceleration: 0.0018,
+  autoStart: true,
+  forgivingHits: true,
+  hiScoreKey: 'noah-tiger-hi-medium',
+};
+
+export const NOAH_TIGER_ACTIVE = NOAH_TIGER_MEDIUM;
 
 /** 難しい版の壁の穴。高さ 44 px。下端は地面（0 = 跳ぶと死ぬ）か 18〜60 px。 */
 export const HARD_HOLE_HEIGHT = 44;
@@ -166,6 +176,9 @@ export type NoahTigerGame = {
   joints: { x: number }[];
   dust: { x: number; y: number; life: number }[];
   untilNextWall: number;
+  untilNextStreetObstacle: number;
+  magicStars: { x: number; y: number }[];
+  wizardFrames: number;
 };
 
 export type Random = () => number;
@@ -197,6 +210,9 @@ export function resetNoahTigerGame(game: NoahTigerGame): void {
   // 歩道の目地：道の線の下に、同じ間隔で短い印
   game.joints = Array.from({ length: 11 }, (_, i) => ({ x: i * 48 + 10 }));
   game.untilNextWall = 0;
+  game.untilNextStreetObstacle = 0;
+  game.magicStars = [];
+  game.wizardFrames = 0;
 }
 
 export function onGround(game: NoahTigerGame): boolean {
@@ -263,7 +279,24 @@ export function hitsObstacle(game: NoahTigerGame, obstacle: NoahTigerObstacle): 
   const oy = inset ? obstacle.y + DOT : obstacle.y;
   const ow = inset ? obstacle.w - 2 * DOT : obstacle.w;
   const oh = inset ? obstacle.h - DOT : obstacle.h;
+  return overlapsTiger(game, ox, oy, ow, oh);
+}
+
+function overlapsTiger(game: NoahTigerGame, ox: number, oy: number, ow: number, oh: number): boolean {
   return tigerBoxes(game.y).some(([x, y, w, h]) => x < ox + ow && x + w > ox && y < oy + oh && y + h > oy);
+}
+
+function moveMagicStars(game: NoahTigerGame, dt: number): void {
+  game.wizardFrames = Math.max(0, game.wizardFrames - dt);
+  const size = MAGIC_STAR.length * DOT;
+  game.magicStars = game.magicStars.filter(star => {
+    star.x -= game.speed * dt;
+    if (overlapsTiger(game, star.x, star.y, size, size)) {
+      game.wizardFrames = MAGIC_DURATION;
+      return false;
+    }
+    return star.x + size > 0;
+  });
 }
 
 /** 1 フレーム進める（dt は 60 fps を 1 とした長さ）。ぶつかったら crashed。 */
@@ -296,7 +329,10 @@ export function stepNoahTigerGame(
   for (const o of game.obstacles) o.x -= game.speed * dt;
   game.obstacles = game.obstacles.filter((o) => o.x + o.w > -10);
   if (preset.id === 'hard') spawnHard(game, dt, random);
-  else spawnNormal(game, random);
+  else if (preset.id === 'medium') {
+    moveMagicStars(game, dt);
+    spawnMedium(game, dt, random);
+  } else spawnNormal(game, random);
   for (const c of game.clouds) {
     c.x -= game.speed * 0.18 * dt;
     if (c.x < -40) {
@@ -317,7 +353,7 @@ export function stepNoahTigerGame(
   }
   game.dust = game.dust.filter((p) => p.life > 0);
   if (grounded && game.frame > game.pushAt + 14) game.pushAt = game.frame + 70 + random() * 70;
-  if (game.obstacles.some((o) => hitsObstacle(game, o))) {
+  if (game.wizardFrames === 0 && game.obstacles.some((o) => hitsObstacle(game, o))) {
     game.phase = 'over';
     game.holding = false;
     return { crashed: true, milestone };
@@ -357,6 +393,19 @@ function spawnNormal(game: NoahTigerGame, random: Random): void {
   const last = game.obstacles[game.obstacles.length - 1];
   const gap = 230 + game.speed * 14 + random() * (160 + game.speed * 20);
   if (last && last.x > STAGE_W - gap) return;
+  addStreetObstacles(game, random);
+}
+
+function spawnMedium(game: NoahTigerGame, dt: number, random: Random): void {
+  game.untilNextStreetObstacle -= dt;
+  if (game.untilNextStreetObstacle > 0) return;
+  // 障害物の組ごとに1回だけ抽選する。星は次の障害物の手前の平地に置く。
+  if (random() < MAGIC_CHANCE) game.magicStars.push({ x: STAGE_W - 86, y: GROUND - 19 });
+  game.untilNextStreetObstacle += 50 + random() * 14;
+  addStreetObstacles(game, random);
+}
+
+function addStreetObstacles(game: NoahTigerGame, random: Random): void {
   if (game.score > 250 && random() < 0.28) {
     // ハト：高いのは下をくぐれる。低いのはオーリーでよける
     const high = random() < 0.45;

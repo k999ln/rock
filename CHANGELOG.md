@@ -1,7 +1,23 @@
 ## 2026-11-26
 
+- Noahの詳細1件のカード構築と接続DB読取を軽量化。一覧を一行の下線タブへ整理し、動画上の反転文字と画面外の動画解放を追加（task140、[PR #106](https://github.com/iceiceice999/rock/pull/106)）。
+
+- Noahのタイガーをオフライン専用に分離し、通常の読込を小さな表示へ変更。詳細の重複取得・無関係な外部応答の待機・カードの再計測ループを削減（task140、[PR #105](https://github.com/iceiceice999/rock/pull/105)）。
+- Noah詳細の待機画面を公開情報の先行表示へ変更し、全件を初期表示、トップの帯を撤去、登録の不足情報を詳細に表示（task140、[PR #104](https://github.com/iceiceice999/rock/pull/104)）。
+
+- READMEの開発状況と設計書を公開第258版のホーム・Agent詳細に合わせ、収益明細と専用eSIMの確認範囲を更新。[PR #103](https://github.com/iceiceice999/rock/pull/103)
+- Noahの戻る導線をロゴに統一し、詳細ヘッダーと表紙の境界を撤去（task140、[PR #102](https://github.com/iceiceice999/rock/pull/102)）。
+
 - Noahの単一一覧を既存推薦規則に接続し、スクロールによる連続読込へ変更（task140、[PR #99](https://github.com/iceiceice999/rock/pull/99)）。
 - NoahホームのToday・注目・目的別・タイムラインを一つのAgent一覧へ統合。利用できる仕事はカード内に表示し、スマホ上部メニューの重なりを解消（[PR #97](https://github.com/iceiceice999/rock/pull/97)）。
+
+- Noahの接続・登録・保存・審査から、既存のChatGPTサインインに移動して元の画面へ戻るようにした。選んだAgent・道具・依頼例を同じタブで引き継ぐ（[PR #91](https://github.com/iceiceice999/rock/pull/91)）。
+
+- NoahのAgent詳細でアイコン横に接続ボタンを置き、操作の流れと道具を折りたたんだ。Enzo’sの依頼例は送信先の確認とログインを経て、編集できる検索欄に引き継ぐ（task 128、[PR #91](https://github.com/iceiceice999/rock/pull/91)）。
+
+- Noahの全画面読み込みとスケボー試作から、進捗バー・百分率・バー下の読み込み文を削除（[PR #91](https://github.com/iceiceice999/rock/pull/91)）。
+
+- Noahがオフラインの間も、読み込み画面と同じ「点のトラ」で遊べるようにした。オンラインで準備済みのブラウザは圏外での再読み込みにも対応。中くらいの難しさを既定にし、障害物ごとに1/404で現れる魔法の星と8秒間の無敵を追加（[PR #91](https://github.com/iceiceice999/rock/pull/91)）。
 
 - Noahの既存12画面に星座名の短いURLを割り当て、人型アイコンと旧プロフィールURLを `/aries` に接続。Sites v251 で公開し、12経路を本番で確認（[対応表と配備記録](codex/tasks/139-main-public-pages.md#noahの星座名url)、[PR #89](https://github.com/iceiceice999/rock/pull/89)）。
 
@@ -17,6 +33,8 @@
 - Noah Runnerの接続承認URLが公開ページ制限で404になる回帰を修正。接続コードの受け渡しと未知の配下URLの拒否を検証（task139、[PR #87](https://github.com/iceiceice999/rock/pull/87)）。
 
 - Noahの保存情報の読込中・失敗時に再入力を求めず、Safari/Chromeの自動入力にプロフィールとAgent登録を対応。Chrome標準の自動入力・保存・再利用を390px/1280pxで検証（task136、[PR #82](https://github.com/iceiceice999/rock/pull/82)。未公開、Safari実機は未検証）。
+
+- eSIM専用クラウドのホーム・接続画面に準備中と実回線未受入を明記し、設計書・READMEと表示を整合（task135、[PR #86](https://github.com/iceiceice999/rock/pull/86)）。
 
 - Noahの自分のAgent・実行中・保存したものの横タブを撤去し、既存の共通メニューへ統一。見出し・保存内容の絞り込み・旧URLは維持（task129、[PR #85](https://github.com/iceiceice999/rock/pull/85)）。
 
