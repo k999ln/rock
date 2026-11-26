@@ -1,4 +1,5 @@
 ## 2026-11-26
+- Noahの保存情報の読込中・失敗時に再入力を求めず、Safari/Chromeの自動入力にプロフィールとAgent登録を対応。Chrome標準の自動入力・保存・再利用を390px/1280pxで検証（task136、[PR #82](https://github.com/iceiceice999/rock/pull/82)。未公開、Safari実機は未検証）。
 
 - eSIM専用クラウドのホーム・接続画面に準備中と実回線未受入を明記し、設計書・READMEと表示を整合（task135、[PR #86](https://github.com/iceiceice999/rock/pull/86)）。
 
