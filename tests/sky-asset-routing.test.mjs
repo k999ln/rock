@@ -18,6 +18,7 @@ async function assetFixture(staged) {
   writeFileSync(join(directory, 'scripts/stage-sky-domain-router.mjs'), stager);
   writeFileSync(join(directory, 'services/sky-web/domain-router.mjs'), source);
   writeFileSync(join(directory, 'services/sky-web/noah-page-routes.mjs'), readFileSync(new URL('../services/sky-web/noah-page-routes.mjs', import.meta.url)));
+  writeFileSync(join(directory, 'services/sky-web/main-page-policy.mjs'), readFileSync(new URL('../services/sky-web/main-page-policy.mjs', import.meta.url)));
   writeFileSync(join(directory, 'dist/client/_next/static/fixture.js'), js);
   writeFileSync(join(directory, 'dist/client/noah/theater/training.mp4'), Buffer.from([10, 20, 30, 40, 50, 60]));
   writeFileSync(join(directory, 'dist/client/sw.js'), '/* asset-first stale service worker */');
@@ -38,6 +39,7 @@ async function assetFixture(staged) {
     writeFileSync(join(server, 'vinext.js'), app);
     writeFileSync(join(server, 'domain-router.mjs'), source);
     writeFileSync(join(server, 'noah-page-routes.mjs'), readFileSync(new URL('../services/sky-web/noah-page-routes.mjs', import.meta.url)));
+    writeFileSync(join(server, 'main-page-policy.mjs'), readFileSync(new URL('../services/sky-web/main-page-policy.mjs', import.meta.url)));
     writeFileSync(join(server, 'index.js'), "import app from './vinext.js'; import {withMiniSite} from './domain-router.mjs'; export default withMiniSite(app);");
   }
   if (staged === 'published') {
@@ -97,6 +99,18 @@ void test('staged Worker-first delivery protects assets, redirects, canonical SW
   const api = check(await f.worker.dispatchFetch('https://avoado.si/api/eve/history'));
   assert.equal(api.status, 401); assert.equal(api.headers.get('cache-control'), 'private, no-store');
   assert.deepEqual(await api.json(), {error:'unauthorized'});
+  for (const path of ['/fitness', '/noah/billing/provider-test', '/sky/compute-grid']) {
+    const retired = check(await f.worker.dispatchFetch('https://avoado.si' + path));
+    assert.equal(retired.status, 410, path);
+    assert.equal(retired.headers.get('x-robots-tag'), 'noindex');
+  }
+  const unknown = check(await f.worker.dispatchFetch('https://avoado.si/orphan.html'));
+  assert.equal(unknown.status, 404);
+  const home = check(await f.worker.dispatchFetch('https://avoado.si/noah'));
+  assert.equal(home.status, 200);
+  const sitemap = check(await f.worker.dispatchFetch('https://avoado.si/sitemap.xml'));
+  assert.equal(sitemap.status, 200);
+  assert.doesNotMatch(await sitemap.text(), /fitness|billing|review/);
 });
 
 void test('canonical assets retain headers even when hosting forces asset-first routing', async t => {

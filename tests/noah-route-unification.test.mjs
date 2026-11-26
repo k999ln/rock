@@ -2,6 +2,7 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import { existsSync, readFileSync } from 'node:fs';
 import { NOAH_PAGES, NOAH_REDIRECTS, NOAH_LOCAL_LABS, noahPageRedirect } from '../services/sky-web/noah-page-routes.mjs';
+import { mainPageStatus } from '../services/sky-web/main-page-policy.mjs';
 import { withMiniSite } from '../services/sky-web/domain-router.mjs';
 const app = withMiniSite({fetch:request=>new Response(new URL(request.url).pathname)},()=>new Response('mini'));
 
@@ -9,6 +10,11 @@ void test('each known old page moves once to its canonical page, retaining selec
   for(const [from,destination] of NOAH_REDIRECTS){
     const path=from.replace(/:\w+/g,'fixture');
     const response=await app.fetch(new Request('https://avoado.si'+path+'?tag=a&tag=b&source=shared#result'));
+    if (mainPageStatus(destination.split(/[?#]/)[0].replace(/:\w+/g,'fixture')) === 410) {
+      assert.equal(response.status,410,path);
+      assert.equal(response.headers.get('location'),null);
+      continue;
+    }
     assert.equal(response.status,308,path);
     const target=new URL(response.headers.get('location'));
     assert.equal(target.origin,'https://avoado.si');
@@ -44,10 +50,11 @@ void test('local labs get public guidance while local runtime and its permission
 void test('API routes, authentication, mutations and unknown URLs are not aliased',async()=>{
   for(const path of ['/api/sky/agents','/sky/unknown','/sky/tools/x/extra','/sky/marketplace-extra','/sky/code','//evil.invalid','/sky%2Fmarketplace']) assert.equal(noahPageRedirect(path),null);
   assert.equal(await(await app.fetch(new Request('https://avoado.si/api/sky/agents',{method:'POST',body:'fixture'}))).text(),'/api/sky/agents');
-  assert.equal(await(await app.fetch(new Request('https://avoado.si/noah/unknown'))).text(),'/noah/unknown');
+  assert.equal((await app.fetch(new Request('https://avoado.si/noah/unknown'))).status,404);
   const engineering=await app.fetch(new Request('https://avoado.si/noah/engineering'));
   assert.equal(engineering.status,200);
   assert.equal(await engineering.text(),'/noah/engineering');
   const encoded=await app.fetch(new Request('https://avoado.si/sky/tools/%2F%2Fevil.invalid?returnTo=https%3A%2F%2Fevil.invalid'));
-  assert.equal(new URL(encoded.headers.get('location')).origin,'https://avoado.si');
+  assert.equal(encoded.status,404);
+  assert.equal(encoded.headers.get('location'),null,'encoded path separators cannot escape the document boundary');
 });
