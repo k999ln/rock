@@ -69,7 +69,7 @@ PR #64のMac接続・アイコンは#76にも含まれる。両方の履歴を�
 - ココナラ連携の合成3試験は専用依存の準備後に成功。テストの削除はしない。
 - 検証の最終結果と統合PRは下記へ追記する。本番公開/DB migration/契約/実資金移動をこの同期作業の成功に含めない。
 
-## 最終確認（2026-11-26）
+## 第243版を公開する前の統合確認（2026-11-26）
 
 - 統合保存先: [PR #80](https://github.com/iceiceice999/rock/pull/80)。本番公開前のドラフト。VS Codeの作業ブランチとGitHubは`codex/chat-sync-20261126`を共用する。元の`codex/workspace-latest-20261126`は復元用履歴として残す。
 - 全体`npm run verify`はexit 0。本体5,563件中5,558成功・失敗0・skip5、仕事API1,918項目、CSV385項目、型/lint/設計/DB/課金dry-run/ビルド/公開資産421参照の欠落0、AMC/Work/Bot確認まで成功。ログはローカル`/private/tmp/avokado-chat-verify-final.log`。
@@ -84,3 +84,16 @@ PR #64のMac接続・アイコンは#76にも含まれる。両方の履歴を�
 - `js/file-access-to-http`（alert74）は本人指定の依頼JSONのbriefと前段下書きを、owner一致・明示同意・秘密検査の後に固定HTTPSの無料モデルへ送る経路。任意ファイルの自動収集、任意URL、転送追従、認証ヘッダーの送信ではない。未同意・別owner・STOPで送信0、固定送信先は既存試験で確認している。
 - `js/http-to-file-access`（alert34）は`--record-local-production`を指定した時だけ、127.0.0.1のヘッダー等の検査結果を固定JSONパスに保存する経路。応答由来のJSパスはJSON文字列の情報として記録し、実行や出力先の指定には使わない。
 - 上の2件のアラート却下は自動承認審査で拒否されたため、未処理のまま保持する。本人の明示承認なしに却下・検査抑制・公開ゲートの迂回を行わない。Sites242は保存のみ、未公開。修正後CIと公開は継続確認。
+
+## 統合後の公開結果
+
+- 11月26日05:03（日本時間）に [PR #80](https://github.com/iceiceice999/rock/pull/80) を含む main `fe7ffba6f9` を第243版として公開。保存ソース `84d7392f0d` と共通のtreeは `62dfaa530c72bcb5042452eea816d1d54ba2c04e`。[最終CI](https://github.com/iceiceice999/rock/actions/runs/45689267883)は5,560件成功・失敗0・スキップ5。公開後、390pxと1280pxでホーム・Mac接続・収益パックを確認した。
+- 11月26日17:06に [PR #81](https://github.com/iceiceice999/rock/pull/81) の main `13f2c6dd97` を第244版として公開。Sitesの保存ソースは `196fa0401d`、共通のtreeは `b8f3534f1b8eb3c24d34a78e8173505476b4e027`。本番30経路の応答と公開sitemapの8入口を確認した。
+
+同日付の共有Wordは `outputs/avokado-business-design/` に置く。第244版の公開時点に合わせて更新した3冊は、次のSHA-256で識別する。Gitの仕様正本は引き続きMarkdownである。
+
+| Wordファイル | SHA-256 |
+| --- | --- |
+| `avokado-business-plan-2026-11-26.docx` | `b001437bc20f342c9a06fc19de270cf87504c0c30ae405106a3bc4927e105e36` |
+| `avokado-product-spec-2026-11-26.docx` | `0bac02b95dfc14446aba115a6659e586a415b1b4f9de8c847f3dc85fa546dc58` |
+| `avokado-system-design-2026-11-26.docx` | `57cad4019106ba5efd3b025dae953a36d648fbf6670bb5829c46343cba1fab52` |
