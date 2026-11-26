@@ -67,10 +67,10 @@ export class NoahFreeCloudJob extends NoahCloudJob {
     if (Date.now() >= job.deadlineAt) throw Error('実行時間の上限に達しました。');
     return job;
   }
-  async runModel(value) {
+  async runModel(value, requireTool = false) {
     const owner = await this.live();
     const input = { ...noahCloudModelInput(value), max_tokens: limits.outputTokens };
-    if (['boss', 'hermes'].includes(owner.profile)) input.reasoning_effort = 'low';
+    if (['boss', 'hermes', 'memory'].includes(owner.profile)) input.reasoning_effort = 'low';
     if (owner.purpose === NOAH_EVE_ADVICE_PURPOSE) input.response_format = { type: 'json_object' };
     if (owner.profile === 'boss') {
       // The official command requests five JSON questions. Reserve the fixed
@@ -85,7 +85,7 @@ export class NoahFreeCloudJob extends NoahCloudJob {
       const latest = await this.live();
       // 断る理由は、この区間の外で投げる（区間の中で投げると、Durable Object が作り直され、失敗の結果を返せない）。
       if (latest.calls >= limits.modelCalls) { refusal = '無料枠のモデル呼出上限に達しました。'; return; }
-      if (latest.profile === 'hermes' && input.tools?.length && !hasSuccessfulHermesTool(input.messages)) input.tool_choice = 'required';
+      if (input.tools?.length && (requireTool || (latest.profile === 'hermes' && !hasSuccessfulHermesTool(input.messages)))) input.tool_choice = 'required';
       inputBytes = new TextEncoder().encode(JSON.stringify(input)).length;
       if (inputBytes > limits.modelInputBytes) { refusal = '無料枠のモデル入力上限に達しました。依頼を短くしてください。'; return; }
       // 1 件の上限（取り置いた分）を超えるかを、呼ぶ前に確かめる（トークンは 1 バイト以上なので、入力のバイト数を上限にする）。
@@ -164,20 +164,31 @@ export class NoahFreeCloudJob extends NoahCloudJob {
       await this.live();
       if (job.mode === 'probe') { await this.end('returned'); return; }
       const session = this.session, operations = [];
+      const isMemory = job.profile === 'memory';
+      const instructions = 'You are the Noah assistant using the official MCP tools. Always use the relevant tool to perform the request, then summarize the actual results in the user language. Do not claim success before a successful tool response. Do not request shell commands or external access. Files are only in /tmp/workspace. Memory lasts only for this job. Sequential Thinking steps should be brief practical plans, not hidden internal reasoning. You have at most 4 model turns. Finish after the necessary tools. Never create noah-execution.json; it is reserved for the receipt.'
+        + (isMemory ? '\nFor a note to organize, use create_entities to save the people or teams and their assigned work as observations. Use create_relations when needed. After a successful tool result, summarize the saved facts briefly in the user language.' : '');
       const messages = [
-        { role: 'system', content: 'You are the Noah assistant using the official MCP tools. Always use the relevant tool to perform the request, then summarize the actual results in the user language. Do not claim success before a successful tool response. Do not request shell commands or external access. Files are only in /tmp/workspace. Memory lasts only for this job. Sequential Thinking steps should be brief practical plans, not hidden internal reasoning. You have at most 4 model turns. Finish after the necessary tools. Never create noah-execution.json; it is reserved for the receipt.' },
+        { role: 'system', content: instructions },
         { role: 'user', content: job.prompt },
       ];
       for (let turn = 0; turn < limits.modelCalls; turn++) {
         await this.live();
-        const reply = await this.runModel({ messages, tools: session.tools });
+        const hasToolResult = operations.some(operation => operation.ok);
+        const reply = await this.runModel({ messages, tools: session.tools }, isMemory && !hasToolResult);
         await this.live();
         const choice = reply?.choices?.[0], message = choice?.message;
         if (!message || !['stop', 'tool_calls'].includes(choice.finish_reason)) throw Error('モデルが正常に完了しませんでした。依頼を短くしてください。');
         const calls = message.tool_calls ?? [];
         if (!Array.isArray(calls) || calls.length > 4) throw Error('Tool呼出が上限を超えました。');
         if (!calls.length) {
-          if (typeof message.content !== 'string' || !message.content.trim() || !operations.some(o => o.ok)) throw Error('公式Toolの実行結果を確認できませんでした。');
+          if (!hasToolResult || typeof message.content !== 'string' || !message.content.trim()) {
+            if (!isMemory || turn + 1 === limits.modelCalls) throw Error('公式Toolの実行結果を確認できませんでした。');
+            const correction = hasToolResult
+              ? 'A tool succeeded. Return a short, non-empty summary of its actual results.'
+              : 'No tool has succeeded. Call the relevant Memory tool now and wait for its result before summarizing.';
+            messages[0].content = `${instructions}\n${correction}`;
+            continue;
+          }
           const files = await session.files();
           if (files.some(f => f.name === 'noah-execution.json')) throw Error('実行記録のファイル名は予約されています。');
           files.push(await executionFile(job.profile, operations, job.profile === 'time' ? 'official-python-workers' : 'official-mcp-workers'));
