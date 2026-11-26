@@ -125,15 +125,19 @@ export function createIntakeStore(deps: IntakeDependencies) {
     return { items: ids.length ? await noahReadyItems(db, ids.map(r => r.id), !!owner, showGeneratedPins) : [], nextCursor: params.get('limit') === '0' ? null : nextCursor, counts: await counts(), source: 'Official MCP Registry' };
   }
   async function detail(id: string, owner: string | null, reviewer: boolean, showGeneratedPins = false) {
-    const row = await db.prepare(`${ROW} WHERE f.id=?`).bind(id).first<Row>();
+    // One database round trip for the public row, usage, and this owner's connection.
+    // Visibility is still checked on every request; no owner or connection data is cached.
+    const queries = [db.prepare(`${ROW} WHERE f.id=?`).bind(id), db.prepare(USERS(1)).bind(id)];
+    if (owner) queries.push(db.prepare('SELECT id,state,revision,error FROM noah_connections WHERE owner_id=? AND family_key=? AND disconnected_at IS NULL').bind(owner, id));
+    const results = await db.batch(queries);
+    const row = results[0].results[0] as Row | undefined;
+    const used = results[1].results[0] as { users: number } | undefined;
+    const connection = results[2]?.results[0] as { id: string; state: string; revision: number; error: string | null } | undefined;
     const listed = !!row && listing(row).listed;
-    // その本人の、この系列の切っていない接続（1 件まで）。L5 で接続の表が入った（drizzle/0047_noah_connections.sql）。
-    const connection = row && owner ? await db.prepare('SELECT id,state,revision,error FROM noah_connections WHERE owner_id=? AND family_key=? AND disconnected_at IS NULL').bind(owner, id).first<{ id: string; state: string; revision: number; error: string | null }>() : null;
     // 載せていない系列は、無い物として答える。ただし、その本人がつないでいる物は読める（一覧から外れた理由を見て、切れるように）。
     if (!row || (!reviewer && !listed && !connection)) throw new NoahAgentError('Agentが見つかりません。', 404);
     let website: string | null = null;
     try { const record = JSON.parse(row.record_json) as { websiteUrl?: string }; if (record.websiteUrl) website = noahPublicHttpsUrl(record.websiteUrl, 'website').href; } catch { /* Untrusted informational link. */ }
-    const used = await db.prepare(USERS(1)).bind(id).first<{ users: number }>();
     const pin = (await noahReadyPins(db, [id], showGeneratedPins)).get(id);
     return { ...item(row, !!owner, used?.users ?? 0, pin), listed, members: row.members, revision: row.revision, website, repository: row.repository, sourceUpdatedAt: row.source_updated_at, connection: connection ? { ...connection } : null };
   }

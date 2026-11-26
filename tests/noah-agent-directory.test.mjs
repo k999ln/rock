@@ -95,3 +95,18 @@ void test('unified discovery retains source ranking, run hints and malformed-sou
   assert.equal(selectNoahDirectory(entries,'github','')[0].card.run,'mac');
   assert.equal(selectNoahDirectory(entries,'github','')[0].card.sources[0].metrics.stars,1000);
 });
+
+void test('targeted detail matches the full catalog, including aliases, sources and withdrawn phone availability', async () => {
+  const rows=[family('a'),family('alias'),family('other','https://github.com/other/project')];
+  const deps={db:db(rows),bucket:bucket({github:[collected('github',PROJECT_URL,{run:'phone',familyId:'a'}),collected('github','https://github.com/other/project',{id:'other'})],x:[collected('x')]}),listed:true,now:()=>NOW};
+  const full=await readNoahDirectory(deps),id=full.find(e=>e.families.includes('a')).card.feedbackId;
+  const target=await readNoahDirectory(deps,{id,family:null});
+  assert.deepEqual(target,full.filter(e=>e.card.feedbackId===id));
+  assert.deepEqual(await readNoahDirectory(deps,{id:'',family:'alias'}),target);
+  assert.deepEqual(await readNoahDirectory(deps,{id:'',family:'missing'}),[]);
+  const withdrawn={...deps,db:db([])};
+  const next=await readNoahDirectory(withdrawn,{id,family:null});
+  assert.deepEqual(next,(await readNoahDirectory(withdrawn)).filter(e=>e.card.feedbackId===id));
+  assert.deepEqual(next[0].families,[]);assert.equal(next[0].card.run,undefined);
+  assert.deepEqual(await readNoahDirectory({...withdrawn,now:()=>NOW+7200000},{id,family:null}),[]);
+});

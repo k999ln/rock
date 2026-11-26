@@ -156,3 +156,20 @@
 }
 
 .taskLink { display: flex; align-items: center; min-height: 44px; color: var(--noah-theme-link, #a74409); font-weight: 600; overflow-wrap: anywhere; }
+
+/* A single compact, horizontally scrollable feed navigation. */
+.feedTitle { position:absolute; width:1px; height:1px; padding:0; margin:-1px; overflow:hidden; clip-path:inset(50%); white-space:nowrap; }
+.timelineTools { display:flex; align-items:stretch; position:relative; margin:0 0 16px; border-bottom:1px solid var(--noah-theme-line, #e7e1ef); }
+.timelineTabs { display:flex; flex:1; min-width:0; overflow-x:auto; scrollbar-width:none; }
+.timelineTabs::-webkit-scrollbar { display:none; }
+.timelineTabs button { position:relative; flex-shrink:0; min-height:48px; padding:10px 18px; border:0; border-radius:0; background:transparent; color:var(--noah-theme-muted, #76717f); font-size:14px; font-weight:650; white-space:nowrap; cursor:pointer; }
+.timelineTabs button[aria-pressed=true] { color:var(--noah-theme-text, #202026); }
+.timelineTabs button[aria-pressed=true]::after { content:""; position:absolute; bottom:0; left:14px; right:14px; height:3px; border-radius:3px; background:currentColor; }
+.timelineTabs button:focus-visible,.timelineOptions summary:focus-visible { outline:2px solid var(--noah-theme-text, #202026); outline-offset:-3px; }
+.timelineOptions { flex-shrink:0; }
+.timelineOptions>summary { display:flex; align-items:center; justify-content:center; width:44px; height:48px; list-style:none; font-size:22px; cursor:pointer; color:var(--noah-theme-muted, #76717f); }
+.timelineOptions>summary::-webkit-details-marker { display:none; }
+.timelineMenu { position:absolute; z-index:10; right:0; top:100%; display:grid; gap:14px; width:min(300px,calc(100vw - 40px)); padding:18px; border:1px solid var(--noah-theme-line, #e7e1ef); border-radius:14px; background:var(--noah-theme-panel, white); box-shadow:0 8px 24px #0002; }
+.timelineMenu label { display:grid; gap:6px; font-size:13px; }
+.timelineMenu select { width:100%; min-height:44px; padding:8px; border:1px solid var(--noah-theme-line, #e7e1ef); border-radius:8px; color:var(--noah-theme-text, #202026); background:var(--noah-theme-panel, white); }
+.timelineMenu>span { font-size:12px; color:var(--noah-theme-muted, #76717f); }

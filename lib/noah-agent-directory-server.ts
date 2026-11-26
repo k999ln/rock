@@ -15,8 +15,9 @@ export async function noahAgentDirectory(target?: { id?: string; family?: string
   const listed = noahAllowed(parseNoahFlags(config), 'list', target?.reviewer === true);
   const showGeneratedPins = target?.showGeneratedPins === true || await noahGeneratedPinsPublic(config.BUCKET, config);
   const scoped = Boolean(target?.id || target?.family);
+  const lookup = target?.id ? { id: target.id, family: target.family ?? null } : undefined;
   const [collected, revenue, verified] = await Promise.all([
-    readNoahDirectory({ db: database(), bucket: config.BUCKET, listed, showGeneratedPins }),
+    readNoahDirectory({ db: database(), bucket: config.BUCKET, listed, showGeneratedPins }, lookup),
     listed && (!scoped || (!target?.family && !!target?.id && await isNoahRevenueProject(target.id))) ? noahRevenueDirectory() : Promise.resolve([]),
     listed ? noahVerifiedDirectory() : Promise.resolve([]),
   ]);

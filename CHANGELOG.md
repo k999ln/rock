@@ -4,6 +4,8 @@
 
 ## 2026-11-26
 
+- Noahの詳細1件のカード構築と接続DB読取を軽量化。一覧を一行の下線タブへ整理し、動画上の反転文字と画面外の動画解放を追加（task140、[PR #106](https://github.com/iceiceice999/rock/pull/106)）。
+
 - Noahのタイガーをオフライン専用に分離し、通常の読込を小さな表示へ変更。詳細の重複取得・無関係な外部応答の待機・カードの再計測ループを削減（task140、[PR #105](https://github.com/iceiceice999/rock/pull/105)）。
 - Noah詳細の待機画面を公開情報の先行表示へ変更し、全件を初期表示、トップの帯を撤去、登録の不足情報を詳細に表示（task140、[PR #104](https://github.com/iceiceice999/rock/pull/104)）。
 

@@ -81,3 +81,14 @@ void test('an account change clears the old collection and starts a fresh scoped
   await t.home.flush();t.enter();await t.home.flush();
   assert.deepEqual(Array.from(t.cards(),i=>i.id),['new']);assert.equal(t.ui.calls.length,3);
 });
+
+void test('compact tabs retain all as default and category changes reset the source without duplicating requests',async()=>{
+  const t=mount(async()=>page(['a']));await t.home.flush();
+  assert.equal(new URL(t.ui.calls[0].url,'https://noah.test').searchParams.get('source'),'');
+  assert.equal(t.home.find('button','すべて')[0].props['aria-pressed'],true);
+  await t.home.click('接続できる');
+  assert.equal(new URL(t.ui.calls.at(-1).url,'https://noah.test').searchParams.get('source'),'noah');
+  await t.home.click('すべて');
+  assert.equal(new URL(t.ui.calls.at(-1).url,'https://noah.test').searchParams.get('source'),'');
+  assert.equal(t.home.find('button','おすすめ順').length,0,'sort is kept in the compact settings menu');
+});
