@@ -4,9 +4,27 @@ import { createEveChatApi } from '../lib/eve-chat-api.ts';
 import { eveChatContext, parseEveChatReply, evePlanDraft, validEveMessages } from '../lib/eve-chat.ts';
 import { ownerScopeFor, OWNER_SCOPE_HEADER } from '../lib/owner-intent.ts';
 import { NoahAgentError } from '../lib/noah-agent-upload.ts';
+import { createNoahBrowserSessions } from '../lib/noah-browser-session.ts';
 const id = '44444444-4444-4444-8444-444444444444', project = 'project-' + 'a'.repeat(64);
 const plan = { name: 'メモ整理', summary: 'メモから担当者別のタスクを作る', input: '会議のメモ', outcome: '担当者別のタスク', acceptance: '各タスクに担当者がある', steps: [{ agentId: project, role: 'メモを整理', output: 'タスク一覧' }] };
 const candidates = [{ id: project, name: 'Memory', summary: 'meeting notes' }];
+void test('normal Noah browser ownership can open Eve and send a scoped consultation without account privileges', async () => {
+  const origin = 'https://avoado.si', url = origin + '/api/noah/eve-chat';
+  const sessions = createNoahBrowserSessions({ active: 'a', keys: { a: '01'.repeat(32) } });
+  const cookie = (await sessions.issue(new Request(origin + '/api/noah/session'))).split(';')[0];
+  let calls = 0;
+  const api = createEveChatApi({ authenticate: sessions.authenticate, available: true, directory: async () => [], authorize: async () => {}, runtime: async () => { calls++; return Response.json({ reply: 'どんな成果が必要ですか？', plan: null }); } });
+  assert.equal((await api(new Request(url))).status, 401);
+  const status = await api(new Request(url, { headers: { Cookie: cookie } }));
+  assert.equal(status.status, 200);
+  const { ownerScope } = await status.json();
+  const send = (scope, from = origin) => api(new Request(url, { method: 'POST', headers: { Cookie: cookie, Origin: from, 'Content-Type': 'application/json', [OWNER_SCOPE_HEADER]: scope }, body: JSON.stringify({ id, messages: [{ role: 'user', content: 'メモを整理したい' }] }) }));
+  assert.equal((await send(ownerScope)).status, 200); assert.equal(calls, 1);
+  assert.equal((await send('owner-v1:' + '0'.repeat(64))).status, 409); assert.equal(calls, 1);
+  const other = (await sessions.issue(new Request(origin + '/api/noah/session'))).split(';')[0];
+  assert.notEqual((await (await api(new Request(url, { headers: { Cookie: other } }))).json()).ownerScope, ownerScope);
+  await assert.rejects(() => sessions.authenticate(new Request(origin + '/api/billing', { headers: { Cookie: cookie } })), /UNAUTHORIZED/);
+});
 void test('chat bounds context and rejects invented Agent IDs; design export excludes conversation and rights', () => {
   const messages = Array.from({ length: 20 }, (_, i) => ({ role: i % 2 ? 'user' : 'assistant', content: 'あ'.repeat(1000) }));
   const context = eveChatContext(messages);

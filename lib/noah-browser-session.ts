@@ -23,7 +23,7 @@ export function noahBrowserRequestAllowed(request: Request): boolean {
   if (['GET', 'DELETE'].includes(method) && new RegExp(`^/api/noah/agents/${uploadId}$`, 'i').test(path)) return true;
   if (method === 'GET' && new RegExp(`^/api/noah/(drafts|agents)/${uploadId}/source$`, 'i').test(path)) return true;
   if (['GET', 'POST'].includes(method) && [
-    '/api/noah/devices', '/api/noah/launch', '/api/noah/session', '/api/noah/connect', '/api/noah/ask', '/api/noah/provider', '/api/noah/profile', '/api/noah/cloud-agents',
+    '/api/noah/devices', '/api/noah/launch', '/api/noah/session', '/api/noah/connect', '/api/noah/ask', '/api/noah/provider', '/api/noah/profile', '/api/noah/cloud-agents', '/api/noah/eve-chat',
     '/api/noah/registration', '/api/noah/registration/browser',
     '/api/noah/data', '/api/noah/feedback', '/api/noah/boards',
   ].includes(path)) return true;
