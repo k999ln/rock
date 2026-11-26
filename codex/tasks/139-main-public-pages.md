@@ -23,9 +23,28 @@
 
 ## 状態
 
-2026-11-26追補。[PR #89](https://github.com/iceiceice999/rock/pull/89) でNoahの既存画面12か所に星座名の短いURLを割り当てた。対応は [公開ルート表](../../services/sky-web/noah-page-routes.mjs) の `NOAH_SHORT_PAGES`。人型アイコンと旧プロフィールから `/aries` を開く。ビルド済みWorkerで12経路の200、旧プロフィールの308とクエリ保持、未知経路の404、廃止経路の410を確認。Runnerの接続承認ルートと現行の画面更新を取り込んだ状態で対象80試験が成功。公開は正本mainへの統合とSites配備のあと。
-
 実装済み。[PR #81](https://github.com/iceiceice999/rock/pull/81)。対象40試験、typecheck、production build、9経路のHTTPセキュリティ実測が成功。390px/1280pxのホーム・メニュー、未認証の審査画面404を確認。ローカルDBは初期migrationの既存問題でカタログ未投入のため、表示確認は取得失敗状態を含む。初回の全体試験で新しいmoduleを含まない試験fixtureが4件失敗したため、fixtureを更新し実Workerで410/404/200・sitemapを検証。最新の全体verify結果・main SHA・Sites保存SHA・公開版・本番応答はPRの検証／公開記録へ残す。
+
+## Noahの星座名URL
+
+[PR #89](https://github.com/iceiceice999/rock/pull/89) で、12個の短いURLを既存の別々の画面に割り当てた。直接開くとアドレス欄に短いURLが残り、画面には通常の機能名を表示する。人型アイコンは `/aries` を開き、従来の `/noah/profile` はクエリを引き継いで `/aries` に308転送する。実装の対応表は [`NOAH_SHORT_PAGES`](../../services/sky-web/noah-page-routes.mjs) にある。
+
+| 専用URL | 開く画面 |
+| --- | --- |
+| [/aries](https://avoado.si/aries) | プロフィール（登録情報） |
+| [/taurus](https://avoado.si/taurus) | 保存したもの |
+| [/gemini](https://avoado.si/gemini) | ホーム・Agent検索 |
+| [/cancer](https://avoado.si/cancer) | 登録サポート |
+| [/leo](https://avoado.si/leo) | 自分のAgent |
+| [/virgo](https://avoado.si/virgo) | 操作の設定 |
+| [/libra](https://avoado.si/libra) | サービスとAgentの組み合わせ |
+| [/scorpio](https://avoado.si/scorpio) | 実行中の仕事 |
+| [/sagittarius](https://avoado.si/sagittarius) | 端末・実行先 |
+| [/capricorn](https://avoado.si/capricorn) | Agentエンジニアリング |
+| [/aquarius](https://avoado.si/aquarius) | 接続の管理 |
+| [/pisces](https://avoado.si/pisces) | 使い方・ヘルプ |
+
+2026-11-26 19:34 JSTに Sites v251 で公開。GitHub main は [`aca0cef`](https://github.com/iceiceice999/rock/commit/aca0cef42562ef33e262799319f96874f92d75ef)、Sitesソースは `1fc77497650ce8ddaa130eb1ad5a2247369b2644`。一致した Git tree は `b69214e5870ac2753f87f612694bbc137f3273dd`、配備は `appgdep_6b080b2c84148191a59daf3536f3d4bd`。全体CIに合格し、本番で12経路の200と旧プロフィールの308を確認した。
 
 ## Mac Runner接続の復旧（2026-11-26）
 
