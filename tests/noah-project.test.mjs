@@ -81,3 +81,16 @@ void test('Cloudflare runtime validates provider requests and rejects redirects 
     redirect=true;assert.equal((await worker.dispatchFetch(request('&open=space').url)).status,503);assert.equal(calls.length,3,'redirect destination must not be fetched');
   }finally{await worker.dispose()}
 });
+
+void test('ready family feedback resolves only a listed identity without opening providers',async()=>{
+  const family='mcp-registry:ac.mizan/registry';
+  const row={...entry(),families:[family],card:{...entry().card,id:family}};
+  let calls=0;const api=createNoahProjectApi({directory:async()=>[row],fetcher:async()=>{calls++;throw Error();}});
+  const url='https://noah.test/api/noah/discover/project?'+new URLSearchParams({family});
+  const response=await api(new Request(url));assert.equal(response.status,200);assert.equal((await response.json()).card.feedbackId,id);
+  assert.equal((await api(new Request(url+'&open=space'))).status,400);
+  assert.equal((await api(new Request(url+'&id='+id))).status,400);
+  assert.equal((await api(new Request('https://noah.test/api/noah/discover/project?family=unlisted-family'))).status,404);
+  assert.equal((await api(new Request('https://noah.test/api/noah/discover/project?family=%0A'))).status,400);
+  assert.equal(calls,0);
+});
