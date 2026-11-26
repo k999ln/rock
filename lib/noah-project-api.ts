@@ -70,10 +70,10 @@ async function spaceHost(repository: string, fetcher: typeof fetch, origin: stri
 export function createNoahProjectApi(deps: Dependencies) {
   return async (request: Request) => {
     if (request.method !== 'GET') return json({ error: 'method_not_allowed' }, 405);
-    const params = new URL(request.url).searchParams, id = params.get('id') ?? '', open = params.get('open');
-    if (!/^project-[a-f0-9]{64}$/.test(id) || (open !== null && open !== 'space')) return json({ error: 'Agentの指定を確認してください。' }, 400);
+    const params = new URL(request.url).searchParams, id = params.get('id') ?? '', family = params.get('family'), open = params.get('open');
+    if (family !== null ? (id !== '' || open !== null || !/^[a-zA-Z0-9][a-zA-Z0-9._:/-]{2,399}$/.test(family)) : (!/^project-[a-f0-9]{64}$/.test(id) || (open !== null && open !== 'space'))) return json({ error: 'Agentの指定を確認してください。' }, 400);
     try {
-      const entry = (await deps.directory()).find(row => row.card.feedbackId === id || row.card.id === id);
+      const entry = (await deps.directory()).find(row => family !== null ? row.families.includes(family) : row.card.feedbackId === id || row.card.id === id);
       if (!entry) return json({ error: 'このAgentは現在掲載されていません。' }, 404);
       const detail = noahProjectDetail(entry, deps.cloudEnabled, deps.cloudProfiles);
       if (open === 'space') {

@@ -15,7 +15,7 @@ function DetailFeedback({ id }: { id: string }) {
   useEffect(() => {
     if (direct) return;
     const controller = new AbortController();
-    void fetch(`/api/noah/discover/project?${new URLSearchParams({ id })}`, { signal: controller.signal, cache: 'no-store' })
+    void fetch(`/api/noah/discover/project?${new URLSearchParams({ family: id })}`, { signal: controller.signal, cache: 'no-store' })
       .then(async response => {
         const body = await response.json() as { card?: { feedbackId?: string } };
         if (!response.ok || !/^project-[a-f0-9]{64}$/.test(body.card?.feedbackId || '')) throw Error();

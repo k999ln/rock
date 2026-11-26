@@ -7,6 +7,8 @@
 
 - Noahの既存12画面に星座名の短いURLを割り当て、人型アイコンと旧プロフィールURLを `/aries` に接続（task139、[PR #89](https://github.com/iceiceice999/rock/pull/89)）。
 
+- 接続対応Agent詳細の口コミ取得で系列IDをproject IDとして送っていた不具合を修正。掲載済み系列から正規評価IDを読み取り専用で解決（task129、[PR #94](https://github.com/iceiceice999/rock/pull/94)）。
+
 - NoahのAgent詳細を共通の一画面構成へ統一。操作の設定の黒白切替を全画面へ共有し、研修動画の無音ループ・自然な境界・本人用Agentへのプラグイン追加を実装（task129、[PR #90](https://github.com/iceiceice999/rock/pull/90)）。
 
 - 公開ストアのヘッダーを Nöah 表記に更新し、ホームから「Today」の見出しを削除。
