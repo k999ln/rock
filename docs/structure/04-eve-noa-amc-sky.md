@@ -308,3 +308,5 @@ Noahの固定アダプターで公開サイト診断を実行し、結果と相�
 本人用収益パックの配布・端末用CLIは `toolkits/noah-revenue-pack/`、Macに依存しないクラウド実行は `services/noah-revenue-runtime/`、共通Noahの入口は `/noah/revenue-pack`。[挙動と合格条件](../services/noah-revenue-pack.md)。
 
 2026-11-24 登録UX: [登録Agent](../services/noah-registration-agent.md)は保存済み項目・必須の不足・任意項目を分け、元のAgentの画面内で準備する。保存の選択、外部送信先、料金条件を操作直前に示す。保存だけで有料実行は開始せず、提供元の未取得料金を無料と表示しない。
+
+2026-11-26 登録情報の再入力抑止: 保存済み情報の読込が済むまで新規入力を求めず、読込失敗は再試行へ戻す。Safari/Chromeの標準自動入力を共通プロフィールとAgent登録の入力欄で使えるようにし、保存した項目は次のAgentへ再利用する。OAuthによるアカウント連携とは区別する。
