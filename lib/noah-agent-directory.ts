@@ -17,8 +17,15 @@ export function noahProjectUrl(value: unknown): string | null {
     return url.href;
   } catch { return null; }
 }
+// Only deterministic identities are reused, never visibility, owner data, or connections.
+const identities = new Map<string, string>();
 export async function noahCardIdentity(url: string | null, familyId: string) {
-  return `project-${await sha256Hex(url ?? `family:${familyId}`)}`;
+  const key = url ?? `family:${familyId}`, known = identities.get(key);
+  if (known) { identities.delete(key); identities.set(key, known); return known; }
+  const id = `project-${await sha256Hex(key)}`;
+  if (identities.size >= 4096) identities.delete(identities.keys().next().value!);
+  identities.set(key, id);
+  return id;
 }
 export function noahFamilyUrl(row: Pick<Family, 'repository' | 'record_json' | 'connect_json'>): string | null {
   try {

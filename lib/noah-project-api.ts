@@ -6,7 +6,7 @@ import { noahProjectSources } from './noah-provider-resolve.ts';
 import { noahFirstJobs } from './noah-first-jobs.ts';
 import { noahRegistrationReport } from './noah-registration-report.ts';
 
-type Dependencies = { directory: () => Promise<DirectoryEntry[]>; fetcher?: typeof fetch; cloudEnabled?: boolean; cloudProfiles?: readonly NoahCloudProfile[]; publicAsk?: boolean };
+type Dependencies = { directory: () => Promise<DirectoryEntry[]>; find?: (id: string, family: string | null) => Promise<DirectoryEntry | undefined>; fetcher?: typeof fetch; cloudEnabled?: boolean; cloudProfiles?: readonly NoahCloudProfile[]; publicAsk?: boolean };
 const json = (body: unknown, status = 200) => Response.json(body, { status, headers: { 'Cache-Control': 'no-store, private', 'X-Content-Type-Options': 'nosniff' } });
 /** Resolve only an existing public catalog identity. The caller cannot supply a fetch URL or execution target. */
 export function noahProjectDetail(entry: DirectoryEntry, cloudEnabled = false, cloudProfiles?: readonly NoahCloudProfile[]): NoahProjectDetail {
@@ -74,7 +74,7 @@ export function createNoahProjectApi(deps: Dependencies) {
     const params = new URL(request.url).searchParams, id = params.get('id') ?? '', family = params.get('family'), open = params.get('open');
     if (family !== null ? (id !== '' || open !== null || !/^[a-zA-Z0-9][a-zA-Z0-9._:/-]{2,399}$/.test(family)) : (!/^project-[a-f0-9]{64}$/.test(id) || (open !== null && open !== 'space'))) return json({ error: 'Agentの指定を確認してください。' }, 400);
     try {
-      const entry = (await deps.directory()).find(row => family !== null ? row.families.includes(family) : row.card.feedbackId === id || row.card.id === id);
+      const entry = deps.find ? await deps.find(id, family) : (await deps.directory()).find(row => family !== null ? row.families.includes(family) : row.card.feedbackId === id || row.card.id === id);
       if (!entry) return json({ error: 'このAgentは現在掲載されていません。' }, 404);
       if (params.get('check') === 'registration' && open === null && family === null) return json(await noahRegistrationReport(entry, deps.fetcher));
       const detail = noahProjectDetail(entry, deps.cloudEnabled, deps.cloudProfiles);

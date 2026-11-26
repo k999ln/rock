@@ -88,7 +88,7 @@ export default function NoahProjectDetail({ id, firstJob, initialDetail }: { id:
     <summary>{t('使い方を読む')}</summary><ol>{noahTrainingFilm.scenes.map(scene => <li key={scene.caption}>{t(scene.detail)}</li>)}</ol>
   </details> : null;
   if (detail?.connection.kind === 'ready') {
-    return <NoahReadyDetail id={detail.connection.familyId} preview={detail.card} internalOnly sourceNotes={sourceNotes} trailer={trailer} mediaId={id} />;
+    return <NoahReadyDetail id={detail.connection.familyId} preview={detail.card} feedbackId={detail.card.feedbackId ?? id} internalOnly sourceNotes={sourceNotes} trailer={trailer} mediaId={id} />;
   }
   if (!detail) return !error ? <NoahDetailPending href={`/noah/discover/agent?${new URLSearchParams({ id })}`} /> : <main className={styles.page}><div role="alert" className={styles.error}><p>{error}</p><button onClick={() => { setError(''); setAttempt(n => n + 1); }}>読み直す</button></div></main>;
   const training = id === noahTrainingFilm.projectId;

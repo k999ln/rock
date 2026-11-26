@@ -18,10 +18,20 @@ export function NoahAgentPinGrid({ children, compact = false }: { children: Reac
     // including the independent save buttons, ratings and any expanded actions.
     const resize = (article: Element, height: number) => {
       const item = article.parentElement;
-      if (item) item.style.gridRowEnd = `span ${Math.max(1, Math.ceil(height / 4))}`;
+      const span = `span ${Math.max(1, Math.ceil(height / 4))}`;
+      if (item && item.style.gridRowEnd !== span) item.style.gridRowEnd = span;
     };
+    const pending = new Map<Element, number>();
+    let frame = 0;
     const observer = new ResizeObserver(entries => {
-      for (const entry of entries) resize(entry.target, entry.borderBoxSize?.[0]?.blockSize ?? entry.target.getBoundingClientRect().height);
+      for (const entry of entries) pending.set(entry.target, entry.borderBoxSize?.[0]?.blockSize ?? entry.target.getBoundingClientRect().height);
+      // Writing grid spans inside the observer can trigger another layout in the
+      // same delivery cycle. Coalesce writes into the next frame instead.
+      if (!frame) frame = requestAnimationFrame(() => {
+        frame = 0;
+        for (const [article, height] of pending) resize(article, height);
+        pending.clear();
+      });
     });
     const articles = Array.from(grid.children, item => item.firstElementChild).filter((article): article is Element => article !== null);
     const heights = articles.map(article => article.getBoundingClientRect().height);
@@ -30,7 +40,7 @@ export function NoahAgentPinGrid({ children, compact = false }: { children: Reac
       observer.observe(article, { box: 'border-box' });
     });
     grid.dataset.measured = 'true';
-    return () => observer.disconnect();
+    return () => { observer.disconnect(); cancelAnimationFrame(frame); pending.clear(); };
   }, [children]);
   return <ul className={styles.grid} data-agent-pin-grid={compact ? 'compact' : 'list'} ref={list}>{children}</ul>;
 }
