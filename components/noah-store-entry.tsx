@@ -60,6 +60,7 @@ export default function NoahStoreEntry({ jobs, items }: { jobs?: (NoahFirstJob &
   const related = items.filter(item => item !== card && item.name).slice(0, 4);
   return <div className={styles.entry}>
     <StoreHeader />
+    {!feature && <h1 className="sr-only">{t('Agentを見つける')}</h1>}
     {feature && <div className={styles.showcase} data-related={related.length > 0 || undefined}>
       <article className={styles.feature}>
         <Link className={styles.coverLink} href={feature.href}>

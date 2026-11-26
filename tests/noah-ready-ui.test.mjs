@@ -401,6 +401,43 @@ void test('the detail screen: where the input goes is shown before connecting; t
   assert.deepEqual(w.rows().map((row) => row.state), ['disconnected', 'connected']);
 });
 
+void test('Enzo’s example survives sign-in and prefills only the verified search input', async (t) => {
+  const id = 'mcp-registry:ai.enzos/enzos';
+  const server = mcpServer({ tools: [tool('search_homes', true, { inputSchema: {
+    type: 'object', required: ['query'], properties: { query: { type: 'string' } },
+  } })] });
+  const w = await world(t, { 'enzos.ai': server }, { records: [entry(1, {
+    name: 'ai.enzos/enzos', title: 'Enzo’s', remotes: [{ type: 'streamable-http', url: 'https://enzos.ai/mcp' }],
+  })] });
+  const { ui, session } = browser(w, null);
+  const visitor = ui.mount(DETAIL, { id });
+  await visitor.flush();
+  assert.equal(visitor.find('main').some(node => Object.hasOwn(node.props, 'data-noah-fullscreen-detail')), true);
+  const example = visitor.find('button', 'この例を使う')[0];
+  const connectForm = visitor.find('form').find(node => node.props.id === example.props.form);
+  connectForm.props.onSubmit({ preventDefault() {}, nativeEvent: { submitter: { getAttribute: () => example.props.value } } });
+  await visitor.flush();
+  assert.match(visitor.text(visitor.find('fieldset')[0]), /接続を確認.*送信先: enzos\.ai/);
+  assert.equal(handshakes(server), 0);
+  await visitor.press(visitor.nodes(visitor.find('fieldset')[0]).find(node => node.type === 'button' && visitor.text(node) === '接続'));
+  const handoff = JSON.parse(ui.storage.get('noah-connect-handoff'));
+  assert.equal(handoff.agentId, id);
+  assert.deepEqual(Object.keys(JSON.parse(ui.storage.get(`noah-agent-first-request:${id}`))).sort(), ['at', 'example']);
+  assert.equal(posts(ui).length, 0);
+
+  session.user = 'owner-a';
+  const detail = ui.mount(DETAIL, { id });
+  await detail.flush();
+  const request = detail.find('div').find(node => node.props.id === 'noah-agent-request');
+  assert.ok(request, 'the request form stays outside the collapsed instructions');
+  const input = detail.nodes(request).find(node => ['input', 'textarea'].includes(node.type) && node.props.id?.endsWith('-query'));
+  assert.match(input.props.value, /ロサンゼルス.*80万ドル/);
+  assert.equal(w.rows()[0].id, handoff.id);
+  assert.equal(ui.storage.has(`noah-agent-first-request:${id}`), false);
+  assert.deepEqual(posts(ui).map(call => call.url), ['/api/noah/connect']);
+  assert.equal(rpcs(server).includes('tools/call'), false);
+});
+
 void test('the detail screen: a failure shows its reason and もう一度; pressing again too soon is refused without contacting the provider', async (t) => {
   const server = mcpServer();
   const w = await world(t, { [hostOf(1)]: server });
