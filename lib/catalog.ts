@@ -665,6 +665,29 @@ const catalogEntries = [
     ],
     note: '個人端末、SIM、連絡先、写真、password、決済情報へ接続しません。demoは支払選択画面までで、予約完了の証明ではありません。',
   },
+  {
+    id: 'noah-local-device-maintenance',
+    name: 'Noah ローカル機器保守の状態説明',
+    category: '機器保守',
+    description:
+      '明示された模擬状態JSONだけから、接続状態・機器状態・消耗品の不足を説明します。端末やネットワークへ接続しません。',
+    source:
+      'https://github.com/iceiceice999/rock/blob/main/lib/noah-hardware-maintenance.ts',
+    license: 'RockstarOS code',
+    licenseUrl: 'https://github.com/iceiceice999/rock',
+    color: 'blue',
+    status: 'candidate',
+    environment: 'ブラウザ内の模擬状態JSON / 外部I/Oなし / 実機成功とは別',
+    cost: '無料。端末・ネットワーク・外部APIを呼びません。',
+    steps: [
+      '12機器ファミリーのいずれかと、接続・操作・消耗品の状態だけをfixture JSONで指定する',
+      '模擬入力から注意点と本人が確認する次の項目を読む',
+      '実機の修理・再接続・設定変更・印刷・flash・ドローン制御は本人の公式手順で別に行う',
+    ],
+    note:
+      '読み取り専用の共通状態説明器です。入力は明示したmock-state JSONに限り、識別子・認証情報・パスを受け付けません。fixtureの結果は実機診断・実機成功・修理完了を意味しません。',
+    origin: 'rockstaros',
+  },
   ...mrHubCandidates,
 ] as const satisfies readonly Automation[];
 

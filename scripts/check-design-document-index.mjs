@@ -140,8 +140,8 @@ fail(
   'ready Tool 16件（Visual Scribe・SPIDER・Materialを含む）を保持してください',
 );
 fail(
-  catalog.filter(({ status }) => status === 'candidate').length === 22,
-  'candidate Tool 22件を保持してください',
+  catalog.filter(({ status }) => status === 'candidate').length === 23,
+  'candidate Tool 23件を保持してください',
 );
 const toolsBook = readFileSync(
   resolve(root, 'docs/sky-tools-complete-design.md'),
