@@ -81,6 +81,39 @@ void test('global budget serializes admission, keeps midnight leases, and releas
   await budget.fetch(request({ action: 'release', id: id(1) }));
   assert.equal((await admit(4)).status, 200);
 });
+void test('first-earning deadlines clamp work and report only time after the execution claim', async () => {
+  const ctx = context();
+  let admitted = 0;
+  const env = { BUDGET: { getByName: () => ({ async fetch(_url, init) {
+    if (JSON.parse(init.body).action === 'admit') admitted++;
+    return Response.json({ ok: true });
+  } }) } };
+  const workerJob = new NoahCloudJob(ctx, env);
+  workerJob.schedule = async () => {};
+  workerJob.stopRuntime = async () => {};
+  workerJob.deliver = async () => {};
+  const trial = { ms: 700, expiresAt: Date.now() + 2000 };
+  const input = { action: 'start', owner, id: id(71), mode: 'run', profile: 'hermes', prompt: '制作', trial };
+  const start = await workerJob.fetch(request(input));
+  assert.equal(start.status, 202);
+  const queued = await start.json();
+  assert.equal(queued.deadlineAt - queued.createdAt, trial.ms);
+  assert.equal((await workerJob.fetch(request(input))).status, 200);
+  assert.equal((await workerJob.fetch(request({ ...input, trial: { ...trial, ms: 710 } }))).status, 409);
+  assert.equal(admitted, 1);
+  const record = ctx.data.get('job');
+  const deadlineAt = Date.now() - 1;
+  ctx.data.set('job', { ...record, state: 'running', startedAt: deadlineAt - 80, deadlineAt });
+  const stopped = await (await workerJob.fetch(request({ action: 'stop' }))).json();
+  assert.equal(stopped.state, 'cancelled');
+  assert.equal(stopped.activeMs, 80);
+
+  const next = new NoahCloudJob(context(), env);
+  const expired = await next.fetch(request({ ...input, id: id(72), trial: { ...trial, expiresAt: Date.now() - 1 } }));
+  assert.equal(expired.status, 409);
+  assert.equal((await expired.json()).trialNotStarted, true);
+  assert.equal(admitted, 1);
+});
 void test('model routing and caps are server-owned; result hashes and paths are checked', async () => {
   const input = noahCloudModelInput({ messages: [{ role: 'user', content: 'hello' }], model: 'attacker-model', base_url: 'http://private/', headers: { Authorization: 'not-forwarded' }, max_tokens: 999999, stream: true });
   assert.equal(input.max_tokens, 2048); assert.equal(input.stream, false); assert.equal(input.model, undefined); assert.equal(input.headers, undefined);

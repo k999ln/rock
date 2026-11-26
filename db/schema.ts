@@ -2981,3 +2981,40 @@ export const noahAgentAvailability = sqliteTable('noah_agent_availability', {
   check('noah_agent_availability_manifest', sql`length(${t.manifestHash}) = 64`),
   check('noah_agent_availability_endpoints', sql`json_valid(${t.endpointsJson})`),
 ]);
+
+export const noahFirstEarnings = sqliteTable('noah_first_earnings', {
+  ownerScope: text('owner_scope').primaryKey().notNull(),
+  stage: text('stage').notNull(),
+  revision: integer('revision').notNull().default(1),
+  updatedAt: integer('updated_at').notNull(),
+  reviewedBy: text('reviewed_by').notNull(),
+  orderDigest: text('order_digest').unique(),
+  payoutDigest: text('payout_digest').unique(),
+  amountYen: integer('amount_yen'),
+  bankDate: text('bank_date'),
+}, t => [
+  check('noah_first_earnings_scope', sql`length(${t.ownerScope}) = 73`),
+  check('noah_first_earnings_stage', sql`${t.stage} IN ('preparing','contracted','delivered','payout_pending','bank_reported','bank_confirmed','cancelled')`),
+  check('noah_first_earnings_revision', sql`${t.revision} >= 1`),
+  check('noah_first_earnings_order', sql`${t.orderDigest} IS NULL OR length(${t.orderDigest}) = 64`),
+  check('noah_first_earnings_payout', sql`${t.payoutDigest} IS NULL OR length(${t.payoutDigest}) = 64`),
+  check('noah_first_earnings_amount', sql`${t.amountYen} IS NULL OR ${t.amountYen} BETWEEN 1 AND 1000000000`),
+  check('noah_first_earnings_date', sql`${t.bankDate} IS NULL OR length(${t.bankDate}) = 10`),
+  check('noah_first_earnings_order_stage', sql`${t.stage} NOT IN ('contracted','delivered','payout_pending','bank_reported','bank_confirmed') OR ${t.orderDigest} IS NOT NULL`),
+  check('noah_first_earnings_report_stage', sql`(${t.stage} IN ('bank_reported','bank_confirmed')) = (${t.amountYen} IS NOT NULL AND ${t.bankDate} IS NOT NULL)`),
+  check('noah_first_earnings_confirmed', sql`(${t.stage} = 'bank_confirmed') = (${t.payoutDigest} IS NOT NULL)`),
+]);
+
+export const noahFirstEarningRuns = sqliteTable('noah_first_earning_runs', {
+  ownerScope: text('owner_scope').notNull().references(() => noahFirstEarnings.ownerScope),
+  jobId: text('job_id').notNull(),
+  runtime: text('runtime').notNull(),
+  reservedMs: integer('reserved_ms').notNull(),
+  expiresAt: integer('expires_at').notNull(),
+  chargedMs: integer('charged_ms'),
+}, t => [
+  primaryKey({ columns: [t.ownerScope, t.jobId] }),
+  check('noah_first_earning_runs_runtime', sql`${t.runtime} IN ('free', 'managed')`),
+  check('noah_first_earning_runs_reserved', sql`${t.reservedMs} BETWEEN 1 AND 240000`),
+  check('noah_first_earning_runs_charged', sql`${t.chargedMs} >= 0 AND ${t.chargedMs} <= ${t.reservedMs}`),
+]);
