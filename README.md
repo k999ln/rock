@@ -96,6 +96,8 @@ npm run amc:cycle -- demo
 
 ## Noahで、仕事に合うAgentを探す
 
+eSIM案内と「登録情報」では、保存した氏名・メールなどを次のAgent登録にも使う目的と、送信先・項目の確認、再利用の停止を説明します。共通プロフィールは暗号化して保存します。Apple／Googleからの自動取込みと事業者への実申込は準備中です。[登録情報の再利用設計](docs/structure/03-esim.md#登録情報を次のagentでも使う2026-11-26)
+
 本人用の[収益業務パック](docs/services/noah-revenue-pack.md)は、携帯とPCで共通のNoah画面から商品設計・納品サンプル・提案書の3担当を実行します。本人用クラウドに成果を保存し、Macの起動は不要です。無料枠を超えると待機・停止します。出力は確認用の下書きで、販売・応募・入金の完了を表しません。
 
 <a href="https://avoado.si/noah"><img src="docs/assets/readme/noah-store-home-390.webp" alt="Nöahの公開ホーム。上に検索とメニュー、その下の「Agentを見つける」にdotsyなどのカードが2列に並ぶ" width="272"></a>

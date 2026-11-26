@@ -20,8 +20,15 @@ export type ProfileField = keyof typeof NOAH_PROFILE_FIELDS;
 export type DelegationMode = 'allow' | 'confirm' | 'deny';
 export type NoahDelegation = { target: string; name: string; action: string; label: string; digest: string; mode: DelegationMode };
 export type NoahIdentityDocument = { id: string; name: string; type: string; bytes: number; uploadedAt: number };
-export const PROFILE_CONSENT_VERSION = '2026-11-22.1';
-export const PROFILE_CONSENT_TEXT = '入力した情報を暗号化して保存し、次の登録でも必要な項目だけ再利用します。提出先への送信は毎回確認します。';
+export const PROFILE_CONSENT_VERSION = '2026-11-26.1';
+export const PROFILE_CONSENT_TEXT = '確認した登録情報をNoahに暗号化して保存し、eSIMの申込みや、自分で選ぶAgentの追加・外部サービスへの登録で、必要な項目だけ再利用することに同意します。送信先・目的・項目は送信前に毎回確認します。再利用は任意で、いつでも停止できます。';
+export const PROFILE_CONSENT_DETAILS = [
+  { title: '保存する情報', text: '自分で確認して保存した氏名・メール・電話番号・住所などの登録情報です。契約や登録に必要な情報は提供元によって異なります。不要な項目を埋める必要はありません。' },
+  { title: 'Apple・Googleの情報', text: '対応するログイン連携で提供を許可した氏名・メールなどは、確認して保存した場合に再利用できます。住所・電話番号・本人確認書類が自動で取得できるとは限りません。氏名やメールだけで回線契約の本人確認が完了するわけではありません。' },
+  { title: 'Agentを追加するとき', text: '保存済みの情報から必要な項目を使い、再入力を減らします。外部へ送る前に、登録先・登録を代行する提供元・目的・送信項目・適用される規約を確認できます。未対応のサービスでは、そのサービスでの登録やログインが必要です。' },
+  { title: '別の確認が必要な情報', text: 'Apple・Googleのパスワード、認証トークン、SIMの秘密鍵は、登録情報として他のAgentへ渡しません。支払情報・口座・本人確認書類も一括では共有しません。必要な場合は対象サービスと項目を確認します。追加の権限許可、本人確認、規約への同意や支払いは省略しません。' },
+  { title: '停止・削除', text: '再利用への同意は回線契約への同意とは別です。同意しなくても、必要な項目をその都度入力して手続きを進められます。「登録情報」から再利用を停止し、保存した項目や書類を削除できます。送信済みの情報の削除・退会は、送信先の手続きに従います。' },
+] as const;
 export type ProfileConsent = { version: string; at: number; action: 'save' | 'reuse-stop' | 'reuse-resume'; fields: ProfileField[]; documents: string[] };
 export type NoahProfile = { revision: number; fields: Partial<Record<ProfileField, string>>; documents: NoahIdentityDocument[]; grants: NoahDelegation[]; paused: boolean; reuseEnabled: boolean; consents: ProfileConsent[] };
 export type NoahProfileView = NoahProfile & { ownerScope: string; available: boolean; browserOwned?: boolean };

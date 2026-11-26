@@ -4,6 +4,7 @@ import { useState } from 'react';
 import Link from 'next/link';
 import { AlertCircle, ArrowLeft, RadioTower, RefreshCw, ShieldCheck, Smartphone } from 'lucide-react';
 import type { EsimPublicCatalogState } from '@/lib/esim-public-catalog';
+import { PROFILE_CONSENT_TEXT, PROFILE_CONSENT_DETAILS } from '@/lib/noah-profile-contract';
 import styles from '@/components/sky-commerce.module.css';
 
 type PublicPlan = {
@@ -83,6 +84,19 @@ export default function EsimCatalog({ initialCatalog, initialError }: {
           <RefreshCw size={14} />{loading ? '確認中…' : '提供状況を再確認'}
         </button>
       </header>
+      <section className={styles.esimCatalog} aria-labelledby="esim-registration-title">
+        <div className={styles.esimCatalogTitle}>
+          <h2 id="esim-registration-title">登録情報を次のAgentでも使う</h2>
+          <p>eSIMの申込みとAgentの登録で使う情報を、Noahの「登録情報」にまとめられます。保存・再利用への同意は、回線契約とは別に選べます。</p>
+        </div>
+        <details>
+          <summary>保存・再利用の同意内容を読む</summary>
+          <p>{PROFILE_CONSENT_TEXT}</p>
+          {PROFILE_CONSENT_DETAILS.map(section=><div key={section.title}><h3>{section.title}</h3><p>{section.text}</p></div>)}
+        </details>
+        <p>このページを開いただけでは情報を保存・送信しません。Apple・Googleからの自動取込みと、eSIM事業者への申込連携は準備中です。</p>
+        <Link href="/noah/profile" className={styles.secondary}>登録情報を確認・保存する</Link>
+      </section>
       <section className={styles.esimCatalog} aria-labelledby="esim-catalog-title">
         <div className={styles.esimCatalogTitle}>
           <h2 id="esim-catalog-title"><RadioTower size={17} /> 回線とサービス利用条件</h2>
