@@ -34,7 +34,7 @@
 }
 .warn {
   margin: 0;
-  color: #b42318;
+  color: var(--noah-theme-link, #b42318);
 }
 .notice {
   margin: 0;
@@ -93,7 +93,7 @@ button:disabled {
   padding: 0;
   border: 0;
   background: none;
-  color: var(--os-accent, #7628df);
+  color: var(--noah-theme-link, var(--os-accent, #7628df));
   text-decoration: underline;
 }
 .facts {

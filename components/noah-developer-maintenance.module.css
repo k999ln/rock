@@ -8,7 +8,7 @@
   justify-content: space-between;
   gap: 12px;
   font-size: 11px;
-  color: #655b6e;
+  color: var(--noah-theme-muted, #655b6e);
 }
 .page nav a {
   display: flex;
@@ -26,7 +26,7 @@
 }
 .hero > span {
   font-size: 9px;
-  color: #b08cc9;
+  color: var(--noah-theme-info, #b08cc9);
   letter-spacing: 2px;
   font-weight: 700;
 }
@@ -60,7 +60,7 @@
 .hero small {
   display: block;
   font-size: 10px;
-  color: #a38bae;
+  color: var(--noah-theme-muted, #a38bae);
 }
 .steps {
   display: grid;
@@ -72,11 +72,11 @@
   display: block;
   font-size: 10px;
   letter-spacing: 2px;
-  color: #bc9cd0;
+  color: var(--noah-theme-info, #bc9cd0);
   margin-bottom: 20px;
 }
 .steps svg {
-  color: #975ac2;
+  color: var(--noah-theme-info, #975ac2);
 }
 .steps h2 {
   font-size: 14px;
@@ -86,10 +86,10 @@
 .scope p {
   font-size: 14px;
   line-height: 1.9;
-  color: #655b6e;
+  color: var(--noah-theme-muted, #655b6e);
 }
 .scope {
-  border-block: 1px solid #ece5f2;
+  border-block: 1px solid var(--noah-theme-line, #ece5f2);
   padding: 25px 0;
 }
 .scope h2 {
@@ -100,7 +100,7 @@
   flex-wrap: wrap;
   gap: 15px;
   font-size: 11px;
-  color: #8d63a7;
+  color: var(--noah-theme-info, #8d63a7);
 }
 .scope span {
   display: flex;
@@ -117,21 +117,21 @@
 .contact p {
   font-size: 14px;
   line-height: 1.9;
-  color: #655b6e;
+  color: var(--noah-theme-muted, #655b6e);
 }
 .contact a {
   display: inline-flex;
   align-items: center;
   gap: 10px;
   margin: 14px 0;
-  color: #792ddd;
+  color: var(--noah-theme-info, #792ddd);
   font-size: 17px;
   font-weight: 650;
   overflow-wrap: anywhere;
 }
 .contact small {
   display: block;
-  color: #655b6e;
+  color: var(--noah-theme-muted, #655b6e);
   font-size: 12px;
 }
 @media (max-width: 600px) {
@@ -148,7 +148,7 @@
     margin: 30px 0;
   }
   .steps article {
-    border-bottom: 1px solid #eee7f4;
+    border-bottom: 1px solid var(--noah-theme-line, #eee7f4);
     padding-bottom: 20px;
   }
   .steps article > span {

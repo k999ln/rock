@@ -1,9 +1,9 @@
 .panel {
   margin-top: 24px;
   padding: 24px;
-  border: 1px solid #eae6ef;
+  border: 1px solid var(--noah-theme-line, #eae6ef);
   border-radius: 20px;
-  background: white;
+  background: var(--noah-theme-panel, white);
   font-size: 16px;
   min-width: 0;
 }
@@ -34,11 +34,11 @@
   min-width: 0;
   min-height: 48px;
   padding: 12px;
-  border: 1px solid #d9d2e3;
+  border: 1px solid var(--noah-theme-line, #d9d2e3);
   border-radius: 12px;
   font: inherit;
-  background: white;
-  color: #242329;
+  background: var(--noah-theme-panel, white);
+  color: var(--noah-theme-text, #242329);
 }
 .field input[type='checkbox'] {
   width: 24px;
@@ -67,12 +67,12 @@
 }
 .destination {
   font-size: 14px;
-  color: #62596b;
+  color: var(--noah-theme-muted, #62596b);
   overflow-wrap: anywhere;
 }
 .error {
-  background: #fff5f3;
-  color: #8a3c32;
+  background: var(--noah-theme-panel, #fff5f3);
+  color: var(--noah-theme-danger, #8a3c32);
   padding: 12px;
   border-radius: 12px;
 }
@@ -80,7 +80,7 @@
   display: inline-flex;
   align-items: center;
   min-height: 44px;
-  color: #913c04;
+  color: var(--noah-theme-link, #913c04);
 }
 .panel :focus-visible {
   outline: 3px solid #a94b0a;
