@@ -1,5 +1,7 @@
 ## 2026-11-26
 
+- eSIM専用クラウドのホーム・接続画面に準備中と実回線未受入を明記し、設計書・READMEと表示を整合（task135、PR作成後に記録）。
+
 - Noahの自分のAgent・実行中・保存したものの横タブを撤去し、既存の共通メニューへ統一。見出し・保存内容の絞り込み・旧URLは維持（task129、[PR #85](https://github.com/iceiceice999/rock/pull/85)）。
 
 - Noahの検索・タイムライン・ココナラ入口をホームへ統合し、登録情報・権限の入口を人型に一本化。旧explore URLの検索条件を保持して転送（task140、[PR #84](https://github.com/iceiceice999/rock/pull/84)）。

@@ -1,4 +1,7 @@
 export const NOAH_FLOW_MESSAGES:Record<string,readonly [string,string,string,string,string]> = {
+  'eSIM専用クラウド（準備中）': ['Private eSIM cloud (in preparation)', 'eSIM 专属云（筹备中）', 'eSIM 전용 클라우드 (준비 중)', 'Nube privada con eSIM (en preparación)', 'سحابة eSIM الخاصة (قيد التجهيز)'],
+  '接続状況を確認': ['Check connection status', '查看连接状态', '연결 상태 확인', 'Consultar el estado de conexión', 'التحقق من حالة الاتصال'],
+  '専用クラウドの接続状況を確認': ['Check private cloud connection status', '查看专属云连接状态', '전용 클라우드 연결 상태 확인', 'Consultar la conexión a la nube privada', 'التحقق من حالة الاتصال بالسحابة الخاصة'],
   "自分のAgentを作る": ["Create an agent", "创建自己的 Agent", "내 Agent 만들기", "Crear mi agente", "إنشاء وكيلي"],
   "外部Agentをつなぐ": ["Connect an external agent", "连接外部 Agent", "외부 Agent 연결", "Conectar un agente externo", "ربط وكيل خارجي"],
   "動きを試す": ["Try an agent", "测试运行", "동작 테스트", "Probar el agente", "تجربة الوكيل"],
