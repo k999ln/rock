@@ -1,8 +1,14 @@
 import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
+import { copyFile, mkdir, mkdtemp, readFile, rm, writeFile } from 'node:fs/promises';
+import { tmpdir } from 'node:os';
+import { join } from 'node:path';
 import test from 'node:test';
 import vm from 'node:vm';
 import { buildNoahOffline } from '../scripts/build-noah-offline.mjs';
+import { stageSecureAssets } from '../scripts/stage-secure-assets.mjs';
+import { withAssetResponses } from '../services/sky-web/asset-responses.mjs';
+import { withMiniSite } from '../services/sky-web/domain-router.mjs';
 
 function worker() {
   const handlers = new Map();
@@ -55,10 +61,40 @@ void test('Noah restores the public game offline without storing session, RSC or
   }
 });
 
-void test('the Noah offline document ships its game and font without network dependencies', async () => {
+void test('the production asset layer serves the self-contained Noah game and its worker', async (fixture) => {
   const html = await buildNoahOffline();
   assert.match(html, /id="noah-offline"/);
   assert.match(html, /data:font\/woff2;base64,/);
   assert.match(html, /<script>/);
   assert.doesNotMatch(html, /<script\b[^>]*\bsrc=|<link\b[^>]*\bhref=|url\(["']?\/fonts\//);
+
+  const root = await mkdtemp(join(tmpdir(), 'noah-offline-assets-'));
+  fixture.after(() => rm(root, { recursive: true, force: true }));
+  const client = join(root, 'dist/client');
+  const server = join(root, 'dist/server');
+  const sky = join(root, 'services/sky-web');
+  await Promise.all([client, server, sky].map(directory => mkdir(directory, { recursive: true })));
+  const workerSource = await readFile(new URL('../scripts/noah-offline-worker.js', import.meta.url), 'utf8');
+  await Promise.all([
+    writeFile(join(client, 'noah-offline.html'), html),
+    writeFile(join(client, 'noah-sw.js'), workerSource),
+    writeFile(join(server, 'index.js'), 'export default { fetch() {} };'),
+    copyFile(new URL('../services/sky-web/asset-responses.mjs', import.meta.url), join(sky, 'asset-responses.mjs')),
+  ]);
+  await stageSecureAssets(root);
+  const entries = JSON.parse(await readFile(join(server, 'asset-map.json'), 'utf8'));
+  const app = withMiniSite({ fetch() { assert.fail('offline assets must be served before the page router'); } }, () => assert.fail('offline assets must not reach Mini'));
+  const production = withAssetResponses(app, entries);
+  const env = { ASSETS: { async fetch(request) {
+    const path = new URL(request.url).pathname;
+    return new Response(await readFile(join(client, path)), { headers: { 'content-type': 'application/javascript' } });
+  } } };
+  const page = await production.fetch(new Request('https://avoado.si/noah-offline.html'), env);
+  assert.equal(page.status, 200);
+  assert.match(page.headers.get('content-type'), /^text\/html/);
+  assert.equal(await page.text(), html);
+  const sw = await production.fetch(new Request('https://avoado.si/noah-sw.js'), env);
+  assert.equal(sw.status, 200);
+  assert.match(sw.headers.get('content-type'), /javascript/);
+  assert.equal(await sw.text(), workerSource);
 });
