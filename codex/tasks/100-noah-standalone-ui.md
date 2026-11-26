@@ -186,7 +186,7 @@ eSIMの明示的な `noah` scopeを接続・外部登録・登録情報・依頼
 
 - 検索は `/noah/explore` の使えるAgent・カタログ・Tool、保存は `/noah/saved` のボード・Agent・担当・成果・ファイルへ集約。検索語をタブ間で保ち、成果は既存Workと以前の保存データを同じカテゴリから読む。既存の所有者確認・保存API・データは維持。
 - 旧 `/ready`・`/agents`・`/tools`・`/library`・`/boards`・`/boards/:id`・`/data`・`/data/saved`・`/outputs` はカテゴリと検索語/board/job参照を保持して転送。共有Skyの担当/成果、旧Zema担当の転送先も対応カテゴリへ変更。
-- Noah配下の `/mac` 3画面、`/local-tools`、Macガイド、`/social`、`/community`、`/campus` 3画面、旧 `/work/:id` を撤去。共有実装・バックエンド・他製品のcampusは残す。タイムラインの通常投稿は閲覧のみとして削除済み投稿画面への操作を外した。
+- Noah配下の旧 `/mac` 3画面、`/local-tools`、旧Macガイド、`/social`、`/community`、`/campus` 3画面、旧 `/work/:id` を撤去。共有実装・バックエンド・他製品のcampusは残す。タイムラインの通常投稿は閲覧のみとして削除済み投稿画面への操作を外した。2026-11-26、外部のYouTubeプロフィールが案内している `/noah/guides/cowagent-mac` だけを現行導線の公開ガイドとしてtask141で復旧。旧Mac画面は戻さず、CowAgentの紹介情報と実行対応済みAgentを区別する。
 - 公開178: Sites source `e4392274eeaf56dcf7800aae736b18f94c68e4e1`、deployment `appgdep_6b02055843b08191b05f2067bbd458ca` succeeded。環境revision16を維持、本番D1変更なし。
 - 公開177の収集欄と法人入口を保持。収集欄の検索はカタログ入力を共有し、ホームでは検索欄を重ねない。この収集統合差分はSites sourceに含む。GitHub側はPR #380の収集実装との統合時に同じ差分を保全すること（補助patch `/tmp/noah-collection-search-integration.patch`、永続の正本は上記source commit）。
 - 同じ `/noah` の画面差は、開いたままの旧タブと公開177の新タブの差だった。旧タブは再読み込みで収集一覧が現れることを確認し、最終的に元のタブも公開178へ再読み込みした。

@@ -7,9 +7,9 @@ import { skyToolUiState } from '../lib/sky-tool-ui.ts';
 
 void test('every advertised service has an explicit implementation boundary', () => {
   const scopes = catalog.map((tool) => [tool.id, skyToolExecutionScope(tool)]);
-  assert.equal(scopes.length, 38);
+  assert.equal(scopes.length, 39);
   assert.equal(scopes.filter(([, scope]) => scope === 'unavailable').length, 0);
-  assert.equal(scopes.filter(([, scope]) => scope === 'template').length, 11);
+  assert.equal(scopes.filter(([, scope]) => scope === 'template').length, 12);
   assert.equal(
     scopes.filter(([, scope]) => scope === 'connection-plan').length,
     9,
@@ -34,7 +34,7 @@ void test('AMC exposes assisted planning and progress tracking without claiming 
   assert.equal(status.detail, 'siの自律実行は未接続');
 });
 
-for (const tool of catalog.filter((tool) => candidateOutputKind(tool.id))) {
+for (const tool of catalog.filter((tool) => candidateOutputKind(tool.id) && tool.id !== 'noah-local-device-maintenance')) {
   void test(`${tool.id} produces a local ${candidateOutputKind(tool.id)}, not external execution`, () => {
     const input = '合成の試験依頼。既存入力を保存し、検証条件を確認する。';
     const output = outputFor(tool.id, input);
@@ -46,6 +46,21 @@ for (const tool of catalog.filter((tool) => candidateOutputKind(tool.id))) {
     assert.throws(() => outputFor(tool.id, '   '), /入力を1行以上/);
   });
 }
+
+void test('noah-local-device-maintenance accepts only explicit mock-state JSON', () => {
+  const fixture = JSON.stringify({
+    schema: 'noah.hardware-maintenance/1',
+    deviceFamily: 'printer-scanner',
+    connection: { kind: 'usb', state: 'connected' },
+    operationState: 'idle',
+    consumables: [{ name: 'ink', levelPercent: 80, state: 'ok' }],
+  });
+  const output = outputFor('noah-local-device-maintenance', fixture);
+  assert.match(output, /Noah ローカル機器保守の状態説明/);
+  assert.match(output, /deviceWrites/);
+  assert.match(output, /externalCalls/);
+  assert.throws(() => outputFor('noah-local-device-maintenance', 'not-json'), /模擬状態JSON/);
+});
 
 void test('unknown or inherited object names never become a connection plan', () => {
   for (const id of ['unknown', '__proto__', 'constructor', 'toString']) {

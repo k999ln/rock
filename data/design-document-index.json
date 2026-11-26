@@ -2600,6 +2600,33 @@
       "catalogStatus": "candidate"
     },
     {
+      "id": "noah-local-device-maintenance",
+      "catalogStatus": "candidate",
+      "displayName": "Noah ローカル機器保守の状態説明",
+      "designDocument": "docs/sky-tools-complete-design.md",
+      "designSection": "Noah ローカル機器保守の模擬状態説明",
+      "primaryOwner": "ROCK",
+      "ownerSquad": "H1",
+      "implementationTask": "HW-MOCK-01",
+      "readyScope": [],
+      "implementation": [
+        "lib/noah-hardware-maintenance.ts",
+        "lib/sky-candidate-output.ts",
+        "lib/catalog.ts"
+      ],
+      "recoveredContractReferences": [
+        "tests/noah-hardware-maintenance.test.mjs",
+        "tests/sky-tool-execution-scope.test.mjs"
+      ],
+      "implementationBoundary": {
+        "schema": "noah.hardware-maintenance/1",
+        "input": "explicit mock-state JSON only",
+        "externalTransmission": false,
+        "deviceWrites": false,
+        "realDeviceAcceptance": false
+      }
+    },
+    {
       "id": "coconala-proposal-draft",
       "catalogStatus": "candidate"
     },

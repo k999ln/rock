@@ -182,6 +182,13 @@ export const NOAH_SOCIAL_MESSAGES: Record<
     'Usar este agente',
     'استخدم هذا الوكيل',
   ],
+  このAgentについて: [
+    'About this agent',
+    '关于此Agent',
+    '이 Agent 소개',
+    'Acerca de este agente',
+    'عن هذا الوكيل',
+  ],
   この関連資産について: [
     'About this resource',
     '关于此资源',
@@ -195,6 +202,20 @@ export const NOAH_SOCIAL_MESSAGES: Record<
     '소개 정보입니다. 모바일 지원 목록에서 연결 가능한 Agent를 찾으세요.',
     'Es una ficha informativa. Busca agentes compatibles en la lista móvil.',
     'هذه معلومات تعريفية. ابحث عن الوكلاء المدعومين في قائمة الهاتف.',
+  ],
+  'このAgentは紹介情報です。入力と送信先を確認して使えます。': [
+    'This is a catalog entry. Check the input and destination before using it.',
+    '此为介绍信息。使用前请确认输入内容和发送目标。',
+    '소개 정보입니다. 사용하기 전에 입력과 전송 대상을 확인하세요.',
+    'Es una ficha informativa. Revisa la entrada y el destino antes de usarla.',
+    'هذه معلومات تعريفية. تحقّق من المدخلات والوجهة قبل الاستخدام.',
+  ],
+  'このAgentは紹介情報です。Noahでの接続と実行はまだ確認していません。スマホで使える接続先は、対応一覧から選べます。': [
+    'This is a catalog entry. Connection and execution in Noah are not verified yet. Find supported agents in the mobile list.',
+    '此为介绍信息。尚未确认能否在Noah中连接和执行。请从支持列表中选择手机可用的Agent。',
+    '소개 정보입니다. Noah 연결과 실행은 아직 확인되지 않았습니다. 모바일 지원 목록에서 사용 가능한 Agent를 선택하세요.',
+    'Es una ficha informativa. La conexión y la ejecución en Noah aún no están verificadas. Elige un agente compatible en la lista móvil.',
+    'هذه معلومات تعريفية. لم يتم التحقق بعد من الاتصال والتنفيذ في Noah. اختر وكيلاً مدعومًا من قائمة الهاتف.',
   ],
   'Agentを作る・動かすための関連資産です。単独の業務Agentとは区別しています。':
     [

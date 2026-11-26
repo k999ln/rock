@@ -19,7 +19,7 @@
       "pro",
       "rocketstar"
     ],
-    "catalogCount": 38,
+    "catalogCount": 39,
     "designDomainCount": 19,
     "requirementCount": 49,
     "coverageMeaning": "各項目を読取/調査/関連契約へ対応した設計coverage。実装/実機/契約/収益の達成率ではない。",
@@ -3636,6 +3636,33 @@
       "repoRefs": [
         "lib/catalog.ts",
         "docs/sky-tools-complete-design.md"
+      ]
+    },
+    {
+      "id": "noah-local-device-maintenance",
+      "name": "Noah ローカル機器保守の状態説明",
+      "catalogStatus": "candidate",
+      "runner": "candidate-local",
+      "environment": "明示された模擬状態JSON / ブラウザ内の読み取り専用説明 / 外部I/Oなし",
+      "upstream": "https://github.com/iceiceice999/rock/blob/main/lib/noah-hardware-maintenance.ts",
+      "upstreamLicenseLabel": "RockstarOS code",
+      "licenseVerification": "repository_implementation_not_a_new_license_audit",
+      "systemIds": [
+        "host",
+        "sky"
+      ],
+      "dataIds": [
+        "D01",
+        "D04"
+      ],
+      "potentialTransactionIds": [],
+      "executionBoundary": "explicit_mock_state_json_only_deviceWrites_0_externalCalls_0",
+      "externalTermsGate": "fixture結果は実機診断・実機成功・修理完了を意味しない",
+      "repoRefs": [
+        "lib/noah-hardware-maintenance.ts",
+        "lib/catalog.ts",
+        "lib/sky-candidate-output.ts",
+        "tests/noah-hardware-maintenance.test.mjs"
       ]
     },
     {

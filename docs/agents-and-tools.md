@@ -11,7 +11,7 @@
 **目次**
 
 1. [まず用語：「エージェント」は5種類ある](#1-まず用語エージェントは5種類ある)
-2. [SkyのTool 38件](#2-skyのtool-38件)
+2. [SkyのTool 39件](#2-skyのtool-39件)
 3. [Skyの役割エージェント（担当）](#3-skyの役割エージェント担当)
 4. [Toolの中にあるサブシステム](#4-toolの中にあるサブシステム)
 5. [OSに入っているsiとAgent](#5-osに入っているsiとagent)
@@ -31,7 +31,7 @@
 
 | 呼び名 | 何か | 数 | 利用者から見えるか | この文書の章 |
 | --- | --- | ---: | --- | --- |
-| **Tool**（商品） | Skyの一覧に並ぶ自動化。1つの仕事をする部品 | 38（ready 16＋候補22） | 見える。Skyで選ぶ | [第2章](#2-skyのtool-38件) |
+| **Tool**（商品） | Skyの一覧に並ぶ自動化。1つの仕事をする部品 | 39（ready 16＋候補23） | 見える。Skyで選ぶ | [第2章](#2-skyのtool-38件) |
 | **役割エージェント**（担当） | 「サブスク顧問」「法務受付」のように、役割を持って会話で仕事を進める担当。許可されたToolだけを使う | 7（実装3＋構成案4） | 見える。Sky／Zemaで話す | [第3章](#3-skyの役割エージェント担当) |
 | **OS内のAgent** | 端末の中で計画・実行・監視をする仕組み（ローカルLLMのplanner、Agent runtime、Security Agentのクモ、Operator Agent） | 4 | 一部見える | [第5章](#5-osに入っているsiとagent) |
 | **クラウドのAgent** | 端末が圏外でも仕事を続ける、クラウド側の実行者。外部のAgentへ委任する経路（A2A）を含む | — | 見える。見積と承認のあとに動く | [第6章](#6-クラウドのagent) |
@@ -55,9 +55,9 @@
 
 ---
 
-## 2. SkyのTool 38件
+## 2. SkyのTool 39件
 
-Skyに登録されているToolは **38件** です。使い始められる `ready` が16件、まだ実行できない導入候補 `candidate` が22件あります。
+Skyに登録されているToolは **39件** です。使い始められる `ready` が16件、まだ実行できない導入候補 `candidate` が23件あります。
 
 | 区分 | 件数 | 内訳 |
 | --- | ---: | --- |
@@ -92,7 +92,7 @@ Toolを使う前後の共通の仕組みは [Sky](sky.md) にあります：外�
 
 > 表示名の「avocadoOS」は 2026-09-15〜16 の旧製品名が catalog に残っているものです（[食い違い](#11-数え方の注意と文書どうしの食い違い)参照）。
 
-### 2.2 導入候補22件（candidate）
+### 2.2 導入候補23件（candidate）
 
 実行可能な標準Toolや本番接続として数えません。Skyの一覧には表示されますが、本人接続・権限・保存・外部作用・結果確認をToolごとに受け入れるまで動きません。
 
@@ -120,6 +120,7 @@ Toolを使う前後の共通の仕組みは [Sky](sky.md) にあります：外�
 | 33 | [`jev-router`](#jev-router) | Jev Router | siモデルルーティング | 第三者 | Codex／Claude Codeの各turnを、速いmodelまたは強いmodelへ振り分ける候補。 |
 | 34 | [`jev-browser`](#jev-browser) | Jev Browser | ブラウザ操作si | 第三者 | 既存browser toolの観測・操作・検証loop内で、Jevが画面要素を選ぶruntime候補。 |
 | 35 | [`mobile-jev`](#mobile-jev) | Mobile Jev | Android操作si | 第三者 | Mobilerun経由のAndroid端末で、Jevが次のmobile操作を選ぶagent候補。 |
+| 36 | [`noah-local-device-maintenance`](#noah-local-device-maintenance) | Noah ローカル機器保守の状態説明 | 機器保守 | Rock | 明示した模擬状態JSONだけから接続・操作・消耗品の状態を説明します。 |
 
 ### 2.3 各Toolの機能（ready 16件）
 
@@ -573,6 +574,13 @@ Toolを使う前後の共通の仕組みは [Sky](sky.md) にあります：外�
 - **元になったもの**：<https://github.com/vlad-terin/jev-browser>（license: MIT）
 - **詳細設計**：[導入候補22件](sky-tools-complete-design.md#16-導入候補22件) / [Jev ecosystem全体詳細設計](jev-ecosystem-integration-design.md)
 
+<a id="noah-local-device-maintenance"></a>
+#### 36. Noah ローカル機器保守の状態説明 — `noah-local-device-maintenance`
+- **状態・由来**：candidate／Rock／分類「機器保守」
+- **入力**：`noah.hardware-maintenance/1` の明示fixture JSONだけ
+- **出力**：接続・操作・消耗品の説明と本人確認用の次の項目
+- **境界**：`deviceWrites: 0`、`externalCalls: 0`。実機修理、再接続、設定変更、flash、ドローン制御、外部送信なし
+- **実機成功の扱い**：fixture結果を実機診断・実機成功・修理完了に昇格しない
 <a id="mobile-jev"></a>
 #### 35. Mobile Jev — `mobile-jev`
 

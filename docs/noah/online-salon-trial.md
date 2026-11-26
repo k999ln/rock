@@ -43,9 +43,9 @@ NoahでAgentを試す → <https://avoado.si/noah/agents>
 
 [Mac編をダウンロード（MP4・約20秒）](https://raw.githubusercontent.com/k999ln/rock/main/docs/assets/readme/noah-cm-mac-runner.mp4)。縦長の動画を添付し、次の2段落をコピーしてください。
 
-Noahで選んだAgentを自分のMacで動かしたい方へ。Apple Silicon Macで下のリンクを開き、「Mac用Noah Runnerをダウンロード」をクリック。ZIPを展開して `Install.command` を開きます。必要なソフトをそろえたら `noah doctor` で確認し、`noah pair` が表示するURLからサインインしてMacを承認してください。
+Noahで選んだ実行対応Agentを自分のMacで動かしたい方へ。Apple Silicon Macで下のリンクを開き、「Mac用Noahをダウンロード」をクリック。ZIPを展開して `Install.command` を開きます。必要なソフトをそろえたら `noah doctor` で確認し、`noah pair` が表示するURLを普段Noahを使うブラウザで開いてMacを承認してください。新しい会員登録は不要です。
 
-自分のMacで接続手順を開く → <https://avoado.si/noah/mac>
+自分のMacで導入手順を開く → <https://avoado.si/noah/devices#mac>
 
 ## 最初の1,000人への配布記録
 
@@ -59,8 +59,8 @@ CowAgentをMacで試す準備｜Noahで配布元と接続条件を確認
 
 **動画の説明文**
 
-会議メモをAgentに整理してもらう前に、何を確認すればいいでしょうか。NoahでCowAgentを探し、配布元や利用条件を見て、接続画面へ進むところまでを18秒で紹介します。実行にはサインインとApple Silicon MacへのNoah Runnerの設定が必要です。操作ガイドはチャンネルプロフィールから開けます。
+会議メモをAgentに整理してもらう前に、何を確認すればいいでしょうか。NoahでCowAgentを探し、配布元や利用条件を見るところまでを18秒で紹介します。CowAgentは現在、紹介情報として掲載しており、Noahでの実行は未確認です。操作ガイドでは、Apple Silicon Macをつなぎ、実行対応Agentで成果を受け取る現行手順も確認できます。
 
 ショート動画には先頭の18秒の既存素材を使い、チャンネルプロフィールに[操作ガイドのキャンペーンURL](https://avoado.si/noah/guides/cowagent-mac?utm_source=youtube&utm_medium=organic_video&utm_campaign=noah_cowagent_mac)を設定する。ショートの説明欄のURLはクリックできない。[YouTubeのリンク仕様](https://support.google.com/youtube/answer/13748639?hl=ja)
 
-配備後、未ログインで操作ガイド・CowAgent詳細・Mac接続案内を開く。Noahの公開URLは[サイトマップ](https://avoado.si/noah/sitemap.xml)で確認できる。投稿前と7・14・28日後に「CowAgent Mac 使い方」「Apple Silicon Mac で Agent を動かす」を同じ地域・端末条件で検索し、掲載位置とYouTube Studioで確認できるGoogle検索由来の外部流入を記録する。接続と初回成果は、出所を確認できる範囲で任意の到達報告を数える。
+配備後、登録なしで操作ガイド・CowAgent詳細・Mac導入手順・Mac承認画面を開く。Noahの公開URLは[サイトマップ](https://avoado.si/noah/sitemap.xml)で確認できる。投稿前と7・14・28日後に「CowAgent Mac 使い方」「Apple Silicon Mac で Agent を動かす」を同じ地域・端末条件で検索し、掲載位置とYouTube Studioで確認できるGoogle検索由来の外部流入を記録する。接続と初回成果は、実行対応Agentで出所を確認できる範囲の任意の到達報告を数え、CowAgentの実行実績とは扱わない。

@@ -2,7 +2,7 @@
 // other hardware/campus hosts have their own routing and authorization.
 export const MAIN_PAGE_PATHS = [
   '/', '/noah', '/noah/my', '/noah/activity', '/noah/saved',
-  '/noah/profile', '/noah/preferences', '/noah/help', '/noah/usage',
+  '/noah/profile', '/noah/preferences', '/noah/help', '/noah/guides/cowagent-mac', '/noah/usage',
   '/noah/engineering', '/noah/engineering/combinations', '/noah/combinations',
   '/noah/agents/new', '/noah/agents/verified', '/noah/discover/agent', '/noah/ready/agent',
   '/noah/registration', '/noah/registration/browser', '/noah/publisher',
@@ -27,7 +27,7 @@ export const RETIRED_MAIN_PAGE_ROOTS = [
 ];
 
 export const MAIN_DISCOVERY_PATHS = [
-  '/', '/noah', '/noah/help', '/noah/engineering',
+  '/', '/noah', '/noah/guides/cowagent-mac', '/noah/help', '/noah/engineering',
   '/noah/combinations', '/legal/', '/privacy/',
 ];
 
@@ -53,7 +53,7 @@ export function mainPageStatus(pathname) {
   // authorization, streaming, callbacks, static assets and other products.
   if (below(path, '/api') || below(path, '/_next') || below(path, '/.well-known') ||
       path.startsWith('/MATOU') || ['/pro', '/mini', '/create', '/avocado-mini'].includes(path) ||
-      path === '/offline.html' || /\.(?:js|mjs|css|map|json|xml|txt|webmanifest|wasm|png|jpg|jpeg|gif|svg|webp|avif|ico|woff2?|ttf|otf|mp4|webm|mp3|wav|pdf|zip|sha256)$/.test(path)) return null;
+      path === '/offline.html' || /\.(?:js|mjs|css|map|json|xml|txt|vtt|webmanifest|wasm|png|jpg|jpeg|gif|svg|webp|avif|ico|woff2?|ttf|otf|mp4|webm|mp3|wav|pdf|zip|sha256)$/.test(path)) return null;
   return 404;
 }
 

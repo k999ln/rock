@@ -1,4 +1,5 @@
 // Browser-local templates and connection plans only. No provider or device I/O.
+import { formatNoahHardwareMaintenance } from './noah-hardware-maintenance.ts';
 const localDraftTools = new Set([
   'coconala-proposal-draft',
   'gig-workflow',
@@ -11,6 +12,7 @@ const localDraftTools = new Set([
   'calendar-coordination',
   'telegram-notifications',
   'producthunt-discovery',
+  'noah-local-device-maintenance',
 ]);
 
 const connectionChecks: Record<
@@ -74,6 +76,9 @@ const connectionChecks: Record<
 export function outputFor(tool: string, input: string) {
   const value = input.trim();
   if (!value) throw new Error('入力を1行以上入れてください。');
+  if (tool === 'noah-local-device-maintenance') {
+    return `# Noah ローカル機器保守の状態説明\n\n> 明示された模擬状態JSONだけを読み取ります。端末・ネットワーク・外部APIへの接続、修理、設定変更は行いません。\n\n## 模擬結果\n\n\`\`\`json\n${formatNoahHardwareMaintenance(value)}\n\`\`\`\n\nこの結果は実機診断・実機成功・修理完了を意味しません。実機を確認する場合は、本人が公式アプリや公式手順で別に確認してください。`;
+  }
   const header = (title: string) =>
     `# ${title}\n\n> 端末内で入力を添えた定型テンプレートです。siによる分析・外部サービスの実行はしていません。\n\n入力:\n${value}\n`;
   switch (tool) {
