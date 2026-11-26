@@ -69,5 +69,6 @@ void test('unavailable and changed-owner selections cannot open the runner or a 
   const { page } = browse('test', id, () => ({status:401}));
   await page.flush();
   const login = new URL(page.find('a', 'サインインして続ける')[0].props.href, 'https://avoado.si');
-  assert.equal(login.searchParams.get('returnTo'), engineering.noahEngineeringHref('test', id));
+  assert.equal(login.pathname, '/signin-with-chatgpt');
+  assert.equal(login.searchParams.get('return_to'), engineering.noahEngineeringHref('test', id));
 });
