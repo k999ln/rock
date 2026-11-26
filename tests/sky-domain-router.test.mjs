@@ -31,10 +31,11 @@ void test('legacy install roots stay on the service worker without proxying URL 
   assert.equal(upstream.length, 0);
   for (const path of ['/installation', '/install-extra', '/install.js', '/install/guide']) {
     assert.equal(routesToSky(path), false);
-    assert.equal(await (await app.fetch(new Request(`https://avoado.si${path}`), env, context)).text(), 'mini-page');
+    const response = await app.fetch(new Request(`https://avoado.si${path}`), env, context);
+    assert.equal(response.status, path.endsWith('.js') ? 200 : 404);
   }
   assert.equal(native.length, 4);
-  assert.equal(upstream.length, 4);
+  assert.equal(upstream.length, 1);
 });
 
 void test('Sky assets and APIs stay native while Mini keeps preorder paths', () => {
@@ -142,12 +143,12 @@ void test('Mini proxy preserves the browser hostname and does not forward Sky id
       forwarded = request;
       return new Response(null, {
         status: 302,
-        headers: { location: '/preorder/confirm/', 'set-cookie': 'private=1' },
+        headers: { location: '/privacy/', 'set-cookie': 'private=1' },
       });
     },
   );
   const response = await app.fetch(
-    new Request('https://avoado.si/preorder/?ref=sky', {
+    new Request('https://avoado.si/legal/?ref=sky', {
       headers: {
         cookie: 'session=private',
         'oai-authenticated-user-id': 'owner',
@@ -156,13 +157,13 @@ void test('Mini proxy preserves the browser hostname and does not forward Sky id
   );
   assert.equal(
     forwarded.url,
-    'https://avocadomini.noellesugar1.chatgpt.site/preorder/?ref=sky',
+    'https://avocadomini.noellesugar1.chatgpt.site/legal/?ref=sky',
   );
   assert.equal(forwarded.headers.has('cookie'), false);
   assert.equal(forwarded.headers.has('oai-authenticated-user-id'), false);
   assert.equal(
     response.headers.get('location'),
-    'https://avoado.si/preorder/confirm/',
+    'https://avoado.si/privacy/',
   );
   assert.equal(response.headers.has('set-cookie'), false);
 });
@@ -227,7 +228,7 @@ void test('cross-origin Mini mutation is rejected before upstream dispatch', asy
   assert.equal(calls, 0);
 });
 
-void test('avoado.si keeps RockstarOS at /os and canonicalizes old Sky under /noah', async () => {
+void test('avoado.si unifies the old OS home and Sky under Noah', async () => {
   const seen = [];
   const app = withMiniSite(
     {
@@ -239,14 +240,15 @@ void test('avoado.si keeps RockstarOS at /os and canonicalizes old Sky under /no
     async () => new Response('mini'),
   );
   const home = await app.fetch(new Request('https://avoado.si/os'));
-  assert.equal(home.status, 200);
+  assert.equal(home.status, 308);
+  assert.equal(home.headers.get('location'), 'https://avoado.si/noah');
   const sky = await app.fetch(
     new Request('https://avoado.si/os/sky/outputs?source=nfc'),
   );
   assert.equal(sky.status, 308);
   assert.equal(sky.headers.get('location'), 'https://avoado.si/noah/saved?source=nfc&tab=files');
   assert.equal((await app.fetch(new Request(sky.headers.get('location')))).status, 200);
-  assert.deepEqual(seen, ['/os', '/noah/saved']);
+  assert.deepEqual(seen, ['/noah/saved']);
   const old = await app.fetch(
     new Request('https://avoado.si/sky/outputs?source=nfc'),
   );
@@ -360,7 +362,8 @@ void test('OS and Sky documents point to their own install manifests', async () 
       }),
   });
   const os = await app.fetch(new Request('https://avoado.si/os'));
-  assert.match(await os.text(), /href="\/os\/manifest\.webmanifest"/);
+  assert.equal(os.status, 308);
+  assert.equal(os.headers.get('location'), 'https://avoado.si/noah');
   const sky = await app.fetch(new Request('https://avoado.si/os/sky'));
   assert.equal(sky.status, 308);
   assert.equal(sky.headers.get('location'), 'https://avoado.si/noah');
@@ -375,7 +378,7 @@ void test('OS and Sky documents point to their own install manifests', async () 
 
 void test('retired duplicate OS pages redirect before Mini proxy and preserve the guide', async () => {
  let proxied=0;const app=withMiniSite({fetch:async()=>new Response('native-guide')},async()=>{proxied++;return new Response('mini');});
- for(const path of ['/rockstaros','/rockstaros/','/rockstaros/crowdfunding']) {const r=await app.fetch(new Request(`https://avoado.si${path}?entry=legacy`));assert.equal(r.status,308);assert.equal(r.headers.get('location'),'https://avoado.si/os?entry=legacy');}
+ for(const path of ['/rockstaros','/rockstaros/','/rockstaros/crowdfunding']) {const r=await app.fetch(new Request(`https://avoado.si${path}?entry=legacy`));assert.equal(r.status,308);assert.equal(r.headers.get('location'),'https://avoado.si/noah?entry=legacy');}
  assert.equal(await(await app.fetch(new Request('https://avoado.si/rockstaros/guide'))).text(),'native-guide');assert.equal(proxied,0);
 });
 
@@ -434,7 +437,7 @@ void test('every outer OS route enforces the exact source security policy, inclu
     ['https://avoado.si/api/eve/history', 200],
     ['https://columbia.avoado.si/api/work-jobs', 409],
     ['https://fixture.chatgpt.site/api/work-jobs', 409],
-    ['https://avoado.si/preorder/', 200],
+    ['https://avoado.si/preorder/', 410],
   ]) {
     const response = await app.fetch(new Request(url));
     assert.equal(response.status, expectedStatus, url);

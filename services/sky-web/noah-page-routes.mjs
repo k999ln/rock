@@ -23,6 +23,7 @@ export const NOAH_REDIRECTS = [
   ['/guide', '/rockstaros/guide'],
   ['/amc', '/os/eve?mode=tools&view=work'], ['/zema/amc', '/os/eve?mode=tools&view=work'],
   ['/zema/library', '/noah/saved?tab=roles'], ['/studio', '/noah/publish'],
+  ['/zema/tools/:toolId', '/noah/tools/:toolId'],
   ['/noah/public', '/noah'], ['/noah/public/my', '/noah/my'],
   ['/noah/public/agents', '/noah/explore?tab=catalog'],
   ['/noah/public/agents/:id', '/noah/agents/:id'],
