@@ -1,4 +1,6 @@
 ## 2026-11-26
+- NoahホームのToday・注目・目的別・タイムラインを一つのAgent一覧へ統合。利用できる仕事はカード内に表示し、スマホ上部メニューの重なりを解消（[PR #97](https://github.com/iceiceice999/rock/pull/97)）。
+
 - Noahの既存12画面に星座名の短いURLを割り当て、人型アイコンと旧プロフィールURLを `/aries` に接続（task139、[PR #89](https://github.com/iceiceice999/rock/pull/89)）。
 
 - Noah全画面の左ナビと常設下タブを撤去し、全項目を右上の「… メニュー」へ統合（task140、[PR #93](https://github.com/iceiceice999/rock/pull/93)）。
