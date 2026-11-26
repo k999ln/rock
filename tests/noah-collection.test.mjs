@@ -76,7 +76,7 @@ void test('Noah home keeps the current cards stable and refreshes ratings when t
   assert.equal(home.find('section').filter(node=>node.props['aria-label']==='Agent一覧').length,1);
   likes = 3; await home.tick(60000); await home.tick(200);
   assert.match(home.text(), /"likes":7/);
-  await home.click('すべて');
+  await home.click('接続できる');
   assert.match(home.text(), /"likes":3/);
   const requests = ui.calls.length; visibility.hidden = true; await home.tick(60000); await home.tick(200);
   assert.equal(ui.calls.length, requests);

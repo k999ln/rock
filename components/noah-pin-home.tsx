@@ -11,7 +11,7 @@ import { useNoahAutoPage } from './use-noah-auto-page';
 import { NoahStoreServices } from './noah-store-entry';
 import styles from './noah-pins.module.css';
 type Page={items:NoahPinView[];nextCursor:string|null;ownerScope:string|null;total:number;firstJobs?:NoahFirstJob[]};
-export default function NoahPinHome({fallback,searchQuery='',initialSource='noah',onClearQuery,showFirstJobs=false}:{fallback?:ReactNode;searchQuery?:string;initialSource?:string;onClearQuery?:()=>void;showFirstJobs?:boolean}) {
+export default function NoahPinHome({fallback,searchQuery='',initialSource='',onClearQuery,showFirstJobs=false}:{fallback?:ReactNode;searchQuery?:string;initialSource?:string;onClearQuery?:()=>void;showFirstJobs?:boolean}) {
   const params=useSearchParams();
   const {t}=useNoahLocale();
   const [source,setSource]=useState(params.get('collectionSource')??initialSource),[attempt,setAttempt]=useState(0);

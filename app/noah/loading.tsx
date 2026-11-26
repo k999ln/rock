@@ -1,1 +1,1 @@
-export { default } from '@/components/noah-loading';
+export { default } from '@/components/noah-detail-pending';

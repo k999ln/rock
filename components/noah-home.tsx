@@ -7,7 +7,7 @@ import type { NoahSurfaceMode } from '@/lib/noah-surface';
 export default function NoahHome({ mode = 'local', tools }: { mode?: NoahSurfaceMode; base?: string; tools?: ReactNode }) {
   const params = useSearchParams();
   const query = (params.get('q') ?? params.get('collectionQuery') ?? '').slice(0, 200);
-  const source = params.get('collectionSource') ?? (params.get('tab') === 'catalog' ? '' : 'noah');
+  const source = params.get('collectionSource') ?? '';
   function clearQuery() {
     const url = new URL(window.location.href);
     url.searchParams.delete('q'); url.searchParams.delete('collectionQuery');

@@ -15,6 +15,8 @@ import { useNoahLocale } from './noah-locale';
 import styles from './noah-project-detail.module.css';
 import { NOAH_PIN_TOPIC_LABELS } from '@/lib/noah-pins';
 import { noahTrainingFilm } from '@/lib/noah-theater-films';
+import NoahDetailPending from './noah-detail-pending';
+import NoahRegistrationStatus from './noah-registration-status';
 
 function ProjectSources({ sources }: { sources: NoahAgentSource[] }) {
   const { t, locale } = useNoahLocale();
@@ -28,11 +30,12 @@ function ProjectSources({ sources }: { sources: NoahAgentSource[] }) {
   </section>;
 }
 
-export default function NoahProjectDetail({ id, firstJob }: { id: string; firstJob?: string }) {
+export default function NoahProjectDetail({ id, firstJob, initialDetail }: { id: string; firstJob?: string; initialDetail?: Detail }) {
   const { t } = useNoahLocale();
-  const [detail, setDetail] = useState<Detail | null>(null), [error, setError] = useState(''), [attempt, setAttempt] = useState(0);
+  const [detail, setDetail] = useState<Detail | null>(initialDetail ?? null), [error, setError] = useState(''), [attempt, setAttempt] = useState(0);
   const [opening, setOpening] = useState(false), [url, setUrl] = useState(''), [frameLoaded, setFrameLoaded] = useState(false), [slow, setSlow] = useState(false);
   useEffect(() => {
+    if (initialDetail && attempt === 0) return;
     const controller = new AbortController();
     void fetch(`/api/noah/discover/project?${new URLSearchParams(firstJob ? { id, firstJob } : { id })}`, { cache: 'no-store', signal: controller.signal })
       .then(async response => {
@@ -41,7 +44,7 @@ export default function NoahProjectDetail({ id, firstJob }: { id: string; firstJ
         if (!controller.signal.aborted) setDetail(body);
       }).catch(e => { if (!controller.signal.aborted) setError(e instanceof Error ? e.message : 'Agentを読み込めません。'); });
     return () => controller.abort();
-  }, [id, firstJob, attempt]);
+  }, [id, firstJob, attempt, initialDetail]);
   useEffect(() => {
     if (!url || frameLoaded) return;
     const timer = setTimeout(() => setSlow(true), 15000);
@@ -85,13 +88,12 @@ export default function NoahProjectDetail({ id, firstJob }: { id: string; firstJ
     <summary>{t('使い方を読む')}</summary><ol>{noahTrainingFilm.scenes.map(scene => <li key={scene.caption}>{t(scene.detail)}</li>)}</ol>
   </details> : null;
   if (detail?.connection.kind === 'ready') {
-    return <NoahReadyDetail id={detail.connection.familyId} internalOnly sourceNotes={sourceNotes} trailer={trailer} mediaId={id} />;
+    return <NoahReadyDetail id={detail.connection.familyId} preview={detail.card} internalOnly sourceNotes={sourceNotes} trailer={trailer} mediaId={id} />;
   }
-  if (!detail) return <main className={styles.page}>
-    {!error ? <NoahLoading label="Agentを確認しています…" /> : <div role="alert" className={styles.error}><p>{error}</p><button onClick={() => { setError(''); setAttempt(n => n + 1); }}>読み直す</button></div>}
-  </main>;
+  if (!detail) return !error ? <NoahDetailPending href={`/noah/discover/agent?${new URLSearchParams({ id })}`} /> : <main className={styles.page}><div role="alert" className={styles.error}><p>{error}</p><button onClick={() => { setError(''); setAttempt(n => n + 1); }}>読み直す</button></div></main>;
   const training = id === noahTrainingFilm.projectId;
   return <NoahDetailTemplate id={id} name={detail.card.name} provider={detail.card.provider} summary={detail.card.summary}
+    intro={!training && detail.connection.kind === 'setup' ? <NoahRegistrationStatus key={id} id={id} /> : undefined}
     feedbackId={id} category={detail.card.topic ? `${t('カテゴリ')} · ${t(NOAH_PIN_TOPIC_LABELS[detail.card.topic])}` : undefined}
     action={training ? <NoahTrainingPlugin /> : undefined}>
       {training ? <ol>{noahTrainingFilm.scenes.map(scene => <li key={scene.caption}>{t(scene.detail)}</li>)}</ol> : <>

@@ -126,9 +126,9 @@ export function screen(options = {}) {
       if (id === 'next/image') return { default: 'img' };
       if (id === 'lucide-react') return new Proxy({}, { get: (_, name) => String(name) });
       if (id.endsWith('.module.css')) return { default: new Proxy({}, { get: (_, name) => String(name) }) };
-      if (options.modules?.[id]) return id === 'next/navigation' ? { useSearchParams: () => new URLSearchParams(options.search ?? ''), ...options.modules[id] } : options.modules[id];
+      if (options.modules?.[id]) return id === 'next/navigation' ? { usePathname: () => options.pathname ?? '/noah', useSearchParams: () => new URLSearchParams(options.search ?? ''), ...options.modules[id] } : options.modules[id];
       if (id === '@/lib/noah-collection') return collection;
-      if (id === 'next/navigation') return { useSearchParams: () => new URLSearchParams(options.search ?? '') };
+      if (id === 'next/navigation') return { usePathname: () => options.pathname ?? '/noah', useSearchParams: () => new URLSearchParams(options.search ?? '') };
       if(id.startsWith('./')&&options.modules?.[`@/components/${id.slice(2)}`])return options.modules[`@/components/${id.slice(2)}`];
       if(id==='./noah-locale')return {useNoahLocale:()=>({t:(text,values)=>noahTranslate(options.locale??'ja',text,values),locale:options.locale??'ja'}),NoahLanguageSetting:()=>null};
       if(id==='@/lib/noah-operation-labels')return operationLabels;
@@ -162,6 +162,8 @@ export function screen(options = {}) {
       if (id === '@/lib/noah-navigation') return navigation;
       if (id === '@/lib/noah-detail-guide') return load('lib/noah-detail-guide.ts');
       if (id === '@/lib/noah-detail-starter') return load('lib/noah-detail-starter.ts');
+      if (id === '@/lib/owner-intent') return load('lib/owner-intent.ts');
+      if (id === '@/lib/noah-detail-preview') return load('lib/noah-detail-preview.ts');
       if (id === '@/lib/noah-project-view') return load('lib/noah-project-view.ts');
       // 読み込み中に遊ぶ点のトラのゲーム。通信も保存もしない計算だけなので、本物をそのまま渡す。
       if (id === '@/lib/noah-tiger-game') return load('lib/noah-tiger-game.ts');

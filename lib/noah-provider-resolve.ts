@@ -9,7 +9,11 @@ import { object, providerBytes } from './noah-gradio.ts';
 export type NoahProviderTarget =
   | { kind: 'space'; repository: string }
   | { kind: 'mcp'; repository: string; url: string; provenance: string };
-const missing = () => new NoahAgentError('公開された接続先をまだ確認できません。CLIのクラウド対応や提供元の認証が必要です。利用者側でコードを取り込む必要はありません。', 422);
+export class NoahProviderInformationError extends NoahAgentError {
+  readonly field: string;
+  constructor(field: string, message: string) { super(message, 422); this.field = field; }
+}
+const missing = () => new NoahProviderInformationError('公開された接続先・実行方法', '公式配布元から、Noahで利用できるMCP接続先URLまたはAPIの定義を確認できませんでした。紹介ページやソースコードだけでは接続先を特定できません。提供元の接続定義、または対応する実行環境が必要です。');
 const github = (value: unknown) => {
   try { const r = noahSourceRepository(value); return r.provider === 'github' ? r : null; } catch { return null; }
 };
@@ -47,7 +51,7 @@ export async function resolveNoahProvider(entry: DirectoryEntry, fetcher: typeof
   }
   async function json(url: string) {
     const body = await text(url); if (body === null) return null;
-    try { return JSON.parse(body) as unknown; } catch { throw new NoahAgentError('提供元の接続定義を読み取れませんでした。', 422); }
+    try { return JSON.parse(body) as unknown; } catch { throw new NoahProviderInformationError('読み取れる接続定義', '提供元の接続定義を読み取れませんでした。正しいJSON形式の接続定義が必要です。'); }
   }
   async function manifest(value: unknown, provenance: string, repository: string): Promise<NoahProviderTarget | null> {
     if (!object(value) || typeof value.name !== 'string' || !Array.isArray(value.remotes)) return null;
@@ -59,7 +63,7 @@ export async function resolveNoahProvider(entry: DirectoryEntry, fetcher: typeof
       if (draft.connect.secrets.length || ('headers' in draft.connect.target && draft.connect.target.headers?.length)) { needsAuth = true; continue; }
       if ('url' in draft.connect.target) return { kind: 'mcp', url: draft.connect.target.url, repository, provenance };
     }
-    if (needsAuth) throw new NoahAgentError('提供元の認証情報または追加の接続条件が必要です。認証を省略して実行することはできません。', 422);
+    if (needsAuth) throw new NoahProviderInformationError('提供元の認証情報・接続条件', '提供元の認証情報または追加の接続条件が必要です。認証を省略して実行することはできません。');
     return null;
   }
   // Search all first-party sources before considering a CLI-only fallback.

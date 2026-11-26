@@ -5,6 +5,8 @@ import { useNoahLocale } from './noah-locale';
 import NoahLoading from './noah-loading';
 import { NoahTigerOffline } from './noah-tiger-game';
 import styles from './noah-unified.module.css';
+import { usePathname } from 'next/navigation';
+import { NoahBrowserReady } from './noah-browser-ready';
 
 function subscribeToConnection(update: () => void) {
   window.addEventListener('offline', update);
@@ -16,6 +18,8 @@ function subscribeToConnection(update: () => void) {
 }
 
 export default function NoahBrowserAccess({ children }: { children: ReactNode }) {
+  const pathname = usePathname();
+  const publicDetail = pathname === '/noah/discover/agent' || pathname === '/noah/ready/agent';
   const { t } = useNoahLocale();
   const [ready, setReady] = useState(false);
   const [failed, setFailed] = useState(false);
@@ -40,9 +44,12 @@ export default function NoahBrowserAccess({ children }: { children: ReactNode })
     return () => { controller.abort(); window.clearTimeout(timeout); };
   }, [attempt, offline, ready]);
 
-  if (ready || offline) {
+  if (ready || offline || publicDetail) {
     return <>
-      {ready && <div style={{ display: offline ? 'none' : 'contents' }}>{children}</div>}
+      <NoahBrowserReady.Provider value={ready}>
+        {(ready || publicDetail) && <div style={{ display: offline ? 'none' : 'contents' }}>{children}</div>}
+      </NoahBrowserReady.Provider>
+      {publicDetail && failed && <div role="alert"><p>{t('保存先を開けませんでした。もう一度お試しください。')}</p><button type="button" onClick={() => { setFailed(false); retry(n => n + 1); }}>{t('再試行')}</button></div>}
       {offline && <NoahTigerOffline />}
     </>;
   }
