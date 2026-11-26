@@ -10,6 +10,7 @@ import { noahCloudReceipt, readNoahCloudReceipt } from './noah-cloud-receipt.ts'
 import { eveAdviceProposal, eveProposalBrief, eveProposalTargets, eveReturnedProposal } from './eve-consultation-proposal.ts';
 import { NOAH_LOCALES, type NoahLocale } from './noah-i18n.ts';
 import { noahProjectSources } from './noah-provider-resolve.ts';
+import { noahFirstEarningStore } from './noah-first-earning.ts';
 
 type Dependencies = {
   authenticate: (request: Request) => Promise<string>;
@@ -21,6 +22,7 @@ type Dependencies = {
   receiptKey?: string;
   profiles?: readonly NoahCloudProfile[];
   freeRuntime?: boolean;
+  firstEarning?: boolean;
 };
 const json = (body: unknown, status = 200) => Response.json(body, { status, headers: { 'Cache-Control': 'private, no-store', Vary: 'Cookie, Authorization', 'X-Content-Type-Options': 'nosniff' } });
 const active = (job: WorkJob) => ['queued', 'running'].includes(job.noahRemote?.state ?? '');
@@ -40,11 +42,18 @@ export function noahCloudRuntime(config: { url?: string; key?: string }, fetcher
     return response;
   };
 }
-async function receive(db: Dependencies['db'], owner: string, work: WorkJob, remote: NoahCloudJob, now: () => number) {
+async function receive(db: Dependencies['db'], owner: string, work: WorkJob, remote: NoahCloudJob, now: () => number, requireSettlement = false) {
     const jobs = workStore(db);
     if (remote.id !== work.id || remote.profile !== work.noahRemote?.cloud?.profile || remote.mode !== 'run' || remote.distribution !== work.noahRemote.digest || remote.version !== work.noahRemote.cloud.version) throw new NoahAgentError('実行結果の宛先または配布版が一致しません。', 502);
     const cloud = work.noahRemote.cloud;
     if (remote.purpose !== cloud.runtimePurpose) throw new NoahAgentError('相談結果の実行先が一致しません。', 502);
+  if (Number.isSafeInteger(remote.activeMs) && ['returned', 'failed', 'cancelled'].includes(remote.state)) {
+    // Worker receipts are server-authenticated. Failure to settle must not
+    // prevent a seller from reading their result; the callback retries.
+    const settlement = noahFirstEarningStore(db).settle(await ownerScopeFor(owner), work.id, remote.activeMs);
+    if (requireSettlement) await settlement;
+    else await settlement.catch(() => {});
+  }
     if (!active(work)) return work;
     let next = work;
     if (remote.state === 'running') next = startNoahRemoteWork(work, now());
@@ -90,13 +99,14 @@ export function createNoahCloudResultApi(deps: Pick<Dependencies, 'db' | 'receip
       const ticket = await readNoahCloudReceipt(secret, body.ticket);
       const work = await workStore(deps.db).get(ticket.owner, ticket.jobId);
       if (!work || work.noahRemote?.cloud?.projectId !== ticket.project || work.noahRemote.inputSha256 !== ticket.inputHash || !['returned', 'failed', 'cancelled', 'unknown'].includes(body.job?.state)) return json({ error: 'receipt_mismatch' }, 409);
-      const saved = await receive(deps.db, ticket.owner, work, body.job, deps.now ?? Date.now);
+      const saved = await receive(deps.db, ticket.owner, work, body.job, deps.now ?? Date.now, true);
       return json({ saved: !active(saved) }, active(saved) ? 409 : 200);
     } catch { return json({ error: 'receipt_not_saved' }, 503); }
   };
 }
 export function createNoahCloudApi(deps: Dependencies) {
   const jobs = workStore(deps.db), now = deps.now ?? Date.now;
+  const pilot = deps.firstEarning ? noahFirstEarningStore(deps.db) : null;
   const view = (job: WorkJob) => ({ id: job.id, name: job.title, state: job.noahRemote?.state, createdAt: job.createdAt, completedAt: job.noahRemote?.completedAt, prompt: job.noahRemote?.prompt, runtimePurpose: job.noahRemote?.cloud?.runtimePurpose, proposal: job.noahRemote?.cloud?.proposal, result: job.noahRemote?.result, files: job.noahRemote?.cloud?.files ?? [], error: job.noahRemote?.error, calls: job.noahRemote?.cloud?.reportedModelCalls ?? job.noahRemote?.modelCalls ?? 0, usage: job.noahRemote?.cloud?.usage ?? null });
   return async (request: Request) => {
     try {
@@ -127,16 +137,20 @@ export function createNoahCloudApi(deps: Dependencies) {
       if (!profile) throw new NoahAgentError('このAgentのクラウド実行は現在利用できません。', 404);
       if (consultation && !existingAction && (profile !== 'hermes' || !deps.freeRuntime)) throw new NoahAgentError('Eveの相談用の無料クラウドを現在利用できません。', 503);
       if (!existingAction && deps.profiles && !deps.profiles.includes(profile)) throw new NoahAgentError('このAgentは無料クラウドの対応準備中です。', 403);
-      const call = async (extra: Record<string, unknown>) => {
+      const call = async (extra: Record<string, unknown>, onNotStarted?: () => Promise<void>) => {
         const response = await deps.runtime({ owner: runtimeOwner, project, profile, distribution: NOAH_CLOUD_PROFILES[profile].sha256, ...extra });
         const body = JSON.parse(new TextDecoder().decode(await boundedNoahBody(new Request('https://runtime.invalid', { method: 'POST', body: response.body, duplex: 'half' } as RequestInit), 262144))) as Record<string, unknown>;
-        if (!response.ok) throw new NoahAgentError(typeof body.error === 'string' ? body.error : 'クラウドに接続できませんでした。', response.status >= 400 && response.status < 600 ? response.status : 502);
+        if (!response.ok) {
+          if (body.trialNotStarted === true && onNotStarted) await onNotStarted();
+          throw new NoahAgentError(typeof body.error === 'string' ? body.error : 'クラウドに接続できませんでした。', response.status >= 400 && response.status < 600 ? response.status : 502);
+        }
         return body;
       };
       if (action === 'status') {
         const state = await call({ action });
         const history = (await jobs.list(owner)).filter(job => job.noahRemote?.cloud?.projectId === project && (consultation ? job.noahRemote.cloud.purpose === 'eve-engineering' : job.noahRemote.cloud.runtimePurpose !== NOAH_EVE_ADVICE_PURPOSE)).slice(0, 20);
-        return json({ ...state, ownerScope: scope, jobs: history.map(view), profile: { key: profile, ...NOAH_CLOUD_PROFILES[profile] } });
+        const trial = await pilot?.status(scope).catch(() => null);
+        return json({ ...state, ownerScope: scope, jobs: history.map(view), profile: { key: profile, ...NOAH_CLOUD_PROFILES[profile] }, ...(trial ? { firstEarning: { availableMs: trial.availableMs, usedMs: trial.usedMs } } : {}) });
       }
       if (['connect', 'start'].includes(String(action))) {
         try { await deps.authorize(owner, project, action === 'connect' ? 'connect' : 'run', await noahCloudDigest(JSON.stringify(NOAH_CLOUD_PROFILES[profile])), input.confirm === true); }
@@ -163,6 +177,13 @@ export function createNoahCloudApi(deps: Dependencies) {
         const brief = work?.noahRemote?.cloud?.proposalBrief ?? (targets ? eveProposalBrief(input.prompt, language as NoahLocale, targets) : '');
         const runtimePrompt = brief + input.prompt;
         if (new TextEncoder().encode(runtimePrompt).length > NOAH_CLOUD_LIMITS.promptBytes) throw new NoahAgentError('組み合わせの相談文が長すぎます。目的と渡したい素材に絞ってください。');
+        let trial;
+        if ((!work || now() - Date.parse(work.createdAt) <= NOAH_CLOUD_LIMITS.seconds * 1000) && pilot && await pilot.enrolled(scope)) {
+          if (!deps.receiptKey || (await call({ action: 'status', checkTrial: true })).trialProtocol !== 1) {
+            throw new NoahAgentError('試行用のクラウド計測を準備しています。', 503);
+          }
+          trial = await pilot.reserve(scope, input.jobId, deps.freeRuntime ? 'free' : 'managed', now());
+        }
         if (!work) {
           if (language && (!deps.receiptKey || deps.receiptKey.length < 32)) throw new NoahAgentError('Eveの相談用の無料クラウドを現在利用できません。', 503);
           const created = createNoahRemoteWork(input.jobId, { connectionId: input.connectionId, familyKey: project, digest: NOAH_CLOUD_PROFILES[profile].sha256, agentName: language ? 'Eve' : entry!.card.name, host: 'Noahクラウド', tool: 'cloud-agent', toolSha256: NOAH_CLOUD_PROFILES[profile].sha256, toolsSha256: NOAH_CLOUD_PROFILES[profile].sha256, args: { prompt: input.prompt }, inputSha256: hash }, now());
@@ -183,8 +204,9 @@ export function createNoahCloudApi(deps: Dependencies) {
         }
         const receipt = deps.receiptKey ? await noahCloudReceipt(deps.receiptKey, { owner, project, jobId: work.id, inputHash: hash }) : undefined;
         let remote;
+        const jobId = work.id;
         const runtimePurpose = work.noahRemote?.cloud?.runtimePurpose;
-        try { remote = await call({ action, jobId: work.id, connectionId: input.connectionId, prompt: runtimePrompt, receipt, ...(runtimePurpose ? { purpose: runtimePurpose } : {}) }); }
+        try { remote = await call({ action, jobId, connectionId: input.connectionId, prompt: runtimePrompt, receipt, ...(trial ? { trial } : {}), ...(runtimePurpose ? { purpose: runtimePurpose } : {}) }, trial && pilot ? () => pilot.settle(scope, jobId, 0) : undefined); }
         catch (error) {
           // A definitive admission rejection did not start a guest. Transport failures remain uncertain.
           if (error instanceof NoahAgentError && [400, 403, 409, 429].includes(error.status)) {

@@ -1,0 +1,42 @@
+.form {
+  display: grid;
+  gap: 12px;
+  margin-top: 16px;
+}
+
+.form label {
+  display: grid;
+  gap: 6px;
+}
+
+.form input:not([type='checkbox']) {
+  width: 100%;
+  min-width: 0;
+  min-height: 44px;
+  padding: 8px 10px;
+  color: inherit;
+  background: var(--noah-theme-panel, #fff);
+  border: 1px solid var(--noah-theme-line, #d9d0e4);
+  border-radius: 8px;
+}
+
+.form .check {
+  display: flex;
+  align-items: baseline;
+}
+
+.offer {
+  padding: 12px 16px;
+  border-inline-start: 3px solid #bf5c29;
+  background: var(--noah-theme-raised, #fff1e5);
+}
+
+.offer h2 {
+  font-size: clamp(1.15rem, 4vw, 1.4rem);
+  font-weight: 700;
+  line-height: 1.4;
+}
+
+.offer p {
+  margin-top: 8px;
+}

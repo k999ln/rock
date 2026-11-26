@@ -13,6 +13,10 @@ async function read(request, max = 32768) {
   return JSON.parse(new TextDecoder('utf-8', { fatal: true }).decode(bytes));
 }
 const jobStub = (env, owner, id) => env.JOBS.getByName(`${owner}:${id}`);
+function validTrial(trial) {
+  return trial && Number.isSafeInteger(trial.ms) && trial.ms >= 1 && trial.ms <= limits.seconds * 1000
+    && Number.isSafeInteger(trial.expiresAt) && trial.expiresAt <= Date.now() + limits.seconds * 1000 + 5000;
+}
 
 export default {
   async fetch(request, env) {
@@ -23,6 +27,7 @@ export default {
     try {
       const body = await read(request);
       if (!body || !/^[a-f0-9]{64}$/.test(body.owner) || !/^project-[a-f0-9]{64}$/.test(body.project) || !Object.hasOwn(profiles, body.profile) || !['status', 'connect', 'disconnect', 'start', 'job', 'stop'].includes(body.action)) return json({ error: 'invalid_request' }, 400);
+      if (body.trial !== undefined && (body.action !== 'start' || !validTrial(body.trial))) return json({ error: 'invalid_trial' }, 400);
       if (body.purpose !== undefined && (body.action !== 'start' || body.purpose !== NOAH_EVE_ADVICE_PURPOSE || env.NOAH_CLOUD_MODE !== 'free' || body.profile !== 'hermes' || body.project !== NOAH_EVE_HERMES_PROJECT || (body.mode !== undefined && body.mode !== 'run'))) return json({ error: 'invalid_purpose' }, 400);
       if (!noahCloudSupported(env.NOAH_CLOUD_MODE).includes(body.profile)) return json({ error: 'このAgentは無料クラウドの対応準備中です。' }, 403);
       if (['connect', 'start'].includes(body.action) && body.distribution !== profiles[body.profile].sha256) return json({ error: 'Agentの配布版が更新されました。画面を読み直してください。' }, 409);
@@ -87,7 +92,7 @@ export class NoahCloudConnection extends DurableObject {
           await this.ctx.storage.put('connection', state);
         }
       }
-      if (input.action === 'status') return json({ connection: state ?? null });
+      if (input.action === 'status') return json({ connection: state ?? null, ...(input.checkTrial === true ? { trialProtocol: 1 } : {}) });
       if (['job', 'stop'].includes(input.action)) {
         if (!state || !state.jobs.includes(input.jobId)) return json({ error: 'not_found' }, 404);
         return rpc(jobStub(this.env, input.owner, input.jobId), { action: input.action === 'job' ? 'get' : 'stop' });
@@ -115,7 +120,7 @@ export class NoahCloudConnection extends DurableObject {
       }
       if (input.action === 'start') {
         if (!noahCloudId(input.jobId) || typeof input.prompt !== 'string' || !input.prompt.trim() || new TextEncoder().encode(input.prompt).length > limits.promptBytes) return json({ error: '依頼は12,000バイト以内で入力してください。' }, 400);
-        const start = { action: 'start', owner: input.owner, id: input.jobId, mode: 'run', profile: input.profile, prompt: input.prompt, receipt: input.receipt, purpose: input.purpose };
+        const start = { action: 'start', owner: input.owner, id: input.jobId, mode: 'run', profile: input.profile, prompt: input.prompt, receipt: input.receipt, purpose: input.purpose, trial: input.trial };
         if (state?.jobs.includes(input.jobId)) {
           // A remembered ID must never recreate an expired or never-admitted job.
           if (!await fetchJob(input.jobId)) return json({ error: 'この依頼IDでは実行を再開できません。新しい依頼として送信してください。' }, 409);
@@ -147,14 +152,28 @@ export class NoahCloudJob extends DurableObject {
           if (input.purpose !== NOAH_EVE_ADVICE_PURPOSE || this.env.NOAH_CLOUD_MODE !== 'free' || input.profile !== 'hermes' || input.mode !== 'run') return json({ error: 'invalid_purpose' }, 400);
           identity.push(input.purpose);
         }
+        if (input.trial !== undefined) {
+          if (input.mode !== 'run' || !validTrial(input.trial)) return json({ error: 'invalid_trial' }, 400);
+          identity.push('first-earning', input.trial.ms, input.trial.expiresAt);
+        }
         const fingerprint = await noahCloudDigest(JSON.stringify(identity));
         const previous = await this.ctx.storage.get('job');
         if (previous) return previous.fingerprint === fingerprint ? json(this.view(previous)) : json({ error: '同じ依頼IDの内容は変更できません。' }, 409);
         if (input.receipt !== undefined && (typeof input.receipt !== 'string' || !/^[\w-]{40,2048}$/.test(input.receipt))) return json({ error: 'invalid_receipt' }, 400);
+        if (input.trial && Date.now() >= input.trial.expiresAt) return json({ error: 'この実行枠の受付期限を過ぎました。', trialNotStarted: true }, 409);
         const budget = await rpc(this.env.BUDGET.getByName('global'), { action: 'admit', id: `${input.owner}:${input.id}`, owner: input.owner, mode: input.mode });
-        if (!budget.ok) return budget;
+        if (!budget.ok) {
+          if (!input.trial) return budget;
+          const error = await budget.json();
+          // Record the refusal on the job itself before telling Sites it can
+          // release the reservation. A lost response cannot start this ID later.
+          await this.ctx.storage.put('job', { id: input.id, owner: input.owner, profile: input.profile, version: profiles[input.profile].version, distribution: profiles[input.profile].sha256, mode: input.mode, purpose: input.purpose, fingerprint, state: 'failed', calls: 0, activeMs: 0, createdAt: Date.now(), completedAt: Date.now(), deadlineAt: input.trial.expiresAt, error: error.error });
+          await this.ctx.storage.setAlarm(Date.now() + 86400000);
+          return json({ ...error, trialNotStarted: true }, budget.status);
+        }
         const at = Date.now();
-        const job = { id: input.id, owner: input.owner, profile: input.profile, version: profiles[input.profile].version, distribution: profiles[input.profile].sha256, mode: input.mode, ...(input.purpose ? { purpose: input.purpose } : {}), fingerprint, prompt: input.prompt, receipt: input.receipt, state: 'queued', createdAt: at, deadlineAt: at + limits.seconds * 1000, calls: 0 };
+        const deadlineAt = input.trial ? Math.min(at + input.trial.ms, input.trial.expiresAt) : at + limits.seconds * 1000;
+        const job = { id: input.id, owner: input.owner, profile: input.profile, version: profiles[input.profile].version, distribution: profiles[input.profile].sha256, mode: input.mode, ...(input.purpose ? { purpose: input.purpose } : {}), ...(input.trial ? { trial: input.trial } : {}), fingerprint, prompt: input.prompt, receipt: input.receipt, state: 'queued', createdAt: at, deadlineAt, calls: 0 };
         await this.ctx.storage.put('job', job); await this.ctx.storage.setAlarm(job.deadlineAt);
         await this.schedule(job);
         return json(this.view(job), 202);
@@ -168,19 +187,22 @@ export class NoahCloudJob extends DurableObject {
     else if (!terminal(job.state) && !this.running) await this.recover(job);
     job = await this.ctx.storage.get('job'); return json(this.view(job));
   }
-  view({ owner: _owner, prompt: _prompt, fingerprint: _fingerprint, receipt: _receipt, delivered: _delivered, ...job }) { return job; }
+  view({ owner: _owner, prompt: _prompt, fingerprint: _fingerprint, receipt: _receipt, delivered: _delivered, trial: _trial, startedAt: _startedAt, ...job }) { return job; }
   async schedule() { this.running = true; this.ctx.waitUntil(this.execute().finally(() => { this.running = false; })); }
   async recover() { await this.end('unknown', '実行環境が再起動しました。結果を確認できないため再実行していません。'); }
   async stopRuntime(state) { await this.ctx.container.destroy(state); }
   async end(state, error, result) {
     const changed = await this.ctx.blockConcurrencyWhile(async () => {
       const job = await this.ctx.storage.get('job'); if (!job || terminal(job.state)) return false;
+      const stoppedAt = Date.now();
       // Serialize destruction with the only start and all state writes. Bound this short gate.
       let timer;
       try { await Promise.race([this.stopRuntime(state), new Promise((_, reject) => { timer = setTimeout(() => reject(Error('stop_timeout')), 10000); })]); }
       catch { state = 'unknown'; error = '実行環境の停止を確認できませんでした。'; result = undefined; }
       finally { clearTimeout(timer); }
-      await this.ctx.storage.put('job', { ...job, state, completedAt: Date.now(), ...(error ? { error } : {}), ...(result ? { result } : {}) });
+      const activeMs = job.trial && state !== 'unknown'
+        ? Math.max(0, Math.min(job.deadlineAt, stoppedAt) - (job.startedAt ?? job.deadlineAt)) : undefined;
+      await this.ctx.storage.put('job', { ...job, state, completedAt: Date.now(), ...(activeMs !== undefined ? { activeMs } : {}), ...(error ? { error } : {}), ...(result ? { result } : {}) });
       if (state !== 'unknown') await rpc(this.env.BUDGET.getByName('global'), { action: 'release', id: `${job.owner}:${job.id}` });
       await this.ctx.storage.setAlarm(Date.now() + 60000);
       return true;
@@ -215,7 +237,9 @@ export class NoahCloudJob extends DurableObject {
       const container = this.ctx.container;
       let job = await this.ctx.blockConcurrencyWhile(async () => {
         const current = await this.ctx.storage.get('job'); if (!current || terminal(current.state)) return null;
-        await this.ctx.storage.put('job', { ...current, state: 'running' });
+        const startedAt = Date.now();
+        if (current.trial && startedAt >= current.deadlineAt) return null;
+        await this.ctx.storage.put('job', { ...current, state: 'running', startedAt });
         container.start({ image: container.images.base, instance: 'standard-1', enableInternet: false });
         return current;
       });

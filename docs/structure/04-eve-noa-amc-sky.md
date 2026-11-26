@@ -34,6 +34,8 @@ Noahで「使える」と判定するときは、対象の登録版・操作・�
 
 2026-11-23 Python無料実行の拡張: Hermesの計画・情報整理、bossの面接準備、Timeの公式Python処理をprofileごとの別Worker・依頼別Durable Objectへ組み込む。isolateに異なる公式実装を同居させず、モデルと利用枠は共通実行器で管理する。配布物の固定hashと機能制限を保ち、実行・保存を本番受入してから公開する。[契約](../services/noah-cloud-agents.md#無料枠の公式python実行)
 
+2026-11-26 初回の実売上の試行。招待された本人のNoahクラウドを累計150分まで受け付ける。成果、外部での納品、振込の確認は時間枠と別に扱う。本人の報告と担当者の照合で銀行着金を確認したら、次回の有料クラウドを案内する。[試行仕様](../noah/trial-300.md#初回の実売上と着金)
+
 2026-11-23 無料クラウド実行: 固定した公式Memory/Filesystem/Sequential ThinkingのJavaScript本体をWorkersへ組み込み、依頼専用VFSとSQLite Durable Objectのalarmで実行する。プラン変更をせず、無料枠・日次予約・実受入済profileの制限を保持する。[境界と合格条件](../services/noah-cloud-agents.md#無料枠の公式javascript実行)
 
 2026-11-22 CLI対応の継続: MemoryとFilesystemの公式固定版は依頼ごとの作業領域だけを使う。記憶ファイルも成果物としてWorkへ保存し、次回の自動読込や利用者端末のファイル操作は提供しない。配備先は元のCloudflare account IDへ固定する。
