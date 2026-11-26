@@ -164,3 +164,7 @@ PR #30は全体verify（5,198成功・5skip・失敗0、API1,918、CSV385）と�
 - 配備: `noah-free-cloud-agents` の Worker を配り直す（`wrangler deploy --config wrangler.free.jsonc`）まで、本番の数え方は変わらない。Sites 側は、usage が無い結果をこれまでどおり受け取る。
 - まだやらない: 自分のコードの Agent のクラウド実行（Workers Paid が要る）。月の合計を定期便の台帳の「実費」へ入れる操作（無料の枠の中は実費 0。有料にした月から、Cloudflare の請求額を運営が入れる）。
 
+
+## 2026年11月26日の本番稼働版
+
+Cloudflareの `noah-free-cloud-agents` の配備履歴で、11月24日13:45（日本時間）に配備した `12587b2c-c42b-41c1-98f3-032f3af93720` が全トラフィックを受けていることを確認した。[PR #58の配備記録](https://github.com/iceiceice999/rock/pull/58)に対応する[配備ソースの上限](https://github.com/iceiceice999/rock/blob/1ba0b35b9e73ae6293fda34eaee5f18558af1337/lib/noah-cloud-contract.ts#L45)と[受付処理](https://github.com/iceiceice999/rock/blob/1ba0b35b9e73ae6293fda34eaee5f18558af1337/services/noah-cloud-agents/worker.mjs#L46)は、本人3件・全体10件／UTC日で受付を止める。Gitのmainにある使用量枠（本人2,400・全体8,000 neuron）と件数の安全上限（本人12件・全体60件）への切替は、実行用Workerへの配備待ち。今回の確認は読み取りのみで、利用枠を消費していない。

@@ -1,8 +1,18 @@
 # 現在の開発・統合状況
 
-更新日: 2026-11-23。開発・PRの正本は [iceiceice999/rock](https://github.com/iceiceice999/rock)。今回の照合対象は main `21518016a125a78307c19b10b50f0e219d29ba20`。製品方針は[構成正本](docs/structure/00-overview.md)、個別の進捗は[タスク一覧](codex/tasks/00-index.md)に置く。
+2026年11月26日17:06（日本時間）の公開版は第244版。対応するGitHubの `main` は `13f2c6dd97`。公開用ソースと追跡ファイルの内容・パス・実行属性が一致した。公開後の変更は[開発中のPR](https://github.com/iceiceice999/rock/pulls)で確認できる。[第244版の公開記録](https://github.com/iceiceice999/rock/pull/81)
 
-## 今開発しているもの
+| 対象 | 確認できたこと | 残っていること |
+| --- | --- | --- |
+| Noah・Eve | 第243版で設計と開発を統合し、第244版で公開ページを整理。ホーム・検索・接続確認済みAgent・Eveを含む30経路を本番で確認した。 | 登録情報の再利用とブラウザ自動入力は[PR #82](https://github.com/iceiceice999/rock/pull/82)で別途追跡する。 |
+| 掲載Agent | 11月24日に固定した掲載一覧のうち「実行準備が必要」の2,428件を翌25日に分類。手元8件・提供元2件で成果を確認した。 | この対象でNoah本番の仕事に新たに届いた成果は0件。認証と専用実行器などの[再開条件](docs/services/noah-cloud-agents.md#掲載agentの実行判定)を個別に確認する。 |
+| 収益・定期便 | [収益パック](docs/services/noah-revenue-pack.md)の3担当は下書きをクラウドに保存できる。通常の収益系Agentの[仕事別明細](codex/tasks/130-eve-si-agent-engineering.md)には成果承認・入金・費用・作者分の状態を表示する。 | パックからマイAgent明細への自動同期は未実装。作者20%確定の本番確認には実入金済みの本人の仕事が必要。実績平均と実配送も別に確認する。 |
+| eSIM・クラウド | [eSIM設計](docs/structure/03-esim.md)は模擬回線で検証。モデル使用量で制御する無料枠は[実行用Workerのソース](codex/tasks/125-noah-cloud-agents.md)に実装済み。本番の受付上限は本人3件・全体10件／UTC日。 | 専用eSIMの実回線・実機は受入待ち。Workerの使用量方式は配備待ち。月額800円・標準5件・Pro18件は[候補](docs/structure/05-business.md)。 |
+| mii | 研修比較キットと構造・通信・消防の静的検査を[統合](codex/tasks/138-cross-chat-sync.md)。 | 実カメラ・参加者・全室表示・消防適合は実機での確認が残る。 |
+
+## 11月23日時点の開発記録
+
+当時の `main` は `21518016a125a78307c19b10b50f0e219d29ba20`。以下はその時点の範囲と個別の検証記録である。
 
 6つの大項目で、できたこと・残っていること・関連する後続作業を整理する。担当は各taskの既存担当、台帳の整合は統合・公開担当si。作業者が全項目を同時に実行中という意味ではない。
 
@@ -51,7 +61,7 @@
 
 ## 全taskの作業進捗
 <!-- project-status:start -->
-最終更新: 2026-11-23 / Noahの現main統合・限定本番受入・運用と集客の残件を照合 / 完了記録 114/393件（親32・子192・独立169。実行単位は親を除く361件）
+最終更新: 2026-11-26 / Noah第244版の公開と事業の受入範囲を照合。旧タスクの件数は11月23日の記録を維持 / 完了記録 114/393件（親32・子192・独立169。実行単位は親を除く361件）
 
 | ID | 作業 | 状態 | 根拠 |
 | --- | --- | --- | --- |
@@ -468,7 +478,7 @@
 | ANDROID-PREFULL | OS11 | 有料full build前に単体APK・emulator・純正Pixel offline si・Sky→Zema→Tool→Walletを完走してfreeze | 未合格 | PREVIEW-INSTALL | [記録](docs/phone-preview-20260911.md) · [記録](docs/product-baseline.md) · [記録](.github/workflows/android.yml) · [記録](.github/workflows/local-ai-apk.yml) · [記録](tests/product-baseline.test.mjs) · [記録](tests/test_prepare_phone_build.py) · [記録](tests/test_stage_local_ai_apk.py) · [記録](tests/test_freeze_phone_build_inputs.py) · [記録](docs/evidence/android-pre-full-build-tests-20260915.json) · [記録](docs/evidence/android-local-ai-plan-v2-20260916.json) · [記録](docs/evidence/android-prefull-input-freeze-20260916.json) |
 | DEVICE-INSTALL | RLS02 | 初回flash gate 4/4後、対象1機種でflash・初回起動・OTA rollback・純正復旧を完走 | 未合格 | PREVIEW-INSTALL · ANDROID-PREFULL | [記録](docs/android-first-flash-gate-20260916.md) · [記録](data/android-first-flash-gate.json) · [記録](docs/android-production-signing-custody.md) · [記録](data/android-signing-custody-policy.json) · [記録](docs/android-rollback-index-policy.md) · [記録](data/android-rollback-index-policy.json) · [記録](docs/android-google-stock-recovery.md) · [記録](data/android-stock-recovery-policy.json) · [記録](docs/android-backup-recovery.md) · [記録](data/android-backup-recovery-policy.json) · [記録](docs/android-production-architecture.md) · [記録](data/android-release-architecture-policy.json) · [記録](https://github.com/k999ln/rock/blob/96845e6006c15e39ba5b45495f79c21bdff7399e/docs/release-installation-plan-20260909.md) · [記録](docs/phone-preview-20260911.md) · [記録](scripts/freeze-phone-build-inputs.py) · [記録](docs/evidence/android-prefull-input-freeze-20260916.json) |
 
-次の作業: Pixelでの残り2種の実行とダウンロード操作、有料Containersの配備判断、収集の24時間鮮度と実行先移行、紹介の実注文/承認を進める。全掲載Agent対応、300人の試行は未受入。現行の作業別状態はcodex/tasks/00-index.mdを参照する。
+次の作業: 掲載Agent別の認証・実行器を整えてWorkで成果を確認する。収益パックと仕事別明細の接続、実入金後の作者分、専用eSIMの実回線、定期便の実配送を個別に検収する。従来の端末・収集・運用の残件はproject.mdを参照。
 <!-- project-status:end -->
 
 

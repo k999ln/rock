@@ -118,7 +118,9 @@ npm run amc:cycle -- demo
 
 掲載Agentをどこまで使えるかは[実行経路別の判定表](docs/services/noah-cloud-agents.md#掲載agentの実行判定)で確認できます。11月25日に再調査した「実行準備が必要」の2,428件では、手元で8件、提供元で2件の成果を受け取りました。この対象からNoah本番で新たに成果を受け取った件数は0件です。
 
-CLIの管理クラウドは、Memory・Filesystem・Sequential ThinkingにTime・bossの面接準備・Hermesの計画/依頼内メモを加え、公式6種類の対応機能を追加契約なしの無料枠で公開しています。対応範囲は [task125](codex/tasks/125-noah-cloud-agents.md) に記録しています。Hermes・boss-agent-cli・Time・Sequential Thinking・Memory・Filesystemの公式固定版を依頼ごとの隔離環境で動かします。標準入出力MCPの4配布物は外部通信なしのLinuxで起動・実ツール応答を確認し、Memoryの依頼間分離、Filesystemの作成/読込/作業領域外の拒否、生成物のhashも確認しました。固定応答の検査に加え、実モデル `gpt-oss-20b` で6配布物の道具実行・成果生成の成功例を手元の隔離Linuxで確認しました。空本文による継続通信の失敗を修正し、道具を実行しない完了報告は受け付けません。モデルの形式エラーによる失敗例もあり、本番クラウドでの受入とは区別します。無料のWorkers実行器は公式JavaScript本体を組み込み、3種類とも本番Noahから実モデルと公式Toolで処理し、Chrome全終了後の成果保存・再表示・ファイルの内容/hash一致を確認しました。1人3件/UTC日、全体10件/UTC日、1件240秒までです。Memoryの作業中の記憶は依頼ごとに分離し、出力ファイルは成果として保存します。公式TimeのMCP・bossの面接準備コマンド・Hermes本体の計画/依頼内メモは、種類ごとの非公開Python Workerで動かします。3種とも本番Noahから実モデルと公式処理を実行し、スマホ幅390pxのChromeを全終了した後のD1保存、保存一覧からの再表示・再読込・ファイルの内容/hash一致を確認しました。128MB制限での失敗はWorker分離で対処し、bossの出力上限とHermesの道具未実行も上限を増やさず補正しました。文章だけの完了を成功にはしません。Hermesのshell/一般ファイル操作、bossの求人検索/応募はこの無料版では扱いません。提供元の公開server.json、npmと公式MCP台帳、Docker公式配布記録から接続先を照合し、利用者にコード取込を求めずNoahの入力とWork保存へ進む処理も追加しています。全掲載の対応状況は `scripts/noah-agent-coverage.mjs` で点検し、定義確認を実行成功とは数えません。
+CLIの管理クラウドは、Memory・Filesystem・Sequential ThinkingにTime・bossの面接準備・Hermesの計画/依頼内メモを加え、公式6種類の対応機能を追加契約なしの無料枠で公開しています。対応範囲は [task125](codex/tasks/125-noah-cloud-agents.md) に記録しています。Hermes・boss-agent-cli・Time・Sequential Thinking・Memory・Filesystemの公式固定版を依頼ごとの隔離環境で動かします。標準入出力MCPの4配布物は外部通信なしのLinuxで起動・実ツール応答を確認し、Memoryの依頼間分離、Filesystemの作成/読込/作業領域外の拒否、生成物のhashも確認しました。固定応答の検査に加え、実モデル `gpt-oss-20b` で6配布物の道具実行・成果生成の成功例を手元の隔離Linuxで確認しました。空本文による継続通信の失敗を修正し、道具を実行しない完了報告は受け付けません。モデルの形式エラーによる失敗例もあり、本番クラウドでの受入とは区別します。無料のWorkers実行器は公式JavaScript本体を組み込み、3種類とも本番Noahから実モデルと公式Toolで処理し、Chrome全終了後の成果保存・再表示・ファイルの内容/hash一致を確認しました。本番の上限はUTC日ごとに本人3件・全体10件、1件240秒です（2026年11月26日確認）。Memoryの作業中の記憶は依頼ごとに分離し、出力ファイルは成果として保存します。公式TimeのMCP・bossの面接準備コマンド・Hermes本体の計画/依頼内メモは、種類ごとの非公開Python Workerで動かします。3種とも本番Noahから実モデルと公式処理を実行し、スマホ幅390pxのChromeを全終了した後のD1保存、保存一覧からの再表示・再読込・ファイルの内容/hash一致を確認しました。128MB制限での失敗はWorker分離で対処し、bossの出力上限とHermesの道具未実行も上限を増やさず補正しました。文章だけの完了を成功にはしません。Hermesのshell/一般ファイル操作、bossの求人検索/応募はこの無料版では扱いません。提供元の公開server.json、npmと公式MCP台帳、Docker公式配布記録から接続先を照合し、利用者にコード取込を求めずNoahの入力とWork保存へ進む処理も追加しています。全掲載の対応状況は `scripts/noah-agent-coverage.mjs` で点検し、定義確認を実行成功とは数えません。
+
+11月26日に実行用Workerの配備履歴を確認し、全トラフィックを受けている版を[配備記録と受付コード](https://github.com/iceiceice999/rock/pull/58)に照合しました。Gitの `main` には、モデル使用量をUTC日ごとに本人2,400・全体8,000 neuronまでとし、件数にも本人12件・全体60件の安全上限を設ける変更があります。この変更は実行用Workerへの配備待ちです。[無料枠と配備条件](codex/tasks/125-noah-cloud-agents.md#2026-11-24-無料のクラウドを使ったモデルの量で数える)
 
 管理クラウドの依頼は画面を閉じても実行が続き、共通の「実行中」「保存したもの → 成果」から本文とファイルを開けます。成果の閲覧ではAgentを再実行しません。スマホ幅390pxのChromeで全終了後の保存と再表示、実行中の停止・再読込保持を確認しています。実機Pixelの新クラウド受入とは区別します。保存済みファイルには未保存の注記を出さず、添付データが届いていない従来の結果には注記を維持します。
 
@@ -468,7 +470,7 @@ macOSでHomebrewのOpenSSL 3を使う場合は `PATH=/opt/homebrew/opt/openssl@3
 | 製品全体・Tool詳細 | [design portal](docs/rockstaros-design-portal.md) / [Tool詳細](docs/sky-tools-complete-design.md) |
 
 <!-- project-overview:start -->
-更新日: 2026-11-23。現在の受入範囲と次の作業は[進捗](project.md)、全タスクは[全タスクの進捗](project.md#全taskの作業進捗)を参照してください。
+更新日: 2026-11-26。現在の受入範囲と次の作業は[進捗](project.md)、全タスクは[全タスクの進捗](project.md#全taskの作業進捗)を参照してください。
 <!-- project-overview:end -->
 
 個々の変更とPRは[変更履歴](CHANGELOG.md)にあります。コードに残る `sky`・`zema` は互換性のための識別子です。公開サービス名はEveとNoahです。

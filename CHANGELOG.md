@@ -2,6 +2,8 @@
 
 - Noahの自分のAgent・実行中・保存したものの横タブを撤去し、既存の共通メニューへ統一。見出し・保存内容の絞り込み・旧URLは維持（task129、[PR #85](https://github.com/iceiceice999/rock/pull/85)）。
 
+- 第243・244版の公開記録とAgentの受入状況を進捗台帳に反映。READMEの無料クラウド枠と設計案内のEve表記を更新（[task138](codex/tasks/138-cross-chat-sync.md)、[PR #83](https://github.com/iceiceice999/rock/pull/83)）。
+
 - avoado.siの公開画面を現mainのNoah・Eveの導線へ整理。旧企画の画面を410、未知の画面を404にし、旧URL転送・審査者限定・sitemapを整合（task139、[PR #81](https://github.com/iceiceice999/rock/pull/81)）。
 
 - 公開前のCodeQL指摘を受け、Noah収益パックの排他的ファイル作成・開いたファイルの検査と容量制限、登録試験の送信先照合を補強。既存出力の上書き防止とリンク拒否を回帰試験へ追加（[PR #80](https://github.com/iceiceice999/rock/pull/80)）。
