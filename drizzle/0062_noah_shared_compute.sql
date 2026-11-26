@@ -1,4 +1,4 @@
--- Shared jobs contain only IDs into a versioned public corpus. No source, prompts or credentials.
+-- Jobs store a public sample ID or four bounded vocabulary counts. Original text stays on the requester’s device.
 CREATE TABLE IF NOT EXISTS noah_compute_devices (
   id TEXT PRIMARY KEY NOT NULL,
   owner_scope TEXT NOT NULL,

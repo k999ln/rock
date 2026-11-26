@@ -24,6 +24,20 @@ void test('published model hash and isolated, bounded WASM results match the ind
   assert.throws(() => runSample(model, '../../etc/passwd', signal()));
 });
 
+void test('isolated participant classifies canonical public feature counts and rejects out-of-domain inputs', async () => {
+  const allowed = [
+    ['terms-1.0.0.0', { label: 'meeting', score: 4 }],
+    ['terms-0.15.1.2', { label: 'inventory', score: 62 }],
+    ['terms-15.15.15.15', { label: 'research', score: 90 }],
+  ];
+  for (const [id, expected] of allowed) assert.deepEqual(await runSample(model, id, signal()), expected);
+  for (const id of ['terms-0.0.0.0', 'terms-16.0.0.0', 'terms-01.2.0.0', 'terms-0.0.1',
+      'terms-1.0.0.0.0', 'terms-1e1.2.0.0', 'terms-+1.0.0.0', 'terms-1.2.0.0\n', 'terms-１.0.0.0',
+      'terms-1..0.0', 'terms--1.2.0.0', 'terms-NaN.1.0.0', 'a public sentence']) {
+    assert.throws(() => runSample(model, id, signal()), /対象外/);
+  }
+});
+
 function sensors(overrides = {}) {
   const values = {
     '/sys/class/power_supply/AC/type': 'Mains',

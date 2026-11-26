@@ -34,16 +34,28 @@ export async function loadModel() {
   }
 }
 
-// This is a no-import, no-memory WASM dot product. No job can supply text, a module, a URL,
-// a filesystem path or a callback. A fresh one-thread isolate handles exactly one sample.
-async function classify({ model, sampleId }) {
+// Requesters can send four bounded dictionary counts from public material, or a built-in example ID.
+function inputFeatures(model, sampleId) {
+  if (typeof sampleId !== 'string') return null;
+  if (sampleId.startsWith('terms-')) {
+    if (sampleId.length > 17) return null;
+    const parts = sampleId.slice(6).split('.');
+    if (parts.length !== 4) return null;
+    const counts = parts.map(Number);
+    if (!counts.every((n, i) => Number.isInteger(n) && n >= 0 && n <= 15 && String(n) === parts[i])) return null;
+    return counts.some(n => n > 0) ? counts : null;
+  }
   const sample = model.samples.find(entry => entry.id === sampleId);
-  if (!sample) throw new Error('対象外のサンプルです。');
+  if (!sample) return null;
   const words = sample.text.toLowerCase().match(/[a-z]+/g) ?? [];
-  const features = model.terms.map(group => words.reduce((n, word) => n + Number(group.includes(word)), 0));
-  const { instance } = await WebAssembly.instantiate(Buffer.from(model.dot4Wasm, 'hex'), {});
+  return model.terms.map(group => words.reduce((n, word) => n + Number(group.includes(word)), 0));
+}
+
+// The one-job WASM isolate sees only the approved model parameters and four integers.
+async function classify({ features, classes, dot4Wasm }) {
+  const { instance } = await WebAssembly.instantiate(Buffer.from(dot4Wasm, 'hex'), {});
   let winner;
-  for (const entry of model.classes) {
+  for (const entry of classes) {
     const score = instance.exports.dot4(...features, ...entry.weights);
     if (!winner || score > winner.score) winner = { label: entry.label, score };
   }
@@ -52,10 +64,11 @@ async function classify({ model, sampleId }) {
 
 export function runSample(model, sampleId, signal) {
   signal.throwIfAborted();
-  if (!model.samples.some(sample => sample.id === sampleId)) throw new Error('対象外のサンプルです。');
+  const features = inputFeatures(model, sampleId);
+  if (!features) throw new Error('対象外の分類入力です。');
   return new Promise((resolve, reject) => {
     const worker = new Worker(new URL(import.meta.url), {
-      workerData: { model, sampleId }, env: {}, execArgv: [],
+      workerData: { features, classes: model.classes, dot4Wasm: model.dot4Wasm }, env: {}, execArgv: [],
       resourceLimits: { maxOldGenerationSizeMb: 12, maxYoungGenerationSizeMb: 4, stackSizeMb: 2 },
     });
     let stopped = false;
@@ -178,7 +191,7 @@ function leaseRemaining(lease) {
 export async function processLease({ lease, model, api, eligible, signal, compute = runSample }) {
   const ids = { jobId: lease.jobId, leaseId: lease.leaseId };
   const remaining = leaseRemaining(lease);
-  if (lease.workload !== VERSION || lease.artifactSha256 !== MODEL_SHA256 || !model.samples.some(sample => sample.id === lease.sampleId)
+  if (lease.workload !== VERSION || lease.artifactSha256 !== MODEL_SHA256 || !inputFeatures(model, lease.sampleId)
     || !Number.isFinite(remaining) || remaining < JOB_LIMIT_MS) return false;
   const local = AbortSignal.any([signal, AbortSignal.timeout(Math.floor(remaining))]);
   let completed = false;

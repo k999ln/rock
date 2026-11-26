@@ -138,7 +138,8 @@ final class ParticipantSession {
                     JSONObject lease = api("claim", new JSONObject()).optJSONObject("lease");
                     if (lease != null) {
                         jobs++;
-                        if (!"public-topic-v1".equals(lease.optString("workload")) || !InferenceService.DIGEST.equals(lease.optString("artifactSha256")) || !validLease(lease))
+                        if (!"public-topic-v1".equals(lease.optString("workload")) || !InferenceService.acceptsInput(lease.optString("sampleId"))
+                                || !InferenceService.DIGEST.equals(lease.optString("artifactSha256")) || !validLease(lease))
                             throw new IOException("対応する割り当てを確認できません。");
                         JSONObject heartbeat = api("heartbeat", ids(lease));
                         if (!validLease(heartbeat)) throw new IOException("割り当て期限が終了しました。");

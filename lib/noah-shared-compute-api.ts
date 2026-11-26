@@ -189,7 +189,11 @@ export function createSharedComputeApi(deps: {
             'acceptThirdParty',
           ]);
           consent(input);
-          if (!isSharedSampleId(input.sampleId)) throw inputError();
+          if (!isSharedSampleId(input.sampleId)) {
+            throw new NoahAgentError(
+              '用意されたサンプルか、端末で変換した4種類の単語数を選んでください。',
+            );
+          }
           const requestRevision = await deps.authorize(
             user,
             SHARED_WORKLOAD_VERSION,

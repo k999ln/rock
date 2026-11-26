@@ -38,7 +38,7 @@ public final class ParticipantActivity extends Activity {
         scroll.addView(form);
         TextView title = text(form, "端末の計算を提供", 26);
         title.setTypeface(Typeface.DEFAULT, Typeface.BOLD);
-        text(form, "この画面を開いている間、他の利用者が依頼した合成サンプルを分類します。提供に伴う報酬はありません。", 16);
+        text(form, "この画面を開いている間、他の利用者の文章を分類します。受け取るのは、公開英文から数えた4種類の単語数か、合成サンプルの番号です。端末提供への報酬はありません。", 16);
         device = input(form, "端末ID", false);
         token = input(form, "端末トークン", true);
         text(form, "参加時間", 16);

@@ -11,7 +11,26 @@ import java.util.Locale;
 
 public final class InferenceService extends Service {
     static final String DIGEST = "c76d26657b9dc9697400af2b6cc063fe44448df227427c6b8b7a426b992bcfdb";
-    static Bundle infer(JSONObject model, String id) throws Exception {
+    private static int[] publicFeatures(String id) {
+        if (id == null || !id.startsWith("terms-") || id.length() > 17) return null;
+        String[] parts = id.substring(6).split("\\.", -1);
+        if (parts.length != 4) return null;
+        int[] counts = new int[4];
+        int sum = 0;
+        for (int i = 0; i < counts.length; i++) {
+            if (!parts[i].matches("0|[1-9]|1[0-5]")) return null;
+            counts[i] = Integer.parseInt(parts[i]);
+            sum += counts[i];
+        }
+        return sum == 0 ? null : counts;
+    }
+
+    static boolean acceptsInput(String id) {
+        return publicFeatures(id) != null || "meeting-notes".equals(id) || "inventory-update".equals(id)
+                || "research-summary".equals(id) || "order-review".equals(id);
+    }
+
+    private static int[] sampleFeatures(JSONObject model, String id) throws Exception {
         JSONArray samples = model.getJSONArray("samples");
         String input = null;
         for (int i = 0; i < samples.length(); i++) {
@@ -30,6 +49,12 @@ public final class InferenceService extends Service {
                 }
             }
         }
+        return features;
+    }
+
+    static Bundle infer(JSONObject model, String id) throws Exception {
+        int[] features = publicFeatures(id);
+        if (features == null) features = sampleFeatures(model, id);
         int best = Integer.MIN_VALUE;
         String label = "";
         JSONArray classes = model.getJSONArray("classes");
@@ -47,7 +72,7 @@ public final class InferenceService extends Service {
     }
 
     private Bundle classify(String sample) throws Exception {
-        // This isolated process receives only a sample identifier. Its sole input file is an APK asset.
+        // This isolated process receives only four bounded dictionary counts or a built-in sample ID. Its sole input file is an APK asset.
         byte[] data = new byte[8192];
         int total = 0;
         try (InputStream in = getAssets().open("model.json")) {

@@ -376,4 +376,4 @@ Noahの固定アダプターで公開サイト診断を実行し、結果と相�
 
 2026-11-27 Noahの機器保守候補 `noah-local-device-maintenance` を追加。明示した `noah.hardware-maintenance/1` の模擬状態JSONだけを読み、12機器ファミリーの接続・操作・消耗品を説明する。端末、ネットワーク、外部API、実機修理、設定変更、flash、ドローン制御は行わず、fixture結果を実機成功と数えない。[PR #115](https://github.com/iceiceice999/rock/pull/115)
 
-2026-11-27 の実装では、Noahの月額利用者が同意した公開サンプルを、別アカウントの登録端末が短いリースで処理する。[Androidの参加アプリ](../../toolkits/noah-shared-android/)と[Linuxの参加プログラム](../../public/noah-shared-compute/)で処理し、検収した結果を依頼者に返す。[参加と停止・契約の条件](../services/noah-shared-compute.md)
+2026-11-27 の実装では、Noahの月額利用者が選んだ公開英文を、別アカウントの登録端末が短いリースで分類する。本文から抽出した4種の単語数、または同梱の例文IDだけを渡す。[Androidの参加アプリ](../../toolkits/noah-shared-android/)と[Linuxの参加プログラム](../../public/noah-shared-compute/)で処理し、検収した結果を依頼者に返す。[参加と停止・契約の条件](../services/noah-shared-compute.md)

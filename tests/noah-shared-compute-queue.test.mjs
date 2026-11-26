@@ -7,6 +7,8 @@ import { createNoahProfileApi } from '../lib/noah-profile-api.ts';
 import { requestUser } from '../lib/request-auth.ts';
 import { createNoahProfileStore } from '../lib/noah-profile-store.ts';
 import {
+  encodePublicTopicTerms,
+  isSharedSampleId,
   evaluateSharedSample,
   SHARED_WORKLOAD_VERSION,
   SHARED_WORKLOAD_SHA256,
@@ -22,7 +24,7 @@ import {
 } from '../public/noah-shared-compute/runner.mjs';
 
 const path = 'https://noah.test/api/noah/shared-compute';
-const consent = { consentVersion: 'shared-compute-v1', acceptThirdParty: true };
+const consent = { consentVersion: 'shared-compute-v2', acceptThirdParty: true };
 async function setup(t, limit = 1, billing) {
   const f = billing?.f ?? fixture(t);
   for (const name of [
@@ -513,11 +515,26 @@ void test('monthly checkout, signed event, two owners and real downloaded WASM r
   assert.equal((await w.call(payer)).body.devices.length, 0);
   const d = await w.host(host);
   assert.equal((await billing.get(host)).subscription.entitled, false);
-  const requested = await w.submit(
-    payer,
-    crypto.randomUUID(),
-    'inventory-update',
+  const article =
+    'The Marine Weekly explains the STOCK order, the new inventory shipment and the morning inventory report.';
+  const features = encodePublicTopicTerms(article);
+  assert.equal(features, 'terms-0.5.0.1');
+  const requestId = crypto.randomUUID();
+  assert.equal(
+    (
+      await w.call(payer, {
+        action: 'submit',
+        requestId,
+        sampleId: features,
+        ...consent,
+        text: article,
+      })
+    ).status,
+    400,
   );
+  assert.equal((await w.submit(payer, requestId, article)).status, 400);
+  assert.deepEqual((await w.call(payer)).body.jobs, []);
+  const requested = await w.submit(payer, requestId, features);
   assert.equal(requested.status, 200);
   assert.equal(
     (await w.call(host, { action: 'cancel', jobId: requested.body.jobId }))
@@ -537,6 +554,8 @@ void test('monthly checkout, signed event, two owners and real downloaded WASM r
   const signal = AbortSignal.timeout(5000);
   const { lease } = await api('claim', {}, signal);
   assert.equal(lease.jobId, requested.body.jobId);
+  assert.equal(lease.sampleId, features);
+  assert.doesNotMatch(JSON.stringify(lease), /Marine Weekly/);
   // Hardware policy is qualified separately. Exercise the actual pinned model,
   // downloaded WASM worker, lease protocol, verifier and receipt storage here.
   assert.equal(
@@ -551,7 +570,16 @@ void test('monthly checkout, signed event, two owners and real downloaded WASM r
   );
   const [job] = (await w.call(payer)).body.jobs;
   assert.equal(job.status, 'completed');
-  assert.equal(job.result.label, 'inventory');
+  assert.deepEqual(job.result, { label: 'inventory', score: 21 });
+  assert.equal(job.title, '公開文章の分類');
+  assert.equal(job.inputKind, 'term-counts');
+  const records = w.f.sql.prepare('SELECT * FROM noah_compute_jobs').all();
+  assert.equal(records.length, 1);
+  assert.equal(records[0].sample_id, features);
+  assert.doesNotMatch(
+    JSON.stringify(records),
+    /Marine Weekly|morning inventory/,
+  );
   assert.ok(job.receiptId);
   assert.equal((await w.call(host)).body.jobs.length, 0);
 
@@ -730,4 +758,70 @@ void test('current billing environment filters jobs; host can identify and revok
     200,
   );
   assert.equal((await w.call(null, { action: 'claim', ...host })).status, 403);
+});
+
+void test('public topic input has four canonical bounded integers and both parties must accept the expanded consent', async (t) => {
+  const w = await setup(t);
+  const sampleId = encodePublicTopicTerms(
+    'REVIEW ' + 'ORDER, '.repeat(30) + 'stocker rearrange experiments',
+  );
+  assert.equal(sampleId, 'terms-0.15.0.1');
+  assert.deepEqual(evaluateSharedSample(sampleId), {
+    label: 'inventory',
+    score: 61,
+  });
+  assert.equal(encodePublicTopicTerms('unrelated words and stockroom'), null);
+  assert.equal(encodePublicTopicTerms(''), null);
+  assert.equal(
+    (await w.call('buyer')).body.consentVersion,
+    'shared-compute-v2',
+  );
+  await w.purchase('buyer');
+  assert.equal(
+    (
+      await w.call('buyer', {
+        action: 'submit',
+        requestId: crypto.randomUUID(),
+        sampleId,
+        ...consent,
+        consentVersion: 'shared-compute-v1',
+      })
+    ).status,
+    403,
+  );
+  assert.equal(
+    (
+      await w.call('host', {
+        action: 'enroll',
+        deviceId: crypto.randomUUID(),
+        ...consent,
+        consentVersion: 'shared-compute-v1',
+      })
+    ).status,
+    403,
+  );
+  for (const id of [
+    'terms-0.0.0.0',
+    'terms-0.0.1',
+    'terms-0.1.0.2.1',
+    'terms-16.0.0.0',
+    'terms-01.0.0.0',
+    'terms--1.0.0.0',
+    'terms-0.0.0.1\n',
+    'terms-1e0.0.0.0',
+    'terms-1.0.0.0?text=hello',
+    {},
+    [1, 0, 0, 0],
+  ]) {
+    assert.equal(isSharedSampleId(id), false);
+    assert.equal(
+      (await w.submit('buyer', crypto.randomUUID(), id)).status,
+      400,
+    );
+  }
+  assert.deepEqual((await w.call('buyer')).body.jobs, []);
+  assert.equal(
+    (await w.submit('buyer', crypto.randomUUID(), sampleId)).status,
+    200,
+  );
 });

@@ -1,20 +1,22 @@
 'use client';
 import Link from 'next/link';
-import { useEffect, useRef, useState, type ReactNode } from 'react';
+import { useEffect, useMemo, useRef, useState, type ReactNode } from 'react';
 import { noahAccountHref } from '@/lib/noah-navigation';
 import { OWNER_SCOPE_HEADER, readOwnerScope } from '@/lib/owner-intent';
-import { SHARED_SAMPLES } from '@/lib/noah-shared-workload';
+import { encodePublicTopicTerms, readPublicTopicTerms } from '@/lib/noah-shared-workload';
+import topicModel from '@/public/noah-shared-compute/model.json';
 import common from './noah-unified.module.css';
 import styles from './noah-shared-compute.module.css';
 
 const endpoint = '/api/noah/shared-compute';
-const sampleTitle = new Map(SHARED_SAMPLES.map(sample => [sample.id, sample.title]));
+const sampleTitle = new Map(topicModel.samples.map(sample => [sample.id, sample.title]));
+const termGroups = ['会議', '在庫・発注', '研究', '記録・分析'];
 const categories: Record<string, string> = { meeting: '会議', inventory: '在庫', research: '研究' };
 type JobStatus = 'queued' | 'leased' | 'completed' | 'cancelled' | 'expired';
 const states: Record<JobStatus, string> = {
   queued: '参加端末を待っています', leased: '参加端末で計算中', completed: '検収済み', cancelled: '取り消し済み', expired: '期限切れ',
 };
-type Job = { id: string; sampleId: string; status: JobStatus; result: {label: string; score: number} | null; receiptId: string | null };
+type Job = { id: string; title?: string; sampleId: string; status: JobStatus; result: {label: string; score: number} | null; receiptId: string | null };
 type Dashboard = {
   ownerScope: string; consentVersion: string; acceptingDevices: boolean; devices: { id: string; active: boolean; enrolledAt: number; mode: 'test' | 'live'; currentEnvironment: boolean }[]; jobs: Job[];
 };
@@ -22,7 +24,7 @@ type PlanState = {
   ownerScope: string; configured: boolean; testMode: boolean;
   plan: {amountMinor: number; currency: string; merchant: string; monthlyJobs: number; termsVersion: string} | null;
   contract: {termsVersion: string; amountMinor: number; currency: string; merchant: string; monthlyJobs: number} | null;
-  subscription: {status: 'none' | 'pending' | 'active' | 'ending' | 'inactive'; entitled: boolean; periodEnd: number | null; canCancel: boolean; renewalStopped: boolean};
+  subscription: {status: 'none' | 'pending' | 'active' | 'ending' | 'inactive'; entitled: boolean; attempt: string | null; periodEnd: number | null; canCancel: boolean; renewalStopped: boolean};
 };
 const planStates = { none: '未契約', pending: '申込み手続き中', active: '利用中', ending: '期間終了時に解約', inactive: '利用停止中' };
 
@@ -50,8 +52,8 @@ function priceLabel(plan: {amountMinor: number; currency: string}) {
   const digits = money.resolvedOptions().maximumFractionDigits ?? 2;
   return money.format(plan.amountMinor / 10 ** digits);
 }
-function Consent({value, change, children}: {value: boolean; change: (value: boolean) => void; children: ReactNode}) {
-  return <label className={styles.consent}><input type="checkbox" checked={value} onChange={event => change(event.target.checked)} />{children}</label>;
+function Consent({value, change, disabled, children}: {value: boolean; change: (value: boolean) => void; disabled?: boolean; children: ReactNode}) {
+  return <label className={styles.consent}><input type="checkbox" disabled={disabled} checked={value} onChange={event => change(event.target.checked)} />{children}</label>;
 }
 
 export default function NoahSharedCompute() {
@@ -61,12 +63,15 @@ export default function NoahSharedCompute() {
   const [login, setLogin] = useState(false);
   const [actionError, setActionError] = useState(''), [notice, setNotice] = useState('');
   const [acceptedPlan, setAcceptedPlan] = useState(''), [acceptedHost, setAcceptedHost] = useState(''), [acceptedJob, setAcceptedJob] = useState('');
-  const [sample, setSample] = useState(SHARED_SAMPLES[0].id);
+  const [publicText, setPublicText] = useState('');
+  const sample = useMemo(() => encodePublicTopicTerms(publicText), [publicText]);
+  const counts = sample ? readPublicTopicTerms(sample) : null;
+  const selectedPreset = topicModel.samples.find(preset => preset.text === publicText)?.id ?? '';
   const [platform, setPlatform] = useState<'android' | 'linux'>('android');
   const [secret, setSecret] = useState<{id: string; token: string; platform: 'android' | 'linux'} | null>(null);
   const [busy, setBusy] = useState(false);
   const [refresh, setRefresh] = useState(0);
-  const pendingJob = useRef<{id: string; sample: string} | null>(null);
+  const pendingJob = useRef<{id: string; intent: string} | null>(null);
   const currentOwner = useRef<string | null>(null);
   const action = useRef<AbortController | null>(null);
   const running = board?.jobs.some(job => job.status === 'queued' || job.status === 'leased') ?? false;
@@ -74,12 +79,28 @@ export default function NoahSharedCompute() {
   const terms = plan?.contract ?? plan?.plan;
   const planIntent = plan && terms ? [plan.ownerScope, terms.termsVersion].join('/') : '';
   const hostIntent = board ? [board.ownerScope, board.consentVersion, platform].join('/') : '';
-  const jobIntent = board ? [board.ownerScope, board.consentVersion, sample].join('/') : '';
+  const jobIntent = sample && board && plan?.ownerScope === board.ownerScope && plan.subscription.entitled && plan.subscription.attempt && plan.contract
+    ? [board.ownerScope, board.consentVersion, plan.subscription.attempt, plan.contract.termsVersion, sample].join('/') : '';
   const planConsent = !!planIntent && acceptedPlan === planIntent;
   const hostConsent = !!hostIntent && acceptedHost === hostIntent;
   const jobConsent = !!jobIntent && acceptedJob === jobIntent;
 
-  useEffect(() => () => action.current?.abort(), []);
+  function editPublicText(value: string) {
+    setPublicText(value);
+    setAcceptedJob('');
+    pendingJob.current = null;
+  }
+  useEffect(() => {
+    function clearOnPageExit() { editPublicText(''); }
+    function clearOnPageRestore(event: PageTransitionEvent) { if (event.persisted) editPublicText(''); }
+    window.addEventListener('pagehide', clearOnPageExit);
+    window.addEventListener('pageshow', clearOnPageRestore);
+    return () => {
+      window.removeEventListener('pagehide', clearOnPageExit);
+      window.removeEventListener('pageshow', clearOnPageRestore);
+      action.current?.abort();
+    };
+  }, []);
   useEffect(() => {
     const controller = new AbortController();
     let accountChanged = false;
@@ -98,7 +119,7 @@ export default function NoahSharedCompute() {
     }
     function onError(error: unknown, target: (message: string) => void) {
       if (controller.signal.aborted) return;
-      if (error instanceof AccountRequired) { setLogin(true); setSecret(null); }
+      if (error instanceof AccountRequired) { setLogin(true); setSecret(null); editPublicText(''); }
       else target(errorText(error));
     }
     async function load(includePlan: boolean, includeJobs: boolean) {
@@ -127,7 +148,7 @@ export default function NoahSharedCompute() {
     try { await fn(controller.signal); }
     catch (error) {
       if (!controller.signal.aborted) {
-        if (error instanceof AccountRequired) { setLogin(true); setSecret(null); }
+        if (error instanceof AccountRequired) { setLogin(true); setSecret(null); editPublicText(''); }
         else setActionError(errorText(error));
       }
     } finally {
@@ -146,12 +167,12 @@ export default function NoahSharedCompute() {
     });
   }
   function submit() {
-    if (!board || !jobConsent || !plan?.subscription.entitled) return;
-    const request = pendingJob.current?.sample === sample ? pendingJob.current : {id: crypto.randomUUID(), sample};
+    if (!sample || !board || !jobConsent || !plan?.subscription.entitled) return;
+    const request = pendingJob.current?.intent === jobIntent ? pendingJob.current : {id: crypto.randomUUID(), intent: jobIntent};
     pendingJob.current = request;
     void run(async signal => {
       await api('', signal, {owner: board.ownerScope, body: {action: 'submit', requestId: request.id, sampleId: sample, consentVersion: board.consentVersion, acceptThirdParty: true}});
-      pendingJob.current = null; setAcceptedJob(''); setNotice('依頼を受け付けました。結果はこの画面で確認できます。');
+      editPublicText(''); setNotice('依頼を受け付けました。結果はこの画面で確認できます。');
     });
   }
   function enroll() {
@@ -177,7 +198,7 @@ export default function NoahSharedCompute() {
     <div className={styles.groups}>
       <section className={styles.section} aria-labelledby="compute-plan">
         <h2 id="compute-plan">月額プラン</h2>
-        <p>公開サンプルの文章分類を参加端末に依頼できます。Noahが端末への割り当てと結果の検収を行います。</p>
+        <p>公開英文が会議・在庫・研究のどれに近いか、参加端末に分類を依頼できます。Noahが端末への割り当てと結果の検収を行います。</p>
         {planError && <p role="alert">{planError}</p>}
         {!plan && !planError && <output>契約状況を確認中…</output>}
         {plan && <>
@@ -200,14 +221,30 @@ export default function NoahSharedCompute() {
       <section className={styles.section} aria-labelledby="compute-job">
         <h2 id="compute-job">分類を依頼する</h2>
         {queueError && <p role="alert">{queueError}</p>}
-        <label className={styles.field}>公開サンプル
-          <select value={sample} onChange={event => { setSample(event.target.value); setAcceptedJob(''); }}>{SHARED_SAMPLES.map(item => <option key={item.id} value={item.id}>{item.title}</option>)}</select>
+        <label className={styles.field}>入力する文
+          <select value={selectedPreset} disabled={busy} onChange={event => editPublicText(topicModel.samples.find(preset => preset.id === event.target.value)?.text ?? '')}>
+            <option value="">自分の公開英文</option>{topicModel.samples.map(preset => <option key={preset.id} value={preset.id}>例文 · {preset.title}</option>)}
+          </select>
         </label>
-        <Consent value={jobConsent} change={yes => setAcceptedJob(yes ? jobIntent : '')}>このサンプルを他の利用者の参加端末に渡して分類します。</Consent>
-        <button className={common.secondary} type="button" disabled={busy || !plan?.subscription.entitled || !board || !jobConsent} onClick={submit}>参加端末に依頼</button>
+        <label className={styles.field}>公開英文
+          <textarea value={publicText} onChange={event => editPublicText(event.target.value)} disabled={busy}
+            maxLength={8000} rows={3} autoComplete="off" autoCorrect="off" autoCapitalize="none" spellCheck={false}
+            aria-describedby="compute-text-help" placeholder="例　The meeting minutes include the research report." />
+        </label>
+        <p id="compute-text-help" className={styles.note}>公開されている英文を8,000文字まで入力できます。本文はこのブラウザー内でだけ使い、単語の一致数に変換します。</p>
+        <details className={styles.dictionary}>
+          <summary>対象の英単語を見る</summary>
+          <dl>{termGroups.map((group, i) => <div key={group}><dt>{group}</dt><dd lang="en">{topicModel.terms[i].join(' · ')}</dd></div>)}</dl>
+        </details>
+        {counts ? <div className={styles.preview} aria-live="polite">
+          <p>送信する一致数 <small>各15まで</small></p>
+          <dl>{termGroups.map((group, i) => <div key={group}><dt>{group}</dt><dd>{counts[i]}</dd></div>)}</dl>
+        </div> : publicText.trim() && <output className={styles.note}>対象の英単語が見つかりません。meeting、stock、study などを含む英文を入力してください。</output>}
+        <Consent value={jobConsent} disabled={!jobIntent || busy} change={yes => setAcceptedJob(yes ? jobIntent : '')}>この4つの一致数をNoahと他の利用者の参加端末に送り、分類を依頼します。</Consent>
+        <button className={common.secondary} type="button" disabled={busy || !jobConsent} onClick={submit}>参加端末に依頼</button>
         {plan && !plan.subscription.entitled && <p className={styles.note}>依頼には有効な月額プランが必要です。</p>}
         {!!board?.jobs.length && <ul className={styles.list} aria-label="自分の依頼">{board.jobs.map(job => <li key={job.id}>
-          <strong>{sampleTitle.get(job.sampleId) ?? job.sampleId}</strong><span>{states[job.status]}</span>
+          <strong>{job.title ?? sampleTitle.get(job.sampleId) ?? '公開英文'}</strong><span>{states[job.status]}</span>
           {job.result && <p>分類結果　{categories[job.result.label] ?? job.result.label}（スコア {job.result.score}）</p>}
           {job.receiptId && <small>検収記録　{job.receiptId}</small>}
           {(job.status === 'queued' || job.status === 'leased') && <button className={common.secondary} type="button" disabled={busy} onClick={() => void run(async signal => {
@@ -217,7 +254,7 @@ export default function NoahSharedCompute() {
       </section>
       <section className={styles.section} aria-labelledby="compute-host">
         <h2 id="compute-host">自分の端末を提供する</h2>
-        <p>参加中は他の利用者の公開サンプルをこの端末で分類します。端末の電力と通信を使い、発熱することがあります。提供者への報酬はありません。</p>
+        <p>他の利用者から届く英単語の一致数を、参加中の端末で分類します。端末の電力と通信を使い、発熱することがあります。提供者への報酬はありません。</p>
         <p>Android 11以降とLinuxに対応します。電源・温度・回線の条件を確認できる端末で、参加プログラムを開いている間だけ処理します。1回の起動は最大15分、30件、アプリの通信量256 KiBまでです。端末の提供は無料で、いつでも停止できます。提供停止後も月額契約は自動更新の設定に従います。</p>
         <label className={styles.field}>参加する端末
           <select value={platform} onChange={event => { setPlatform(event.target.value === 'linux' ? 'linux' : 'android'); setAcceptedHost(''); }}>
@@ -249,7 +286,7 @@ export default function NoahSharedCompute() {
           {device.active && <button type="button" className={common.secondary} disabled={busy} onClick={() => revoke(device.id)}>この端末の提供を停止</button>}
         </li>)}</ul>}
       </section>
-      <div><button className={common.secondary} type="button" disabled={busy} onClick={() => setRefresh(n => n + 1)}>状況を更新</button></div>
+      <div><button className={common.secondary} type="button" disabled={busy} onClick={() => { editPublicText(''); setRefresh(n => n + 1); }}>状況を更新</button></div>
     </div>}
   </main>;
 }

@@ -73,15 +73,17 @@ public final class Smoke extends Instrumentation {
                 check(tokenField.length() == 0, "token cleared on pause");
                 screen.finish();
             });
-            String[] ids = {"meeting-notes","inventory-update","research-summary","order-review"};
-            String[] labels = {"meeting","inventory","research","inventory"};
-            int[] scores = {18,17,22,18};
+            String[] ids = {"meeting-notes","inventory-update","research-summary","order-review","terms-0.15.1.2","terms-15.15.15.15"};
+            String[] labels = {"meeting","inventory","research","inventory","inventory","research"};
+            int[] scores = {18,17,22,18,62,90};
             for (int i=0; i<ids.length; i++) {
                 Bundle result = classify(ids[i]);
                 check(result != null && labels[i].equals(result.getString("label")) && result.getInt("score") == scores[i], "inference " + ids[i]);
             }
-            check(classify("unknown") == null, "unknown sample");
-            report.putString("result", "PASS consent, unplugged refusal, privacy flag, token cleared on pause, isolation, four verified samples, rejected unknown sample");
+            for (String invalid : new String[]{"unknown", "terms-0.0.0.0", "terms-00.1.0.0", "terms-16.0.0.0", "terms-1.0.0.0\n", "terms-1..0.0"}) {
+                check(classify(invalid) == null, "invalid input");
+            }
+            report.putString("result", "PASS consent, unplugged refusal, privacy flag, token cleared on pause, isolation, four built-in samples, public dictionary counts, rejected noncanonical inputs");
             finish(Activity.RESULT_OK, report);
         } catch (Throwable error) {
             report.putString("error", android.util.Log.getStackTraceString(error));

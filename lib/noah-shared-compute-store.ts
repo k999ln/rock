@@ -2,11 +2,12 @@ import type { BillingScope } from './noah-shared-compute-plan.ts';
 import { NoahAgentError, noahSha256 } from './noah-agent-upload.ts';
 import {
   evaluateSharedSample,
+  sharedTopicTitle,
   SHARED_WORKLOAD_SHA256,
   SHARED_WORKLOAD_VERSION,
 } from './noah-shared-workload.ts';
 
-export const SHARED_COMPUTE_CONSENT = 'shared-compute-v1';
+export const SHARED_COMPUTE_CONSENT = 'shared-compute-v2';
 const LEASE_MS = 4_000;
 const MAX_RUN_MS = 20_000;
 const MAX_PENDING_MS = 15 * 60_000;
@@ -102,6 +103,8 @@ export function createSharedComputeStore(
       ),
       jobs: jobs.results.map(({ result_label, result_score, ...job }) => ({
         ...job,
+        title: sharedTopicTitle(job.sampleId),
+        inputKind: job.sampleId.startsWith('terms-') ? 'term-counts' : 'sample',
         result:
           result_label === null
             ? null
@@ -303,7 +306,7 @@ export function createSharedComputeStore(
 
   async function claim(d: Device, now: number) {
     // Replayed claims cannot create a second active lease on the device. Return only fixed
-    // public sample identity; account IDs and requester-supplied idempotency keys stay here.
+    // sample identity or bounded vocabulary counts; private text and account details never go to the host.
     const row = await q(
       `UPDATE noah_compute_jobs AS j SET status='leased',device_id=?,lease_id=?,lease_start=?,
         lease_until=min(?,deadline),attempts=attempts+1
