@@ -123,12 +123,14 @@ export function screen(options = {}) {
       if (id === 'react') return hooks;
       if (id === 'react/jsx-runtime') return { jsx, jsxs: jsx, Fragment };
       if (id === 'next/link') return { default: 'a' };
+      if (id === './noah-marketplace-view.ts') return load('lib/noah-marketplace-view.ts');
       if (id === 'next/image') return { default: 'img' };
       if (id === 'lucide-react') return new Proxy({}, { get: (_, name) => String(name) });
       if (id.endsWith('.module.css')) return { default: new Proxy({}, { get: (_, name) => String(name) }) };
       if (options.modules?.[id]) return id === 'next/navigation' ? { usePathname: () => options.pathname ?? '/noah', useSearchParams: () => new URLSearchParams(options.search ?? ''), ...options.modules[id] } : options.modules[id];
+      if (id === 'next/dynamic') return { default: () => props => jsx('dynamic-component', props) };
       if (id === '@/lib/noah-collection') return collection;
-      if (id === 'next/navigation') return { usePathname: () => options.pathname ?? '/noah', useSearchParams: () => new URLSearchParams(options.search ?? '') };
+      if (id === 'next/navigation') return { useRouter: () => ({ replace: href => visits.push(href) }), usePathname: () => options.pathname ?? '/noah', useSearchParams: () => new URLSearchParams(options.search ?? '') };
       if(id.startsWith('./')&&options.modules?.[`@/components/${id.slice(2)}`])return options.modules[`@/components/${id.slice(2)}`];
       if(id==='./noah-locale')return {useNoahLocale:()=>({t:(text,values)=>noahTranslate(options.locale??'ja',text,values),locale:options.locale??'ja'}),NoahLanguageSetting:()=>null};
       if(id==='@/lib/noah-operation-labels')return operationLabels;

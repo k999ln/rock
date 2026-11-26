@@ -57,11 +57,11 @@ void test('public feed marks explicitly published Agents while preserving ordina
   const cards = () => feed.find('li').filter(node => node.props['data-agent-pin-id']);
   assert.deepEqual(cards().map(node => node.props['data-agent-pin-id']), ['dev.example.agent-2']);
   const agentNodes = feed.nodes(cards()[0]);
-  assert.equal(agentNodes.find(node => node.type === 'a').props.href, `/noah/marketplace?package=${encodeURIComponent(agent)}`);
+  assert.equal(agentNodes.find(node => node.type === 'a').props.href, `/noah?package=${encodeURIComponent(agent)}`);
   assert.ok(agentNodes.some(node => node.type === 'button' && feed.text(node) === '提供元をフォロー'));
   await feed.press(agentNodes.find(node => node.type === 'button' && feed.text(node) === '非表示'));
   assert.equal(cards().length, 0);
-  assert.deepEqual(feed.find('a', '詳細・利用条件').map(node => node.props.href), [`/noah/marketplace?package=${encodeURIComponent(tool)}`]);
+  assert.deepEqual(feed.find('a', '詳細・利用条件').map(node => node.props.href), [`/noah?package=${encodeURIComponent(tool)}`]);
 });
 void test('creator screenings select reviewed videos and preserve guide text without rendering external assets', async t => {
   const f = fixture(t);
@@ -92,7 +92,7 @@ void test('creator screenings select reviewed videos and preserve guide text wit
   assert.equal(video.props.preload,'none'); assert.equal(video.props.controls,true); assert.equal(video.props.autoPlay,undefined);
   assert.equal(player.find('img').length,0);
   assert.equal(player.find('h4','使い方').length,1); assert.equal(player.find('ol').length,1);
-  assert.ok(player.find('a').every(a => a.props.href.startsWith('/noah/')));
+  assert.ok(player.find('a').every(a => /^\/noah(?:[/?]|$)/.test(a.props.href)));
   await player.click('上映作品に戻る'); assert.equal(back,true);
   assert.equal(ui.calls.length,1);
 });

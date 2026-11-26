@@ -1,3 +1,5 @@
+import { skyToolPackageStore } from './sky-tool-package-store';
+import { mergeNoahMarketplaceDirectory } from './noah-marketplace-directory';
 import { env } from 'cloudflare:workers';
 import { database } from './fund-store';
 import { noahAllowed, parseNoahFlags } from './noah-flags';
@@ -16,13 +18,15 @@ export async function noahAgentDirectory(target?: { id?: string; family?: string
   const showGeneratedPins = target?.showGeneratedPins === true || await noahGeneratedPinsPublic(config.BUCKET, config);
   const scoped = Boolean(target?.id || target?.family);
   const lookup = target?.id ? { id: target.id, family: target.family ?? null } : undefined;
-  const [collected, revenue, verified] = await Promise.all([
+  const [collected, revenue, verified, marketplace] = await Promise.all([
     readNoahDirectory({ db: database(), bucket: config.BUCKET, listed, showGeneratedPins }, lookup),
     listed && (!scoped || (!target?.family && !!target?.id && await isNoahRevenueProject(target.id))) ? noahRevenueDirectory() : Promise.resolve([]),
     listed ? noahVerifiedDirectory() : Promise.resolve([]),
+    !scoped ? skyToolPackageStore(database()).listRegistry() : Promise.resolve([]),
   ]);
   const cloudEnabled = listed && Boolean(config.NOAH_CLOUD_URL && config.NOAH_CLOUD_KEY);
-  return [...withNoahCloudAvailability(mergeNoahVerifiedDirectory(collected, verified), cloudEnabled, noahCloudSupported(config.NOAH_CLOUD_MODE)), ...revenue];
+  const entries = [...withNoahCloudAvailability(mergeNoahVerifiedDirectory(collected, verified), cloudEnabled, noahCloudSupported(config.NOAH_CLOUD_MODE)), ...revenue];
+  return scoped ? entries : mergeNoahMarketplaceDirectory(entries, marketplace);
 }
 
 export async function findNoahAgentEntry(id: string, family: string | null = null) {

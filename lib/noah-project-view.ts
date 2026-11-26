@@ -1,10 +1,13 @@
+import { noahMarketplaceCardHref } from './noah-marketplace-view.ts';
+import type { NoahPageParams } from './noah-page-routes.ts';
 import type { NoahAgentCard } from './noah-agent-cards.ts';
 import type { NoahCloudProfile } from './noah-cloud-contract.ts';
 import type { NoahFirstJob } from './noah-first-jobs.ts';
 
 export const noahProjectHref = (id: string) => `/noah/discover/agent?${new URLSearchParams({ id })}`;
 /** Collected cards always open Noah, even while an older snapshot still carries an external href. */
-export function noahCardHref(card: NoahAgentCard) {
+export function noahCardHref(card: NoahAgentCard, params: NoahPageParams = {}) {
+  if (card.marketplace) return noahMarketplaceCardHref(card.marketplace, params);
   return card.sources?.length || card.external ? noahProjectHref(card.feedbackId ?? card.id) : card.href;
 }
 export type NoahProjectConnection =

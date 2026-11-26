@@ -2,6 +2,7 @@
 import { noahSignInHref } from '@/lib/noah-navigation';
 import { useEffect, useRef, useState } from 'react';
 import Link from 'next/link';
+import { useSearchParams } from 'next/navigation';
 import { MoreHorizontal, Check, Plus, X } from 'lucide-react';
 import { NOAH_PIN_TEXT, noahCardOrigin } from '@/lib/noah-pins';
 import { noahCardHref, noahProjectHref } from '@/lib/noah-project-view';
@@ -24,6 +25,7 @@ export default function NoahPinGrid({ items, signedIn, ownerScope, onChange, onH
   onChange?: (id: string, savedIn: string[]) => void; onHide?: (id: string) => void;
 }) {
   const { t } = useNoahLocale();
+  const params = useSearchParams();
   const [saving, setSaving] = useState<NoahPinView | null>(null);
   return <>
     <NoahAgentPinGrid>{items.map((item, index) => {
@@ -36,9 +38,10 @@ export default function NoahPinGrid({ items, signedIn, ownerScope, onChange, onH
       // 絵は、作者の表紙 → ピンの動画 → 図解 → 場面の絵の順（NoahPinMotion）。動画と図解は見えている間繰り返す。図解の色は並びの index 枚目で回す。
       const pin = item.pin, plain = Boolean(pin || item.pinVideo), saved = item.savedIn.length > 0;
       return <NoahAgentPin key={item.id} id={item.id} name={pin?.title ?? item.name} topic={item.topic} shape={item.shape}
-        summary={item.summary} href={noahCardHref(item) ?? noahReadyDetailHref(item.id)} plain={plain}
+        summary={item.summary} href={noahCardHref(item, Object.fromEntries(params)) ?? noahReadyDetailHref(item.id)} plain={plain}
+        cover={item.marketplace?.cover}
         diagram={pin ? { scene: pin.scene, tone: index } : undefined} video={item.pinVideo}
-        meta={plain ? (item.notice ? <>{noahCardOrigin(item)}</> : undefined) : <>{noahCardOrigin(item)} · {runStatus}</>}
+        meta={item.marketplace ? <>{noahCardOrigin(item)} · {item.marketplace.label}</> : plain ? (item.notice ? <>{noahCardOrigin(item)}</> : undefined) : <>{noahCardOrigin(item)} · {runStatus}</>}
         actions={plain ? <>
           {tasks}
           {/* PC: 保存はマウスを乗せた時だけ絵の上に。スマホ: 題名の右の「…」から保存と「表示しない」（本人の決定 2026-11-25「乗せた時だけ出す」）。 */}

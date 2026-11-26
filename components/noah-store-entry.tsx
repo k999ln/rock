@@ -98,7 +98,8 @@ export function NoahStoreServices() {
   const { t } = useNoahLocale();
   return <aside className={styles.services}>
     <nav aria-label={t('ストアのサービス')}>
-      <Link href="/noah/marketplace"><ShoppingBag size={17} aria-hidden="true" />{t('Agentを買う')}</Link>
+      <Link href="/noah/purchases"><ShoppingBag size={17} aria-hidden="true" />{t('購入履歴')}</Link>
+      <Link href="/noah/sell">{t('販売する')}</Link>
     </nav>
     <nav aria-label={t('eSIMでつなぐ専用クラウド')}>
       <Link href="/connect"><Signal size={17} aria-hidden="true" />{t('eSIM専用クラウド（準備中）')}</Link>

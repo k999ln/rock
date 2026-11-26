@@ -32,7 +32,7 @@ export default function NoahLibrary({embedded=false}:{embedded?:boolean}={}) {
   }, [attempt]);
   const matches = data?.uploads.filter(a => `${a.manifest.name} ${a.manifest.summary}`.toLowerCase().includes(query.trim().toLowerCase())) || [];
   const content = <Container className={styles.page} aria-label={embedded ? "自分のAgent" : undefined}>
-    {!embedded && <nav className={styles.nav}><Link href="/noah/explore">見つける</Link><Link href="/noah/activity">仕事・成果</Link><Link href="/noah/usage">利用状況</Link><Link href="/noah/marketplace">マーケット</Link><Link href="/noah/purchases">購入履歴</Link><Link href="/noah/publisher">公開する</Link></nav>}
+    {!embedded && <nav className={styles.nav}><Link href="/noah/explore">見つける</Link><Link href="/noah/activity">仕事・成果</Link><Link href="/noah/usage">利用状況</Link><Link href="/noah">マーケット</Link><Link href="/noah/purchases">購入履歴</Link><Link href="/noah/publisher">公開する</Link></nav>}
     {embedded ? <div className={myStyles.libraryActions}><Link href="/noah/agents/new">Agentを追加</Link></div> : <header className={styles.hero}><div><span className={styles.eyebrow}>YOUR AGENTS</span><h1>自分のAgent</h1><p>接続したAgentに仕事を頼む。自作Agentの内容や接続先を管理する。</p></div><Link className={styles.primary} href="/noah/agents/new">Agentを追加</Link></header>}
     <NoahInstancesList />
     <NoahInstallationsList />

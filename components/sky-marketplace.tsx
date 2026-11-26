@@ -76,7 +76,7 @@ const getHostSnapshot = (): SkyHostEnvironment | null =>
   detectSkyHost(navigator.userAgent, navigator.maxTouchPoints);
 const getServerHostSnapshot = (): SkyHostEnvironment | null => null;
 
-export default function SkyMarketplace({ initialPackageKey = null }: { initialPackageKey?: string | null }) {
+export default function SkyMarketplace({ initialPackageKey = null, initialModel = null, detailsOnly = false, onClose }: { initialPackageKey?: string | null; initialModel?: string | null; detailsOnly?: boolean; onClose?: () => void }) {
   const runtimeContext = useSkyToolContext();
   const commerce = usePublicCommerceOffers();
   const [query, setQuery] = useState(initialPackageKey ?? '');
@@ -89,7 +89,7 @@ export default function SkyMarketplace({ initialPackageKey = null }: { initialPa
   const [entitlementReadState, setEntitlementReadState] = useState<'loading' | 'ready' | 'unavailable'>('loading');
   const [selected, setSelected] = useState<RegistryItem | null>(null);
   const [selectedCatalog, setSelectedCatalog] = useState<Automation | null>(null);
-  const [selectedAi, setSelectedAi] = useState<SkyAiMarketplaceEntry | null>(null);
+  const [selectedAi, setSelectedAi] = useState<SkyAiMarketplaceEntry | null>(() => skyAiMarketplaceEntries.find(model => model.id === initialModel) ?? null);
   const host = useSyncExternalStore(subscribeHost, getHostSnapshot, getServerHostSnapshot);
   const [showHostMismatches, setShowHostMismatches] = useState(false);
   const [initialPackageDismissed, setInitialPackageDismissed] = useState(false);
@@ -216,9 +216,9 @@ export default function SkyMarketplace({ initialPackageKey = null }: { initialPa
         : activeOffer ? `${commerceAmount(activeOffer.amountMinor, activeOffer.currency)} · 買い切り`
           : `${pricingLabel[activeSelection?.manifest.pricing.model ?? 'external_contract']} · ${activeSelection?.manifest.pricing.note ?? ''}`;
 
-  return (
-    <WorkspaceShell title="Noah Market" tone="sky" contentClassName={styles.shell} hideTopActions>
-      <div className={styles.page}>
+  const content = (
+    <>
+      {!detailsOnly && <div className={styles.page}>
         <nav className={styles.breadcrumb} aria-label="現在位置">
           <Link href="/noah"><ArrowLeft size={14} /> Noahに戻る</Link>
           <span>/</span>
@@ -440,7 +440,11 @@ export default function SkyMarketplace({ initialPackageKey = null }: { initialPa
           </div>
           <Link href="/noah/publish">Studioを開く <ArrowRight size={17} /></Link>
         </section>
-      </div>
+      </div>}
+      {detailsOnly && (initialPackageState === 'pending' || initialPackageState === 'missing' || initialPackageState === 'lookup_failed' || (initialModel && !selectedAi)) && <Dialog open onOpenChange={open => { if (!open) onClose?.(); }}><DialogContent className={styles.modal}>
+        <DialogTitle>利用条件</DialogTitle><DialogDescription>{initialPackageState === 'pending' ? '利用条件を確認しています…' : initialPackageState === 'lookup_failed' ? '利用条件を取得できませんでした。時間をおいて再度開いてください。' : 'この項目は現在の公開一覧にありません。購入済みの権利は購入履歴で確認できます。'}</DialogDescription>
+        <Link href="/noah/purchases">購入履歴</Link>
+      </DialogContent></Dialog>}
 
       <Dialog open={Boolean(selectedCatalog)} onOpenChange={(open) => { if (!open) setSelectedCatalog(null); }}>
         {selectedCatalog && (
@@ -457,7 +461,7 @@ export default function SkyMarketplace({ initialPackageKey = null }: { initialPa
       </Dialog>
 
       <Dialog open={Boolean(activeSelection)} onOpenChange={(open) => {
-        if (!open) { setSelected(null); setInitialPackageDismissed(true); }
+        if (!open) { setSelected(null); setInitialPackageDismissed(true); onClose?.(); }
       }}>
         {activeSelection && (
           <DialogContent className={styles.modal}>
@@ -487,7 +491,7 @@ export default function SkyMarketplace({ initialPackageKey = null }: { initialPa
         )}
       </Dialog>
 
-      <Dialog open={Boolean(selectedAi)} onOpenChange={(open) => { if (!open) setSelectedAi(null); }}>
+      <Dialog open={Boolean(selectedAi)} onOpenChange={(open) => { if (!open) { setSelectedAi(null); onClose?.(); } }}>
         {selectedAi && (
           <DialogContent className={styles.modal}>
             <span className={styles.verifiedBadge}><BrainCircuit size={13} /> LLM / MCP対応</span>
@@ -504,6 +508,7 @@ export default function SkyMarketplace({ initialPackageKey = null }: { initialPa
           </DialogContent>
         )}
       </Dialog>
-    </WorkspaceShell>
+    </>
   );
+  return detailsOnly ? content : <WorkspaceShell title="Noah Market" tone="sky" contentClassName={styles.shell} hideTopActions>{content}</WorkspaceShell>;
 }

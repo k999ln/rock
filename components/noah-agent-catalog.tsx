@@ -159,7 +159,7 @@ export default function NoahAgentCatalog({ embedded = false }: { embedded?: bool
             <button type="button" className={styles.activeNav} onClick={resetFeed} aria-label="ホーム"><House size={25} strokeWidth={2.2} /><span>ホーム</span></button>
             <button type="button" onClick={focusSearch} aria-label="検索"><Search size={26} strokeWidth={1.7} /><span>検索</span></button>
             <Link href="/noah/saved?tab=agents" aria-label="自分のAgent"><Bot size={26} strokeWidth={1.7} /><span>自分のAgent</span></Link>
-            <Link href="/noah/marketplace" aria-label="マーケット"><Store size={25} strokeWidth={1.7} /><span>マーケット</span></Link>
+            <Link href="/noah" aria-label="マーケット"><Store size={25} strokeWidth={1.7} /><span>マーケット</span></Link>
             <Link href="/noah/work" aria-label="仕事"><ListChecks size={25} strokeWidth={1.7} /><span>仕事</span></Link>
           </nav>
           <Link href="/noah/agents/new" className={styles.addButton} aria-label="Agentを追加"><Plus size={22} /><span>Agentを追加</span></Link>
@@ -202,7 +202,7 @@ export default function NoahAgentCatalog({ embedded = false }: { embedded?: bool
           <div className={styles.sideSearch}><Search size={18} /><input aria-label="サイドバーからAgentを検索" placeholder="Agentを検索" value={query} onChange={e => setQuery(e.target.value)} /></div>
           <section className={styles.sidePanel}><h2>気になるAgentから。</h2><p>できることを見て、<br />自分に合ったAgentを見つけよう。</p><Link href="/noah/agents/anicca" className={styles.suggestion}><span className={`${styles.avatar} ${styles.aniccaAvatar}`}>a</span><span><strong>Anicca</strong><small>このMac · Life Manager</small></span><span className={styles.smallButton}>見る</span></Link><Link href="/noah/discover" className={styles.moreLink}>もっと探す <ArrowRight size={14} /></Link></section>
           <section className={styles.sidePanel}><span className={styles.sideEyebrow}>YOUR SPACE</span><h2>自分のAgent</h2><p>追加したAgentの設定や接続を、<br />ひとつの場所で。</p><Link className={styles.libraryLink} href="/noah/saved?tab=agents"><Bot size={20} /><span>ライブラリを開く</span><ChevronRight size={17} /></Link></section>
-          <div className={styles.sideFooter}><Link href="/sky/help"><CircleHelp size={13} />使い方</Link><Link href="/noah/marketplace">マーケット</Link><span>Noah · avokado</span></div>
+          <div className={styles.sideFooter}><Link href="/sky/help"><CircleHelp size={13} />使い方</Link><Link href="/noah">マーケット</Link><span>Noah · avokado</span></div>
         </div>
       </aside>
     </div>

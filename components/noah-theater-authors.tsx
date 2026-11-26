@@ -43,7 +43,7 @@ export function NoahAuthorScreening({ entry, onBack }: { entry: NoahFeedEntry; o
         src={noahReleaseCoverUrl(entry.packageKey, entry.digest, true)} onError={() => setFailed(true)} />}
     <p>{entry.summary}</p>
     {entry.guideMarkdown && <details><summary>{t('使い方ガイド')}</summary><AuthorGuide text={entry.guideMarkdown} /></details>}
-    <Link href={'/noah/marketplace?package=' + encodeURIComponent(entry.packageKey)}>{t('詳細・利用条件')} <ArrowUpRight size={15} aria-hidden="true" /></Link>
+    <Link href={'/noah?package=' + encodeURIComponent(entry.packageKey)}>{t('詳細・利用条件')} <ArrowUpRight size={15} aria-hidden="true" /></Link>
   </article>;
 }
 
