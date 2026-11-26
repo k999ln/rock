@@ -10,4 +10,4 @@
 
 合格条件: 条件付き旧URLに転送循環がない。ホームが条件どおりdiscover APIを読む。メニューはホーム1件。390px/1280pxで検索とタイムラインの導線を確認。`npm run verify` とPRの全CIが成功。公開前に最新mainとSites保存ソースのtree一致を照合する。
 
-検証結果・PR・公開版の記録は作業完了時に追記する。
+対象試験・typecheck/lint/build・本番構成のHTTP計測は成功。最新の全体検証・390px/1280px表示・main/SitesのSHAとtree・公開版の記録は [PR #84](https://github.com/iceiceice999/rock/pull/84) に残す。

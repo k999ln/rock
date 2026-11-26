@@ -165,4 +165,4 @@
 
 | 139 | [139-main-public-pages.md](139-main-public-pages.md) | 現mainのNoah/Eveに必要な公開ページへ限定・旧URL転送・審査担当認証 | ✅ 実装・対象40試験成功。全体検証・公開記録は [PR #81](https://github.com/iceiceice999/rock/pull/81) |
 
-| 140 | [140-noah-home-search.md](140-noah-home-search.md) | ホーム・検索・タイムラインの入口を一本化 | 実装・検証中 |
+| 140 | [140-noah-home-search.md](140-noah-home-search.md) | ホーム・検索・タイムライン・プロフィールの重複入口を統合 | ✅ 実装・対象試験成功。全体検証・公開記録は [PR #84](https://github.com/iceiceice999/rock/pull/84) |
