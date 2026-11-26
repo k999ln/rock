@@ -19,7 +19,7 @@ void test('database status inventories every boundary and keeps production readb
     project.tasks.map(({ id, status }) => [id, status]),
   );
   assert.equal(report.summary.boundaryCount, 6);
-  assert.equal(report.summary.tableCount, 257);
+  assert.equal(report.summary.tableCount, 259);
   for (const table of ['distribution_assignments','distribution_lots','distribution_addresses','distribution_plans','distribution_occurrences']) {
     assert.deepEqual(report.boundaries.filter(boundary=>boundary.tables.includes(table)).map(b=>b.id),['operator-dock-d1'],table);
   }
@@ -33,13 +33,15 @@ void test('database status inventories every boundary and keeps production readb
       .deploymentStatus,
     'OWNER_ACCESS_BLOCKED',
   );
-  assert.equal(report.webSchema.tableCount, 180);
-  assert.equal(report.webSchema.migrationCount, 40);
+  assert.equal(report.webSchema.tableCount, 182);
+  assert.equal(report.webSchema.migrationCount, 41);
   for (const name of ['cloud_usage_records', 'cloud_admission_probes', 'cloud_execution_timings']) {
     assert.ok(report.webSchema.tables.includes(name), name);
   }
   assert.ok(report.webSchema.tables.includes('sim_bindings'));
   assert.ok(report.webSchema.tables.includes('noah_agent_availability'));
+  assert.ok(report.webSchema.tables.includes('noah_first_earnings'));
+  assert.ok(report.webSchema.tables.includes('noah_first_earning_runs'));
   assert.ok(report.webSchema.tables.includes('esim_go_profile_status_events'));
   assert.ok(report.webSchema.tables.includes('esim_ios_install_declarations'));
   for (const name of ['sky_linux_service_documents','sky_linux_service_receipts','rockstar_service_setups']) { assert.ok(report.webSchema.tables.includes(name)); assert.ok(report.webSchema.sourceOnlyTables.includes(name)); }
@@ -68,7 +70,7 @@ void test('database status inventories every boundary and keeps production readb
   assert.ok(report.webSchema.tables.includes('jennifer_task_attempts'));
   assert.ok(report.webSchema.tables.includes('jennifer_passkey_credentials'));
   assert.ok(report.webSchema.tables.includes('jennifer_passkey_sessions'));
-  assert.equal(report.webSchema.latestMigration, '0059_noah_agent_availability.sql');
+  assert.equal(report.webSchema.latestMigration, '0060_noah_first_earning.sql');
   assert.equal(report.webSchema.accidentalDuplicateCount, 0);
   assert.equal(report.webSchema.publishedConvergenceDeclarations, 25);
   assert.equal(report.webSchema.marketplaceRelationGuardCount, 8);
@@ -76,7 +78,7 @@ void test('database status inventories every boundary and keeps production readb
     report.webSchema.domains.map(({ id, tableCount }) => [id, tableCount]),
     [
       ['core', 33],
-      ['sky', 110],
+      ['sky', 112],
       ['marketplace', 7],
       ['csv', 5],
       ['business', 25],
