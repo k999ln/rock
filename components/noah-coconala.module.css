@@ -23,6 +23,6 @@
 .page summary { cursor: pointer; }
 .page pre { padding: .8rem; overflow: auto; }
 
-.agentLink, .draft a { color: #523581; text-decoration: underline; }
+.agentLink, .draft a { color: var(--noah-theme-info, #523581); text-decoration: underline; }
 .draft { border: 1px solid var(--border, #ddd); border-radius: .6rem; padding: 1rem; overflow-wrap: anywhere; }
 .draft p { margin-top: .7rem; }

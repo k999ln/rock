@@ -9,7 +9,7 @@
 .identity { min-width: 0; }
 .header .identity h1 {
   margin: 0;
-  color: #1d1d1f;
+  color: var(--noah-theme-text, #1d1d1f);
   font-size: clamp(1.5rem, 3.4vw, 2.35rem);
   font-weight: 740;
   line-height: 1.16;
@@ -18,7 +18,7 @@
 }
 .header .identity p {
   margin: .36rem 0 0;
-  color: #68686f;
+  color: var(--noah-theme-muted, #68686f);
   font-size: .94rem;
   line-height: 1.4;
   overflow-wrap: anywhere;
@@ -31,8 +31,8 @@
   margin-top: .36rem;
   padding-inline: .95rem;
   border-radius: 2rem;
-  background: #fff0e4;
-  color: #924008;
+  background: var(--noah-theme-raised, #fff0e4);
+  color: var(--noah-theme-link, #924008);
   font-size: .88rem;
   font-weight: 700;
   text-decoration: none;
