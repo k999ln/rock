@@ -1,7 +1,7 @@
 'use client';
 /* oxlint-disable next/no-html-link-for-pages -- Stage navigation respects the editor's native unsaved-changes prompt. */
 import { useEffect, useState } from 'react';
-import { ArrowLeft, ArrowRight, BookOpen, ChevronDown, Code2, Monitor, Plug, Play, Store } from 'lucide-react';
+import { ArrowRight, BookOpen, ChevronDown, Code2, Monitor, Plug, Play, Store } from 'lucide-react';
 import type { NoahUpload } from '@/lib/noah-agent-store';
 import { noahSignInHref } from '@/lib/noah-navigation';
 import { eveEngineeringNavigation } from '@/lib/eve-engineering-navigation';
@@ -92,10 +92,18 @@ export default function NoahEngineering({ step, agent, draftLocale }: { step: No
   const [actionsOpen, setActionsOpen] = useState(false);
   return <div className={`${styles.page} ${columns.container}`}>
     <header className={styles.heading}>
-      <a className={styles.back} href="/noah"><ArrowLeft size={15} />{t('ストア')}</a>
-      <h1>{t('Agentエンジニアリング')}</h1>
+      <h1>{t('EveとAgentを作る')}</h1>
     </header>
     <div className={columns.columns} data-engineering-columns>
+      <div className={columns.primary} data-engineering-primary>
+        <NoahEngineeringEve stage={step ?? 'create'} emptyDraft={!step} draftLocale={draftLocale} />
+        {step && <section id="engineering-work" aria-labelledby="engineering-work-title" className={styles.work}>
+          <h2 id="engineering-work-title">{t(actions[step].label)}</h2>
+          {step === 'create' || step === 'connect'
+            ? <NoahAgentUploadForm key={step} engineeringMode={step} onRegistered={id => window.location.assign(noahEngineeringHref('test', id) + '#engineering-work')} />
+            : <RegisteredAgent key={step + (agent ?? '')} step={step} agent={agent} />}
+        </section>}
+      </div>
       <div className={`${styles.chooser} ${columns.secondary}`} data-engineering-secondary data-actions-open={actionsOpen}>
         <button type="button" className={styles.toggle} aria-expanded={actionsOpen} aria-controls="engineering-actions" onClick={() => setActionsOpen(open => !open)}>
           <span>{t('作業を選ぶ')}</span>{step && <small>{t(actions[step].label)}</small>}<ChevronDown size={18} aria-hidden="true" />
@@ -115,15 +123,6 @@ export default function NoahEngineering({ step, agent, draftLocale }: { step: No
             <a href={links.device}><Monitor size={17} aria-hidden="true" />{t('自分の端末でEveに相談する')}</a>
           </nav>
         </div>
-      </div>
-      <div className={columns.primary} data-engineering-primary>
-        <NoahEngineeringEve stage={step ?? 'create'} emptyDraft={!step} draftLocale={draftLocale} />
-        {step && <section id="engineering-work" aria-labelledby="engineering-work-title" className={styles.work}>
-          <h2 id="engineering-work-title">{t(actions[step].label)}</h2>
-          {step === 'create' || step === 'connect'
-            ? <NoahAgentUploadForm key={step} engineeringMode={step} onRegistered={id => window.location.assign(noahEngineeringHref('test', id) + '#engineering-work')} />
-            : <RegisteredAgent key={step + (agent ?? '')} step={step} agent={agent} />}
-        </section>}
       </div>
     </div>
   </div>;
