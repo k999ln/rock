@@ -8,6 +8,8 @@ import { planNoahConnection } from './noah-connect-plan.ts';
 import { noahLaunchPlanState, noahPlaceLabel } from './noah-connect-source.ts';
 import { NoahAgentError, noahUploadId } from './noah-agent-upload.ts';
 import { RECIPES } from './noah-execution-contract.mjs';
+import { parseStoredNoahPin } from './noah-pin-storage.ts';
+import type { NoahPin } from './noah-pin-scene.ts';
 
 type Row = {
   id: string; representative_id: string; members: number; level: 0 | 1 | 2; l2_at: number | null; shuffle: number;
@@ -34,21 +36,40 @@ function listing(row: Row, restore = false) {
 const USERS = (families: number) => `SELECT c.family_key AS family,COUNT(DISTINCT c.owner_id) AS users FROM noah_connections c
  WHERE c.family_key IN (${Array.from({ length: families }, () => '?').join(',')})
  AND EXISTS (SELECT 1 FROM noah_asks a WHERE a.owner_id=c.owner_id AND a.connection_id=c.id AND a.state='succeeded') GROUP BY c.family_key`;
-function item(row: Row, signedIn: boolean, users = 0) {
+function item(row: Row, signedIn: boolean, users = 0, pin?: NoahPin) {
   const req = row.connect_json ? parseNoahConnect(JSON.parse(row.connect_json)) : null;
   // 計画の API（lib/noah-connect-plan-api.ts）と同じ関数で計算する（一覧の印と、詳細の印が、ずれない）。
   const plan = req ? planNoahConnection(req, noahLaunchPlanState({ signedIn, connectSha256: row.connect_sha256!, level: row.check_level, consentedSha256: null })) : null;
   return { id: row.id, name: row.name, provider: row.external_key.split('/')[0], summary: row.summary, host: row.host,
     section: row.level === 2 ? 'ran' : 'new', tools: row.tool_count ?? 0, oneTap: (row.one_tap_tools ?? 0) > 0, checkedAt: row.checked_at, users,
+    ...(pin ? { pin } : {}),
     connect: { badge: plan?.badge ?? 'blocked', taps: plan?.cost.taps ?? 0, typed: plan?.cost.typed ?? 0, place: plan?.place ?? null,
       placeLabel: noahPlaceLabel(plan?.place ?? null, row.host),
       need: plan?.need ?? (req ? null : '接続先を確認できません。'), level: row.check_level ?? 0, price: { model: 'free' }, note: null } };
+}
+
+async function noahReadyPins(db: IntakeDependencies['db'], ids: readonly string[], visible: boolean) {
+  const pins = new Map<string, NoahPin>();
+  if (!visible || !ids.length) return pins;
+  const column = await db.prepare("SELECT name FROM pragma_table_info('noah_intake_candidates') WHERE name='pin_json'").first();
+  if (!column) return pins;
+  for (let index = 0; index < ids.length; index += 90) {
+    const part = ids.slice(index, index + 90), marks = part.map(() => '?').join(',');
+    const rows = (await db.prepare(`SELECT f.id,c.pin_json FROM noah_intake_families f
+      JOIN noah_intake_candidates c ON c.id=f.representative_id
+      WHERE f.id IN (${marks}) AND c.pin_json IS NOT NULL`).bind(...part).all<{ id: string; pin_json: string }>()).results;
+    for (const row of rows) {
+      const pin = parseStoredNoahPin(row.pin_json);
+      if (pin) pins.set(row.id, pin);
+    }
+  }
+  return pins;
 }
 /**
  * 系列の ID の並びから、一覧のカード（NoahReadyItem の形）を作る。並びはそのまま、載せていない物は落とす。
  * 一覧（list）と、ピンタレスト風の一覧（lib/noah-boards-store.ts）が同じ関数を使う（カードの中身と、印がずれない）。D1 の 1 文の引数の上限（100）を越えないよう、90 件ずつ読む。
  */
-export async function noahReadyItems(db: IntakeDependencies['db'], ids: readonly string[], signedIn: boolean) {
+export async function noahReadyItems(db: IntakeDependencies['db'], ids: readonly string[], signedIn: boolean, showGeneratedPins = false) {
   const keys = [...new Set(ids)], byId = new Map<string, Row>(), users = new Map<string, number>();
   for (let index = 0; index < keys.length; index += 90) {
     const part = keys.slice(index, index + 90), marks = part.map(() => '?').join(',');
@@ -56,7 +77,8 @@ export async function noahReadyItems(db: IntakeDependencies['db'], ids: readonly
     for (const row of rows) byId.set(row.id, row);
     for (const row of used) users.set(row.family, row.users);
   }
-  return ids.flatMap((id) => { const row = byId.get(id); return row && listing(row).listed ? [item(row, signedIn, users.get(id) ?? 0)] : []; });
+  const pins = await noahReadyPins(db, keys, showGeneratedPins);
+  return ids.flatMap((id) => { const row = byId.get(id); return row && listing(row).listed ? [item(row, signedIn, users.get(id) ?? 0, pins.get(id))] : []; });
 }
 export type NoahReadyListItem = ReturnType<typeof item>;
 export type IntakeStatus = {
@@ -75,7 +97,7 @@ export function createIntakeStore(deps: IntakeDependencies) {
     const rows = (await db.prepare("SELECT level,COUNT(*) AS n FROM noah_intake_families WHERE listed=1 AND level>=1 AND withdrawn_at IS NULL AND hidden_at IS NULL GROUP BY level").all<{ level: number; n: number }>()).results;
     return { ran: rows.find(r => r.level === 2)?.n ?? 0, new: rows.find(r => r.level === 1)?.n ?? 0 };
   }
-  async function list(owner: string | null, params: URLSearchParams) {
+  async function list(owner: string | null, params: URLSearchParams, showGeneratedPins = false) {
     const cursor = params.get('cursor') ?? '', q = (params.get('q') ?? '').trim(), oneTap = params.get('oneTap') === '1';
     if (q && (Array.from(q).length < 2 || Array.from(q).length > 80)) throw new NoahAgentError('検索は2〜80文字で入力してください。');
     if (params.has('limit') && params.get('limit') !== '0') throw new NoahAgentError('一覧は20件ずつ表示します。');
@@ -100,9 +122,9 @@ export function createIntakeStore(deps: IntakeDependencies) {
     }
     if (params.get('limit') === '0') ids = [];
     // 行と利用人数を、1 回の batch で読む（D1 への往復を増やさない）。
-    return { items: ids.length ? await noahReadyItems(db, ids.map(r => r.id), !!owner) : [], nextCursor: params.get('limit') === '0' ? null : nextCursor, counts: await counts(), source: 'Official MCP Registry' };
+    return { items: ids.length ? await noahReadyItems(db, ids.map(r => r.id), !!owner, showGeneratedPins) : [], nextCursor: params.get('limit') === '0' ? null : nextCursor, counts: await counts(), source: 'Official MCP Registry' };
   }
-  async function detail(id: string, owner: string | null, reviewer: boolean) {
+  async function detail(id: string, owner: string | null, reviewer: boolean, showGeneratedPins = false) {
     // One database round trip for the public row, usage, and this owner's connection.
     // Visibility is still checked on every request; no owner or connection data is cached.
     const queries = [db.prepare(`${ROW} WHERE f.id=?`).bind(id), db.prepare(USERS(1)).bind(id)];
@@ -116,7 +138,8 @@ export function createIntakeStore(deps: IntakeDependencies) {
     if (!row || (!reviewer && !listed && !connection)) throw new NoahAgentError('Agentが見つかりません。', 404);
     let website: string | null = null;
     try { const record = JSON.parse(row.record_json) as { websiteUrl?: string }; if (record.websiteUrl) website = noahPublicHttpsUrl(record.websiteUrl, 'website').href; } catch { /* Untrusted informational link. */ }
-    return { ...item(row, !!owner, used?.users ?? 0), listed, members: row.members, revision: row.revision, website, repository: row.repository, sourceUpdatedAt: row.source_updated_at, connection: connection ? { ...connection } : null };
+    const pin = (await noahReadyPins(db, [id], showGeneratedPins)).get(id);
+    return { ...item(row, !!owner, used?.users ?? 0, pin), listed, members: row.members, revision: row.revision, website, repository: row.repository, sourceUpdatedAt: row.source_updated_at, connection: connection ? { ...connection } : null };
   }
   async function status(params = new URLSearchParams()): Promise<IntakeStatus> {
     const mouth = params.get('mouth') ?? '', level = params.get('level') ?? '', q = (params.get('q') ?? '').trim(), offsetText = params.get('offset') ?? '0';
