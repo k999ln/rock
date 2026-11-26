@@ -70,3 +70,19 @@ void test('navigation does not send current users to retired pages; the policy s
   }
   assert.match(readFileSync(new URL('../scripts/stage-sky-domain-router.mjs', import.meta.url), 'utf8'), /copyFile\([^\n]+main-page-policy\.mjs/);
 });
+
+void test('Noah Runner approval handoff preserves its one-time code through the public router', async () => {
+  const runner = readFileSync(new URL('../scripts/noah-mac-runner.mjs', import.meta.url), 'utf8');
+  assert.ok(runner.includes('/noah/mac/connect?user_code='));
+  const url = 'https://avoado.si/noah/mac/connect?user_code=TEST1234';
+  let forwarded;
+  const app = withMiniSite({ fetch(request) { forwarded = request; return new Response('approval'); } }, () => assert.fail('approval reached Mini'));
+  for (const method of ['GET', 'HEAD']) {
+    const request = new Request(url, { method });
+    assert.equal((await app.fetch(request)).status, 200);
+    assert.equal(forwarded, request);
+    assert.equal(new URL(forwarded.url).searchParams.get('user_code'), 'TEST1234');
+  }
+  assert.equal(mainPageStatus('/noah/mac/connect/unknown'), 404);
+  assert.equal(mainPageStatus('/noah/mac/activity'), 404);
+});
