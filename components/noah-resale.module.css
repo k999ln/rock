@@ -2,8 +2,8 @@
   max-width: 1260px;
   margin: auto;
   padding: 32px 28px 90px;
-  color: #15251e;
-  background: #f6f7f2;
+  color: var(--noah-theme-text, #15251e);
+  background: var(--noah-theme-raised, #f6f7f2);
   min-height: 100vh;
   font-family: system-ui, sans-serif;
 }
@@ -13,7 +13,7 @@
   font-size: 13px;
 }
 .page a {
-  color: #246847;
+  color: var(--noah-theme-success, #246847);
 }
 .page header {
   padding: 50px 0 25px;
@@ -33,10 +33,10 @@
 }
 .page p {
   line-height: 1.7;
-  color: #4c5a51;
+  color: var(--noah-theme-text, #4c5a51);
 }
 .notice {
-  background: #e7ece3;
+  background: var(--noah-theme-raised, #e7ece3);
   border-radius: 12px;
   padding: 18px;
   line-height: 1.7;
@@ -49,9 +49,9 @@
   margin: 24px 0;
 }
 .stats > div {
-  background: white;
+  background: var(--noah-theme-panel, white);
   padding: 20px;
-  border: 1px solid #dce1d6;
+  border: 1px solid var(--noah-theme-line, #dce1d6);
   border-radius: 12px;
 }
 .stats small,
@@ -90,11 +90,11 @@
 .page textarea,
 .page select {
   font: inherit;
-  background: #fff;
-  border: 1px solid #c8d2c8;
+  background: var(--noah-theme-panel, #fff);
+  border: 1px solid var(--noah-theme-line, #c8d2c8);
   border-radius: 7px;
   padding: 11px;
-  color: #15251e;
+  color: var(--noah-theme-text, #15251e);
   min-width: 0;
 }
 .page textarea {
@@ -103,9 +103,9 @@
 .page button {
   font: inherit;
   padding: 11px 17px;
-  border: 1px solid #bccbbd;
-  background: #fff;
-  color: #214b34;
+  border: 1px solid var(--noah-theme-line, #bccbbd);
+  background: var(--noah-theme-panel, #fff);
+  color: var(--noah-theme-text, #214b34);
   border-radius: 8px;
   cursor: pointer;
 }
@@ -126,7 +126,7 @@
   color: white;
 }
 .page details {
-  border-bottom: 1px solid #ccd5c8;
+  border-bottom: 1px solid var(--noah-theme-line, #ccd5c8);
   padding: 16px 0;
 }
 .page summary {
@@ -152,15 +152,15 @@
   white-space: pre-wrap;
   overflow-wrap: anywhere;
   font: inherit;
-  background: white;
+  background: var(--noah-theme-panel, white);
   padding: 16px;
   border-radius: 8px;
 }
 .error {
-  background: #f8d9d3 !important;
+  background: var(--noah-theme-raised, #f8d9d3) !important;
   padding: 15px;
   border-radius: 8px;
-  color: #6f201a !important;
+  color: var(--noah-theme-danger, #6f201a) !important;
 }
 .empty {
   padding: 70px 20px;

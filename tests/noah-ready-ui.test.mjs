@@ -295,7 +295,7 @@ void test('not signed in: pressing 接続 goes to sign-in, and the detail screen
   await detail.flush();
   // 仕事の一覧（この Agent への、前の依頼と成果）は、つなぐ前から読む（サインイン済みの人だけ）。つないだ後に、読み直さない。
   const seen = ui.calls.slice(calls).map((call) => [call.method, call.url.split('?')[0]]);
-  const pinCalls = ([, url]) => url === '/api/noah/boards' || url === '/api/noah/pins';
+  const pinCalls = ([, url]) => url === '/api/noah/boards' || url === '/api/noah/pins' || url === '/api/noah/discover/project';
   assert.deepEqual(seen.filter((call) => !pinCalls(call)), [['GET', '/api/noah/intake'], ['GET', '/api/noah/connect-plan'], ['GET', '/api/noah/registration'], ['GET', '/api/noah/ask'], ['POST', '/api/noah/connect'], ['GET', `/api/noah/connect/${handoff.id}/tools`]]);
   assert.ok(seen.filter(pinCalls).every(([method]) => method === 'GET'));
   assert.equal(posts(ui)[0].body.id, handoff.id);
@@ -377,7 +377,7 @@ void test('the detail screen: where the input goes is shown before connecting; t
   // つないだ後は、主ボタンを出さない（すぐ下に道具がある）。「切る」と、今の状態（文字）が出る。使える道具の行は、押せる。「保存」（ボードへ。task 115）は残る。
   assert.deepEqual(actions(page), ['共有', 'URLをコピー', '保存', '切る']);
   assert.deepEqual(page.find('button').filter((node) => node.props.className === 'toolButton').map((node) => page.text(page.nodes(node).find((child) => child.type === 'strong'))), ['情報を検索', '統計を見る', '公開する']);
-  assert.match(page.text(page.find('section').at(-1)), /^つながっています。切る切っても、受け取った成果は残ります。$/);
+  assert.match(page.text(page.find('section').find(node => node.props['aria-label'] === 'この接続')), /^つながっています。切る切っても、受け取った成果は残ります。$/);
   // 「つなぎました」は 3 秒で消える。消えた後は、接続の欄（区切りの線）ごと出さない。
   assert.equal(page.find('output', 'につなぎました').length, 1);
   await page.tick(3000);
@@ -411,7 +411,7 @@ void test('the detail screen: a failure shows its reason and もう一度; press
   await page.click('接続');
   assert.match(page.text(), /相手のサーバーが応答しません。時間をおいて試してください。/);
   assert.deepEqual(page.find('button').map((node) => page.text(node)), ['もう一度', '共有', 'URLをコピー', '保存', '切る']);
-  assert.match(page.text(page.find('section').at(-1)), /^つながっていません。切る/);
+  assert.match(page.text(page.find('section').find(node => node.props['aria-label'] === 'この接続')), /^つながっていません。切る/);
   assert.doesNotMatch(page.text(), /読み取りだけ/);
   // 続けて押しても、相手へ握手を送り続けない。
   const shakes = handshakes(server);
@@ -444,7 +444,7 @@ void test('the detail screen: a withdrawn agent says so, offers no button to use
   assert.match(page.text(), /この Agent は、取り下げられました。使えません。/);
   assert.equal(w.rows()[0].state, 'blocked');
   assert.deepEqual(page.find('button').map((node) => page.text(node)), ['切る']);
-  assert.match(page.text(page.find('section').at(-1)), /^使えません。切る/);
+  assert.match(page.text(page.find('section').find(node => node.props['aria-label'] === 'この接続')), /^使えません。切る/);
   assert.deepEqual(w.net.hosts, []);
   await page.click('切る');
   assert.equal(w.rows()[0].state, 'disconnected');
@@ -627,7 +627,8 @@ void test('the rules of the screens hold at every step of the loop: nothing cove
     assert.equal(nodes.some((node) => 'dangerouslySetInnerHTML' in node.props || Object.keys(node.props).some((key) => /^on(?:error|load)$/i.test(key))), false, stage);
     // 進行で、画面を塞がない（重ねて出す部品・全画面を覆う部品が無い。進行は、ボタンの文と、一覧の行だけ）。
     assert.deepEqual(nodes.filter((node) => node.type === 'dialog' || node.props['aria-modal'] !== undefined || ['dialog', 'alertdialog'].includes(node.props.role)
-      || /overlay|modal|backdrop|fullscreen|scrim|spinner/i.test(String(node.props.className ?? ''))).map((node) => [node.type, node.props.className]), [], stage);
+      || /overlay|modal|backdrop|scrim|spinner/i.test(String(node.props.className ?? ''))
+      || (/fullscreen/i.test(String(node.props.className ?? '')) && !node.props['data-noah-fullscreen-detail'])).map((node) => [node.type, node.props.className]), [], stage);
     // 画面に出さない言葉（Noah の文に無い事。出どころの名前「Official MCP Registry」は、固有の名前なので除く。提供者の文は、この試験では、その言葉を持たない）。
     const own = text.replaceAll('Official MCP Registry', '');
     for (const word of INTERNAL) assert.doesNotMatch(own, new RegExp(`(?<![A-Za-z])${word}(?![A-Za-z])`, 'i'), `${stage}: ${word}`);

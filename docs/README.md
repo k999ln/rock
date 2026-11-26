@@ -4,6 +4,14 @@
 
 更新: 2026-10-13。最初に[サービス統合設計](service-design/README.md)を読む。旧仕様と現行仕様を並べて選ばせず、一つの製品体験と各契約の責任から説明する。
 
+## 共有Word 3冊
+
+2026年11月26日に公開したNoah第244版の事業計画・製品仕様・システム設計をダウンロードできます。
+
+[事業計画書](avokado-business-design/avokado-business-plan-2026-11-26.docx) · [製品仕様書](avokado-business-design/avokado-product-spec-2026-11-26.docx) · [システム設計書](avokado-business-design/avokado-system-design-2026-11-26.docx)
+
+Word本文が参照する全件CSVと検証集計JSONは、共有作業フォルダの `outputs/avokado-business-design/` からWordを開くと参照できます。Git上では[掲載Agent 2,428件の調査結果と再開条件](services/noah-cloud-agents.md#2026年11月25日の検証結果)を確認できます。
+
 ## まず通信・OS・siクラウドの土台から読む
 
 [GrapheneOS・eSIM・LLMクラウドの基盤設計](native-os-integration.md)に6層の関係、32改変項目、現在のsource/本番gate、次の受入をまとめた。2026-10-15の商品入口は通信＋si利用権bundleで、以下のaccountは本人/仕事の正本として読む。

@@ -7,8 +7,27 @@ import { createNoahAgentApi } from '../lib/noah-agent-api.ts';
 import { noahAgentStore } from '../lib/noah-agent-store.ts';
 import { noahAgentTemplate, parseNoahAgentManifest, aniccaAgent, NOAH_SOURCE_LIMIT, noahSha256 } from '../lib/noah-agent-upload.ts';
 import { ownerScopeFor } from '../lib/owner-intent.ts';
+import { noahTrainingPlugin, isNoahTrainingPlugin } from '../lib/noah-training-plugin.ts';
 
 const manifest = () => ({ ...noahAgentTemplate, name: 'テストAgent' });
+
+void test('training plugin saves a real owned MCP definition and cannot be substituted or read by another owner', async t => {
+  const { api } = fixture(t), id = randomUUID();
+  const payload = { id, manifest: noahTrainingPlugin, rightsConfirmed: true };
+  assert.equal((await api.create(await request({ method: 'POST', payload }))).status, 201);
+  assert.equal((await api.create(await request({ method: 'POST', payload }))).status, 200);
+  const { agent } = await (await api.get(await request(), id)).json();
+  assert.equal(agent.uploadState, 'ready');
+  assert.equal(isNoahTrainingPlugin(agent.manifest), true);
+  assert.equal((await api.get(await request({ owner: 'bob' }), id)).status, 404);
+  assert.equal((await api.create(await request({ method: 'POST', payload, headers: { Origin: 'https://other.example' } }))).status, 403);
+  assert.equal((await api.create(await request({ method: 'POST', payload, headers: { 'X-Rock-Owner-Scope': 'wrong' } }))).status, 409);
+  for (const patch of [{ endpointUrl: 'https://other.example/mcp' }, { permissions: ['financial'] }, { id: 'copy-plugin' }, { version: '2.0.0' }])
+    assert.equal(isNoahTrainingPlugin({ ...agent.manifest, ...patch }), false);
+  assert.equal((await api.list(await request())).status, 200);
+  assert.equal((await api.remove(await request({ method: 'DELETE' }), id)).status, 200);
+  assert.equal((await api.get(await request(), id)).status, 404);
+});
 function fixture(t, overrides = {}) {
   const sqlite = new DatabaseSync(':memory:'); sqlite.exec(readFileSync(new URL('../drizzle/0033_noah_agent_uploads.sql', import.meta.url), 'utf8')); sqlite.exec(readFileSync(new URL('../drizzle/0034_noah_upload_refactor.sql', import.meta.url), 'utf8')); t.after(() => sqlite.close());
   const db = { prepare(sql) { return { bind(...args) { return {

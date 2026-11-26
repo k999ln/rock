@@ -11,6 +11,7 @@ import * as shelfScenes from '../../../lib/noah-pin-scenes-shelf.ts';
 import * as readyView from '../../../lib/noah-ready-view.ts';
 import * as agentShare from '../../../lib/noah-agent-share.ts';
 import { existsSync, readFileSync } from 'node:fs';
+import * as theaterFilms from '../../../lib/noah-theater-films.ts';
 import { createContext, runInContext } from 'node:vm';
 import ts from 'typescript';
 import { noahTranslate } from '../../../lib/noah-i18n.ts';
@@ -140,6 +141,7 @@ export function screen(options = {}) {
       if(id==='@/components/noah-work-page')return load('components/noah-work-page.tsx');
       if(id==='@/lib/noah-profile-contract')return profileContract;
       if (id === '../services/sky-web/noah-page-routes.mjs') return noahPageRoutes;
+      if (id === '@/lib/noah-theater-films') return theaterFilms;
       if (id === '@/lib/noah-haptics') return load('lib/noah-haptics.ts');
       if (id === '@/lib/noah-connection-sound' || id === './noah-connection-sound') return load('lib/noah-connection-sound.ts');
       if (id === '@/lib/noah-tap-sound') return load('lib/noah-tap-sound.ts');

@@ -4,11 +4,9 @@ import { useNoahLocale } from './noah-locale';
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import NoahRegistrationSheet from './noah-registration-sheet';
-import NoahAgentFeedback from './noah-agent-feedback';
+import NoahDetailTemplate from './noah-detail-template';
 import { researchKindLabels, type ResearchDetail, type ResearchSummary } from '@/lib/noah-research-types';
 import styles from './noah-agent-catalog.module.css';
-import { noahPinTopic } from '@/lib/noah-pins';
-import NoahProductHeader from './noah-product-header';
 
 export default function NoahPublicDetail({ id, basePath = '/noah' }: { id: string; basePath?: string }) {
   const {t}=useNoahLocale();
@@ -34,13 +32,11 @@ export default function NoahPublicDetail({ id, basePath = '/noah' }: { id: strin
     return () => controller.abort();
   }, [id, key]);
   const agent = entry?.kind === 'agent' || entry?.kind === 'candidate';
-  return <div><main className={`${styles.page} ${styles.formPage} ${styles.catalogDetail}`}>
+  const content = <div><div className={`${styles.page} ${styles.formPage} ${styles.catalogDetail}`}>
     <nav className={styles.nav}><Link href={`${basePath}/explore?tab=catalog`}>{t("← Agentを探す")}</Link></nav>
     {error && <div role="alert" className={styles.error}>{t(error)} <button onClick={() => setAttempt(n => n + 1)}>{t("再試行")}</button></div>}
     {!entry && !error && <NoahLoading/>}
     {entry && <>
-      <NoahProductHeader name={entry.name} topic={noahPinTopic(entry.name, entry.summary)} attribution={entry.author}
-        action={agent ? <a href="#noah-product-access">{t('利用条件を見る')}</a> : undefined} />
       <p className={styles.productSummary}>{entry.summary}</p>
       <div className={styles.facts}><div><small>{t("分類")}</small><strong>{t(researchKindLabels[entry.kind])}</strong></div><div><small>{t("確認状況")}</small><strong>{entry.level === 'primary' ? t("一次資料を確認") : t("資料確認待ち")}</strong></div></div>
       <section className={styles.notice} id="noah-product-access"><h2>{agent ? t("このAgentを使う") : t("この関連資産について")}</h2>
@@ -49,9 +45,10 @@ export default function NoahPublicDetail({ id, basePath = '/noah' }: { id: strin
         {agent && <Link className={styles.primary} href={`/noah/explore?${new URLSearchParams({q:entry.name.slice(0,80)})}`}>{t("スマホで使えるAgentを探す")}</Link>}
         {agent && <NoahRegistrationSheet agentId={id}/>}
       </section>
-      {agent && <NoahAgentFeedback key={id} id={id} />}
       <section className={styles.notice}><h2>{t("配布元・出典")}</h2><ul>{entry.sources.filter(source => /^https?:\/\//.test(source.url)).map(source => <li key={source.url}><a href={source.url} target="_blank" rel="noopener noreferrer">{source.label || '配布元・資料を見る'} ↗</a><p>{source.url}</p></li>)}</ul></section>
       <section className={styles.notice}><h2>{t("確認した情報")}</h2><p>{entry.tags.join(' · ')}</p><ul>{entry.notes.map((note, n) => <li key={n}>{note}</li>)}</ul><p>{t("調査日：")}{entry.asOf}{t("。掲載は動作試験・購入・継続運用の完了を示しません。")}</p></section>
     </>}
-  </main></div>;
+  </div></div>;
+  return entry ? <NoahDetailTemplate id={id} name={entry.name} provider={entry.author} summary={entry.summary}
+    category={t(researchKindLabels[entry.kind])} feedbackId={agent ? id : undefined} backHref={`${basePath}/explore?tab=catalog`}>{content}</NoahDetailTemplate> : content;
 }

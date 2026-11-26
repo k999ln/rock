@@ -11,11 +11,13 @@ import { useNoahLocale } from './noah-locale';
 import styles from './noah-service-shell.module.css';
 import { NoahRevenuePackMenuItem } from './noah-revenue-pack';
 import { NoahSurfaceContext } from './noah-surface-context';
+import { useNoahAppearance } from './noah-appearance';
 
 export default function NoahShell({ children, mode = 'local' }: { children: ReactNode; mode?: NoahSurfaceMode }) {
   const browserPath = usePathname();
   const pathname = noahShortPageDestination(browserPath)?.split('?')[0] ?? browserPath;
   const searchParams = useSearchParams();
+  const appearance = useNoahAppearance();
   const { t } = useNoahLocale();
   const preview = pathname.startsWith('/noah/public');
   const effectiveMode = preview ? 'public' : mode, base = preview ? '/noah/public' : '/noah';
@@ -35,7 +37,7 @@ export default function NoahShell({ children, mode = 'local' }: { children: Reac
     window.addEventListener('hashchange', update); window.addEventListener('popstate', update);
     return () => { cancelAnimationFrame(frame); window.removeEventListener('hashchange', update); window.removeEventListener('popstate', update); };
   }, [pathname, effectiveMode, base]);
-  if (pathname === '/noah/account') return <NoahSurfaceContext.Provider value={{ mode: effectiveMode, base, hash }}><div className={styles.shell} data-noah-surface={effectiveMode} data-noah-standalone>{children}</div></NoahSurfaceContext.Provider>;
+  if (pathname === '/noah/account') return <NoahSurfaceContext.Provider value={{ mode: effectiveMode, base, hash }}><div className={styles.shell} data-theme={appearance} data-noah-surface={effectiveMode} data-noah-standalone>{children}</div></NoahSurfaceContext.Provider>;
   const isTimeline = pathname === base || pathname === '/' || pathname === '/os';
   const gridHome = isTimeline;
   const publicStore = effectiveMode === 'public';
@@ -79,7 +81,7 @@ export default function NoahShell({ children, mode = 'local' }: { children: Reac
           <Search size={18} aria-hidden="true" /><input aria-label={t('Agentを探す')} name="q" key={searchParams.get('q') ?? searchParams.get('collectionQuery') ?? ''} defaultValue={searchParams.get('q') ?? searchParams.get('collectionQuery') ?? ''} maxLength={200} placeholder={t('Agentを探す')} type="search" />
         </form>;
   if (gridHome) return <NoahSurfaceContext.Provider value={{ mode: effectiveMode, base, hash }}>
-    <div className={styles.shell} data-noah-surface={effectiveMode} data-noah-standalone>
+    <div className={styles.shell} data-theme={appearance} data-noah-surface={effectiveMode} data-noah-standalone>
       <a href="#noah-content" className={styles.skip}>{t('メインコンテンツへ')}</a>
       <header className={styles.gridTopbar} data-store-header={publicStore || undefined}>
         <a href={base} className={styles.gridBrand} aria-label="Noah"><Image className={styles.mark} src="/brand/noah-icon-v2.png" width={40} height={40} alt="" unoptimized/><strong>Noah</strong></a>
@@ -95,7 +97,7 @@ export default function NoahShell({ children, mode = 'local' }: { children: Reac
     </div>
   </NoahSurfaceContext.Provider>;
   return <NoahSurfaceContext.Provider value={{ mode: effectiveMode, base, hash }}>
-    <div className={styles.shell} data-noah-surface={effectiveMode} data-noah-standalone>
+    <div className={styles.shell} data-theme={appearance} data-noah-surface={effectiveMode} data-noah-standalone>
       <a href="#noah-content" className={styles.skip}>{t('メインコンテンツへ')}</a>
       <header className={styles.mobileHeader}>
         {!isMain&&<Link href={base} className={styles.back} aria-label={t('戻る')}><ArrowLeft size={22}/></Link>}

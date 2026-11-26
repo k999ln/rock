@@ -1,7 +1,7 @@
 .page {
-  --ink: #28231f;
+  --ink: var(--noah-theme-text, #28231f);
   --accent: #a44208;
-  --line: #e5ded7;
+  --line: var(--noah-theme-line, #e5ded7);
   box-sizing: border-box;
   width: 100%;
   max-width: 1040px;
@@ -12,32 +12,32 @@
 .heading { margin: 0 0 clamp(20px, 3vw, 30px); }
 .heading h1 { font-size: clamp(1.7rem, 4vw, 2.95rem); font-weight: 750; line-height: 1.18; letter-spacing: -.045em; margin: 6px 0 0; overflow-wrap: anywhere; }
 .back, .textLink, .empty a, .next { display: inline-flex; min-height: 44px; align-items: center; gap: .45rem; text-decoration: none; }
-.back { color: var(--accent); font-size: .92rem; font-weight: 640; }
+.back { color: var(--noah-theme-link, var(--accent)); font-size: .92rem; font-weight: 640; }
 .actions { display: grid; grid-template-columns: repeat(2, minmax(0,1fr)); border-block: 1px solid var(--line); margin: 0; }
 .actions a { color: var(--ink); display: grid; grid-template-columns: 1fr auto; gap: .65rem .3rem; padding: 17px 13px; position: relative; text-decoration: none; font-weight: 650; line-height: 1.4; }
 .actions a + a { border-inline-start: 1px solid var(--line); }
-.actions .icon { grid-column: 1 / -1; color: var(--accent); }
-.actions .arrow { align-self: center; color: #78675a; }
-.actions a[aria-current], .actions a:hover { background: #fff4e9; }
+.actions .icon { grid-column: 1 / -1; color: var(--noah-theme-link, var(--accent)); }
+.actions .arrow { align-self: center; color: var(--noah-theme-muted, #78675a); }
+.actions a[aria-current], .actions a:hover { background: var(--noah-theme-raised, #fff4e9); }
 .actions a[aria-current] { box-shadow: inset 0 -3px #d9681f; }
 .work { scroll-margin-block-start: 22px; min-width: 0; }
 .work > h2 { font-size: clamp(1.35rem, 3vw, 1.85rem); margin: 22px 0 17px; line-height: 1.25; }
 .select { display: grid; gap: 6px; font-weight: 600; margin: 12px 0 22px; max-width: 33rem; }
-.select select { width: 100%; min-height: 44px; padding: 8px 12px; border: 1px solid #b9afa7; border-radius: 9px; color: var(--ink); background: white; font: inherit; }
-.textLink, .empty a { color: var(--accent); font-weight: 640; }
+.select select { width: 100%; min-height: 44px; padding: 8px 12px; border: 1px solid var(--noah-theme-line, #b9afa7); border-radius: 9px; color: var(--ink); background: var(--noah-theme-panel, white); font: inherit; }
+.textLink, .empty a { color: var(--noah-theme-link, var(--accent)); font-weight: 640; }
 .empty p { margin: 0; }
 .empty a { margin-inline-end: 20px; }
 .next { background: var(--accent); color: white; padding: 2px 16px; border-radius: 9px; margin: 16px 0 4px; font-weight: 650; }
 .status button { min-height: 44px; }
 .page :is(a,select,button):focus-visible { outline: 3px solid #ba540f; outline-offset: 2px; }
 .resources { display: flex; flex-wrap: wrap; gap: 0 1.25rem; margin: 4px 4px 16px; }
-.resources a { display: inline-flex; align-items: center; gap: 7px; min-height: 44px; color: #83401a; font-size: .94rem; text-decoration: underline; text-underline-offset: 4px; }
+.resources a { display: inline-flex; align-items: center; gap: 7px; min-height: 44px; color: var(--noah-theme-link, #83401a); font-size: .94rem; text-decoration: underline; text-underline-offset: 4px; }
 .resources svg { flex: none; }
 .toggle { display: none; }
 @container eve-layout (max-width: 671.99px) {
-  .toggle { display: flex; align-items: center; gap: .6rem; width: 100%; min-height: 44px; padding: 8px 12px; border: 1px solid var(--line); border-radius: 8px; color: var(--ink); background: #fff; font: inherit; font-weight: 650; text-align: start; cursor: pointer; }
+  .toggle { display: flex; align-items: center; gap: .6rem; width: 100%; min-height: 44px; padding: 8px 12px; border: 1px solid var(--line); border-radius: 8px; color: var(--ink); background: var(--noah-theme-panel, #fff); font: inherit; font-weight: 650; text-align: start; cursor: pointer; }
   .toggle svg { margin-inline-start: auto; flex: none; }
-  .toggle small { font-size: .875rem; font-weight: 500; color: var(--accent); }
+  .toggle small { font-size: .875rem; font-weight: 500; color: var(--noah-theme-link, var(--accent)); }
   .toggle[aria-expanded="true"] svg { transform: rotate(180deg); }
   .chooser[data-actions-open="false"] .tools { display: none; }
   .actions a { padding: 12px; }

@@ -39,7 +39,7 @@ void test('canonical frame text and focus colors retain their minimum contrast o
   }
   for (const path of ['components/home-screen.module.css', 'components/sky-social-timeline.module.css']) {
     const source = read(path);
-    assert.match(source, /--tl-muted: var\(--os-shell-muted, #595959\)/);
+    assert.match(source, /--tl-muted: (?:var\(--noah-theme-muted, )?var\(--os-shell-muted, #595959\)\)?;/);
     assert.doesNotMatch(source, /#778077/);
   }
 });
@@ -84,4 +84,13 @@ void test('shared frame overrides legacy blue workspace surfaces without replaci
   const frame = read('app/os-shell.css');
   assert.match(frame, /\.rock-workspace\.rock-workspace :is\(\.rock-main-column, \.rock-main\)\s*\{[^}]*background:\s*var\(--os-bg\)/);
   assert.match(frame, /\.rock-workspace\.rock-workspace \.rock-bottom-note\s*\{[^}]*background:\s*var\(--os-shell-panel\)/);
+});
+
+void test('Noah dark text and links remain readable on the page, panels and raised controls', () => {
+  const source = read('components/noah-service-shell.module.css');
+  for (const background of ['#080808', token(source, 'noah-theme-panel'), token(source, 'noah-theme-raised')]) {
+    for (const role of ['text', 'muted', 'link', 'danger', 'success', 'info', 'warning']) {
+      assert.ok(contrast(token(source, `noah-theme-${role}`), background) >= 4.5, `${role} on ${background}`);
+    }
+  }
 });

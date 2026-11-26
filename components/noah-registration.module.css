@@ -11,14 +11,14 @@
 .page h2 { font-size: 19px; margin: 0 0 16px; }
 .page p { font-size: 13px; line-height: 1.8; color: var(--sky-muted, #71717a); }
 .page > header p:last-child { font-size: 14px; margin: 0; }
-.page a { color: var(--noah-action, #a14206); text-underline-offset: 3px; }
-.page button { font: inherit; cursor: pointer; min-height: 44px; border: 1px solid var(--sky-line, #e8e5ee); border-radius: 10px; padding: 10px 14px; background: #fff; color: var(--noah-action, #a14206); }
+.page a { color: var(--noah-theme-link, var(--noah-action, #a14206)); text-underline-offset: 3px; }
+.page button { font: inherit; cursor: pointer; min-height: 44px; border: 1px solid var(--sky-line, #e8e5ee); border-radius: 10px; padding: 10px 14px; background: var(--noah-theme-panel, #fff); color: var(--noah-theme-link, var(--noah-action, #a14206)); }
 .page button:disabled { opacity: .5; cursor: not-allowed; }
 .page :is(button, a, input, select, summary):focus-visible, .sheetClose:focus-visible, .sheetTrigger:focus-visible { outline: 2px solid var(--noah-action, #a14206); outline-offset: 4px; }
 .page > a, .panel > a { display:inline-flex; align-items:center; min-height:44px; }
 .panel { margin-block: 20px; }
 .page label { display: flex; flex-direction: column; gap: 9px; margin: 16px 0; font-size: 14px; }
-.page input, .page select { box-sizing: border-box; min-width: 0; width: 100%; min-height: 48px; border: 1px solid var(--sky-line, #e8e5ee); border-radius: 12px; padding: 12px; background: #fff; color: inherit; font: inherit; font-size: 16px; }
+.page input, .page select { box-sizing: border-box; min-width: 0; width: 100%; min-height: 48px; border: 1px solid var(--sky-line, #e8e5ee); border-radius: 12px; padding: 12px; background: var(--noah-theme-panel, #fff); color: inherit; font: inherit; font-size: 16px; }
 .fieldRow { padding-block: 10px; }
 .fieldRow > label { margin: 0; }
 .required { margin-inline-start: 8px; font-size: 11px; color: var(--sky-muted, #71717a); font-weight: 400; }
@@ -41,15 +41,15 @@
 .reuseBanner p { font-size: 12px; margin: 5px 0 0; }
 .page .saveSwitch { display: flex; align-items: center; gap: 8px; font-size: 12px; background: transparent; border: 0; padding: 8px 0; }
 .saveSwitch > span { display: block; width: 34px; height: 22px; border-radius: 20px; background: #a1a1aa; padding: 3px; box-sizing: border-box; }
-.saveSwitch > span::after { content: ''; display: block; width: 16px; height: 16px; border-radius: 50%; background: white; transition: transform .15s ease; }
+.saveSwitch > span::after { content: ''; display: block; width: 16px; height: 16px; border-radius: 50%; background: var(--noah-theme-panel, white); transition: transform .15s ease; }
 .saveSwitch[aria-checked=true] > span { background: var(--noah-action, #a14206); }
 .saveSwitch[aria-checked=true] > span::after { transform: translateX(12px); }
 [dir=rtl] .saveSwitch[aria-checked=true] > span::after { transform: translateX(-12px); }
-.reuseBanner .saveFields { flex-basis: 100%; border-top: 1px solid #edddcc; padding-top: 10px; margin: 0; }
+.reuseBanner .saveFields { flex-basis: 100%; border-top: 1px solid var(--noah-theme-line, #edddcc); padding-top: 10px; margin: 0; }
 .disclosure { padding-block: 8px; }
 .disclosure > div { display: grid; grid-template-columns: 48px minmax(0, 1fr); gap: 12px; padding-block: 9px; align-items: baseline; }
 .disclosure > div > span { font-size: 12px; color: var(--sky-muted, #71717a); }
-.disclosure p { margin: 0; color: #4f4f57; font-size: 12px; }
+.disclosure p { margin: 0; color: var(--noah-theme-text, #4f4f57); font-size: 12px; }
 .disclosure strong { color: var(--sky-text, #202024); font-weight: 600; }
 .page .providerNotice { border-inline-start: 2px solid var(--noah-brand, #f47b20); padding-inline-start: 12px; }
 .terms { border-block: 1px solid var(--sky-line, #e8e5ee); margin-top: 10px; }
@@ -60,11 +60,11 @@
 .continueArea { padding-top: 16px; }
 .page .primary { display: flex; width: 100%; box-sizing: border-box; justify-content: center; align-items: center; gap: 10px; min-height: 52px; background: var(--noah-action, #a14206); color: #fff; border: 0; border-radius: 14px; text-decoration: none; font-size: 15px; font-weight: 650; }
 .page .hint { font-size: 11px; line-height: 1.8; margin: 8px 0 12px; }
-.error { border: 1px solid #dfbbc9; background: #fff8fb; padding: 14px; border-radius: 12px; }
-.sheetTrigger { display: inline-flex; align-items: center; gap: 8px; min-height: 44px; border: 0; border-radius: 10px; background: none; color: var(--noah-action, #a14206); padding: 10px 0; font: inherit; font-size: 13px; cursor: pointer; }
-.sheet { inset: auto 0 0; margin: 0 auto; padding: 0; border: 0; border-radius: 24px 24px 0 0; width: min(100%, 580px); max-height: 92svh; background: #fff; color: #202024; overflow-y: auto; overscroll-behavior: contain; box-shadow: 0 -16px 80px #22103320; }
+.error { border: 1px solid var(--noah-theme-line, #dfbbc9); background: var(--noah-theme-panel, #fff8fb); padding: 14px; border-radius: 12px; }
+.sheetTrigger { display: inline-flex; align-items: center; gap: 8px; min-height: 44px; border: 0; border-radius: 10px; background: none; color: var(--noah-theme-link, var(--noah-action, #a14206)); padding: 10px 0; font: inherit; font-size: 13px; cursor: pointer; }
+.sheet { inset: auto 0 0; margin: 0 auto; padding: 0; border: 0; border-radius: 24px 24px 0 0; width: min(100%, 580px); max-height: 92svh; background: var(--noah-theme-panel, #fff); color: var(--noah-theme-text, #202024); overflow-y: auto; overscroll-behavior: contain; box-shadow: 0 -16px 80px #22103320; }
 .sheet::backdrop { background: #1f152c55; backdrop-filter: blur(3px); }
-.sheetClose { position: sticky; display: grid; place-items: center; top: 12px; margin: 12px 16px -44px auto; width: 44px; height: 44px; border: 0; border-radius: 50%; background: #f4f4f5; z-index: 2; cursor: pointer; }
+.sheetClose { position: sticky; display: grid; place-items: center; top: 12px; margin: 12px 16px -44px auto; width: 44px; height: 44px; border: 0; border-radius: 50%; background: var(--noah-theme-raised, #f4f4f5); z-index: 2; cursor: pointer; }
 .sheet .page { padding: 44px 24px max(24px, env(safe-area-inset-bottom)); }
 @media(max-width: 600px) { .page { padding: 24px 20px 40px; } .page h1 { font-size: 25px; } .savedGroup, .reuseBanner { padding: 14px; } .savedValue { flex-wrap: wrap; } .savedValue select { max-width: 100%; } }
 @media(prefers-reduced-motion: reduce) { .saveSwitch > span::after { transition: none; } }
