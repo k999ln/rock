@@ -12,6 +12,7 @@ function fixture() {
   writeFileSync(join(root, 'dist/server/wrangler.json'), JSON.stringify({ main: 'index.js', compatibility_date: '2026-10-22', assets: { directory: '../client', html_handling: 'none' } }));
   writeFileSync(join(root, 'services/sky-web/domain-router.mjs'), 'export const marker = "first";\n');
   writeFileSync(join(root, 'services/sky-web/noah-page-routes.mjs'), readFileSync(new URL('../services/sky-web/noah-page-routes.mjs', import.meta.url)));
+  writeFileSync(join(root, 'services/sky-web/main-page-policy.mjs'), readFileSync(new URL('../services/sky-web/main-page-policy.mjs', import.meta.url)));
   const run = () => spawnSync(process.execPath, ['scripts/stage-sky-domain-router.mjs'], { cwd: root, encoding: 'utf8', timeout: 10000 });
   return { root, run, read: path => readFileSync(join(root, path), 'utf8'), write: (path, text) => writeFileSync(join(root, path), text), close: () => rmSync(root, { recursive: true, force: true }) };
 }
@@ -24,6 +25,7 @@ void test('domain staging refreshes changed routing policy without replacing the
     assert.equal(f.run().status, 0);
     assert.equal(f.read('dist/server/vinext.js'), application);
     assert.equal(f.read('dist/server/domain-router.mjs'), f.read('services/sky-web/domain-router.mjs'));
+    assert.equal(f.read('dist/server/main-page-policy.mjs'), f.read('services/sky-web/main-page-policy.mjs'));
     const config = JSON.parse(f.read('dist/server/wrangler.json'));
     assert.deepEqual(config.assets, { directory: '../client', html_handling: 'none', binding: 'ASSETS', run_worker_first: true });
     assert.equal(config.compatibility_date, '2026-10-22');
@@ -36,6 +38,7 @@ void test('domain staging refreshes changed routing policy without replacing the
     assert.equal(f.read('dist/server/index.js'), wrapper);
     assert.equal(JSON.parse(f.read('dist/server/wrangler.json')).assets.run_worker_first, true);
     assert.equal(f.read('dist/server/domain-router.mjs'), f.read('services/sky-web/domain-router.mjs'));
+    assert.equal(f.read('dist/server/main-page-policy.mjs'), f.read('services/sky-web/main-page-policy.mjs'));
   } finally { f.close(); }
 });
 

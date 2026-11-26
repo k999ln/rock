@@ -18,6 +18,7 @@ if (typeof config.assets?.directory !== 'string' || !config.assets.directory.tri
 if (config.assets.binding !== undefined && config.assets.binding !== 'ASSETS')
   throw new Error('Unexpected Sky Worker asset binding');
 async function stageAssetRouting() {
+  await copyFile(new URL('../services/sky-web/main-page-policy.mjs', import.meta.url), new URL('main-page-policy.mjs', server));
   await copyFile(new URL('../services/sky-web/noah-page-routes.mjs', import.meta.url), new URL('noah-page-routes.mjs', server));
   await writeFile(configPath, JSON.stringify({
     ...config,

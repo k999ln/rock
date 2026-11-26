@@ -1,4 +1,5 @@
 import { NOAH_LOCAL_LABS, noahPageRedirect, noahRedirectURL } from './noah-page-routes.mjs';
+import { MAIN_DISCOVERY_PATHS, mainPageStatus, mainPageUnavailable } from './main-page-policy.mjs';
 
 // Keep outer-router responses under the same policy as application responses.
 // The exact values are checked against data/web-security-policy.json.
@@ -238,6 +239,34 @@ export function withMiniSite(skyWorker, upstreamFetch = fetch) {
     fetch(request, env, context) {
       const source = new URL(request.url);
       const path = source.pathname;
+      if (source.hostname === MINI_PUBLIC_HOST || source.hostname.endsWith(GENERATED_SITE_SUFFIX)) {
+        const legacy = noahPageRedirect(path);
+        const compatibility = new Map([
+          ['/os', '/noah'], ['/rockstaros', '/noah'], ['/rockstaros/crowdfunding', '/noah'],
+          ['/chat', '/os/eve?mode=tools'], ['/activity', '/os/eve?mode=tools&view=work'],
+          ['/work', '/os/eve?mode=tools&view=work'],
+          ['/noah/agents', '/noah/explore?tab=catalog'], ['/noah/ready', '/noah/explore?tab=ready'],
+          ['/noah/tools', '/noah/explore?tab=tools'], ['/noah/features', '/noah'],
+          ['/noah/boards', '/noah/saved?tab=boards'], ['/noah/library', '/noah/saved?tab=agents'],
+          ['/noah/data', '/noah/saved?tab=results'], ['/noah/data/saved', '/noah/saved?tab=results'],
+          ['/noah/outputs', '/noah/saved?tab=files'], ['/noah/launch', '/noah/activity'],
+          ['/coconala-team', '/noah/tools/coconala'],
+        ]);
+        const destination = legacy || compatibility.get(path.replace(/\/$/, ''));
+        const targetPath = destination ? new URL(destination, source).pathname : path;
+        const lab = NOAH_LOCAL_LABS.some(name => ['/sky/', '/os/sky/'].some(prefix => path.replace(/\/$/, '') === prefix + name));
+        const status = mainPageStatus(lab ? '/noah/explore' : targetPath);
+        if (status === 404 || status === 410) return mainPageUnavailable(status, request.method);
+        if (['GET', 'HEAD'].includes(request.method)) {
+          if (path === '/sitemap.xml' || path === '/noah/sitemap.xml') {
+            const xml = '<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">' +
+              MAIN_DISCOVERY_PATHS.map(page => `<url><loc>https://avoado.si${page}</loc></url>`).join('') + '</urlset>\n';
+            return new Response(request.method === 'HEAD' ? null : xml, { headers: { 'content-type': 'application/xml; charset=utf-8' } });
+          }
+          if (destination && source.hostname === MINI_PUBLIC_HOST)
+            return Response.redirect(noahRedirectURL(source, destination).href, 308);
+        }
+      }
       // Preserve campus-specific deployments and all API/mutation routing.
       if ((source.hostname === MINI_PUBLIC_HOST || ['localhost', '127.0.0.1', '[::1]'].includes(source.hostname)) && ['GET', 'HEAD'].includes(request.method)) {
         const legacy = noahPageRedirect(path);

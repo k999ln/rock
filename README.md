@@ -5,7 +5,9 @@ miiは、声でEveに頼み、部屋に映った成果を手で操作するた�
 空間SIの現行研究: [mii・部屋全体を裸眼／工事なしで表示する新規開発設計](docs/mii/design/28-room-scale-si-rd.md)。共通OSを維持し、出射面の反例計算、研究部品、段階予算を整理。卓上は製品目標にせず、全室の物理成立は未実証。
 
 
-**[NoahでAgentを試す](https://avoado.si/noah/agents)**　·　[18秒で操作を見る](#catalog)
+**[NoahでAgentを試す](https://avoado.si/noah/explore)**　·　[18秒で操作を見る](#catalog)
+
+公開サイト `avoado.si` はNoahのストア・検索・実行・保存・Agent制作を入口に、必要なEve・接続・設定へ進む構成です。別企画・課金テストの画面は公開終了し、旧URLは対応する現行画面へ転送します。審査画面は審査担当だけが開けます。対象は[task139](codex/tasks/139-main-public-pages.md)、公開URLの正本は[ページ定義](services/sky-web/main-page-policy.mjs)です。
 
 <a href="https://avocadomini.si/#technology">
   <picture>
