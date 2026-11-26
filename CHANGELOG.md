@@ -1,4 +1,10 @@
 ## 2026-11-26
+- NoahのAgent詳細でアイコン横に接続ボタンを置き、操作の流れと道具を折りたたんだ。Enzo’sの依頼例は送信先の確認とログインを経て、編集できる検索欄に引き継ぐ（task 128）。
+
+- Noahの全画面読み込みとスケボー試作から、進捗バー・百分率・バー下の読み込み文を削除。
+
+- Noahがオフラインの間も、読み込み画面と同じ「点のトラ」で遊べるようにした。オンラインで準備済みのブラウザは圏外での再読み込みにも対応。中くらいの難しさを既定にし、障害物ごとに1/404で現れる魔法の星と8秒間の無敵を追加。
+
 - Noahの保存情報の読込中・失敗時に再入力を求めず、Safari/Chromeの自動入力にプロフィールとAgent登録を対応。Chrome標準の自動入力・保存・再利用を390px/1280pxで検証（task136、[PR #82](https://github.com/iceiceice999/rock/pull/82)。未公開、Safari実機は未検証）。
 
 - Noahの自分のAgent・実行中・保存したものの横タブを撤去し、既存の共通メニューへ統一。見出し・保存内容の絞り込み・旧URLは維持（task129、[PR #85](https://github.com/iceiceice999/rock/pull/85)）。
@@ -8,8 +14,6 @@
 - 第243・244版の公開記録とAgentの受入状況を進捗台帳に反映。READMEの無料クラウド枠と設計案内のEve表記を更新（[task138](codex/tasks/138-cross-chat-sync.md)、[PR #83](https://github.com/iceiceice999/rock/pull/83)）。
 
 - avoado.siの公開画面を現mainのNoah・Eveの導線へ整理。旧企画の画面を410、未知の画面を404にし、旧URL転送・審査者限定・sitemapを整合（task139、[PR #81](https://github.com/iceiceice999/rock/pull/81)）。
-
-- NoahのAgent詳細でアイコン横に接続ボタンを置き、操作の流れと道具を折りたたんだ。Enzo’sの依頼例は送信先の確認とログインを経て、編集できる検索欄に引き継ぐ（task 128、`codex/noah-agent-detail-onboarding`）。
 
 - 公開前のCodeQL指摘を受け、Noah収益パックの排他的ファイル作成・開いたファイルの検査と容量制限、登録試験の送信先照合を補強。既存出力の上書き防止とリンク拒否を回帰試験へ追加（[PR #80](https://github.com/iceiceice999/rock/pull/80)）。
 
