@@ -10,6 +10,8 @@
 
 [事業計画書](avokado-business-design/avokado-business-plan-2026-11-26.docx) · [製品仕様書](avokado-business-design/avokado-product-spec-2026-11-26.docx) · [システム設計書](avokado-business-design/avokado-system-design-2026-11-26.docx)
 
+第244版以降のNoahのホーム・Agent詳細・ナビゲーション、EveがAgentを組み合わせてAMCに渡す役割は[現行の画面設計](structure/04-eve-noa-amc-sky.md)、本番で確認できた操作と残件は[READMEの開発状況](../README.md#status)から確認できます。
+
 Word本文が参照する全件CSVと検証集計JSONは、共有作業フォルダの `outputs/avokado-business-design/` からWordを開くと参照できます。Git上では[掲載Agent 2,428件の調査結果と再開条件](services/noah-cloud-agents.md#2026年11月25日の検証結果)を確認できます。
 
 ## まず通信・OS・siクラウドの土台から読む
