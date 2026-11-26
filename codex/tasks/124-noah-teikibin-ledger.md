@@ -7,7 +7,7 @@
 ## 段
 
 1. **台帳（この task）**: 表 5 つ（`drizzle/0055_noah_teikibin.sql`）、計算（`lib/noah-teikibin.ts`。`settleCompanyOrder` の 2 層を使う）、保存（`lib/noah-teikibin-store.ts`）、入口（`/api/noah/teikibin`）、利用者の画面（`/noah/teikibin`）、運営の画面（`/noah/review/teikibin`）、試験。切り替え `NOAH_TEIKIBIN` は閉のまま出す。
-2. **開ける前（本人と運営）**: 仕様の 12 章。税理士・弁護士の回答、本番の migration 0055 と鍵 `NOAH_TEIKIBIN_KEY`、最初の月の入金の記録、本人の分の率と有料の値段。
+2. **開ける前（本人と運営）**: [仕様の12章](../../docs/noah/spec-124-teikibin-ledger.md#12-開ける前に要る事本人と運営)。税理士・弁護士の回答、本番の migration 0055 と鍵 `NOAH_TEIKIBIN_KEY`、初回の実入金と費用の記録、300人到達の翌月以降の月締め、利用者向けの公開経路の受入。75%・20%・600円の扱いは11-24の決定に合わせる。
 3. **物の定期便**: 仕入先が決まったら、運営 Dock の割当（`services/operator-dock`）と、台帳の「物」の行をつなぐ。
 
 ## 合格条件（1 段目）
