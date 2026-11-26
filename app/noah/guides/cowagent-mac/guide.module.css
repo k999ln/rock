@@ -1,0 +1,101 @@
+.guide {
+  width: min(100%, 720px);
+  margin: 0 auto;
+  padding: 32px clamp(18px, 5vw, 40px) 64px;
+  color: #27272a;
+  line-height: 1.75;
+}
+
+.guide h1 {
+  margin: 4px 0 0;
+  font-size: clamp(28px, 6vw, 40px);
+  line-height: 1.25;
+}
+
+.guide h2 {
+  margin: 32px 0 8px;
+  font-size: clamp(20px, 4vw, 26px);
+}
+
+.guide header > p:last-child,
+.guide figcaption {
+  color: #52525b;
+}
+
+.eyebrow {
+  margin: 0;
+  color: #6d28d9;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: .14em;
+}
+
+.guide figure {
+  margin: 24px 0;
+  text-align: center;
+}
+
+.guide video {
+  display: block;
+  width: min(100%, 352px);
+  height: auto;
+  aspect-ratio: 4 / 5;
+  margin: 0 auto 8px;
+  border-radius: 16px;
+  background: #f4f4f5;
+}
+
+.guide figcaption {
+  font-size: 13px;
+}
+
+.notice {
+  padding: 2px 20px 20px;
+  border: 1px solid #ddd6fe;
+  border-radius: 16px;
+  background: #faf5ff;
+}
+
+.notice h2 {
+  margin-top: 18px;
+}
+
+.notice a,
+.guide li a {
+  color: #6d28d9;
+  font-weight: 650;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+.guide ol {
+  padding-inline-start: 1.5em;
+}
+
+.guide li + li {
+  margin-top: 12px;
+}
+
+.actions {
+  display: grid;
+  gap: 12px;
+  margin-top: 32px;
+}
+
+.actions a {
+  display: flex;
+  min-height: 48px;
+  align-items: center;
+  justify-content: center;
+  padding: 8px 16px;
+  border: 1px solid #7c3aed;
+  border-radius: 24px;
+  color: #6d28d9;
+  font-weight: 700;
+  text-align: center;
+}
+
+.actions a:first-child {
+  background: #7c3aed;
+  color: #fff;
+}

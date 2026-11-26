@@ -287,7 +287,7 @@ Mac側のココナラ用ツールには、専用Chromeで返信・応募・添�
 <details>
 <summary>Macの導入・実行・停止コマンドを開く</summary>
 
-**現行の入口**　[Agentを探す](https://avoado.si/noah)　·　**対象**　Apple Silicon Mac
+**現行の入口**　[Agentを探す](https://avoado.si/noah)　·　[Mac用Noahの導入手順](https://avoado.si/noah/devices#mac)　·　**対象**　Apple Silicon Mac
 
 1. 接続画面で「Mac用Noahをダウンロード」を選び、ZIPを展開して `Install.command` を開きます。
 2. ターミナルで次のコマンドを順に使います。`noah doctor` の診断で不足したものがあれば、接続画面の導入手順を確認します。`noah pair` で表示されたURLを普段Noahを使っているブラウザで開き、コードと端末名を確認してこのMacを承認します。接続先は `/noah/mac/connect` です。
@@ -300,7 +300,7 @@ noah start
 
 ### 仕事を実行し、成果を確認して停止する
 
-[Agentを使う](https://avoado.si/noah/launch)で自分のMacとAgentを選びます。「実行中」から「仕事の詳細を開く」を選ぶと、その仕事の進捗を確認し、実行中は停止を依頼できます。完了後は同じブラウザで成果を読み直し、Agentが返したファイルを保存できます。
+[実行対応のAgentを探す](https://avoado.si/noah)からAgentを選びます。「実行中」から「仕事の詳細を開く」を選ぶと、その仕事の進捗を確認し、実行中は停止を依頼できます。完了後は同じブラウザで成果を読み直し、Agentが返したファイルを保存できます。調査・紹介だけのAgentは、接続・実行済みとは扱いません。
 
 実行器全体を止めるには `noah stop` を使います。回線が切れた仕事は自動で再実行されません。再接続したら `noah receipts` で同じ仕事の報告を照合できます。
 

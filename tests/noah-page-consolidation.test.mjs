@@ -118,10 +118,27 @@ void test('old links keep the theater and personal readers without duplicating t
 });
 void test('retired Noah pages are gone while shared implementations and data APIs remain',()=>{
  const file=p=>new URL('../'+p,import.meta.url);
- for(const path of ['mac','mac/agents','mac/activity','local-tools','guides/cowagent-mac','social','community','campus','campus/[campusId]','campus/[campusId]/hub','work/[id]']){
+ for(const path of ['mac','mac/agents','mac/activity','local-tools','social','community','campus','campus/[campusId]','campus/[campusId]/hub','work/[id]']){
   assert.equal(existsSync(file('app/noah/'+path+'/page.tsx')),false,path);
   assert.equal(noahPageRedirect('/noah/'+path),null,path);
  }
  for(const path of ['app/sky/campus/page.tsx','app/campus/page.tsx','app/api/noah/boards/route.ts','app/api/noah/data/route.ts','app/api/noah/library/route.ts'])assert.ok(existsSync(file(path)),path);
  for(const path of ['components/noah-shell.tsx','components/noah-public-catalog.tsx','components/noah-public-detail.tsx','components/noah-navigation.tsx'])assert.doesNotMatch(readFileSync(file(path),'utf8'),/\/social#compose|\/mac\?|COWAGENT_GUIDE_PATH/);
+});
+void test('the restored CowAgent guide uses current truthful paths',()=>{
+ const file=p=>new URL('../'+p,import.meta.url);
+ const guide=readFileSync(file('app/noah/guides/cowagent-mac/page.tsx'),'utf8');
+ const captions=readFileSync(file('app/noah/guides/cowagent-mac/captions.vtt/route.ts'),'utf8');
+ const detail=readFileSync(file('components/noah-public-detail.tsx'),'utf8');
+ assert.match(guide,/\/noah\/devices#mac/);
+ assert.match(guide,/\/noah\/mac\/connect/);
+ assert.match(guide,/\/noah\/activity/);
+ assert.match(guide,/\/noah\/saved\?tab=results/);
+ assert.match(guide,/実行・成果受取までは確認済みではありません/);
+ assert.match(guide,/raw\.githubusercontent\.com\/iceiceice999\/rock\/84ae86079b6c3427d9363b1ed4e0d4371adf2920/);
+ assert.doesNotMatch(guide,/\/noah\/mac\?|\/noah\/launch|raw\.githubusercontent\.com\/k999ln/);
+ assert.match(captions,/紹介情報として掲載/);
+ assert.match(detail,/entry\?\.connection !== 'not_tested'/);
+ assert.match(detail,/Noahでの接続と実行はまだ確認していません/);
+ assert.match(detail,/\{runnable && <NoahRegistrationSheet/);
 });

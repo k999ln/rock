@@ -92,3 +92,18 @@ void test('Noah Runner approval handoff preserves its one-time code through the 
   assert.equal(mainPageStatus('/noah/mac/connect/unknown'), 404);
   assert.equal(mainPageStatus('/noah/mac/activity'), 404);
 });
+
+void test('the CowAgent campaign guide is public without exposing unknown guide routes', async () => {
+  assert.equal(mainPageStatus('/noah/guides/cowagent-mac'), 200);
+  assert.equal(mainPageStatus('/noah/guides/cowagent-mac/captions.vtt'), null, 'caption assets pass through to the application');
+  assert.equal(mainPageStatus('/noah/guides/cowagent-mac/unknown'), 404);
+  assert.ok(MAIN_DISCOVERY_PATHS.includes('/noah/guides/cowagent-mac'));
+  let forwarded;
+  const app = withMiniSite({ fetch(request) { forwarded = request; return new Response('guide'); } }, () => assert.fail('guide reached Mini'));
+  for (const method of ['GET', 'HEAD']) {
+    const request = new Request('https://avoado.si/noah/guides/cowagent-mac?utm_source=youtube', { method });
+    assert.equal((await app.fetch(request)).status, 200);
+    assert.equal(forwarded, request);
+    assert.equal(new URL(forwarded.url).searchParams.get('utm_source'), 'youtube');
+  }
+});

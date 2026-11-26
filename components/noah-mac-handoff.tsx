@@ -169,7 +169,7 @@ export default function NoahMacHandoff({
           </div>
           <div>
             <dt>スマホから使う</dt>
-            <dd>同じアカウントで依頼・成果確認・停止。</dd>
+            <dd>同じNoahのブラウザ保存先で、依頼・成果確認・停止。</dd>
           </div>
           <div>
             <dt>画面へのアクセス</dt>
