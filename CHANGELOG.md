@@ -1,4 +1,5 @@
 ## 2026-11-26
+- Noahの保存情報の読込中・失敗時に再入力を求めず、Safari/Chromeの自動入力にプロフィールとAgent登録を対応。Chrome標準の自動入力・保存・再利用を390px/1280pxで検証（task136、[PR #82](https://github.com/iceiceice999/rock/pull/82)。未公開、Safari実機は未検証）。
 
 - 公開前のCodeQL指摘を受け、Noah収益パックの排他的ファイル作成・開いたファイルの検査と容量制限、登録試験の送信先照合を補強。既存出力の上書き防止とリンク拒否を回帰試験へ追加（[PR #80](https://github.com/iceiceice999/rock/pull/80)）。
 
