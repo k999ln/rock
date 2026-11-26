@@ -4,7 +4,7 @@ import { useEffect, useId, useRef, useState, type ReactNode } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import { usePathname, useSearchParams } from 'next/navigation';
-import { Bot, Home, UserRound, RefreshCw, ArrowLeft, Globe, Bookmark, MoreHorizontal, Search, SquareTerminal } from 'lucide-react';
+import { Bot, Home, UserRound, RefreshCw, Globe, Bookmark, MoreHorizontal, Search, SquareTerminal } from 'lucide-react';
 import { noahLegacyHref, type NoahSurfaceMode } from '@/lib/noah-surface';
 import { NOAH_PROFILE_PATH, noahShortPageDestination } from '../services/sky-web/noah-page-routes.mjs';
 import { useNoahLocale } from './noah-locale';
@@ -43,13 +43,11 @@ export default function NoahShell({ children, mode = 'local' }: { children: Reac
   const publicStore = effectiveMode === 'public';
   const brandName = publicStore ? 'Nöah' : 'Noah';
   const profileHref = publicStore && !preview ? NOAH_PROFILE_PATH : `${base}/profile`;
-  const localPath = pathname.startsWith(base + '/') ? pathname.slice(base.length + 1) : '';
   const localPrimary = [
     { href: base, label: 'ホーム', Icon: Home, selected: isTimeline },
     { href: `${base}/activity`, label: '実行中', Icon: RefreshCw, selected: pathname.endsWith('/activity') },
     { href: `${base}/saved`, label: '保存', Icon: Bookmark, selected: pathname.endsWith('/saved') },
   ];
-  const isMain = isTimeline || ['explore','my','activity','saved'].includes(localPath);
   const secondary = [
     ...(publicStore ? [
       { href: '/noah/engineering', label: 'Agentエンジニアリング', Icon: SquareTerminal },
@@ -84,7 +82,6 @@ export default function NoahShell({ children, mode = 'local' }: { children: Reac
     <div className={styles.shell} data-theme={appearance} data-noah-surface={effectiveMode} data-noah-standalone>
       <a href="#noah-content" className={styles.skip}>{t('メインコンテンツへ')}</a>
       <header className={styles.gridTopbar} data-store-header={(publicStore && gridHome) || undefined} data-detail-header={!gridHome || undefined}>
-        {!isMain && <Link href={base} className={styles.back} aria-label={t('戻る')}><ArrowLeft size={22}/></Link>}
         <a href={base} className={styles.gridBrand} aria-label={brandName}><Image className={styles.mark} src="/brand/noah-icon-v2.png" width={40} height={40} alt="" unoptimized/><strong>{brandName}</strong></a>
         <search className={styles.gridSearchSlot}>{searchForm}</search>
         {publicStore && <>

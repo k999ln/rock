@@ -528,7 +528,7 @@ void test('the detail screen: unknown agents, malformed IDs, unlisted agents see
     await page.flush();
     assert.match(page.text(), /この Agent は、見つかりませんでした。/, id);
     assert.equal(page.find('button').length, 0);
-    assert.deepEqual(page.find('a', 'Agentを探す').map((node) => node.props.href), ['/noah/explore']);
+    assert.equal(page.find('a', 'Agentを探す').length, 0);
   }
   // 形の違う ID は、問い合わせない。
   const malformed = browser(w, 'owner-a');

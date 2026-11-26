@@ -8,7 +8,7 @@ import NoahDetailTemplate from './noah-detail-template';
 import { researchKindLabels, type ResearchDetail, type ResearchSummary } from '@/lib/noah-research-types';
 import styles from './noah-agent-catalog.module.css';
 
-export default function NoahPublicDetail({ id, basePath = '/noah' }: { id: string; basePath?: string }) {
+export default function NoahPublicDetail({ id }: { id: string; basePath?: string }) {
   const {t}=useNoahLocale();
 
   const [result, setResult] = useState<{ key: string; entry?: ResearchDetail; error?: string } | null>(null), [attempt, setAttempt] = useState(0);
@@ -33,7 +33,6 @@ export default function NoahPublicDetail({ id, basePath = '/noah' }: { id: strin
   }, [id, key]);
   const agent = entry?.kind === 'agent' || entry?.kind === 'candidate';
   const content = <div><div className={`${styles.page} ${styles.formPage} ${styles.catalogDetail}`}>
-    <nav className={styles.nav}><Link href={`${basePath}/explore?tab=catalog`}>{t("← Agentを探す")}</Link></nav>
     {error && <div role="alert" className={styles.error}>{t(error)} <button onClick={() => setAttempt(n => n + 1)}>{t("再試行")}</button></div>}
     {!entry && !error && <NoahLoading/>}
     {entry && <>
@@ -50,5 +49,5 @@ export default function NoahPublicDetail({ id, basePath = '/noah' }: { id: strin
     </>}
   </div></div>;
   return entry ? <NoahDetailTemplate id={id} name={entry.name} provider={entry.author} summary={entry.summary}
-    category={t(researchKindLabels[entry.kind])} feedbackId={agent ? id : undefined} backHref={`${basePath}/explore?tab=catalog`}>{content}</NoahDetailTemplate> : content;
+    category={t(researchKindLabels[entry.kind])} feedbackId={agent ? id : undefined}>{content}</NoahDetailTemplate> : content;
 }

@@ -187,7 +187,6 @@
 }
 /* Every Noah page uses the top menu; no rail or fixed bottom navigation. */
 .mark { display: block; object-fit: contain; flex-shrink: 0; }
-.back { display: grid; place-items: center; flex-shrink: 0; min-width: 44px; min-height: 44px; }
 .content { min-width: 0; min-height: calc(100svh - 72px); max-width: 1220px; margin-inline: auto; padding-bottom: calc(24px + env(safe-area-inset-bottom)); }
 .content :global(.rock-workspace) { min-height: 0; }
 .content :global([data-noah-embedded] .rock-main) { padding: 24px; width: 100%; max-width: none; }
@@ -198,9 +197,6 @@
   .gridTopbar[data-detail-header] .gridSearchSlot { display: none; }
   .gridTopbar[data-detail-header] .mobileStoreSearch { display: inline-grid; place-items: center; width: 44px; height: 44px; border: 0; background: transparent; color: inherit; }
   .gridTopbar[data-detail-header] .gridBrand { margin-inline-end: auto; }
-}
-:global([dir='rtl']) .back svg {
-  transform: scaleX(-1);
 }
 
 .gridTopbar { border-bottom:1px solid var(--noah-theme-line, #ededf2); max-width:1220px; margin-inline:auto; padding-inline:clamp(16px,3vw,42px); }
@@ -243,3 +239,30 @@
   .gridTopbar[data-store-header] .gridAccount { background: var(--noah-soft); }
   .gridTopbar[data-store-header] + .gridBody { padding: 22px 20px calc(24px + env(safe-area-inset-bottom)); }
 }
+
+/* The cover continues behind the detail navigation without a horizontal seam. */
+.shell:has([data-noah-fullscreen-detail]) { --noah-detail-header-height: 72px; }
+.shell:has([data-noah-fullscreen-detail]) > .gridTopbar {
+  height: var(--noah-detail-header-height);
+  min-height: var(--noah-detail-header-height);
+  max-width: none;
+  margin-bottom: calc(-1 * var(--noah-detail-header-height));
+  border: 0;
+  background: transparent;
+  backdrop-filter: none;
+  color: #fff;
+  isolation: isolate;
+}
+.shell:has([data-noah-fullscreen-detail]) > .gridTopbar::before {
+  content: '';
+  position: absolute;
+  inset: 0 0 -36px;
+  z-index: -1;
+  pointer-events: none;
+  background: linear-gradient(#000b, #0007 55%, transparent);
+}
+.shell:has([data-noah-fullscreen-detail]) > .gridTopbar :is(.gridBrand, .gridMenuButton, .gridAccount):hover { background: #ffffff24; }
+.shell:has([data-noah-fullscreen-detail]) > .gridTopbar .gridSearchSlot .gridSearch { background: #171719a6; color: #fff; }
+.shell:has([data-noah-fullscreen-detail]) > .gridTopbar .gridSearchSlot input::placeholder,
+.shell:has([data-noah-fullscreen-detail]) > .gridTopbar .gridSearchSlot svg { color: #e4e4e7; }
+@media(max-width:520px) { .shell:has([data-noah-fullscreen-detail]) { --noah-detail-header-height: 58px; } }
