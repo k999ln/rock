@@ -77,6 +77,35 @@ void test('alarm executes official tool and delivers hashed results without any 
   assert.equal((await w.rpc({action:'job',jobId:id(2),owner:'c'.repeat(64)})).status,404);
   assert.equal(w.modelInputs[0].model,'@cf/openai/gpt-oss-20b');assert.equal(w.modelInputs[0].input.max_tokens,1024);
 });
+void test('Memory retries prose without a tool and completes with an official saved graph and summary',async t=>{
+  let turn = 0;
+  const w = await world(t, async input => {
+    turn++;
+    if (turn === 1) return { choices: [{ finish_reason: 'stop', message: { content: '青チームは資料を整理します。' } }] };
+    if (turn === 2) {
+      assert.equal(input.tool_choice, 'required');
+      const entities = [{ name: '青チーム', entityType: 'チーム', observations: ['資料を整理する'] }];
+      return { choices: [{ finish_reason: 'tool_calls', message: { tool_calls: [{ id: 'save-team', type: 'function', function: { name: 'create_entities', arguments: JSON.stringify({ entities }) } }] } }] };
+    }
+    assert.equal(input.tool_choice, undefined);
+    assert.equal(input.messages.at(-1).tool_call_id, 'save-team');
+    return { choices: [{ finish_reason: 'stop', message: { content: turn === 3 ? '' : '青チームは資料を整理します。' } }] };
+  });
+  await w.connect(3);
+  const accepted = await w.rpc({ action: 'start', connectionId: id(3), jobId: id(4), prompt: '青チームは資料を整理する。担当と作業をまとめてください。', receipt: 'r'.repeat(40) });
+  assert.equal(accepted.status, 202);
+  await w.wait(() => w.received.length === 1);
+  const { job } = w.received[0];
+  assert.equal(job.state, 'returned', job.error);
+  assert.equal(job.calls, 4);
+  assert.equal(w.modelInputs[0].input.tool_choice, 'required');
+  assert.match(job.result.text, /青チーム.*資料/);
+  const memory = job.result.files.find(file => file.name === 'memory.jsonl');
+  assert.match(Buffer.from(memory.base64, 'base64').toString(), /青チーム.*資料/);
+  const receipt = job.result.files.find(file => file.name === 'noah-execution.json');
+  const evidence = JSON.parse(Buffer.from(receipt.base64, 'base64').toString());
+  assert.deepEqual(evidence.operations.map(({ name, ok }) => ({ name, ok })), [{ name: 'create_entities', ok: true }]);
+});
 void test('stop fences a pending model response and prevents all subsequent tools/model calls',async t=>{
   let release; const held=new Promise(r=>{release=r;});
   const w=await world(t,async()=>{await held;return {choices:[{finish_reason:'tool_calls',message:{tool_calls:[{id:'late',type:'function',function:{name:'create_entities',arguments:'{}'}}]}}]};});
