@@ -1,6 +1,6 @@
 {
   "schema": "rockstaros-web-security-response-evidence/1",
-  "observedAt": "2026-11-26T09:51:16Z",
+  "observedAt": "2026-11-26T09:59:08Z",
   "scope": "LOCAL_PRODUCTION_BUILD_NOT_SITES_DEPLOYMENT",
   "server": {
     "runtime": "wrangler-local",
@@ -11,7 +11,7 @@
     "services/sky-web/asset-responses.mjs": "010e3f384eb12e4c4d59c9fc265d80571a381d75472b902c2fe6dd79ca3153b0",
     "scripts/stage-secure-assets.mjs": "3f4c24209a138464b4eef84da1f41e427a343fd5373a180c7285ca4bbf3455bd",
     "services/sky-web/noah-page-routes.mjs": "73d85d0471cc38ed7494b4f5d1e983dd00f9fa3505dd2c90e84b03cb098870a3",
-    "services/sky-web/main-page-policy.mjs": "ce7386f61dd8c168a01fafb72182cb95d4b180d012a1ef87c52de629d812bb5e",
+    "services/sky-web/main-page-policy.mjs": "98b94868d1f9c8a1b25cb6809169e4f75f9aa3da47d7c7f7fb40a61ec4f24194",
     "services/sky-web/domain-router.mjs": "7546fbd68a49707d09c65ba0ee556082e62053dc1b3466c148b5e67756d6263d",
     "scripts/stage-sky-domain-router.mjs": "4b8df1f548831d9c80a97846c96144a4d1facfa4b52799f79fd3b91686c384b0",
     "data/web-security-policy.json": "919c45822d2a6c7421a4423f918545f24d406d6acb8579d597472756c66daec5",
