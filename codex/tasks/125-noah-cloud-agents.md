@@ -168,3 +168,9 @@ PR #30は全体verify（5,198成功・5skip・失敗0、API1,918、CSV385）と�
 ## 2026年11月26日の本番稼働版
 
 Cloudflareの `noah-free-cloud-agents` の配備履歴で、11月24日13:45（日本時間）に配備した `12587b2c-c42b-41c1-98f3-032f3af93720` が全トラフィックを受けていることを確認した。[PR #58の配備記録](https://github.com/iceiceice999/rock/pull/58)に対応する[配備ソースの上限](https://github.com/iceiceice999/rock/blob/1ba0b35b9e73ae6293fda34eaee5f18558af1337/lib/noah-cloud-contract.ts#L45)と[受付処理](https://github.com/iceiceice999/rock/blob/1ba0b35b9e73ae6293fda34eaee5f18558af1337/services/noah-cloud-agents/worker.mjs#L46)は、本人3件・全体10件／UTC日で受付を止める。Gitのmainにある使用量枠（本人2,400・全体8,000 neuron）と件数の安全上限（本人12件・全体60件）への切替は、実行用Workerへの配備待ち。今回の確認は読み取りのみで、利用枠を消費していない。
+
+## 2026-11-26 トップのMemoryを使う最初の仕事
+
+Sites v247で、匿名の新規ブラウザーからトップのメモ整理を開くと接続は成功したが、日本語の合成メモを依頼すると「公式Toolの実行結果を確認できませんでした」で終了した。同じブラウザーでTimeの依頼と保存一覧からの再表示は成功した。
+
+公式Toolを呼ばないモデル応答で同じ失敗を再現した。Memoryは成功した公式Tool応答を得るまでモデルにTool呼出を要求し、文章だけの応答や空の要約は既存の4回の上限内で再試行する。メモ整理では担当者・担当チームと作業をMemoryへ記録する手順を伝える。成功判定には実際の公式Toolの成功と空でない要約が必要。回帰試験で公式Toolが作る `memory.jsonl` と検証用の `noah-execution.json` を確認した。配備後に匿名のスマホで、接続・依頼・保存一覧から成果を開く順に受け入れる。
