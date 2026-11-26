@@ -1,4 +1,4 @@
-import { NOAH_LOCAL_LABS, noahPageRedirect, noahRedirectURL } from './noah-page-routes.mjs';
+import { NOAH_LOCAL_LABS, noahPageRedirect, noahRedirectURL, noahShortPageDestination } from './noah-page-routes.mjs';
 import { MAIN_DISCOVERY_PATHS, mainPageStatus, mainPageUnavailable } from './main-page-policy.mjs';
 
 // Keep outer-router responses under the same policy as application responses.
@@ -254,8 +254,9 @@ export function withMiniSite(skyWorker, upstreamFetch = fetch) {
         ]);
         const destination = legacy || compatibility.get(path.replace(/\/$/, ''));
         const targetPath = destination ? new URL(destination, source).pathname : path;
+        const shortPage = noahShortPageDestination(targetPath);
         const lab = NOAH_LOCAL_LABS.some(name => ['/sky/', '/os/sky/'].some(prefix => path.replace(/\/$/, '') === prefix + name));
-        const status = mainPageStatus(lab ? '/noah' : targetPath);
+        const status = mainPageStatus(lab ? '/noah' : shortPage?.split('?')[0] ?? targetPath);
         if (status === 404 || status === 410) return mainPageUnavailable(status, request.method);
         if (['GET', 'HEAD'].includes(request.method)) {
           if (path === '/sitemap.xml' || path === '/noah/sitemap.xml') {
@@ -266,6 +267,7 @@ export function withMiniSite(skyWorker, upstreamFetch = fetch) {
           if (destination && source.hostname === MINI_PUBLIC_HOST)
             return Response.redirect(noahRedirectURL(source, destination).href, 308);
         }
+        if (shortPage) return skyWorker.fetch(request, env, context);
       }
       // Preserve campus-specific deployments and all API/mutation routing.
       if ((source.hostname === MINI_PUBLIC_HOST || ['localhost', '127.0.0.1', '[::1]'].includes(source.hostname)) && ['GET', 'HEAD'].includes(request.method)) {

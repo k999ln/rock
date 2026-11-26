@@ -6,6 +6,7 @@ import Image from 'next/image';
 import { usePathname, useSearchParams } from 'next/navigation';
 import { Bot, Home, UserRound, RefreshCw, ArrowLeft, Globe, Bookmark, Menu, MoreHorizontal, Search, SquareTerminal } from 'lucide-react';
 import { noahLegacyHref, type NoahSurfaceMode } from '@/lib/noah-surface';
+import { NOAH_PROFILE_PATH, noahShortPageDestination } from '../services/sky-web/noah-page-routes.mjs';
 import { useNoahLocale } from './noah-locale';
 import styles from './noah-service-shell.module.css';
 import { NoahRevenuePackMenuItem } from './noah-revenue-pack';
@@ -13,7 +14,8 @@ import { NoahSurfaceContext } from './noah-surface-context';
 import { useNoahAppearance } from './noah-appearance';
 
 export default function NoahShell({ children, mode = 'local' }: { children: ReactNode; mode?: NoahSurfaceMode }) {
-  const pathname = usePathname();
+  const browserPath = usePathname();
+  const pathname = noahShortPageDestination(browserPath)?.split('?')[0] ?? browserPath;
   const searchParams = useSearchParams();
   const appearance = useNoahAppearance();
   const { t } = useNoahLocale();
@@ -40,6 +42,7 @@ export default function NoahShell({ children, mode = 'local' }: { children: Reac
   const gridHome = isTimeline;
   const publicStore = effectiveMode === 'public';
   const brandName = publicStore ? 'Nöah' : 'Noah';
+  const profileHref = publicStore && !preview ? NOAH_PROFILE_PATH : `${base}/profile`;
   const localPath = pathname.startsWith(base + '/') ? pathname.slice(base.length + 1) : '';
   const localPrimary = [
     { href: base, label: 'ホーム', Icon: Home, selected: isTimeline },
@@ -82,14 +85,14 @@ export default function NoahShell({ children, mode = 'local' }: { children: Reac
     <div className={styles.shell} data-theme={appearance} data-noah-surface={effectiveMode} data-noah-standalone>
       <a href="#noah-content" className={styles.skip}>{t('メインコンテンツへ')}</a>
       <header className={styles.gridTopbar} data-store-header={publicStore || undefined}>
-        <a href={base} className={styles.gridBrand}><Image className={styles.mark} src="/brand/noah-icon-v2.png" width={40} height={40} alt="" unoptimized/><strong>{brandName}</strong></a>
+        <a href={base} className={styles.gridBrand} aria-label={brandName}><Image className={styles.mark} src="/brand/noah-icon-v2.png" width={40} height={40} alt="" unoptimized/><strong>{brandName}</strong></a>
         <search className={styles.gridSearchSlot}>{searchForm}</search>
         {publicStore && <>
           <button type="button" className={styles.mobileStoreSearch} aria-label={t('Agentを探す')} popoverTarget={storeSearchId}><Search size={21}/></button>
           <search popover="auto" id={storeSearchId} className={styles.storeSearchPanel}>{searchForm}</search>
         </>}
         {menu}
-        <Link href={`${base}/profile`} className={styles.gridAccount} aria-label={t('登録情報を見る')} title={t('登録情報')}><UserRound size={22}/></Link>
+        <Link href={profileHref} className={styles.gridAccount} aria-label={t('登録情報を見る')} title={t('登録情報')}><UserRound size={22}/></Link>
       </header>
       <div className={styles.gridBody} id="noah-content" tabIndex={-1}>{children}</div>
     </div>
@@ -99,15 +102,15 @@ export default function NoahShell({ children, mode = 'local' }: { children: Reac
       <a href="#noah-content" className={styles.skip}>{t('メインコンテンツへ')}</a>
       <header className={styles.mobileHeader}>
         {!isMain&&<Link href={base} className={styles.back} aria-label={t('戻る')}><ArrowLeft size={22}/></Link>}
-        <a href={base} className={styles.brand}><Image className={styles.mark} src="/brand/noah-icon-v2.png" width={40} height={40} alt="" unoptimized/><strong>{brandName}</strong></a>
-        <div className={styles.headerActions}>{publicStore && menu}<Link href={`${base}/profile`} className={styles.profileLink} aria-label={t('登録情報を見る')} title={t('登録情報')}><UserRound size={20}/></Link></div>
+        <a href={base} className={styles.brand} aria-label={brandName}><Image className={styles.mark} src="/brand/noah-icon-v2.png" width={40} height={40} alt="" unoptimized/><strong>{brandName}</strong></a>
+        <div className={styles.headerActions}>{publicStore && menu}<Link href={profileHref} className={styles.profileLink} aria-label={t('登録情報を見る')} title={t('登録情報')}><UserRound size={20}/></Link></div>
       </header>
       <div className={styles.body} data-wide data-noah-home={isTimeline||undefined}>
         <aside className={styles.rail}><div className={styles.railInner}>
-          <a href={base} className={styles.brand}><Image className={styles.mark} src="/brand/noah-icon-v2.png" width={44} height={44} alt="" unoptimized/><strong>{brandName}</strong></a>
+          <a href={base} className={styles.brand} aria-label={brandName}><Image className={styles.mark} src="/brand/noah-icon-v2.png" width={44} height={44} alt="" unoptimized/><strong>{brandName}</strong></a>
           {!publicStore && localNav()}
           <div className={styles.secondary}><nav aria-label={t(publicStore ? 'メインメニュー' : '操作の設定')}><NoahRevenuePackMenuItem/>{secondary.map(({href,label,Icon})=><a key={href} href={href} aria-label={t(label)}><Icon size={20}/><span>{t(label)}</span></a>)}</nav></div>
-          <Link href={`${base}/profile`} className={styles.account}><UserRound size={22}/><span>{t('登録情報')}</span></Link>
+          <Link href={profileHref} className={styles.account}><UserRound size={22}/><span>{t('登録情報')}</span></Link>
         </div></aside>
         <div className={styles.content} id="noah-content" tabIndex={-1} data-main-page={(!publicStore && isMain)||undefined}>{children}</div>
       </div>

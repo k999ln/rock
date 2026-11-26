@@ -22,6 +22,7 @@ import * as profileContract from '../../../lib/noah-profile-contract.ts';
 import * as explanation from '../../../lib/noah-agent-explanation.ts';
 import * as shelfContract from '../../../lib/noah-shelf.ts';
 import * as stepGraph from '../../../lib/noah-steps.ts';
+import * as noahPageRoutes from '../../../services/sky-web/noah-page-routes.mjs';
 
 const ROOT = new URL('../../../', import.meta.url);
 const Fragment = Symbol('Fragment');
@@ -139,6 +140,7 @@ export function screen(options = {}) {
       if(id==='@/lib/noah-result-media')return resultMedia;
       if(id==='@/components/noah-work-page')return load('components/noah-work-page.tsx');
       if(id==='@/lib/noah-profile-contract')return profileContract;
+      if (id === '../services/sky-web/noah-page-routes.mjs') return noahPageRoutes;
       if (id === '@/lib/noah-theater-films') return theaterFilms;
       if (id === '@/lib/noah-haptics') return load('lib/noah-haptics.ts');
       if (id === '@/lib/noah-connection-sound' || id === './noah-connection-sound') return load('lib/noah-connection-sound.ts');
