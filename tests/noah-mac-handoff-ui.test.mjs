@@ -13,6 +13,7 @@ void test('signed-out help and device settings lead to the optional Mac runner, 
     '@/lib/use-sky-service-status': { useSkyServiceStatus: () => ({}) },
     '@/lib/noah-bot-notice': { noahBotNotice: () => ({ shown: false, paragraphs: [] }) },
     '@/lib/noah-model-catalog.mjs': modelCatalog,
+    '@/components/noah-appearance': { default: () => null },
     '@/components/noah-interaction': { NoahHapticsSetting: () => null },
     '@/components/noah-locale': { NoahLanguageSetting: () => null, useNoahLocale: () => ({ t: x => x }) },
   };

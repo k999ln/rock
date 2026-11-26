@@ -1,13 +1,18 @@
 ## 2026-11-26
+
+- NoahのAgent詳細を共通の一画面構成へ統一。操作の設定の黒白切替を全画面へ共有し、研修動画の無音ループ・自然な境界・本人用Agentへのプラグイン追加を実装（task129、PR準備中）。
 - Noahの保存情報の読込中・失敗時に再入力を求めず、Safari/Chromeの自動入力にプロフィールとAgent登録を対応。Chrome標準の自動入力・保存・再利用を390px/1280pxで検証（task136、[PR #82](https://github.com/iceiceice999/rock/pull/82)。未公開、Safari実機は未検証）。
 
 - Noahの自分のAgent・実行中・保存したものの横タブを撤去し、既存の共通メニューへ統一。見出し・保存内容の絞り込み・旧URLは維持（task129、[PR #85](https://github.com/iceiceice999/rock/pull/85)）。
 
 - Noahの検索・タイムライン・ココナラ入口をホームへ統合し、登録情報・権限の入口を人型に一本化。旧explore URLの検索条件を保持して転送（task140、[PR #84](https://github.com/iceiceice999/rock/pull/84)）。
 
-- 第243・244版の公開記録とAgentの受入状況を進捗台帳に反映。READMEの無料クラウド枠と設計案内のEve表記を更新（[task138](codex/tasks/138-cross-chat-sync.md)、[PR #83](https://github.com/iceiceice999/rock/pull/83)）。
 
+
+
+- 第243・244版の公開記録とAgentの受入状況を進捗台帳に反映。READMEの無料クラウド枠と設計案内のEve表記を更新（[task138](codex/tasks/138-cross-chat-sync.md)、[PR #83](https://github.com/iceiceice999/rock/pull/83)）。
 - avoado.siの公開画面を現mainのNoah・Eveの導線へ整理。旧企画の画面を410、未知の画面を404にし、旧URL転送・審査者限定・sitemapを整合（task139、[PR #81](https://github.com/iceiceice999/rock/pull/81)）。
+
 
 - 公開前のCodeQL指摘を受け、Noah収益パックの排他的ファイル作成・開いたファイルの検査と容量制限、登録試験の送信先照合を補強。既存出力の上書き防止とリンク拒否を回帰試験へ追加（[PR #80](https://github.com/iceiceice999/rock/pull/80)）。
 

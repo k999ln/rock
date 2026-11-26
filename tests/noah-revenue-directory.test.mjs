@@ -218,6 +218,12 @@ await test('自社MCPから匿名準備票を作り、共通Workへ保存・再�
     const myRoutes = await import('../lib/noah-my-routes.ts');
     const pageRoutes = await import('../lib/noah-page-routes.ts');
     const theaterFilms = await import('../lib/noah-theater-films.ts');
+    const plugin = await import('../lib/noah-training-plugin.ts');
+    const uploadContract = await import('../lib/noah-agent-upload.ts');
+    const { createNoahAgentApi } = await import('../lib/noah-agent-api.ts');
+    const { readFileSync } = await import('node:fs');
+    for (const migration of ['0033_noah_agent_uploads', '0034_noah_upload_refactor']) f.sql.exec(readFileSync(new URL('../drizzle/' + migration + '.sql', import.meta.url), 'utf8'));
+    const agents = createNoahAgentApi(deps);
     const unused = { default: () => null };
     const savedModules = { '@/lib/noah-my-routes': myRoutes, '@/lib/noah-page-routes': pageRoutes,
       './noah-theater': unused, './noah-library': unused, './noah-boards': {}, './sky-agent-library': unused, './sky-output-center': unused, './noah-result-data': unused };
@@ -225,6 +231,10 @@ await test('自社MCPから匿名準備票を作り、共通Workへ保存・再�
     const directory = createNoahDirectoryApi({ ...deps, directory: async () => entries });
     const provider = createNoahProviderApi(deps), asks = createNoahAskApi(deps);
     const ui = screen({ width: 390, modules: { ...savedModules, '@/lib/noah-theater-films': theaterFilms,
+      'next/navigation': { useRouter: () => ({ push: href => ui.visits.push(href) }), useSearchParams: () => new URLSearchParams() },
+      '@/lib/noah-training-plugin': plugin, '@/lib/noah-agent-upload': uploadContract, '@/lib/noah-local-connection': { NOAH_TEST_MANIFEST_SHA256: 'test-only' },
+      './noah-agent-catalog': { adapterLabels: { mcp_http: 'MCP' } }, './noah-agent-upload-form': { permissionLabels: {} },
+      './noah-local-connection': unused, './noah-launch': unused, './noah-engineering-mcp-trial': unused, './noah-managed-installation': unused, './noah-invites': { NoahInviteManager: () => null },
       '@/lib/owner-intent': ownerIntent, '@/lib/noah-ask-view': askView, '@/lib/noah-cloud-contract': cloudContract,
       './noah-timeline': { default: () => null }, './noah-ready-detail': { default: () => null },
       './noah-agent-source-ratings': { default: () => null },
@@ -238,7 +248,10 @@ await test('自社MCPから匿名準備票を作り、共通Workへ保存・再�
       else if (target.pathname === '/api/noah/discover/project') {
         assert.equal(target.searchParams.get('id'), projectId);
         return { body: noahProjectDetail(entries[0]) };
-      } else if (target.pathname === '/api/noah/provider') response = await provider(request);
+      } else if (target.pathname === '/api/noah/agents') response = method === 'POST' ? await agents.create(request) : await agents.list(request);
+      else if (target.pathname.startsWith('/api/noah/agents/')) response = await agents.get(request, target.pathname.split('/').at(-1));
+      else if (target.pathname === '/api/noah/feedback') return { body: { comments: [], summary: { users: 0, crowns: 0, comments: 0, crowned: false }, hasMore: false } };
+      else if (target.pathname === '/api/noah/provider') response = await provider(request);
       else if (target.pathname === '/api/noah/ask') response = await asks.collection(request);
       else if (target.pathname.startsWith('/api/noah/ask/')) response = await asks.item(request, target.pathname.split('/').at(-1));
       else assert.fail('unexpected request ' + url);
@@ -255,7 +268,15 @@ await test('自社MCPから匿名準備票を作り、共通Workへ保存・再�
     const card = search.find('a', entries[0].card.name)[0];
     assert.equal(card.props.href, noahCardHref(entries[0].card));
     assert.ok(ui.calls.some(call => new URL(call.url, 'https://noah.test').searchParams.get('q') === '研修'));
-    const detail = ui.mount('components/noah-project-detail.tsx', { id: new URL(card.props.href, 'https://noah.test').searchParams.get('id') });
+    const publicDetail = ui.mount('components/noah-project-detail.tsx', { id: new URL(card.props.href, 'https://noah.test').searchParams.get('id') });
+    await publicDetail.flush();
+    assert.equal(publicDetail.find('button', '使う').length, 0);
+    await publicDetail.click('プラグインを追加');
+    await publicDetail.flush();
+    assert.ok(publicDetail.find('a', 'プラグインを開く')[0], publicDetail.text());
+    const pluginHref = publicDetail.find('a', 'プラグインを開く')[0].props.href;
+    assert.equal(calls, 0, 'adding a plugin saves the definition without executing it');
+    const detail = ui.mount('components/noah-agent-detail.tsx', { id: pluginHref.split('/').at(-1) });
     await detail.flush(); await detail.click('使う');
     assert.doesNotMatch(detail.text(), /3回|10回|UTC/);
     for (const field of endpoint.fields) {

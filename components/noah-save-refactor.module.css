@@ -1,7 +1,7 @@
-.surface { min-height: 100svh; background: #000; color: #e7e9ea; color-scheme: dark; }
+.surface { min-height: 100svh; background: var(--os-bg, #000); color: var(--os-text, #e7e9ea); color-scheme: var(--noah-color-scheme, dark); }
 .content { max-width: 880px; padding-top: 28px; }
 .content header { padding: 12px 0 10px; }
-.content header > a { color: #a8d8bc; }
+.content header > a { color: var(--noah-ink, #a8d8bc); }
 .content h1 { font-size: clamp(28px, 5vw, 40px); line-height: 1.3; margin: 24px 0 16px; }
 .content p, .content li { line-height: 1.85; }
 .content ol { padding-left: 22px; }
