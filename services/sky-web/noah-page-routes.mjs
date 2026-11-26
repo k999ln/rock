@@ -14,6 +14,9 @@ export const NOAH_PAGES = [
 ];
 export const NOAH_LOCAL_LABS = ['add/linux','add/zoom/device','add/zoom/interpret','add/zoom/lab','apps/planner/lab'];
 export const NOAH_REDIRECTS = [
+  ['/noah/explore', '/noah'],
+  ['/noah/coconala', '/noah'],
+  ['/noah/public/explore', '/noah'],
   ...['/sky', '/os/sky'].flatMap(prefix => [
     [prefix, '/noah'], [prefix + '/agents', '/noah/saved?tab=roles'],
     [prefix + '/outputs', '/noah/saved?tab=files'],
@@ -25,7 +28,7 @@ export const NOAH_REDIRECTS = [
   ['/zema/library', '/noah/saved?tab=roles'], ['/studio', '/noah/publish'],
   ['/zema/tools/:toolId', '/noah/tools/:toolId'],
   ['/noah/public', '/noah'], ['/noah/public/my', '/noah/my'],
-  ['/noah/public/agents', '/noah/explore?tab=catalog'],
+  ['/noah/public/agents', '/noah?tab=catalog'],
   ['/noah/public/agents/:id', '/noah/agents/:id'],
 ];
 /** Exact segment matches: unknown pages remain 404; values never become redirect origins. */

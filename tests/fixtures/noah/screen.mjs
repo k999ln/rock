@@ -123,7 +123,7 @@ export function screen(options = {}) {
       if (id === 'next/image') return { default: 'img' };
       if (id === 'lucide-react') return new Proxy({}, { get: (_, name) => String(name) });
       if (id.endsWith('.module.css')) return { default: new Proxy({}, { get: (_, name) => String(name) }) };
-      if (options.modules?.[id]) return options.modules[id];
+      if (options.modules?.[id]) return id === 'next/navigation' ? { useSearchParams: () => new URLSearchParams(options.search ?? ''), ...options.modules[id] } : options.modules[id];
       if (id === '@/lib/noah-collection') return collection;
       if (id === 'next/navigation') return { useSearchParams: () => new URLSearchParams(options.search ?? '') };
       if(id.startsWith('./')&&options.modules?.[`@/components/${id.slice(2)}`])return options.modules[`@/components/${id.slice(2)}`];

@@ -1,5 +1,7 @@
 ## 2026-11-26
 
+- Noahの検索・タイムライン・ココナラ入口をホームへ統合し、登録情報・権限の入口を人型に一本化。旧explore URLの検索条件を保持して転送（task140、PR準備中）。
+
 - avoado.siの公開画面を現mainのNoah・Eveの導線へ整理。旧企画の画面を410、未知の画面を404にし、旧URL転送・審査者限定・sitemapを整合（task139、[PR #81](https://github.com/iceiceice999/rock/pull/81)）。
 
 - 公開前のCodeQL指摘を受け、Noah収益パックの排他的ファイル作成・開いたファイルの検査と容量制限、登録試験の送信先照合を補強。既存出力の上書き防止とリンク拒否を回帰試験へ追加（[PR #80](https://github.com/iceiceice999/rock/pull/80)）。

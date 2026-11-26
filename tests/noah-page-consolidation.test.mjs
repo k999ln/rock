@@ -11,10 +11,10 @@ import {screen} from './fixtures/noah/screen.mjs';
 void test('canonical search keeps a Unicode query and trial attribution without accepting executable or return parameters',()=>{
  const href=noahPageHref('explore',{q:'資料 & image',via:'trial-300',returnTo:'https://evil.test',execute:'1',q2:['a','b']},'catalog');
  const url=new URL(href,'https://avoado.si');
- assert.equal(url.pathname,'/noah/explore');assert.equal(url.searchParams.get('q'),'資料 & image');assert.equal(url.searchParams.get('via'),'trial-300');
+ assert.equal(url.pathname,'/noah');assert.equal(url.searchParams.get('q'),'資料 & image');assert.equal(url.searchParams.get('via'),'trial-300');
  assert.deepEqual([...url.searchParams.keys()],['tab','q','via']);
  assert.equal(noahPageTab('__proto__',NOAH_EXPLORE_TABS,'ready'),'ready');
- assert.equal(noahPageHref('explore',{q:['a','b']},'https://evil.test'),'/noah/explore?tab=ready');
+ assert.equal(noahPageHref('explore',{q:['a','b']},'https://evil.test'),'/noah?tab=ready');
 });
 void test('saved board and work references survive old entry redirects without changing owners or executing writes',()=>{
  assert.equal(noahPageHref('saved',{board:'board-one'},'boards'),'/noah/saved?tab=boards&board=board-one');

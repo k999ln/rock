@@ -164,3 +164,5 @@
 | 137 | [137-noah-pin-videos.md](137-noah-pin-videos.md) | ピンの動画: 格好いい AI 動画（Higgsfield。本人は許可を取ってあると言った）を集め、5〜8 秒・縦 3:4・音なしのループ（GIF と同じ見た目の mp4）にして、Agent ごとに中身で割り当てる。カードは題名だけ。無作為の 200 件で 95% 以上が合うまで一般には出さない |
 
 | 139 | [139-main-public-pages.md](139-main-public-pages.md) | 現mainのNoah/Eveに必要な公開ページへ限定・旧URL転送・審査担当認証 | ✅ 実装・対象40試験成功。全体検証・公開記録は [PR #81](https://github.com/iceiceice999/rock/pull/81) |
+
+| 140 | [140-noah-home-search.md](140-noah-home-search.md) | ホーム・検索・タイムラインの入口を一本化 | 実装・検証中 |
