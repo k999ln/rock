@@ -263,5 +263,6 @@
 }
 .shell:has([data-noah-fullscreen-detail]) > .gridTopbar :is(.gridBrand, .gridMenuButton, .gridAccount):hover { background: #ffffff24; }
 .shell:has([data-noah-fullscreen-detail]) > .gridTopbar .gridSearchSlot .gridSearch { background: #171719a6; color: #fff; }
-.shell:has([data-noah-fullscreen-detail]) > .gridTopbar .gridSearchSlot :is(input::placeholder, svg) { color: #e4e4e7; }
+.shell:has([data-noah-fullscreen-detail]) > .gridTopbar .gridSearchSlot input::placeholder,
+.shell:has([data-noah-fullscreen-detail]) > .gridTopbar .gridSearchSlot svg { color: #e4e4e7; }
 @media(max-width:520px) { .shell:has([data-noah-fullscreen-detail]) { --noah-detail-header-height: 58px; } }
