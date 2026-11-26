@@ -87,7 +87,7 @@ void test('public menu has one home entry and no separate discovery or timeline 
 });
 
 void test('all Noah pages keep every primary destination in one top menu without a sidebar or bottom tabs', () => {
-  for (const mode of ['public', 'local']) for (const pathname of ['/noah', '/noah/my', '/noah/activity', '/noah/saved', '/noah/profile', '/noah/preferences', '/noah/engineering', '/noah/discover/agent', '/noah/public/my']) {
+  for (const mode of ['public', 'local']) for (const pathname of ['/noah', '/noah/my', '/noah/activity', '/noah/saved', '/noah/profile', '/noah/preferences', '/noah/engineering', '/noah/discover/agent', '/noah/public/my', ...NOAH_SHORT_PAGES.map(([short])=>short)]) {
     const ui = screen({modules:{'next/navigation':{usePathname:()=>pathname},'@/lib/noah-surface':surface}});
     const shell = ui.mount('components/noah-shell.tsx',{mode,children:'PAGE CONTENT'});
     assert.equal(shell.find('aside').length, 0, pathname);
