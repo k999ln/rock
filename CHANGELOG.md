@@ -1,5 +1,6 @@
 ## 2026-11-26
 
+- READMEの開発状況と設計書を公開第258版のホーム・Agent詳細に合わせ、収益明細と専用eSIMの確認範囲を更新。[PR #103](https://github.com/iceiceice999/rock/pull/103)
 - Noahの戻る導線をロゴに統一し、詳細ヘッダーと表紙の境界を撤去（task140、[PR #102](https://github.com/iceiceice999/rock/pull/102)）。
 
 - Noahの単一一覧を既存推薦規則に接続し、スクロールによる連続読込へ変更（task140、[PR #99](https://github.com/iceiceice999/rock/pull/99)）。
