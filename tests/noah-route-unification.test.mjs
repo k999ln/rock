@@ -41,7 +41,7 @@ void test('retired AMC cannot form a cycle or change the fixed work view',async(
 void test('local labs get public guidance while local runtime and its permission checks remain reachable',async()=>{
   for(const lab of NOAH_LOCAL_LABS){
     const publicResponse=await app.fetch(new Request('https://avoado.si/os/sky/'+lab));
-    assert.equal(publicResponse.status,307);assert.equal(new URL(publicResponse.headers.get('location')).pathname,'/noah/explore');
+    assert.equal(publicResponse.status,307);assert.equal(new URL(publicResponse.headers.get('location')).pathname,'/noah');
     const localResponse=await app.fetch(new Request('http://127.0.0.1:8787/os/sky/'+lab));
     assert.equal(localResponse.status,200);assert.equal(await localResponse.text(),'/sky/'+lab);
     assert.match(readFileSync(new URL('../app/sky/'+lab+'/page.tsx',import.meta.url),'utf8'),/notFound\(/);

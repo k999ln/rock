@@ -1,7 +1,7 @@
 // Public document boundary for the Noah/Eve site. APIs, assets, stored work and
 // other hardware/campus hosts have their own routing and authorization.
 export const MAIN_PAGE_PATHS = [
-  '/', '/noah', '/noah/explore', '/noah/my', '/noah/activity', '/noah/saved',
+  '/', '/noah', '/noah/my', '/noah/activity', '/noah/saved',
   '/noah/profile', '/noah/preferences', '/noah/help', '/noah/usage',
   '/noah/engineering', '/noah/engineering/combinations', '/noah/combinations',
   '/noah/agents/new', '/noah/agents/verified', '/noah/discover/agent', '/noah/ready/agent',
@@ -10,7 +10,7 @@ export const MAIN_PAGE_PATHS = [
   '/noah/devices', '/noah/network', '/noah/free-cloud', '/noah/linux', '/noah/esim',
   '/noah/account', '/noah/purchases', '/noah/marketplace', '/noah/sell',
   '/noah/add', '/noah/add/data', '/noah/outbox', '/noah/my/cloud-results',
-  '/noah/coconala', '/noah/coconala/agent', '/noah/revenue-pack',
+  '/noah/coconala/agent', '/noah/revenue-pack',
   '/noah/review', '/noah/review/intake', '/noah/review/business',
   '/noah/review/teikibin', '/noah/review/pins',
   '/os/eve', '/os/eve/remix', '/os/eve/combinations', '/account', '/account/import/pro',
@@ -27,7 +27,7 @@ export const RETIRED_MAIN_PAGE_ROOTS = [
 ];
 
 export const MAIN_DISCOVERY_PATHS = [
-  '/', '/noah', '/noah/explore', '/noah/help', '/noah/engineering',
+  '/', '/noah', '/noah/help', '/noah/engineering',
   '/noah/combinations', '/legal/', '/privacy/',
 ];
 

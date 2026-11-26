@@ -1,10 +1,10 @@
-# Codex タスク一覧（進捗照合: 2026-11-23）
+# Codex タスク一覧（公開状況の照合 2026-11-26）
 
 1 タスク = 1 ファイル = 1 PR。番号順が推奨順。各ファイルの「やらないこと」は守る。
 終わったら CHANGELOG.md 先頭に 1 行、ここに ✅ と PR 番号。
 
 
-進捗の正本は `iceiceice999/rock`。2026-11-23 に main `16a9eae6dac5a40ab0f1bfacc4ecad2de9e34617` と GitHub PR/CI を照合した。現在の開発項目と残件は [project.md](../../project.md)。✅ は記載した範囲の確認済みを表し、タスク全体・全Agent・一般公開の合格を意味しない。空欄は未照合であり、未着手と断定しない。
+11月26日17:06の公開は第244版（main `13f2c6dd97`、[PR #81](https://github.com/iceiceice999/rock/pull/81)）。旧タスクの一括照合は2026-11-23 に main `16a9eae6dac5a40ab0f1bfacc4ecad2de9e34617` と GitHub PR/CI を照合した。現在の開発項目と残件は [project.md](../../project.md)。✅ は記載した範囲の確認済みを表し、タスク全体・全Agent・一般公開の合格を意味しない。空欄は未照合であり、未着手と断定しない。
 
 旧PR #342・#344〜#347 は未マージで閉じられているが、そのHEADは現在のmainの祖先に含まれる。旧PRの状態と、コードのmain統合を区別する。過去のCI履歴検出を現在の失敗として扱わず、対象SHAの検証結果を参照する。
 
@@ -113,7 +113,7 @@
 
 | # | ファイル | 一言 | 状態 |
 | --- | --- | --- | --- |
-| 138 | [138-cross-chat-sync.md](138-cross-chat-sync.md) | 別チャット・未マージPR・miiの差分を最新設計/コードへ統合 | ✅ 統合・全体verify成功・VS Code確認 [PR #80](https://github.com/iceiceice999/rock/pull/80)。本番公開は別受入 |
+| 138 | [138-cross-chat-sync.md](138-cross-chat-sync.md) | 別チャット・未マージPR・miiの差分を最新設計/コードへ統合 | ✅ 統合・全体verify成功・VS Code確認 [PR #80](https://github.com/iceiceice999/rock/pull/80)。第243版の公開・スマホとPCでの確認済み。第244版までの[照合 #83](https://github.com/iceiceice999/rock/pull/83) |
 | 133 | [133-workspace-consolidation.md](133-workspace-consolidation.md) | 最新mainとローカル作業をavokdoへ一本化 | ✅ ファイル統合・型・lint・17試験成功。VS Codeはavokado統合版1ウインドウを確認、[PR #80](https://github.com/iceiceice999/rock/pull/80) |
 | 134 | [134-noah-revenue-pack.md](134-noah-revenue-pack.md) | 本人用収益Agent・無料クラウド直接接続 | 3担当無料推論・Pixel Wi-Fi起動を受入。クラウド実行器6試験通過。最新版はtask132、統合 [PR #80](https://github.com/iceiceice999/rock/pull/80) |
 | 135 | [135-esim-private-cloud-design.md](135-esim-private-cloud-design.md) | eSIMから本人専用クラウド・適法な犯罪予防への協力 | ✅ ローカル設計反映・文書検証・VS Code表示確認。実装／提携は未実施、[PR #80](https://github.com/iceiceice999/rock/pull/80) |
@@ -155,7 +155,7 @@
 | 126 | [126-noah-packages-first.md](126-noah-packages-first.md) | トップの最初の列をパッケージ（1 つの仕事を最後までやる組合せ）にし、単発は下。Eve が Switch の部屋の形を手本に組む | 指示書を現mainへ統合 [PR #13](https://github.com/iceiceice999/rock/pull/13)。パッケージを先頭へ出す実装は未着手（task125の後）。✅ 単一ボタンの開始・月間成果・接続枠案の設計（[PR #79](https://github.com/iceiceice999/rock/pull/79)） |
 | 127 | [127-noah-live-agent-families.md](127-noah-live-agent-families.md) | 786系列の接続・本番稼働記録・利用可能一覧の更新 | ✅ 初回本番受入5系列・残り接続継続（PR #28 / #33） |
 | 128 | [128-noah-agent-explain.md](128-noah-agent-explain.md) | 全部の Agent の説明画面（押した先に「何を渡すと、何が、どの順で返るか」を段の図で出す・道具に札を付ける・17,046 系列の札付けと確かめ・PR #424 を iceiceice999/rock へ移す） | ✅ 詳細画面と手元の札付け・目視集計を実装 [PR #27](https://github.com/iceiceice999/rock/pull/27)。記事に沿った画面と札用の表は [PR #45](https://github.com/iceiceice999/rock/pull/45)。20件の原因点検と札付けの修正は [PR #47](https://github.com/iceiceice999/rock/pull/47)。0060 がない状態で札なしの段を出す対応は [PR #48](https://github.com/iceiceice999/rock/pull/48)。再採取・実データの札数と割合・本番 D1・一般公開・200 系列の目視は [9 章](128-noah-agent-explain.md#9-graph-engineering-with-claude-の使い方)。CallMCP の用途・依頼例・提供元の料金は [PR #41](https://github.com/iceiceice999/rock/pull/41)。 Claude v2 の道具一覧と公開受入は [PR #52](https://github.com/iceiceice999/rock/pull/52)。道具定義の再取得は [PR #65](https://github.com/iceiceice999/rock/pull/65)。 |
-| 129 | [129-noah-ux-debug.md](129-noah-ux-debug.md) | Noah の全機能を知らない人の目で確かめて直す（全体の上限・公平な枠・設定を返さない・本番の一周・未確認の165件・44px・サインインの行き先・Mac だけの画面・検索の続き・repository-map の正本） | 🔶 調べと 1 回目の直し（Claude、2026-11-22。[ux-audit](../../docs/noah/ux-audit-2026-11-22.md)）。D1・D3・D4・D7・D9・D10・D11 は済み（[PR #43](https://github.com/iceiceice999/rock/pull/43)、2026-11-24 に本番で確かめた）。残りは D2（Turnstile）・D5 の実機の行・D6・D8・D12・D13。✅ 研修Agent詳細での動画再生、シアタータブ撤去と保存導線（[PR #53](https://github.com/iceiceice999/rock/pull/53)）。✅ EveとAgentエンジニアリング、無料クラウドの相談と回答表示（[PR #56](https://github.com/iceiceice999/rock/pull/56)） |
+| 129 | [129-noah-ux-debug.md](129-noah-ux-debug.md) | Noah の全機能を知らない人の目で確かめて直す（全体の上限・公平な枠・設定を返さない・本番の一周・未確認の165件・44px・サインインの行き先・Mac だけの画面・検索の続き・repository-map の正本） | 🔶 調べと 1 回目の直し（Claude、2026-11-22。[ux-audit](../../docs/noah/ux-audit-2026-11-22.md)）。D1・D3・D4・D7・D9・D10・D11 は済み（[PR #43](https://github.com/iceiceice999/rock/pull/43)、2026-11-24 に本番で確かめた）。残りは D2（Turnstile）・D5 の実機の行・D6・D8・D12・D13。✅ 研修Agent詳細での動画再生、シアタータブ撤去と保存導線（[PR #53](https://github.com/iceiceice999/rock/pull/53)）。✅ EveとAgentエンジニアリング、無料クラウドの相談と回答表示（[PR #56](https://github.com/iceiceice999/rock/pull/56)）。✅ 共通メニューへ統一し重複する横タブを撤去（[PR #85](https://github.com/iceiceice999/rock/pull/85)、公開前検証中） |
 | 130 | [130-eve-si-agent-engineering.md](130-eve-si-agent-engineering.md) | Eve（eve.si）のエージェントエンジニアリング（組み合わせファイルと検査、つなぎ目の変換、試運転、需要の台帳、探索と発見、採点と作り直し、作者の受け取り） | 🔶 段 1〜6・画面・API・本物の候補の確かめ（通過 0）・Eve の部品 11 個（すべて通過）・需要の台帳 2 件・A8.net の組み合わせ（本番に出せる）・本番の実行役と最初の回は済み（Claude、2026-11-25。PR #49・#61・#62・#66・#78）。最初の回は本人の番（A8.net の登録 → 媒体 → 提携の申請 → 公開 → CSV → 入金）で止まっている  ✅ Eveの相談と組み合わせ提案 [PR #49](https://github.com/iceiceice999/rock/pull/49)、相談結果の保存 [PR #57](https://github.com/iceiceice999/rock/pull/57)、Eveの設計相談 [PR #58](https://github.com/iceiceice999/rock/pull/58)、✅ 成果地点と入金後の作者分 [PR #61](https://github.com/iceiceice999/rock/pull/61)、✅ 仕事別の収益明細 [PR #67](https://github.com/iceiceice999/rock/pull/67)、✅ ブラウザー保存先 [PR #68](https://github.com/iceiceice999/rock/pull/68) |
 
 | 132 | [132-noah-revenue-pack-phone.md](132-noah-revenue-pack-phone.md) | 本人無料収益3担当・Mac非依存・携帯とPCの共通Noah | ✅ 3周検証と良否記録。品質/UI修正・公開受入は未完了 [PR #76](https://github.com/iceiceice999/rock/pull/76) |
@@ -163,4 +163,6 @@
 | 131 | [131-noah-pin-scenes.md](131-noah-pin-scenes.md) | 約1.7万件のピンに日本語の題と資料の図解（バージョン TAKE。図解はしょうへいさんの Motion Prompt の図解パック（MIT）の書き写し。Luna Max が説明から 24 種類の図を選んで札を書く・確かめ・200件の目視で95%・本番 migration は本人の許可後。バージョン 1 の場面の絵は枝 `claude/noah-pins-version-1`） | 指示書 |
 | 137 | [137-noah-pin-videos.md](137-noah-pin-videos.md) | ピンの動画: 格好いい AI 動画（Higgsfield。本人は許可を取ってあると言った）を集め、5〜8 秒・縦 3:4・音なしのループ（GIF と同じ見た目の mp4）にして、Agent ごとに中身で割り当てる。カードは題名だけ。無作為の 200 件で 95% 以上が合うまで一般には出さない |
 
-| 139 | [139-main-public-pages.md](139-main-public-pages.md) | 現mainのNoah/Eveに必要な公開ページへ限定・旧URL転送・審査担当認証 | ✅ 実装・対象40試験成功。全体検証・公開記録は [PR #81](https://github.com/iceiceice999/rock/pull/81) |
+| 139 | [139-main-public-pages.md](139-main-public-pages.md) | 現mainのNoah/Eveに必要な公開ページへ限定・旧URL転送・審査担当認証 | ✅ 第244版で公開。対象40試験・本番30経路を確認。公開記録は [PR #81](https://github.com/iceiceice999/rock/pull/81) |
+
+| 140 | [140-noah-home-search.md](140-noah-home-search.md) | ホーム・検索・タイムライン・プロフィールの重複入口を統合 | ✅ 実装・対象試験成功。全体検証・公開記録は [PR #84](https://github.com/iceiceice999/rock/pull/84) |
