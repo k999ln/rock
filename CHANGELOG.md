@@ -9,7 +9,7 @@
 
 - Noahがオフラインの間も、読み込み画面と同じ「点のトラ」で遊べるようにした。オンラインで準備済みのブラウザは圏外での再読み込みにも対応。中くらいの難しさを既定にし、障害物ごとに1/404で現れる魔法の星と8秒間の無敵を追加（[PR #91](https://github.com/iceiceice999/rock/pull/91)）。
 
-- Noahの既存12画面に星座名の短いURLを割り当て、人型アイコンと旧プロフィールURLを `/aries` に接続（task139、[PR #89](https://github.com/iceiceice999/rock/pull/89)）。
+- Noahの既存12画面に星座名の短いURLを割り当て、人型アイコンと旧プロフィールURLを `/aries` に接続。Sites v251 で公開し、12経路を本番で確認（[対応表と配備記録](codex/tasks/139-main-public-pages.md#noahの星座名url)、[PR #89](https://github.com/iceiceice999/rock/pull/89)）。
 
 - Noah全画面の左ナビと常設下タブを撤去し、全項目を右上の「… メニュー」へ統合（task140、[PR #93](https://github.com/iceiceice999/rock/pull/93)）。
 - 接続対応Agent詳細の口コミ取得で系列IDをproject IDとして送っていた不具合を修正。掲載済み系列から正規評価IDを読み取り専用で解決（task129、[PR #94](https://github.com/iceiceice999/rock/pull/94)）。
