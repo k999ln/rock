@@ -1,9 +1,11 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
+import * as noahSurface from '../lib/noah-surface.ts';
 import * as cloudContract from '../lib/noah-cloud-contract.ts';
 import * as botNotice from '../lib/noah-bot-notice.ts';
 import { noahFirstJobs } from '../lib/noah-first-jobs.ts';
 import * as theaterFilms from '../lib/noah-theater-films.ts';
+import * as trainingPlugin from '../lib/noah-training-plugin.ts';
 import * as ownerIntent from '../lib/owner-intent.ts';
 import { screen } from './fixtures/noah/screen.mjs';
 import { siteTool } from '../toolkits/noah-affiliate-agents/site-diagnostics.mjs';
@@ -18,6 +20,7 @@ const sharedModules = {
   './noah-timeline': quiet, './noah-pin-grid': quiet, './noah-work-list': quiet,
   '@/lib/owner-intent': ownerIntent, '@/lib/noah-cloud-contract': cloudContract,
   '@/lib/noah-theater-films': theaterFilms,
+  '@/lib/noah-training-plugin': trainingPlugin,
 };
 const modules = { ...sharedModules, './noah-ready-detail': quiet };
 const pageReply = firstJobs => ({ items: [], total: 0, nextCursor: null, ownerScope: null, firstJobs });
@@ -347,33 +350,79 @@ const trainingId = 'project-777248dbd7e37423d0bae088fc9201cfec479dd305b7d94a544c
 const trainingCard = { name: '法人のsi導入準備', topic: 'work', sources: [] };
 const projectDetail = 'components/noah-project-detail.tsx';
 
-function assertTrainingVideo(page) {
+function assertTrainingVideo(page, fullscreen = false) {
   const videos = page.find('video');
   assert.equal(videos.length, 1);
   const [video] = videos;
   assert.equal(video.props.src, '/noah/theater/training.mp4');
   assert.equal(video.props.poster, '/noah/theater/training.webp');
-  assert.equal(video.props.controls, true);
+  assert.equal(video.props.controls, fullscreen ? undefined : true);
   assert.equal(video.props.playsInline, true);
-  assert.equal(video.props.preload, 'none');
-  assert.ok(!video.props.autoPlay);
+  assert.equal(video.props.preload, fullscreen ? 'auto' : 'none');
+  assert.equal(Boolean(video.props.autoPlay), fullscreen);
+  assert.equal(Boolean(video.props.loop), fullscreen);
+  if (fullscreen) {
+    assert.equal(video.props['aria-label'], '会議の前の五分間');
+    assert.ok(page.nodes().some(node => node.props['data-noah-fullscreen-detail'] === true));
+    const target = page.nodes().find(node => node.props.id === 'noah-project-details');
+    assert.equal(target.props.tabIndex, -1);
+    assert.ok(page.nodes().indexOf(video) < page.nodes().indexOf(target));
+    assert.equal(page.find('a', '詳細 ↓').length, 0);
+    assert.equal(page.find('a', 'Agentを探す')[0].props.href, '/noah');
+    assert.ok(page.find('summary', '使い方を読む').length);
+    return video;
+  }
   const figure = page.find('figure').find(node => page.nodes(node).includes(video));
   assert.ok(figure);
   assert.ok(page.nodes(figure).some(node => node.type === 'figcaption' && page.text(node).includes('会議の前の五分間')));
   return video;
 }
 
-void test('the training project shows an inline film above its runner and keeps its use action', async () => {
-  const ui = screen({ modules, fetch: async () => ({ body: { card: trainingCard, connection: { kind: 'setup' } } }) });
+void test('the training detail loops silently, switches themes and only adds a plugin after a deliberate click', async () => {
+  const ui = screen({ modules, fetch: async ({ url }) => url.startsWith('/api/noah/feedback')
+    ? { body: { agentName: trainingCard.name, summary: { users: 0, crowns: 0, comments: 0, crowned: false }, comments: [], cursor: null, canComment: false, authenticated: false } }
+    : { body: { card: trainingCard, connection: { kind: 'setup' } } } });
   const page = ui.mount(projectDetail, { id: trainingId });
   assert.equal(page.find('video').length, 0);
   await page.flush();
-  const video = assertTrainingVideo(page);
-  assert.equal(page.find('a', '利用条件を見る')[0].props.href, '#noah-project-use');
-  const use = page.nodes().find(node => node.props.id === 'noah-project-use');
-  assert.ok(page.nodes(use).some(node => node.type === 'button' && page.text(node) === '使う'));
-  assert.ok(page.nodes().indexOf(video) < page.nodes().indexOf(use));
-  assert.deepEqual(ui.calls.map(call => [call.method, call.url]), [['GET', '/api/noah/discover/project?id=' + trainingId]]);
+  assertTrainingVideo(page, true);
+  assert.equal(page.find('h2', 'Noahで使う').length, 0);
+  assert.equal(page.find('button', '使う').length, 0);
+  assert.equal(page.find('summary', '利用設定').length, 0);
+  assert.equal(page.find('button', 'プラグインを追加').length, 1);
+  assert.ok(page.nodes().indexOf(page.find('h2', '詳細')[0]) < page.nodes().indexOf(page.find('h2', '口コミ・評価')[0]));
+  const theme = () => page.nodes().find(node => node.props['data-noah-fullscreen-detail'])?.props['data-theme'];
+  assert.equal(theme(), 'dark');
+  assert.equal(page.find('button').some(node => ['ホワイトモード', 'ダークモード'].includes(node.props['aria-label'])), false);
+  const preferences = ui.mount('components/noah-appearance.tsx');
+  await preferences.change(preferences.find('select')[0], 'light');
+  page.render();
+  assert.equal(theme(), 'light');
+  await preferences.change(preferences.find('select')[0], 'dark');
+  page.render();
+  assert.equal(theme(), 'dark');
+  assert.deepEqual(ui.calls.map(call => [call.method, call.url]), [['GET', '/api/noah/discover/project?id=' + trainingId], ['GET', '/api/noah/feedback?agent=' + trainingId]]);
+});
+
+void test('plugin addition persists the MCP definition, retries the same id and reopens an existing addition without running it', async () => {
+  let saved, attempts = 0;
+  const ui = screen({ modules, fetch: async ({ url, method, body }) => {
+    assert.equal(url, '/api/noah/agents');
+    if (method === 'GET') return { body: { ownerScope: 'owner-a', agents: saved ? [saved] : [] } };
+    assert.equal(body.rightsConfirmed, true);
+    assert.deepEqual(body.manifest, trainingPlugin.noahTrainingPlugin);
+    if (!attempts++) { saved = { id: body.id, manifest: body.manifest, uploadState: 'ready' }; return { status: 503, body: { error: '応答を確認できません。' } }; }
+    assert.fail('a saved plugin must be found before creating another copy');
+  } });
+  const page = ui.mount('components/noah-training-plugin.tsx');
+  await page.flush();
+  assert.equal(ui.calls.length, 0);
+  await page.click('プラグインを追加');
+  assert.equal(page.find('a', 'プラグインを開く').length, 0);
+  await page.click('プラグインを追加');
+  assert.equal(page.find('a', 'プラグインを開く')[0].props.href, `/noah/agents/${saved.id}`);
+  assert.equal(attempts, 1);
+  assert.ok(ui.calls.every(call => call.url === '/api/noah/agents'));
 });
 
 void test('the ready training project keeps its connect button and renders the film on the family detail', async () => {
@@ -390,10 +439,10 @@ void test('the ready training project keeps its connect button and renders the f
   } });
   const page = ui.mount(projectDetail, { id: trainingId });
   await page.flush();
-  const video = assertTrainingVideo(page);
+  const video = assertTrainingVideo(page, true);
   const [connect] = page.find('button', '接続');
   assert.ok(connect);
-  assert.ok(page.nodes().indexOf(connect) < page.nodes().indexOf(video));
+  assert.ok(page.nodes().indexOf(video) < page.nodes().indexOf(connect));
   const readPaths = ['/api/noah/discover/project', '/api/noah/intake', '/api/noah/registration', '/api/noah/pins'];
   assert.ok(ui.calls.every(call => call.method === 'GET' && readPaths.includes(call.url.split('?')[0])));
 });
@@ -413,4 +462,25 @@ void test('a same-named project, a first-job entry, and a failed detail load hav
     assert.equal(page.find('video').length, 0);
     assert.ok(ui.calls.every(call => call.method === 'GET'));
   }
+});
+
+void test('appearance selected in preferences reaches home, account and Agent detail shells across navigation', async () => {
+  let path = '/noah';
+  const ui = screen({ modules: { ...modules,
+    'next/navigation': { usePathname: () => path },
+    '@/lib/noah-surface': noahSurface,
+    './noah-revenue-pack': { NoahRevenuePackMenuItem: () => null },
+  }, fetch: async () => ({ body: {} }) });
+  const preferences = ui.mount('components/noah-appearance.tsx');
+  const shell = ui.mount('components/noah-shell.tsx', { mode: 'public', children: 'Agent content' });
+  const appearance = () => shell.find('div').find(node => node.props['data-noah-surface'])?.props['data-theme'];
+  for (const value of ['light', 'dark']) {
+    await preferences.change(preferences.find('select')[0], value);
+    for (path of ['/noah', '/noah/account', '/noah/discover/agent', '/noah/agents/owned', '/noah/preferences']) {
+      shell.render();
+      assert.equal(appearance(), value, path);
+      assert.ok(shell.text().includes('Agent content'));
+    }
+  }
+  assert.equal(ui.calls.length, 0);
 });

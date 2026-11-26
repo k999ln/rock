@@ -36,9 +36,9 @@ button.face[aria-pressed='true'] > span:first-child { box-shadow: inset 0 0 0 3p
  * スマホは、絵に何も重ねず、題名の右の小さな「…」から、保存と「表示しない」を選ぶ（details の中の [data-touch] は、スマホだけの保存）。
  */
 .card[data-plain] .actions > :is(button, details) { transition: opacity .15s ease; }
-.card[data-plain] .actions > details > div { position: absolute; z-index: 3; top: 40px; inset-inline-start: 0; display: grid; min-width: 148px; padding: 6px; border: 1px solid #ececef; border-radius: 12px; background: #fff; box-shadow: 0 8px 24px #19141f1f; }
-.card[data-plain] .actions > details > div > button { min-height: 44px; padding: 10px 12px; border: 0; border-radius: 8px; background: transparent; color: #202024; font-size: 14px; text-align: start; white-space: nowrap; cursor: pointer; }
-.card[data-plain] .actions > details > div > button:hover { background: #f7f7f8; }
+.card[data-plain] .actions > details > div { position: absolute; z-index: 3; top: 40px; inset-inline-start: 0; display: grid; min-width: 148px; padding: 6px; border: 1px solid var(--noah-theme-line, #ececef); border-radius: 12px; background: var(--noah-theme-panel, #fff); box-shadow: 0 8px 24px #19141f1f; }
+.card[data-plain] .actions > details > div > button { min-height: 44px; padding: 10px 12px; border: 0; border-radius: 8px; background: transparent; color: var(--noah-theme-text, #202024); font-size: 14px; text-align: start; white-space: nowrap; cursor: pointer; }
+.card[data-plain] .actions > details > div > button:hover { background: var(--noah-theme-panel, #f7f7f8); }
 @media (hover:hover) {
   .card[data-plain] .actions > :is(button, details) { opacity: 0; pointer-events: none; }
   .card[data-plain]:is(:hover, :focus-within) .actions > :is(button, details) { opacity: 1; pointer-events: auto; }
@@ -50,7 +50,7 @@ button.face[aria-pressed='true'] > span:first-child { box-shadow: inset 0 0 0 3p
   .card[data-plain] .meta { padding-inline-end: 32px; }
   .card[data-plain] .actions > button { display: none; }
   .card[data-plain] .actions > details { top: auto; bottom: 4px; inset-inline-start: auto; inset-inline-end: -8px; }
-  .card[data-plain] .actions > details > summary { width: 44px; height: 44px; background: transparent; color: #4a4a52; }
+  .card[data-plain] .actions > details > summary { width: 44px; height: 44px; background: transparent; color: var(--noah-theme-text, #4a4a52); }
   .card[data-plain] .actions > details > div { top: auto; bottom: 46px; inset-inline-start: auto; inset-inline-end: 4px; }
 }
 @media (prefers-reduced-motion: reduce) { .card[data-plain] .actions > :is(button, details) { transition: none; } }

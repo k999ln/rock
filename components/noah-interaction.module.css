@@ -4,12 +4,14 @@
   .surface :global(:is(button,a[href],summary,[role="button"],[role="tab"])) { transition:scale 140ms cubic-bezier(.2,.8,.2,1); }
   .surface :global(:is(button,a[href],summary,[role="button"],[role="tab"]):not(:disabled):not([aria-disabled="true"]):active) { scale:.965; transition-duration:55ms; }
 }
-.setting { color:#202024; }
+.setting { color:var(--noah-theme-text, #202024); }
 .setting label { display:flex; align-items:center; justify-content:space-between; gap:24px; min-height:60px; padding:12px 0; cursor:pointer; }
 .setting strong,.setting small { display:block; }
 .setting strong { font-size:15px; font-weight:600; }
-.setting small { color:#71717a; font-size:12px; margin-top:4px; }
+.setting small { color:var(--noah-theme-muted, #71717a); font-size:12px; margin-top:4px; }
 .setting input { width:22px; height:22px; accent-color:#7546c8; cursor:pointer; }
-.setting input:focus-visible { outline:3px solid #a180df; outline-offset:3px; }
-.tryFeedback { min-height:44px; padding:10px 20px; margin-top:8px; border:1px solid #7546c8; border-radius:999px; background:#fff; color:#6437b1; font:inherit; cursor:pointer; }
-.tryFeedback:focus-visible { outline:3px solid #a180df; outline-offset:3px; }
+.setting input:focus-visible { outline:3px solid var(--noah-theme-line, #a180df); outline-offset:3px; }
+.setting select { min-height:44px; max-width:60%; font:inherit; color:inherit; background:transparent; }
+.setting select:focus-visible { outline:3px solid var(--noah-theme-line, #a180df); outline-offset:3px; }
+.tryFeedback { min-height:44px; padding:10px 20px; margin-top:8px; border:1px solid #7546c8; border-radius:999px; background:var(--noah-theme-panel, #fff); color:var(--noah-theme-info, #6437b1); font:inherit; cursor:pointer; }
+.tryFeedback:focus-visible { outline:3px solid var(--noah-theme-line, #a180df); outline-offset:3px; }
