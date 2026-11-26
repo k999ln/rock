@@ -288,6 +288,13 @@
       "when": 4102444800032,
       "tag": "0060_noah_first_earning",
       "breakpoints": true
+    },
+    {
+      "idx": 41,
+      "version": "6",
+      "when": 4102444800033,
+      "tag": "0061_noah_intake_pins",
+      "breakpoints": true
     }
   ]
 }

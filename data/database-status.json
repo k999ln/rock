@@ -209,8 +209,8 @@
       "sky_linux_service_receipts"
     ],
     "sourceOnlyStatus": "local synthetic schema; production tables unverified; no new production migration",
-    "migrationCount": 41,
-    "latestMigration": "0060_noah_first_earning.sql",
+    "migrationCount": 42,
+    "latestMigration": "0061_noah_intake_pins.sql",
     "accidentalDuplicateCount": 0,
     "publishedConvergenceDeclarations": 25,
     "marketplaceRelationGuardCount": 8,
@@ -636,7 +636,7 @@
         "tool_runs",
         "work_jobs"
       ],
-      "expectedAppliedThrough": "0060_noah_first_earning.sql",
+      "expectedAppliedThrough": "0061_noah_intake_pins.sql",
       "tableCount": 182,
       "sourceStatus": "VERIFIED",
       "deployment": {

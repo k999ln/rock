@@ -262,7 +262,7 @@ await test('the canonical main Site uses its live-D1 additive lineage without lo
     '0055_noah_teikibin.sql',
     '0056_sim_bindings.sql',
     '0057_esim_ios_install.sql',
-    '0058_cloud_operations.sql', '0059_noah_agent_availability.sql', '0060_noah_first_earning.sql',
+    '0058_cloud_operations.sql', '0059_noah_agent_availability.sql', '0060_noah_first_earning.sql', '0061_noah_intake_pins.sql',
   ]);
   const sqlite = new DatabaseSync(':memory:');
   const split = (sql) => sql
@@ -593,6 +593,6 @@ await test('fresh and current production D1 databases converge without losing re
   }
   assert.equal(Number((await db.prepare(
     'SELECT created_at FROM __drizzle_migrations ORDER BY created_at DESC LIMIT 1',
-  ).first()).created_at), 4102444800032);
+  ).first()).created_at), 4102444800033);
   assert.equal(JSON.parse(readFileSync(mainFolder+'meta/_journal.json', 'utf8')).entries.find(e=>e.tag==='0031_owner_workspace_schema_recovery').when,4102444800003);
 });

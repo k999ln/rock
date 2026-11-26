@@ -25,8 +25,8 @@
 
 ## Web D1
 
-- expected latest migration: 0060_noah_first_earning.sql
-- migration files: 41
+- expected latest migration: 0061_noah_intake_pins.sql
+- migration files: 42
 - accidental duplicate: 0
 - published convergence definitions: 25
 - Marketplace relation guards: 8
