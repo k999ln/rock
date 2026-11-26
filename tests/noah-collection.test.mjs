@@ -58,7 +58,7 @@ void test('home includes GitHub and HF ratings even while the registry has many 
   assert.equal(home.items[1].metrics.likes, 9); assert.equal(home.total, 32);
 });
 
-void test('Noah home renders collected cards and refreshes external ratings while the page is visible', async () => {
+void test('Noah home keeps the current cards stable and refreshes ratings when the user changes the collection', async () => {
   let likes = 7;
   const visibility = { hidden: false };
   const ui = screen({ document: visibility, modules: {
@@ -75,6 +75,8 @@ void test('Noah home renders collected cards and refreshes external ratings whil
   assert.match(home.text(), /Agentを見つける/); assert.match(home.text(), /"likes":7/);
   assert.equal(home.find('section').filter(node=>node.props['aria-label']==='Agent一覧').length,1);
   likes = 3; await home.tick(60000); await home.tick(200);
+  assert.match(home.text(), /"likes":7/);
+  await home.click('すべて');
   assert.match(home.text(), /"likes":3/);
   const requests = ui.calls.length; visibility.hidden = true; await home.tick(60000); await home.tick(200);
   assert.equal(ui.calls.length, requests);
