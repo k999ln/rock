@@ -28,3 +28,4 @@ app/api/esim/**（catalog, order, issue, qr, install-proof, device-entitlement, 
 
 
 2026-11-22 Noah実機受入と回線準備（PR #377）: PixelのブラウザからAgentboardへ登録・認証付き実行・成果再表示を確認した。Wi-Fi経由であり実eSIMの受入ではない。最新main 97898c519にある専用クラウドの2試験はローカル合成LINEで再成功。公開env16に事業者設定はなく、実回線照合器も未設定。[導入候補・費用・事業者への確認文案](../../docs/esim/noah-pilot-rfq.md)を作成。本人の費用確認、発行承認、実回線経由のPixel疎通が次の前提。
+2026-11-27 登録情報再利用の同意説明（[PR #96](https://github.com/iceiceice999/rock/pull/96)、未公開）: eSIM案内・プロフィール保存・Agent登録で共通の同意説明を6言語で表示する。任意の保存・再利用、送信先/目的/項目の確認、停止/削除、Apple・Googleの認証情報やSIM秘密鍵を他Agentへ渡さない範囲を案内する。現行同意版の記録がないプロフィールは外部Agent登録で自動再利用せず、登録情報画面で再同意する。実eSIM契約・発行・クラウド接続・OAuth直接取込みは未受入。

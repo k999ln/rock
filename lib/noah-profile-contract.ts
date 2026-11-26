@@ -31,6 +31,9 @@ export const PROFILE_CONSENT_DETAILS = [
 ] as const;
 export type ProfileConsent = { version: string; at: number; action: 'save' | 'reuse-stop' | 'reuse-resume'; fields: ProfileField[]; documents: string[] };
 export type NoahProfile = { revision: number; fields: Partial<Record<ProfileField, string>>; documents: NoahIdentityDocument[]; grants: NoahDelegation[]; paused: boolean; reuseEnabled: boolean; consents: ProfileConsent[] };
+/** Reuse is available only after an explicit receipt for the current explanation version. */
+export const hasCurrentProfileConsent = (profile: Pick<NoahProfile, 'consents'>): boolean =>
+  profile.consents.some(consent => consent.version === PROFILE_CONSENT_VERSION && consent.action !== 'reuse-stop');
 export type NoahProfileView = NoahProfile & { ownerScope: string; available: boolean; browserOwned?: boolean };
 export const emptyNoahProfile = (): NoahProfile => ({ revision: 0, fields: {}, documents: [], grants: [], paused: false, reuseEnabled: false, consents: [] });
 export const PROFILE_MAX_DOCUMENT = 5 * 1024 * 1024;

@@ -5,6 +5,7 @@ import Link from 'next/link';
 import { AlertCircle, ArrowLeft, RadioTower, RefreshCw, ShieldCheck, Smartphone } from 'lucide-react';
 import type { EsimPublicCatalogState } from '@/lib/esim-public-catalog';
 import { PROFILE_CONSENT_TEXT, PROFILE_CONSENT_DETAILS } from '@/lib/noah-profile-contract';
+import { useNoahLocale } from './noah-locale';
 import styles from '@/components/sky-commerce.module.css';
 
 type PublicPlan = {
@@ -51,6 +52,7 @@ export default function EsimCatalog({ initialCatalog, initialError }: {
   initialCatalog: EsimPublicCatalogState | null;
   initialError: boolean;
 }) {
+  const { t } = useNoahLocale();
   const [catalog, setCatalog] = useState<CatalogResponse | null>(initialCatalog);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(initialError);
@@ -86,16 +88,16 @@ export default function EsimCatalog({ initialCatalog, initialError }: {
       </header>
       <section className={styles.esimCatalog} aria-labelledby="esim-registration-title">
         <div className={styles.esimCatalogTitle}>
-          <h2 id="esim-registration-title">登録情報を次のAgentでも使う</h2>
-          <p>eSIMの申込みとAgentの登録で使う情報を、Noahの「登録情報」にまとめられます。保存・再利用への同意は、回線契約とは別に選べます。</p>
+          <h2 id="esim-registration-title">{t('登録情報を次のAgentでも使う')}</h2>
+          <p>{t('eSIMの申込みとAgentの登録で使う情報を、Noahの「登録情報」にまとめられます。保存・再利用への同意は、回線契約とは別に選べます。')}</p>
         </div>
         <details>
-          <summary>保存・再利用の同意内容を読む</summary>
-          <p>{PROFILE_CONSENT_TEXT}</p>
-          {PROFILE_CONSENT_DETAILS.map(section=><div key={section.title}><h3>{section.title}</h3><p>{section.text}</p></div>)}
+          <summary>{t('保存・再利用の同意内容を読む')}</summary>
+          <p>{t(PROFILE_CONSENT_TEXT)}</p>
+          {PROFILE_CONSENT_DETAILS.map(section=><div key={section.title}><h3>{t(section.title)}</h3><p>{t(section.text)}</p></div>)}
         </details>
-        <p>このページを開いただけでは情報を保存・送信しません。Apple・Googleからの自動取込みと、eSIM事業者への申込連携は準備中です。</p>
-        <Link href="/noah/profile" className={styles.secondary}>登録情報を確認・保存する</Link>
+        <p>{t('このページを開いただけでは情報を保存・送信しません。Apple・Googleからの自動取込みと、eSIM事業者への申込連携は準備中です。')}</p>
+        <Link href="/noah/profile" className={styles.secondary}>{t('登録情報を確認・保存する')}</Link>
       </section>
       <section className={styles.esimCatalog} aria-labelledby="esim-catalog-title">
         <div className={styles.esimCatalogTitle}>

@@ -7,7 +7,7 @@ import { noahHaptic } from '@/lib/noah-haptics';
 import Link from 'next/link';
 import { ArrowRight, LockKeyhole } from 'lucide-react';
 import { useNoahProfile } from './use-noah-profile';
-import { NOAH_PROFILE_FIELDS, PROFILE_CONSENT_VERSION, PROFILE_CONSENT_TEXT, PROFILE_CONSENT_DETAILS, profileField } from '@/lib/noah-profile-contract';
+import { NOAH_PROFILE_FIELDS, PROFILE_CONSENT_VERSION, PROFILE_CONSENT_TEXT, PROFILE_CONSENT_DETAILS, hasCurrentProfileConsent, profileField } from '@/lib/noah-profile-contract';
 import { OWNER_SCOPE_HEADER } from '@/lib/owner-intent';
 import type { RegistrationField, RegistrationProvider, RegistrationStatus } from '@/lib/noah-registration-contract';
 import styles from './noah-registration.module.css';
@@ -39,7 +39,8 @@ export default function NoahRegistration({ agentId,onReturn }: { agentId: string
     return()=>{clearTimeout(timer);document.removeEventListener('visibilitychange',refresh);};
   },[retryAt]);
   const cooldownNotice=retryAt?<p>{t('受付再開の目安: {time}',{time:new Date(retryAt).toLocaleString(locale)})}</p>:null;
-  const reusable=provider?.fields.filter(f=>vault.profile?.reuseEnabled && f.profileField && f.type!=='password' && (f.profileField==='identityDocument'?vault.profile?.documents.length:profileField(f.profileField)&&vault.profile?.fields[f.profileField]) && !excluded.includes(f.key)).map(f=>f.key)??[];
+  const reuseAllowed=Boolean(vault.profile?.reuseEnabled && vault.profile && hasCurrentProfileConsent(vault.profile));
+  const reusable=provider?.fields.filter(f=>reuseAllowed && f.profileField && f.type!=='password' && (f.profileField==='identityDocument'?vault.profile?.documents.length:profileField(f.profileField)&&vault.profile?.fields[f.profileField]) && !excluded.includes(f.key)).map(f=>f.key)??[];
   const missingRequired=provider?.fields.some(f=>f.required&&!reusable.includes(f.key)&&(!values[f.key]?.trim()||f.type==='file'))??true;
   const profileReady = Boolean(vault.profile || vault.guest);
   const newFields = provider?.fields.filter(f => !reusable.includes(f.key)) ?? [];
