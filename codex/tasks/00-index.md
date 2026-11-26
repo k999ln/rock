@@ -113,7 +113,7 @@
 
 | # | ファイル | 一言 | 状態 |
 | --- | --- | --- | --- |
-| 138 | [138-cross-chat-sync.md](138-cross-chat-sync.md) | 別チャット・未マージPR・miiの差分を最新設計/コードへ統合 | ✅ 統合・全体verify成功・VS Code確認 [PR #80](https://github.com/iceiceice999/rock/pull/80)。第243版の公開・スマホとPCでの確認済み。第244版までの[照合 #83](https://github.com/iceiceice999/rock/pull/83) |
+| 138 | [138-cross-chat-sync.md](138-cross-chat-sync.md) | 別チャット・未マージPR・miiの差分を最新設計/コードへ統合 | ✅ 統合・全体verify成功・VS Code確認 [PR #80](https://github.com/iceiceice999/rock/pull/80)。第243版の公開・スマホとPCでの確認済み。第244版までの[照合 #83](https://github.com/iceiceice999/rock/pull/83)、[共有Word 3冊](../../docs/README.md#共有word-3冊)の収録 [PR #88](https://github.com/iceiceice999/rock/pull/88) |
 | 133 | [133-workspace-consolidation.md](133-workspace-consolidation.md) | 最新mainとローカル作業をavokdoへ一本化 | ✅ ファイル統合・型・lint・17試験成功。VS Codeはavokado統合版1ウインドウを確認、[PR #80](https://github.com/iceiceice999/rock/pull/80) |
 | 134 | [134-noah-revenue-pack.md](134-noah-revenue-pack.md) | 本人用収益Agent・無料クラウド直接接続 | 3担当無料推論・Pixel Wi-Fi起動を受入。クラウド実行器6試験通過。最新版はtask132、統合 [PR #80](https://github.com/iceiceice999/rock/pull/80) |
 | 135 | [135-esim-private-cloud-design.md](135-esim-private-cloud-design.md) | eSIMから本人専用クラウド・適法な犯罪予防への協力 | ✅ ローカル設計反映・文書検証・VS Code表示確認。実装／提携は未実施、[PR #80](https://github.com/iceiceice999/rock/pull/80) |
