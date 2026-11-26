@@ -1,3 +1,4 @@
+import { eveChat } from './eve-chat.mjs';
 import { DurableObject } from 'cloudflare:workers';
 import { NOAH_CLOUD_PROFILES as profiles, NOAH_CLOUD_LIMITS as limits, NOAH_EVE_HERMES_PROJECT, NOAH_EVE_ADVICE_PURPOSE, NOAH_FREE_CLOUD_LIMITS, NOAH_CLOUD_RESET_TEXT, noahCloudDailyNeurons, noahCloudSupported, NOAH_CLOUD_MODEL, noahCloudId, noahCloudDigest, noahCloudModelInput, noahCloudResult } from '../../lib/noah-cloud-contract.ts';
 
@@ -19,13 +20,14 @@ function validTrial(trial) {
 }
 
 export default {
-  async fetch(request, env) {
+  async fetch(request, env, ctx) {
     if (new URL(request.url).pathname === '/health' && request.method === 'GET') return json({ service: 'noah-cloud-agents', protocol: 1 });
     if (request.method !== 'POST' || new URL(request.url).pathname !== '/rpc' || request.headers.has('origin')) return json({ error: 'not_found' }, 404);
     const key = env.NOAH_CLOUD_KEY;
     if (typeof key !== 'string' || key.length < 32 || await noahCloudDigest(request.headers.get('authorization') ?? '') !== await noahCloudDigest(`Bearer ${key}`)) return json({ error: 'unauthorized' }, 401);
     try {
       const body = await read(request);
+      if (body?.action === 'chat') return await eveChat(body, env, ctx);
       if (!body || !/^[a-f0-9]{64}$/.test(body.owner) || !/^project-[a-f0-9]{64}$/.test(body.project) || !Object.hasOwn(profiles, body.profile) || !['status', 'connect', 'disconnect', 'start', 'job', 'stop'].includes(body.action)) return json({ error: 'invalid_request' }, 400);
       if (body.trial !== undefined && (body.action !== 'start' || !validTrial(body.trial))) return json({ error: 'invalid_trial' }, 400);
       if (body.purpose !== undefined && (body.action !== 'start' || body.purpose !== NOAH_EVE_ADVICE_PURPOSE || env.NOAH_CLOUD_MODE !== 'free' || body.profile !== 'hermes' || body.project !== NOAH_EVE_HERMES_PROJECT || (body.mode !== undefined && body.mode !== 'run'))) return json({ error: 'invalid_purpose' }, 400);
@@ -45,8 +47,10 @@ export class NoahCloudBudget extends DurableObject {
       const free = this.env.NOAH_CLOUD_MODE === 'free';
       const quota = free ? NOAH_FREE_CLOUD_LIMITS : limits;
       let state = await this.ctx.storage.get('budget');
-      if (!state || state.day !== day) state = { day, jobs: 0, probes: 0, owners: {}, neurons: 0, ownerNeurons: {}, leases: state?.leases ?? {} };
-      state.neurons ??= 0; state.ownerNeurons ??= {};
+      if (!state || state.day !== day) state = { day, jobs: 0, probes: 0, owners: {}, neurons: 0, ownerNeurons: {}, leases: state?.leases ?? {}, chatIds: state?.chatIds ?? {} };
+      state.neurons ??= 0; state.ownerNeurons ??= {}; state.chatIds ??= {};
+      for (const [id, at] of Object.entries(state.chatIds)) if (at < now - 86400000) delete state.chatIds[id];
+      if (input.action === 'admit-chat' && state.chatIds[input.id]) return json({ error: 'chat_already_admitted' }, 409);
       for (const [id, lease] of Object.entries(state.leases)) if (lease.until <= now) delete state.leases[id];
       if (input.action === 'release') { delete state.leases[input.id]; await this.ctx.storage.put('budget', state); return json({ ok: true }); }
       // 使ったモデルの量（neuron）を足す。受け付けた時の取り置きは、使った分だけ減らす（取り置きと使った分の合計は、1 日の上限を超えない）。
@@ -68,6 +72,7 @@ export class NoahCloudBudget extends DurableObject {
         if (state.neurons + reserved + quota.jobNeurons > noahCloudDailyNeurons(this.env.NOAH_CLOUD_DAILY_NEURONS)) return json({ error: `今日の無料のクラウドの枠を使い切りました。${NOAH_CLOUD_RESET_TEXT}に戻ります。` }, 429);
         if ((state.ownerNeurons[input.owner] ?? 0) + ownerReserved + quota.jobNeurons > quota.ownerDailyNeurons) return json({ error: `今日のあなたの無料のクラウドの枠を使い切りました。${NOAH_CLOUD_RESET_TEXT}に戻ります。` }, 429);
       }
+      if (input.action === 'admit-chat') state.chatIds[input.id] = now;
       if (input.mode === 'run') { state.jobs++; state.owners[input.owner] = (state.owners[input.owner] ?? 0) + 1; } else state.probes++;
       state.leases[input.id] = { until: now + (limits.seconds + 30) * 1000, owner: input.owner, ...(free && input.mode === 'run' ? { reserve: quota.jobNeurons } : {}) };
       await this.ctx.storage.put('budget', state); return json({ ok: true });

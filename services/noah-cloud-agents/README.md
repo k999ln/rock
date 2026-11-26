@@ -6,7 +6,7 @@
 
 rootで `npm ci --ignore-scripts`、このディレクトリで固定Wranglerの `deploy --config ./wrangler.free.jsonc` を使う。DockerとContainersは不要。`build-free.mjs` は固定npmの公式MCP factoryを梱包し、版情報の動的requireとimport.meta.urlの梱包先のみ補正する。Toolの実装・パス検査は変更しない。公式Thinkingの入力ログは公開オプションで無効化する。
 
-Workers Freeの旧accountへ `noah-free-cloud-agents` を配置する。Noahのsecretと同じ `NOAH_CLOUD_KEY`、Sitesへ `NOAH_CLOUD_URL=https://noah-free-cloud-agents.mr-kirin999.workers.dev` と `NOAH_CLOUD_MODE=free` を設定し、検証を通した6種の対応範囲だけを公開する。URL/keyだけで有効化せず、必ずmodeも同時設定する。Noahに入力した本文は実モデルへ送信し、元のWorkに保存される。追加の課金・Gateway・有料モデルは使わない。
+Workers Freeの旧accountへ `noah-free-cloud-agents` を配置する。Noahのsecretと同じ `NOAH_CLOUD_KEY`、Sitesへ `NOAH_CLOUD_URL=https://noah-free-cloud-agents.mr-kirin999.workers.dev` と `NOAH_CLOUD_MODE=free` を設定し、検証を通した6種の対応範囲だけを公開する。URL/keyだけで有効化せず、必ずmodeも同時設定する。通常のAgent実行では入力した本文を実モデルへ送信し、元のWorkに保存する。開発相談 `action:chat` は例外で、本文・返答をWorkやJOBS/CONNECTIONSへ保存しない。追加の課金・Gateway・有料モデルは使わない。
 
 使ったモデルの量で数える（全体 8,000 neuron/UTC日・本人 2,400・1 件 1,200。`NOAH_CLOUD_DAILY_NEURONS` で全体を下げられる）・件数の上限は全体60件/本人12件・同時2件・モデル4回/応答1024tokens・入力32768bytes、既存240秒/成果上限を保持。Cloudflareの共有無料枠が先に尽きた場合もエラーで停止する。alarmが仕事を開始し、結果だけを既存callbackへ送る。停止は以後のモデル/Tool開始とlate結果の採用を閉じる。すでに提供元が開始したモデル計算の物理中断は保証しない。
 
@@ -42,3 +42,7 @@ rootの `node scripts/test-noah-python-cloud.mjs` はローカルworkerdで公�
 rootで `node --experimental-strip-types --test tests/noah-cloud-*.test.mjs`、`npm run verify`。実ブラウザのfixture試験は `scripts/test-noah-cloud-browser.mjs` に `NOAH_TEST_URL`、`NOAH_TEST_OUTPUT`、`NOAH_PLAYWRIGHT_PACKAGE` を指定する。fixtureの合格と実クラウドでの合格を区別する。
 
 Memoryは `/workspace/memory.jsonl` へ依頼内の情報を保存し、成果ファイルとして返す。次回への自動読込はない。Filesystemの許可先は `/workspace` だけで、端末/ホストの共有mountはない。実配布物試験は領域外パス・symlinkの拒否、ファイルhash、別依頼の空の記憶まで検査する。Node 24の公式イメージをdigestで固定し、公式npm配布物のNode要件を満たす。
+
+## 開発相談（端末保存）
+
+`eve-chat.mjs` は固定モデルの1回の設計相談だけを返す。Tool・外部Agentは実行しない。既存Budgetの全体/本人の件数・neuron・同時枠を使い、受付ID（24時間）と利用量のみ保存する。同一受付IDの再送は409で拒否し、応答を失っても自動で計算をやり直さない。計算の失敗は入力bytesと出力上限で保守的に課算し、応答期限後もモデルの終了・課算まで枠を保持する。呼出本文をログへ出さず、AI Gatewayのログ/キャッシュは設定しない。公開資料の[Workers AIのデータ取扱い](https://developers.cloudflare.com/workers-ai/platform/data-usage/)は提供元の処理・保持条件として別に示す。

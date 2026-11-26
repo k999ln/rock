@@ -34,10 +34,10 @@ export function noahCloudEntry(entry: DirectoryEntry) {
   return null;
 }
 /** The only server-to-runtime path. Credentials never reach the browser or container. */
-export function noahCloudRuntime(config: { url?: string; key?: string }, fetcher: typeof fetch = fetch) {
+export function noahCloudRuntime(config: { url?: string; key?: string; timeoutMs?: number }, fetcher: typeof fetch = fetch) {
   return async (body: Record<string, unknown>) => {
     if (!config.url || !/^https:\/\/(?:noah-cloud-agents|noah-free-cloud-agents)\.[a-z0-9-]+\.workers\.dev$/.test(config.url) || !config.key || config.key.length < 32) throw new NoahAgentError('クラウド実行環境を準備しています。', 503);
-    const response = await fetcher(`${config.url}/rpc`, { method: 'POST', headers: { Authorization: `Bearer ${config.key}`, 'Content-Type': 'application/json' }, body: JSON.stringify(body), redirect: 'manual', signal: AbortSignal.timeout(20000) });
+    const response = await fetcher(`${config.url}/rpc`, { method: 'POST', headers: { Authorization: `Bearer ${config.key}`, 'Content-Type': 'application/json' }, body: JSON.stringify(body), redirect: 'manual', signal: AbortSignal.timeout(config.timeoutMs ?? 20000) });
     if (response.status >= 300 && response.status < 400) { await response.body?.cancel(); throw new NoahAgentError('クラウド接続先の転送は許可されていません。', 502); }
     return response;
   };

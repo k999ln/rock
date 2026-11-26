@@ -8,18 +8,20 @@ import * as guidance from '../lib/noah-engineering-eve.ts';
 import { withMiniSite } from '../services/sky-web/domain-router.mjs';
 import * as cloud from '../lib/noah-cloud-contract.ts';
 import * as intent from '../lib/owner-intent.ts';
+import * as chat from '../lib/eve-chat.ts';
+import * as local from '../lib/eve-chat-local.ts';
 
 void test('every author stage embeds the editable Eve consultation, keeping the device and catalog reachable', () => {
   for (const locale of NOAH_LOCALES) {
     const ui = screen({ locale, modules: {
-      '@/lib/noah-engineering-eve': guidance, '@/lib/eve-engineering-navigation': navigation,
+      '@/lib/eve-chat': chat, '@/lib/eve-chat-local': local, '@/lib/noah-engineering-eve': guidance, '@/lib/eve-engineering-navigation': navigation,
       '@/lib/noah-cloud-contract': cloud, '@/lib/owner-intent': intent, './noah-ready-detail': { default: () => null },
     } });
     for (const stage of noahEngineeringSteps) {
       const page = ui.mount('components/noah-engineering-eve.tsx', { stage });
       const links = navigation.eveEngineeringNavigation(stage, locale);
       assert.equal(page.find('textarea')[0].props.value, noahTranslate(locale, guidance.engineeringAdvice[stage].question));
-      assert.equal(page.find('a').length, 0, 'Eve is embedded in this page');
+      assert.equal(page.find('a').filter(a => a.props.href.startsWith('/os/eve')).length, 0, 'Eve is embedded in this page');
       assert.equal(links.consultation, `/noah/engineering?step=${stage}&lang=${locale}#eve-compose`);
       assert.equal(links.catalog, `/noah/engineering/combinations?engineering=${stage}&lang=${locale}`);
       assert.equal(links.device, `/os/eve?engineering=${stage}&lang=${locale}&mode=device#eve-compose`);

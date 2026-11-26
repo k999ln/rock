@@ -1,5 +1,7 @@
 ## 2026-11-27
 
+- Eveの開発相談を端末保存のチャットへ変更し、入力例・追加相談・設計案の下書き保存と、本文を保存しないクラウド推論を追加（task130、PR番号は作成後に記録）。
+
 - 登録情報（/aries）上部の「← タイムライン」と余白を撤去（task140、[PR #116](https://github.com/iceiceice999/rock/pull/116)）。- PR #100 の設計監査補正として、Eve需要とファンド候補、容量・出典・canonical Receipt、PAPER/no-deposits、農家/受取人Receipt、catalog gate、候補額の表示境界を明文化。実装・実資金は未着手。
 
 - Noahの購入用カタログをホームのタイムラインへ統合。共通検索・連続スクロールから料金と購入条件を開き、旧marketplace URLも同じ一覧へ転送（task140、[PR #113](https://github.com/iceiceice999/rock/pull/113)）。
