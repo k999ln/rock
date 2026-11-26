@@ -7,7 +7,7 @@ import { noahHaptic } from '@/lib/noah-haptics';
 import Link from 'next/link';
 import { ArrowRight, LockKeyhole } from 'lucide-react';
 import { useNoahProfile } from './use-noah-profile';
-import { NOAH_PROFILE_FIELDS, PROFILE_CONSENT_VERSION, profileField } from '@/lib/noah-profile-contract';
+import { NOAH_PROFILE_FIELDS, PROFILE_CONSENT_VERSION, PROFILE_CONSENT_TEXT, PROFILE_CONSENT_DETAILS, hasCurrentProfileConsent, profileField } from '@/lib/noah-profile-contract';
 import { OWNER_SCOPE_HEADER } from '@/lib/owner-intent';
 import type { RegistrationField, RegistrationProvider, RegistrationStatus } from '@/lib/noah-registration-contract';
 import styles from './noah-registration.module.css';
@@ -39,7 +39,8 @@ export default function NoahRegistration({ agentId,onReturn }: { agentId: string
     return()=>{clearTimeout(timer);document.removeEventListener('visibilitychange',refresh);};
   },[retryAt]);
   const cooldownNotice=retryAt?<p>{t('受付再開の目安: {time}',{time:new Date(retryAt).toLocaleString(locale)})}</p>:null;
-  const reusable=provider?.fields.filter(f=>vault.profile?.reuseEnabled && f.profileField && f.type!=='password' && (f.profileField==='identityDocument'?vault.profile?.documents.length:profileField(f.profileField)&&vault.profile?.fields[f.profileField]) && !excluded.includes(f.key)).map(f=>f.key)??[];
+  const reuseAllowed=Boolean(vault.profile?.reuseEnabled && vault.profile && hasCurrentProfileConsent(vault.profile));
+  const reusable=provider?.fields.filter(f=>reuseAllowed && f.profileField && f.type!=='password' && (f.profileField==='identityDocument'?vault.profile?.documents.length:profileField(f.profileField)&&vault.profile?.fields[f.profileField]) && !excluded.includes(f.key)).map(f=>f.key)??[];
   const missingRequired=provider?.fields.some(f=>f.required&&!reusable.includes(f.key)&&(!values[f.key]?.trim()||f.type==='file'))??true;
   const profileReady = Boolean(vault.profile || vault.guest);
   const newFields = provider?.fields.filter(f => !reusable.includes(f.key)) ?? [];
@@ -183,6 +184,11 @@ export default function NoahRegistration({ agentId,onReturn }: { agentId: string
           {saveNext && <p className={styles.saveFields}>{saveable.some(f=>values[f.key]?.trim()) && <>{saveable.filter(f=>values[f.key]?.trim()).map(f=>t(f.label)).join(' · ')}<br/></>}{t('保存情報の編集・再利用の停止は「登録情報」から。')}</p>}
         </div>}
         {provider.fields.some(f=>f.type==='password') && <p className={styles.hint}>{t('パスワードは登録先へ送り、Noahには保存しません。')}</p>}
+        {canSave && saveNext && <details className={styles.terms}>
+          <summary>{t('保存・再利用の同意内容を読む')}</summary>
+          <p>{t(PROFILE_CONSENT_TEXT)}</p>
+          {PROFILE_CONSENT_DETAILS.map(section=><p key={section.title}><strong>{t(section.title)}</strong><br/>{t(section.text)}</p>)}
+        </details>}
         <div className={styles.disclosure}>
           <div><span>{t('送信先')}</span><p><strong>{provider.name}</strong><br/><bdi>{provider.providerOrigin}</bdi>{provider.executorOrigin !== provider.providerOrigin && <><br/>{provider.executorName} · <bdi>{provider.executorOrigin}</bdi></>}</p></div>
           <div><span>{t('料金')}</span><p>{t('この操作は外部サービスへの登録です。有料Agentの利用料は提供元の条件によります。')} <a href={provider.termsUrl} target="_blank" rel="noreferrer">{t('料金・利用条件を確認')} ↗</a></p></div>

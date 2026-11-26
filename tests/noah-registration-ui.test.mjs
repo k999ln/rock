@@ -58,6 +58,7 @@ function harness(fetcher, initial = [], profileOptions = {}) {
 }
 const config = () => Response.json({providers:[provider]});
 function fill(h) { h.input('email','synthetic@example.com'); h.input('password','synthetic-private-value'); }
+const reusableProfile = (fields, extra = {}) => ({ ...profileContract.emptyNoahProfile(), available: true, ownerScope: 'owner-a', revision: 2, reuseEnabled: true, fields, consents: [{ version: profileContract.PROFILE_CONSENT_VERSION, at: Date.now(), action: 'save', fields: Object.keys(fields), documents: [] }], ...extra });
 void test('registration button grants visible recipient and terms consent, submits once, and stores only the capability', async t => {
   const h = harness(async (_u,o) => o.method === 'POST' ? Response.json({job:job('needs_user')}) : config()); t.after(() => h.close()); await h.flush();
   assert.equal(h.button('同意して登録').props.disabled,true); h.submit(); await h.flush(); assert.equal(h.calls.filter(c=>c.options.method==='POST').length,0);
@@ -120,7 +121,7 @@ void test('registration status polling stops after a bounded number of reads and
 
 void test('saved fields are reused by reference; only missing values are entered and consent saves them once', async t=>{
   const p={...provider,fields:[{...provider.fields[0],profileField:'email'},{key:'name',label:'氏名',type:'text',required:true,maxLength:120,profileField:'name'}]};
-  const h=harness(async(_u,o)=>o.method==='POST'?Response.json({job:job('running')}):Response.json({providers:[p]}),[],{profile:{...profileContract.emptyNoahProfile(),available:true,ownerScope:'owner-a',revision:2,reuseEnabled:true,fields:{email:'saved@example.com'}}});t.after(()=>h.close());await h.flush();
+  const h=harness(async(_u,o)=>o.method==='POST'?Response.json({job:job('running')}):Response.json({providers:[p]}),[],{profile:reusableProfile({email:'saved@example.com'})});t.after(()=>h.close());await h.flush();
   assert.equal(h.nodes().filter(n=>n.type==='input'&&n.props.name==='email').length,0);
   assert.match(h.text(),/保存した情報/); assert.equal(h.saves.length,0);
   h.input('name','Test Name');h.submit();await h.flush();
@@ -175,7 +176,7 @@ void test('a reopened rate limited account hides input and offers only a timed a
 
 void test('using saved details does not rewrite the profile or require optional details', async t => {
   const p={...provider,fields:[{...provider.fields[0],profileField:'email'},{key:'bio',label:'紹介文',type:'text',required:false,maxLength:100,profileField:'bio'}]};
-  const h=harness(async(_u,o)=>o.method==='POST'?Response.json({job:job('running')}):Response.json({providers:[p]}),[],{profile:{...profileContract.emptyNoahProfile(),available:true,ownerScope:'owner-a',revision:2,reuseEnabled:true,fields:{email:'saved@example.com'}}});
+  const h=harness(async(_u,o)=>o.method==='POST'?Response.json({job:job('running')}):Response.json({providers:[p]}),[],{profile:reusableProfile({email:'saved@example.com'})});
   t.after(()=>h.close()); await h.flush();
   const optional=h.nodes().find(n=>n.type==='details'&&JSON.stringify(n.props).includes('任意の情報を追加'));
   assert.ok(optional); assert.equal(optional.props.open,undefined);
@@ -196,7 +197,7 @@ void test('one-time input is sent without a profile write and never stored in se
 });
 void test('editing a saved value keeps it in the field and submits the changed value once',async t=>{
   const p={...provider,fields:[{...provider.fields[0],profileField:'email'}]};
-  const h=harness(async(_u,o)=>o.method==='POST'?Response.json({job:job('running')}):Response.json({providers:[p]}),[],{profile:{...profileContract.emptyNoahProfile(),available:true,ownerScope:'owner-a',revision:2,reuseEnabled:true,fields:{email:'saved@example.com'}}});
+  const h=harness(async(_u,o)=>o.method==='POST'?Response.json({job:job('running')}):Response.json({providers:[p]}),[],{profile:reusableProfile({email:'saved@example.com'})});
   t.after(()=>h.close());await h.flush();h.click('編集');
   assert.equal(h.nodes().find(n=>n.type==='input'&&n.props.name==='email').props.value,'saved@example.com');
   h.input('email','changed@example.com');h.submit();await h.flush();
@@ -205,8 +206,11 @@ void test('editing a saved value keeps it in the field and submits the changed v
 });
 void test('storage, external submission and pricing explanations are translated in all supported languages',async()=>{
   const {NOAH_REGISTRATION_MESSAGES}=await import('../lib/noah-i18n-registration.ts');
+  const {NOAH_PROFILE_CONSENT_MESSAGES}=await import('../lib/noah-i18n-profile-consent.ts');
+  const {PROFILE_CONSENT_TEXT,PROFILE_CONSENT_DETAILS}=await import('../lib/noah-profile-contract.ts');
   const {noahTranslate,NOAH_LOCALES}=await import('../lib/noah-i18n.ts');
-  for(const source of Object.keys(NOAH_REGISTRATION_MESSAGES))for(const locale of NOAH_LOCALES.filter(l=>l!=='ja')){
+  const sources=[...Object.keys(NOAH_REGISTRATION_MESSAGES),...Object.keys(NOAH_PROFILE_CONSENT_MESSAGES),PROFILE_CONSENT_TEXT,...PROFILE_CONSENT_DETAILS.flatMap(section=>[section.title,section.text])];
+  for(const source of sources)for(const locale of NOAH_LOCALES.filter(l=>l!=='ja')){
     const translated=noahTranslate(locale,source);assert.notEqual(translated,source,`${locale}: ${source}`);assert.ok(translated.length);
   }
 });
@@ -216,7 +220,7 @@ void test('saved profile loading and read failure never ask the user to re-enter
   const h=harness(async()=>Response.json({providers:[p]}),[],{guest:false});t.after(()=>h.close());await h.flush();
   assert.equal(h.nodes().filter(n=>n.type==='input').length,0);
   assert.ok(h.nodes().some(n=>n.type==='noah-loading'&&n.props.label==='保存情報を読み込んでいます…'));
-  h.setProfile({...profileContract.emptyNoahProfile(),available:true,ownerScope:'owner-a',revision:1,reuseEnabled:true,fields:{email:'saved@example.com'}});await h.flush();
+  h.setProfile(reusableProfile({email:'saved@example.com'}, { revision: 1 }));await h.flush();
   assert.match(h.text(),/saved@example.com/);assert.equal(h.nodes().filter(n=>n.type==='input').length,0);
   const options={guest:false,error:'保存情報を開けません。'};
   const failed=harness(async()=>Response.json({providers:[p]}),[],options);t.after(()=>failed.close());await failed.flush();

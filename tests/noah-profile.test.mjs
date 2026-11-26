@@ -19,6 +19,7 @@ function fixture(){
   return {objects,bucket,keys,store,api,request,authenticate};
 }
 const grant={target:'agent-one',name:'Agent',action:'read',label:'読む',digest:'a'.repeat(64),mode:'allow'};
+const consent=(version=PROFILE_CONSENT_VERSION,fields=['email'])=>({version,at:Date.now(),action:'save',fields,documents:[]});
 void test('owner vault is encrypted, authenticated, bounded and concurrent changes fail closed',async()=>{
   const f=fixture();const saved=await f.api.collection(await f.request({action:'fields',revision:0,consentVersion:PROFILE_CONSENT_VERSION,reuse:true,fields:{name:'Synthetic Alice',email:'alice@example.test',bankNumber:'0000123'}}));assert.equal(saved.status,200);
   const body=await saved.json();assert.equal(body.revision,1);assert.equal(body.fields.name,'Synthetic Alice');
@@ -58,12 +59,17 @@ void test('allow, per-run confirmation, deny, changed definition and global paus
 });
 const providers=()=>parseRegistrationProviders(JSON.stringify(['one','two'].map(id=>({id,name:id,agentIds:[id],revision:1,providerOrigin:`https://${id}.example.com`,verificationUrl:`https://${id}.example.com/verify`,termsUrl:`https://${id}.example.com/terms`,termsVersion:'v1',executorName:'Agent',executorUrl:'https://registration.example.com/run',fields:[{key:'contact',label:'メール',type:'email',profileField:'email',required:true,maxLength:320},{key:'identity',label:'書類',type:'file',profileField:'identityDocument',required:false,maxLength:160}]}))));
 void test('two providers receive only explicitly mapped selected saved fields; revocation blocks deferred dispatch',async()=>{
-  const f=fixture();await f.store.change('alice',0,p=>({...p,reuseEnabled:true,fields:{email:'synthetic@example.test',bankNumber:'private-number',name:'Private Name'}}));
+  const f=fixture();await f.store.change('alice',0,p=>({...p,reuseEnabled:true,fields:{email:'synthetic@example.test',bankNumber:'private-number',name:'Private Name'},consents:[consent(PROFILE_CONSENT_VERSION,['email','bankNumber','name'])]}));
   const resolve=registrationProfileResolver(f.store,f.authenticate),request=await f.request({});
   for(const provider of providers()){const resolved=await resolve(request,provider,{revision:1,fields:['contact']});assert.deepEqual(resolved.values,{contact:'synthetic@example.test'});assert.deepEqual(resolved.documents,{});await resolved.beforeSend();}
   await assert.rejects(()=>resolve(request,providers()[0],{revision:1,fields:['password']}));
   await assert.rejects(async()=>resolve(await f.request({},'bob'),providers()[0],{revision:1,fields:['contact']}));
   const resolved=await resolve(request,providers()[0],{revision:1,fields:['contact']});await f.store.change('alice',1,p=>({...p,paused:true}));await assert.rejects(()=>resolved.beforeSend(),{status:403});
+});
+void test('a profile with only an older consent receipt cannot be reused for the expanded explanation',async()=>{
+  const f=fixture();await f.store.change('alice',0,p=>({...p,reuseEnabled:true,fields:{email:'old-consent@example.test'},consents:[consent('2026-11-22.1')]}));
+  const resolve=registrationProfileResolver(f.store,f.authenticate),request=await f.request({});
+  await assert.rejects(()=>resolve(request,providers()[0],{revision:1,fields:['contact']}),{status:409});
 });
 void test('selected document reaches resolver in memory, never as a public URL; stale profile is rejected',async()=>{
   const f=fixture();const p=await f.store.addDocument('alice',0,'identity.pdf','application/pdf',new TextEncoder().encode('%PDF-1.7\nsynthetic'),PROFILE_CONSENT_VERSION);
@@ -75,7 +81,7 @@ void test('selected document reaches resolver in memory, never as a public URL; 
 void test('registration HTTP dispatch reuses an encrypted profile across two providers without copying it into Work',async t=>{
  const f=fixture(),sql=new DatabaseSync(':memory:');t.after(()=>sql.close());sql.exec('CREATE TABLE work_jobs(id TEXT PRIMARY KEY,user_id TEXT,payload TEXT,revision INTEGER,updated_at TEXT)');
  const db={prepare(query){const s={args:[],bind(...args){return {...s,args};},async first(){return sql.prepare(query).get(...this.args)??null;},async run(){return {meta:{changes:Number(sql.prepare(query).run(...this.args).changes)}};}};return s;}};
- await f.store.change('alice',0,p=>({...p,reuseEnabled:true,fields:{email:'reusable@example.test',bankNumber:'private-bank'}}));
+ await f.store.change('alice',0,p=>({...p,reuseEnabled:true,fields:{email:'reusable@example.test',bankNumber:'private-bank'},consents:[consent(PROFILE_CONSENT_VERSION,['email','bankNumber'])]}));
  const sent=[],api=createNoahRegistrationApi({db,providers:providers(),token:'synthetic-token-'.repeat(4),resolveProfile:registrationProfileResolver(f.store,f.authenticate),fetcher:async(url,init)=>{const body=JSON.parse(init.body);sent.push(body);return Response.json({id:body.id,state:'needs_user'});}});
  for(const provider of providers()){
   const response=await api(new Request('https://noah.test/api/noah/registration',{method:'POST',headers:{Origin:'https://noah.test','Content-Type':'application/json','X-Test-User':'alice','X-Rock-Owner-Scope':await ownerScopeFor('alice'),'X-Noah-Registration-Key':randomBytes(32).toString('hex')},body:JSON.stringify({action:'start',id:randomUUID(),providerId:provider.id,agentId:provider.id,revision:1,termsVersion:'v1',values:{},profile:{revision:1,fields:['contact']},consent:true,termsAccepted:true})}));

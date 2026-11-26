@@ -4,7 +4,7 @@ import {noahOperationLabel} from '@/lib/noah-operation-labels';
 import { useEffect, useRef, useState } from 'react';
 import Link from 'next/link';
 import { ArrowLeft, ArrowUpRight, Check, Fingerprint, Pause, Play, Plus, Trash2 } from 'lucide-react';
-import { NOAH_PROFILE_FIELDS, NOAH_PROFILE_SIGNED_IN_GROUPS, NOAH_PROFILE_SIGNED_IN_ONLY, PROFILE_CONSENT_VERSION, PROFILE_CONSENT_TEXT, type NoahProfileView, type ProfileField, type DelegationMode } from '@/lib/noah-profile-contract';
+import { NOAH_PROFILE_FIELDS, NOAH_PROFILE_SIGNED_IN_GROUPS, NOAH_PROFILE_SIGNED_IN_ONLY, PROFILE_CONSENT_VERSION, PROFILE_CONSENT_TEXT, PROFILE_CONSENT_DETAILS, type NoahProfileView, type ProfileField, type DelegationMode } from '@/lib/noah-profile-contract';
 import { useNoahProfile } from './use-noah-profile';
 import styles from './noah-profile.module.css';
 import NoahProfileReadiness from './noah-profile-readiness';
@@ -48,6 +48,10 @@ function ProfileEditor({profile,busy,save,beginFileSelection,endFileSelection,ca
 
     {!profile.available&&<output>{t("保存機能は準備中です。")}</output>}
     <NoahProfileReadiness profile={profile}/>
+    <details className={styles.reuseExplanation}>
+      <summary>{t('eSIM・Agent登録での情報の再利用について')}</summary>
+      {PROFILE_CONSENT_DETAILS.map(section=><p key={section.title}><strong>{t(section.title)}</strong><br/>{t(section.text)}</p>)}
+    </details>
     <p className={styles.muted}>{t('Safari・Chromeに保存した情報を、入力欄の自動入力候補から使えます。')}</p>
     <form onChange={()=>setNotice('')} onSubmit={async e=>{e.preventDefault();setNotice('');const result=await save({action:'fields',fields,consentVersion:PROFILE_CONSENT_VERSION,reuse:profile.consents.length===0||profile.reuseEnabled});if(result)setNotice('保存済み');}}>
       <div className={styles.groups}>{groups.map(group=>{
