@@ -51,6 +51,7 @@ export async function renderNoahExplanationFixture(sample, { locale = 'ja', noLa
     let detailStateCalls = 0;
     const deps = (imported) => {
       if (imported.endsWith('.module.css')) return { default: cssKeys };
+      if (imported === 'next/navigation') return { usePathname: () => '/noah/ready/agent', useSearchParams: () => new URLSearchParams({ id }) };
       if (imported === 'next/link') return { default: 'a' };
       if (imported === './noah-locale') return { useNoahLocale: () => ({ locale, t: (text, values) => noahTranslate(locale, text, values) }) };
       if (imported === '@/lib/noah-agent-share-server') return { publicNoahShareAgent: async () => null };

@@ -10,13 +10,15 @@ import { useNoahLocale } from './noah-locale';
 import NoahAgentVisual from './noah-agent-visual';
 import NoahAppIcon from './noah-app-icon';
 import NoahDetailTemplate from './noah-detail-template';
-import { ChevronLeft, PhoneCall, ArrowUpRight, PhoneOutgoing } from 'lucide-react';
+import { PhoneCall, ArrowUpRight, PhoneOutgoing } from 'lucide-react';
 import { noahPinTopic } from '@/lib/noah-pins';
 import { noahDetailGuide } from '@/lib/noah-detail-guide';
 import { noahDetailStarter } from '@/lib/noah-detail-starter';
 import pageStyles from './noah-detail-overview.module.css';
 import NoahAgentShare from './noah-agent-share';
-import NoahLoading from './noah-loading';
+import NoahDetailPending from './noah-detail-pending';
+import { useNoahBrowserReady } from './noah-browser-ready';
+import type { NoahDetailPreview } from '@/lib/noah-detail-preview';
 import Link from 'next/link';
 import { NOAH_REPORT_CONTACT } from '@/lib/noah-bot-notice';
 import { OWNER_SCOPE_HEADER } from '@/lib/owner-intent';
@@ -40,8 +42,9 @@ const requestTarget = 'noah-agent-request';
 const askIntentKey = (id: string) => `noah-agent-first-request:${id}`;
 
 /** tool: 最初に選んでおく道具（棚のカードから来た時。/noah/ready/agent?tool=…）。from: そのカードの ID（試行の本人の報告を、下に出す）。 */
-export default function NoahReadyDetail({ id, tool = null, from = null, internalOnly = false, sourceNotes, trailer, mediaId }: { id: string; tool?: string | null; from?: string | null; internalOnly?: boolean; sourceNotes?: ReactNode; trailer?: ReactNode; mediaId?: string }) {
+export default function NoahReadyDetail({ id, tool = null, from = null, internalOnly = false, sourceNotes, trailer, mediaId, feedbackId, preview: cardPreview }: { id: string; tool?: string | null; from?: string | null; internalOnly?: boolean; sourceNotes?: ReactNode; trailer?: ReactNode; mediaId?: string; feedbackId?: string; preview?: NoahDetailPreview }) {
   const {t, locale}=useNoahLocale();
+  const browserReady = useNoahBrowserReady();
   // 読んだ詳細は、何回目の読み取りの物かと一緒に持つ（「読み直す」を押したら、届くまでは「読み込み中」）。
   const [result, setResult] = useState<{ attempt: number; loaded: Loaded } | null>(null), [connection, setConnection] = useState<NoahReadyConnection | null>(null);
   const [cutting, setCutting] = useState(false), [error, setError] = useState(''), [attempt, setAttempt] = useState(0);
@@ -88,7 +91,7 @@ export default function NoahReadyDetail({ id, tool = null, from = null, internal
   }, [connectedId, activeAgentId]);
 
   useEffect(() => {
-    if (!valid) return;
+    if (!valid || !browserReady) return;
     const current = ++epoch.current;
     const done = (next: Loaded) => { if (current === epoch.current) setResult({ attempt, loaded: next }); };
     void fetch(`/api/noah/intake?${new URLSearchParams({ id }).toString()}`, { cache: 'no-store' }).then(async (response) => {
@@ -99,12 +102,10 @@ export default function NoahReadyDetail({ id, tool = null, from = null, internal
       done({ state: 'ready', detail: body });
       setConnection(body.connection ?? null);
     }).catch(() => done({ state: 'error' }));
-  }, [id, attempt, valid]);
+  }, [id, attempt, valid, browserReady]);
 
-  const back = <p className={pageStyles.back}><Link href="/noah/explore"><ChevronLeft size={18} aria-hidden="true" />{t('Agentを探す')}</Link></p>;
+  if (loaded.state === 'loading') return <NoahDetailPending href={`/noah/ready/agent?${new URLSearchParams({ id })}`} card={cardPreview} />;
   if (loaded.state !== 'ready') return <main className={`${base.page} ${styles.page} ${pageStyles.page}`}>
-    {back}
-    {loaded.state === 'loading' && <p className={base.loading}><NoahLoading label={t("読み込んでいます…")} /></p>}
     {loaded.state === 'missing' && <p className={base.empty}>{t(NOAH_READY_TEXT.missing)}</p>}
     {loaded.state === 'error' && <div className={base.empty} role="alert"><p>{t(NOAH_READY_TEXT.unavailable)}</p><button type="button" onClick={() => setAttempt((n) => n + 1)}>{t("読み直す")}</button></div>}
   </main>;
@@ -159,7 +160,7 @@ export default function NoahReadyDetail({ id, tool = null, from = null, internal
 
   return <NoahDetailTemplate id={detail.id} mediaId={mediaId} name={guide?.name || detail.name} provider={detail.provider || undefined}
     summary={lead || t('（説明はありません）')} overviewTitle={pitch}
-    feedbackId={detail.listed ? detail.id : undefined} expanded={Boolean(live)}
+    feedbackId={detail.listed ? feedbackId ?? detail.id : undefined} expanded={Boolean(live)}
     detailsLabel={detail.explanation ? t('操作の流れと道具') : undefined}
     icon={guide ? <span className={pageStyles.phoneMark} aria-hidden="true"><PhoneCall size={26} strokeWidth={1.8} /></span>
       : <NoahAppIcon name={detail.name} topic={noahPinTopic(detail.name, detail.summary)} className={pageStyles.appMark} />}

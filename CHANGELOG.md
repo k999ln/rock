@@ -1,5 +1,16 @@
+## 2026-11-27
+- PR #100 の設計監査補正として、Eve需要とファンド候補、容量・出典・canonical Receipt、PAPER/no-deposits、農家/受取人Receipt、catalog gate、候補額の表示境界を明文化。実装・実資金は未着手。
+
 ## 2026-11-26
 - Eveでの新規Agent開発・収益見込み・農家への支払いとNoahの定期便を、現行台帳と照合して設計。実装と実資金の受入は今後（[PR #100](https://github.com/iceiceice999/rock/pull/100)）。
+
+- Noahの詳細1件のカード構築と接続DB読取を軽量化。一覧を一行の下線タブへ整理し、動画上の反転文字と画面外の動画解放を追加（task140、[PR #106](https://github.com/iceiceice999/rock/pull/106)）。
+
+- Noahのタイガーをオフライン専用に分離し、通常の読込を小さな表示へ変更。詳細の重複取得・無関係な外部応答の待機・カードの再計測ループを削減（task140、[PR #105](https://github.com/iceiceice999/rock/pull/105)）。
+- Noah詳細の待機画面を公開情報の先行表示へ変更し、全件を初期表示、トップの帯を撤去、登録の不足情報を詳細に表示（task140、[PR #104](https://github.com/iceiceice999/rock/pull/104)）。
+
+- READMEの開発状況と設計書を公開第258版のホーム・Agent詳細に合わせ、収益明細と専用eSIMの確認範囲を更新。[PR #103](https://github.com/iceiceice999/rock/pull/103)
+- Noahの戻る導線をロゴに統一し、詳細ヘッダーと表紙の境界を撤去（task140、[PR #102](https://github.com/iceiceice999/rock/pull/102)）。
 
 - Noahの単一一覧を既存推薦規則に接続し、スクロールによる連続読込へ変更（task140、[PR #99](https://github.com/iceiceice999/rock/pull/99)）。
 - NoahホームのToday・注目・目的別・タイムラインを一つのAgent一覧へ統合。利用できる仕事はカード内に表示し、スマホ上部メニューの重なりを解消（[PR #97](https://github.com/iceiceice999/rock/pull/97)）。

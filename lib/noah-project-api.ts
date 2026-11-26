@@ -4,8 +4,9 @@ import { noahSourceRepository } from './noah-source-import.ts';
 import { noahCloudProfile, type NoahCloudProfile } from './noah-cloud-contract.ts';
 import { noahProjectSources } from './noah-provider-resolve.ts';
 import { noahFirstJobs } from './noah-first-jobs.ts';
+import { noahRegistrationReport } from './noah-registration-report.ts';
 
-type Dependencies = { directory: () => Promise<DirectoryEntry[]>; fetcher?: typeof fetch; cloudEnabled?: boolean; cloudProfiles?: readonly NoahCloudProfile[]; publicAsk?: boolean };
+type Dependencies = { directory: () => Promise<DirectoryEntry[]>; find?: (id: string, family: string | null) => Promise<DirectoryEntry | undefined>; fetcher?: typeof fetch; cloudEnabled?: boolean; cloudProfiles?: readonly NoahCloudProfile[]; publicAsk?: boolean };
 const json = (body: unknown, status = 200) => Response.json(body, { status, headers: { 'Cache-Control': 'no-store, private', 'X-Content-Type-Options': 'nosniff' } });
 /** Resolve only an existing public catalog identity. The caller cannot supply a fetch URL or execution target. */
 export function noahProjectDetail(entry: DirectoryEntry, cloudEnabled = false, cloudProfiles?: readonly NoahCloudProfile[]): NoahProjectDetail {
@@ -73,8 +74,11 @@ export function createNoahProjectApi(deps: Dependencies) {
     const params = new URL(request.url).searchParams, id = params.get('id') ?? '', family = params.get('family'), open = params.get('open');
     if (family !== null ? (id !== '' || open !== null || !/^[a-zA-Z0-9][a-zA-Z0-9._:/-]{2,399}$/.test(family)) : (!/^project-[a-f0-9]{64}$/.test(id) || (open !== null && open !== 'space'))) return json({ error: 'Agentの指定を確認してください。' }, 400);
     try {
-      const entry = (await deps.directory()).find(row => family !== null ? row.families.includes(family) : row.card.feedbackId === id || row.card.id === id);
+      const started = performance.now();
+      const entry = deps.find ? await deps.find(id, family) : (await deps.directory()).find(row => family !== null ? row.families.includes(family) : row.card.feedbackId === id || row.card.id === id);
+      const directoryMs = performance.now() - started;
       if (!entry) return json({ error: 'このAgentは現在掲載されていません。' }, 404);
+      if (params.get('check') === 'registration' && open === null && family === null) return json(await noahRegistrationReport(entry, deps.fetcher));
       const detail = noahProjectDetail(entry, deps.cloudEnabled, deps.cloudProfiles);
       if (open === 'space') {
         if (detail.connection.kind !== 'space') return json({ error: 'このAgentの接続先は変更されています。詳細を読み直してください。' }, 409);
@@ -90,7 +94,9 @@ export function createNoahProjectApi(deps: Dependencies) {
         detail.firstJob = choices.find(choice => choice.id === requested && choice.href &&
           (choice.id !== 'memory' || (detail.connection.kind === 'cloud' && detail.connection.profile === 'memory')));
       }
-      return json(detail);
+      const response = json(detail);
+      response.headers.set('Server-Timing', `directory;dur=${directoryMs.toFixed(1)}`);
+      return response;
     } catch { return json({ error: 'Agentを読み込めませんでした。再試行してください。' }, 503); }
   };
 }

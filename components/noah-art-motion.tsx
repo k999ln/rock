@@ -82,8 +82,13 @@ function PinLoopVideo({ video, onError }: { video: NoahPinVideo; onError: () => 
     let pending = false;
     const sync = () => {
       if (visible && !reduced.matches && !element.getAttribute('src')) element.src = video.url;
-      if (!visible || document.hidden || reduced.matches) element.pause();
-      else if (!pending) {
+      if (!visible || document.hidden || reduced.matches) {
+        element.pause();
+        // Release decoded video buffers as cards leave the feed viewport.
+        if ((!visible || reduced.matches) && element.getAttribute('src')) {
+          element.removeAttribute('src'); element.load();
+        }
+      } else if (!pending) {
         pending = true;
         void element.play().catch(() => {}).finally(() => { pending = false; });
       }
