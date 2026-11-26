@@ -1,0 +1,82 @@
+{
+  "version": "public-topic-v1",
+  "algorithm": "Split lowercase ASCII words, count exact matches in each of four term groups, compute signed int32 dot products, choose first maximum. Score is the winning dot product.",
+  "dot4Wasm": "0061736d01000000010d0160087f7f7f7f7f7f7f7f017f0302010007080104646f743400000a1b011900200020046c200120056c6a200220066c6a200320076c6a0b",
+  "terms": [
+    [
+      "meeting",
+      "minutes",
+      "action",
+      "owner"
+    ],
+    [
+      "stock",
+      "inventory",
+      "shipment",
+      "order"
+    ],
+    [
+      "study",
+      "experiment",
+      "evidence",
+      "research"
+    ],
+    [
+      "review",
+      "record",
+      "report",
+      "analysis"
+    ]
+  ],
+  "classes": [
+    {
+      "label": "meeting",
+      "weights": [
+        4,
+        0,
+        0,
+        1
+      ]
+    },
+    {
+      "label": "inventory",
+      "weights": [
+        0,
+        4,
+        0,
+        1
+      ]
+    },
+    {
+      "label": "research",
+      "weights": [
+        0,
+        0,
+        4,
+        2
+      ]
+    }
+  ],
+  "samples": [
+    {
+      "id": "meeting-notes",
+      "title": "会議メモ",
+      "text": "Meeting minutes record the action owner after review."
+    },
+    {
+      "id": "inventory-update",
+      "title": "在庫報告",
+      "text": "Stock and inventory report for an incoming shipment and order."
+    },
+    {
+      "id": "research-summary",
+      "title": "研究概要",
+      "text": "Review the experiment evidence and study analysis for the research report."
+    },
+    {
+      "id": "order-review",
+      "title": "発注会議",
+      "text": "Meeting minutes review the stock order shipment and inventory record."
+    }
+  ]
+}

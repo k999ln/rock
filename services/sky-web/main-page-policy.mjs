@@ -7,7 +7,7 @@ export const MAIN_PAGE_PATHS = [
   '/noah/agents/new', '/noah/agents/verified', '/noah/discover/agent', '/noah/ready/agent',
   '/noah/registration', '/noah/registration/browser', '/noah/publisher',
   '/noah/publish', '/noah/register', '/noah/developers',
-  '/noah/devices', '/noah/network', '/noah/free-cloud', '/noah/linux', '/noah/esim',
+  '/noah/devices', '/noah/network', '/noah/shared-compute', '/noah/free-cloud', '/noah/linux', '/noah/esim',
   '/noah/mac/connect', '/noah/account', '/noah/purchases', '/noah/marketplace', '/noah/sell',
   '/noah/add', '/noah/add/data', '/noah/outbox', '/noah/my/cloud-results',
   '/noah/coconala/agent', '/noah/revenue-pack', '/noah/first-earning',

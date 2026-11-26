@@ -4,7 +4,7 @@
   "scope": "repository source, local schema convergence, and recorded deployment evidence",
   "summary": {
     "boundaryCount": 6,
-    "tableCount": 259,
+    "tableCount": 263,
     "sourceVerifiedCount": 6,
     "currentProductionReadbackCount": 0
   },
@@ -18,7 +18,7 @@
     "nextAction": "掲載Agent別の認証・実行器を整えてWorkで成果を確認する。収益パックと仕事別明細の接続、実入金後の作者分、専用eSIMの実回線、定期便の実配送を個別に検収する。従来の端末・収集・運用の残件はproject.mdを参照。"
   },
   "webSchema": {
-    "tableCount": 182,
+    "tableCount": 186,
     "tables": [
       "a2a_live_usage_snapshots",
       "a2a_price_quote_consent_events",
@@ -89,6 +89,10 @@
       "noah_board_follows",
       "noah_board_pins",
       "noah_boards",
+      "noah_compute_delegation_fences",
+      "noah_compute_devices",
+      "noah_compute_jobs",
+      "noah_compute_subscriptions",
       "noah_connections",
       "noah_discovery_candidates",
       "noah_discovery_sources",
@@ -209,8 +213,8 @@
       "sky_linux_service_receipts"
     ],
     "sourceOnlyStatus": "local synthetic schema; production tables unverified; no new production migration",
-    "migrationCount": 42,
-    "latestMigration": "0061_noah_intake_pins.sql",
+    "migrationCount": 44,
+    "latestMigration": "0063_noah_compute_subscriptions.sql",
     "accidentalDuplicateCount": 0,
     "publishedConvergenceDeclarations": 25,
     "marketplaceRelationGuardCount": 8,
@@ -288,6 +292,10 @@
           "noah_board_follows",
           "noah_board_pins",
           "noah_boards",
+          "noah_compute_delegation_fences",
+          "noah_compute_devices",
+          "noah_compute_jobs",
+          "noah_compute_subscriptions",
           "noah_connections",
           "noah_discovery_candidates",
           "noah_discovery_sources",
@@ -380,7 +388,7 @@
           "sky_x_feed_state",
           "sky_x_oauth_states"
         ],
-        "tableCount": 112
+        "tableCount": 116
       },
       {
         "id": "marketplace",
@@ -522,6 +530,10 @@
         "noah_board_follows",
         "noah_board_pins",
         "noah_boards",
+        "noah_compute_delegation_fences",
+        "noah_compute_devices",
+        "noah_compute_jobs",
+        "noah_compute_subscriptions",
         "noah_connections",
         "noah_discovery_candidates",
         "noah_discovery_sources",
@@ -636,8 +648,8 @@
         "tool_runs",
         "work_jobs"
       ],
-      "expectedAppliedThrough": "0061_noah_intake_pins.sql",
-      "tableCount": 182,
+      "expectedAppliedThrough": "0063_noah_compute_subscriptions.sql",
+      "tableCount": 186,
       "sourceStatus": "VERIFIED",
       "deployment": {
         "runtime": "Cloudflare D1 / currently owner-only Sites, public access requested",

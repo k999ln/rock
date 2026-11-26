@@ -375,3 +375,5 @@ Noahの固定アダプターで公開サイト診断を実行し、結果と相�
 本人の追加指示により、端末提供者が同意して他の利用者の処理を引き受ける月額サービスを設計する。[参加型計算サービス](../services/noah-shared-compute.md)に同意・隔離・本人/運営の上限・検収条件を置く。現在のEveのクラウド相談と端末履歴保存はそのまま使い、共同計算への自動参加にはしない。Eveが組み立て、AMCが割り当て、Broker/Walletが許可と上限を確かめ、Jevが結果を検収する。提供者自身の端末は信頼境界の外にあり、通信の暗号化だけで処理中の秘密が提供者から見えなくなるとは扱わない。
 
 2026-11-27 Noahの機器保守候補 `noah-local-device-maintenance` を追加。明示した `noah.hardware-maintenance/1` の模擬状態JSONだけを読み、12機器ファミリーの接続・操作・消耗品を説明する。端末、ネットワーク、外部API、実機修理、設定変更、flash、ドローン制御は行わず、fixture結果を実機成功と数えない。[PR #115](https://github.com/iceiceice999/rock/pull/115)
+
+2026-11-27 の実装では、Noahの月額利用者が同意した公開サンプルを、別アカウントの登録端末が短いリースで処理する。[Androidの参加アプリ](../../toolkits/noah-shared-android/)と[Linuxの参加プログラム](../../public/noah-shared-compute/)で処理し、検収した結果を依頼者に返す。[参加と停止・契約の条件](../services/noah-shared-compute.md)

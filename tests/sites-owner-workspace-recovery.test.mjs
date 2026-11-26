@@ -9,6 +9,7 @@ import { auditSitesOwnerWorkspaceRecovery } from '../scripts/sites-owner-workspa
 
 const folder = new URL('../drizzle-main/', import.meta.url);
 const read = name => readFileSync(new URL(name, folder), 'utf8');
+const migrations = JSON.parse(read('meta/_journal.json')).entries;
 const recoverySql = () => read('0031_owner_workspace_schema_recovery.sql').split('--> statement-breakpoint').filter(s => s.trim());
 const root = new URL('../', import.meta.url).pathname;
 const ownerTables = [
@@ -51,7 +52,7 @@ for (const watermark of [4102444800000, 4102444800002]) {
     const ledger = (await db.prepare('SELECT hash,created_at FROM __drizzle_migrations ORDER BY id').all()).results;
     await run();
     assert.deepEqual((await db.prepare('SELECT hash,created_at FROM __drizzle_migrations ORDER BY id').all()).results, ledger);
-    assert.equal(Number(ledger.at(-1).created_at), 4102444800033);
+    assert.equal(Number(ledger.at(-1).created_at), migrations.at(-1).when);
     assert.ok(ledger.some(e=>Number(e.created_at)===4102444800003));
   });
 }
@@ -63,7 +64,7 @@ void test('recovery preserves published bytes and times and stages exactly the m
     '0027_os_timeline': 'd78a07c000fbe6bbc09711a695b240dcca13c1dbfc2e0ef1f5497023ba9b4fa0',
     '0028_rockstar_accounts': 'b73721a45c57517a766f7009f0e5b2109f03b1563ff619b7f396598ba30f4562',
   };
-  const journal = JSON.parse(read('meta/_journal.json')).entries;
+  const journal = migrations;
   assert.equal(proof.sourceBase, '6f32e4d55fc1eecb156bffba8f8e8fdaba1a1caf');
   assert.equal(proof.published.length, 11);
   for (const [i, entry] of proof.published.entries()) {
@@ -75,8 +76,9 @@ void test('recovery preserves published bytes and times and stages exactly the m
   assert.equal(journal.find(e=>e.tag==='0031_owner_workspace_schema_recovery').when,4102444800003);
   assert.equal(journal.find(e=>e.tag==='0032_eve_runtime_presence').when,4102444800004);
   assert.equal(journal.find(e=>e.tag==='0059_noah_agent_availability').when,4102444800031);
-  assert.equal(journal.at(-1).tag,'0061_noah_intake_pins');
-  assert.equal(journal.at(-1).when,4102444800033);
+  assert.equal(journal.find(e=>e.tag==='0061_noah_intake_pins').when,4102444800033);
+  assert.equal(journal.find(e=>e.tag==='0062_noah_shared_compute').when,4102444800034);
+  assert.equal(journal.find(e=>e.tag==='0063_noah_compute_subscriptions').when,4102444800035);
   assert.ok(journal.at(-1).when > Math.max(...proof.published.map(e => e.when)));
   for (const entry of journal) assert.equal(read(entry.tag + '.sql'), readFileSync(new URL('../drizzle/' + entry.tag + '.sql', import.meta.url), 'utf8'));
   assert.deepEqual(JSON.parse(readFileSync(new URL('../drizzle/meta/_journal.json', import.meta.url), 'utf8')), JSON.parse(read('meta/_journal.json')));
@@ -102,7 +104,9 @@ void test('a partial unrecorded recovery and two owners replay without replacing
   const run = () => migrate(drizzle(db), { migrationsFolder: folder.pathname });
   await run(); await run();
   assert.deepEqual((await db.prepare('SELECT * FROM eve_conversations ORDER BY owner_id').all()).results, before);
-  assert.equal((await db.prepare('SELECT COUNT(*) n FROM __drizzle_migrations').first()).n, 32);
+  const expectedWatermarks = [4102444800002, ...migrations.filter(entry => entry.when > 4102444800002).map(entry => entry.when)];
+  const applied = (await db.prepare('SELECT created_at FROM __drizzle_migrations ORDER BY id').all()).results;
+  assert.deepEqual(applied.map(entry => Number(entry.created_at)), expectedWatermarks);
   assert.equal((await db.prepare('SELECT COUNT(*) n FROM eve_runtime_presence').first()).n,0);
 });
 
