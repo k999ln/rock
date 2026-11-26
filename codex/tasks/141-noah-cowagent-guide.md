@@ -20,4 +20,4 @@
 
 ## 状態
 
-実装中。PRと公開版は検証後に追記する。
+[PR #111](https://github.com/iceiceice999/rock/pull/111)で実装。対象16試験は成功。GitHub Actions、マージ、本番公開は継続中。

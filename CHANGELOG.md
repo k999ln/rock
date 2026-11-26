@@ -14,7 +14,7 @@
 - Noahの収集実行の結論と出所ごとの実掲載を分離し、掲載後の公開 Hacker News API から2時間鮮度を計測。全体 failure でも161件を掲載した run #102/#103 を回帰例に追加（task125）。
 
 - Noahの詳細1件のカード構築と接続DB読取を軽量化。一覧を一行の下線タブへ整理し、動画上の反転文字と画面外の動画解放を追加（task140、[PR #106](https://github.com/iceiceice999/rock/pull/106)）。
-- YouTubeプロフィールからのCowAgentガイド404を復旧し、現行のMac導入・Runner承認・実行対応Agent・成果確認へ接続。CowAgentの紹介情報と未確認の実行を区別（task141、PR作成中）。
+- YouTubeプロフィールからのCowAgentガイド404を復旧し、現行のMac導入・Runner承認・実行対応Agent・成果確認へ接続。CowAgentの紹介情報と未確認の実行を区別（task141、[PR #111](https://github.com/iceiceice999/rock/pull/111)）。
 
 - Noahのタイガーをオフライン専用に分離し、通常の読込を小さな表示へ変更。詳細の重複取得・無関係な外部応答の待機・カードの再計測ループを削減（task140、[PR #105](https://github.com/iceiceice999/rock/pull/105)）。
 - Noah詳細の待機画面を公開情報の先行表示へ変更し、全件を初期表示、トップの帯を撤去、登録の不足情報を詳細に表示（task140、[PR #104](https://github.com/iceiceice999/rock/pull/104)）。
