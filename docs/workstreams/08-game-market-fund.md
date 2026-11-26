@@ -41,6 +41,8 @@ ROCK/08、既存AI06/GM01（DX01文脈）。固定4sourceと匿名化した原re
 
 ## 関連資料
 
+- [EveでのAgent開発資金・実績予測・農産物分配の設計](../services/eve-noah-agent-fund.md) — 2026-11-26の検討。資金を使わずに試せる範囲と実運用の受入条件。
+
 - [siネイティブOS詳細設計・Game／IP縦断案](../ai-native-os-architecture.md)
 - [OS/Sky/Wallet/Game design](../service-design/06-consistency-contracts.md)
 - [Game API draft](../game-api-contract-draft.md)
