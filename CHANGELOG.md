@@ -1,5 +1,7 @@
 ## 2026-11-26
 
+- 第244版の共有Word 3冊をGitに収録し、[設計索引](docs/README.md#共有word-3冊)と[ハッシュ台帳](codex/tasks/138-cross-chat-sync.md)から開けるようにした。
+
 - Noahの自分のAgent・実行中・保存したものの横タブを撤去し、既存の共通メニューへ統一。見出し・保存内容の絞り込み・旧URLは維持（task129、[PR #85](https://github.com/iceiceice999/rock/pull/85)）。
 
 - Noahの検索・タイムライン・ココナラ入口をホームへ統合し、登録情報・権限の入口を人型に一本化。旧explore URLの検索条件を保持して転送（task140、[PR #84](https://github.com/iceiceice999/rock/pull/84)）。
