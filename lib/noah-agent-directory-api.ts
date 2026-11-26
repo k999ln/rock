@@ -8,7 +8,7 @@ import type { PinsApiDependencies } from './noah-pins-api.ts';
 import { noahFirstJobs } from './noah-first-jobs.ts';
 import { noahAllowed } from './noah-flags.ts';
 import { NOAH_PIN_TOPIC_LABELS } from './noah-pins.ts';
-export function createNoahDirectoryApi(deps: PinsApiDependencies & { directory: () => Promise<DirectoryEntry[]> }) {
+export function createNoahDirectoryApi(deps: PinsApiDependencies & { directory: (options?: { reviewer?: boolean; showGeneratedPins?: boolean }) => Promise<DirectoryEntry[]> }) {
   return async (request: Request) => {
     const json = (data: unknown, status=200) => Response.json(data, {status, headers:{'Cache-Control':'no-store, private','X-Content-Type-Options':'nosniff'}});
     try {
@@ -19,8 +19,9 @@ export function createNoahDirectoryApi(deps: PinsApiDependencies & { directory: 
       if (!['','noah','discovered',...NOAH_COLLECTION_SOURCES].includes(source) || q.length>200 || !/^(0|[1-9]\d{0,5})(?:\.[a-f0-9]{64})?$/.test(cursor) || (order!=='hot' && order!=='new')) return json({error:'一覧の条件を確認してください。'},400);
       let owner: string|null=null;
       try {owner=await deps.authenticate(request);} catch(error) {if (!(error instanceof Error && error.message==='UNAUTHORIZED')) throw error;}
+      const reviewer = !!owner && (deps.reviewers ?? []).includes(owner);
       const hidden = new Set(owner ? (await deps.db.prepare('SELECT family_id FROM noah_pin_hidden WHERE owner_id=?').bind(owner).all<{family_id:string}>()).results.map(r=>r.family_id) : []);
-      const visible=(await deps.directory()).filter(e=>!e.families.some(id=>hidden.has(id)));
+      const visible=(await deps.directory(reviewer ? { reviewer: true, showGeneratedPins: true } : undefined)).filter(e=>!e.families.some(id=>hidden.has(id)));
       const matching=topic?visible.filter(entry=>entry.card.topic===topic):visible;
       const store=createNoahBoardsStore({...deps,decoratePins:undefined});
       const selected=selectNoahDirectory(matching,source,q,order);

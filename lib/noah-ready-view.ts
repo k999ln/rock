@@ -7,6 +7,7 @@
  */
 
 import { noahSignInHref } from './noah-navigation.ts';
+import type { NoahPin } from './noah-pin-scene.ts';
 
 /** 一覧の 1 件（GET /api/noah/intake の items。lib/noah-intake-store.ts の item）。 */
 export type NoahReadyItem = {
@@ -14,6 +15,8 @@ export type NoahReadyItem = {
   section: 'ran' | 'new'; tools: number; oneTap: boolean; checkedAt: number | null;
   /** 利用人数（スマホから接続して、成果が出た人。1 人 1 回）。 */
   users: number;
+  /** 審査済みの日本語の題・入れる物・返る物と図解。公開条件が閉じている時は API がこの項目を返さない。 */
+  pin?: NoahPin;
   connect: {
     badge: 'one_click' | 'taps' | 'setup' | 'unverified' | 'blocked'; taps: number; typed: number;
     place: string | null; placeLabel: string | null; need: string | null; level: number;

@@ -12,7 +12,7 @@ const NOW=Date.UTC(2026,10,22), PROJECT_URL='https://github.com/maker/agent';
 const family=(id,url=PROJECT_URL)=>({id,name:'Same Agent',summary:'Works with documents',external_key:'maker/agent',repository:url,record_json:JSON.stringify({repository:{url}}),connect_json:null});
 const collected=(source='github',url=PROJECT_URL,extra={})=>({id:source+'-one',source,name:'Same Agent',summary:'Works with documents',author:'maker',url,sourceUrl:source==='x'?'https://x.com/maker/status/123':url,observedAt:NOW,expiresAt:NOW+3600000,...(source==='x'?{summary:'Xで紹介されたAgentのリンクです。内容と利用条件は配布元で確認できます。',author:'@maker'}:{}),...extra});
 const bucket=(records)=>({get:async key=>{const source=key.split('/').at(-1).replace('.json','');return records[source]?{json:async()=>({schema:'noah-collection/1',source,collectedAt:NOW,items:records[source]})}:null;}});
-const db=(rows)=>({prepare:()=>({all:async()=>({results:rows})})});
+const db=(rows)=>({prepare:()=>({first:async()=>null,all:async()=>({results:rows})})});
 void test('same project keeps one identity across intake, multiple sources, source filters and promotion',async()=>{
   const dependencies={db:db([family('mcp-registry:maker/a')]),bucket:bucket({github:[collected('github',PROJECT_URL,{metrics:{stars:120}})],x:[collected('x')]}),now:()=>NOW,listed:true};
   const entries=await readNoahDirectory(dependencies);
@@ -37,10 +37,22 @@ void test('closed intake stays out, expired discoveries disappear, source and qu
   assert.equal(entries.length,1);assert.deepEqual(entries[0].families,[]);
   assert.equal(selectNoahDirectory(entries,'noah','').length,0);assert.equal(selectNoahDirectory(entries,'github','documents').length,1);assert.equal(selectNoahDirectory(entries,'x','documents').length,0);
 });
+void test('reviewed pins survive source aggregation but stay absent while the display gate is closed',async()=>{
+  const pin={title:'車を探す',give:'車の条件',get:'車の一覧',scene:{template:'funnel',labels:['車の条件','候補','車の一覧'],parts:[],variant:null}};
+  const records={github:[collected('github')],x:[collected('x',PROJECT_URL,{pin})]};
+  const hidden=await readNoahDirectory({db:db([]),bucket:bucket(records),now:()=>NOW,listed:true});
+  assert.equal(hidden[0].card.pin,undefined);
+  const visible=await readNoahDirectory({db:db([]),bucket:bucket(records),now:()=>NOW,listed:true,showGeneratedPins:true});
+  assert.deepEqual(visible[0].card.pin,pin);
+  assert.equal(visible[0].card.sources.length,2);
+});
 void test('directory pagination does not duplicate cards and preserves browser owner scopes',async t=>{
   const w=await world(t,[]),scope=await ownerScopeFor('browser-a');
   const entries=await readNoahDirectory({db:db([]),bucket:bucket({github:Array.from({length:25},(_,i)=>collected('github',`https://github.com/a/tool-${i}`,{id:`github-${i}`}))}),now:()=>NOW,listed:true});
-  const api=createNoahDirectoryApi({db:w.f.db,authenticate:async()=> 'browser-a',directory:async()=>entries});
+  const api=createNoahDirectoryApi({db:w.f.db,authenticate:async()=> 'browser-a',reviewers:['browser-a'],directory:async options=>{
+    assert.deepEqual(options,{reviewer:true,showGeneratedPins:true});
+    return entries;
+  }});
   const get=async q=>{const r=await api(new Request('https://noah.test/api/noah/discover'+q));return {status:r.status,body:await r.json()};};
   const first=await get('');assert.equal(first.status,200);assert.equal(first.body.ownerScope,scope);assert.equal(first.body.items.length,20);
   const second=await get('?cursor='+first.body.nextCursor);assert.equal(second.body.items.length,5);assert.equal(second.body.nextCursor,null);

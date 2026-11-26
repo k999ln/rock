@@ -5,10 +5,12 @@ import type { NoahAgentCard, NoahAgentSource } from './noah-agent-cards.ts';
 import type { NoahCloudProfile } from './noah-cloud-contract.ts';
 import type { IntakeDb } from './noah-intake-db.ts';
 import { noahSearchMatcher, noahSearchTerms } from './noah-search-terms.ts';
+import { parseStoredNoahPin } from './noah-pin-storage.ts';
+import type { NoahPin } from './noah-pin-scene.ts';
 
 type Family = { id: string; name: string; summary: string; external_key: string; repository: string | null; record_json: string; connect_json: string | null };
 export type DirectoryEntry = { firstParty?: 'business-training' | 'wordpress-maintenance' | 'ec-production'; cloudProfile?: NoahCloudProfile; card: NoahAgentCard; families: string[]; observedAt: number; createdAt?: number; hot?: number };
-export type DirectoryDependencies = { db: IntakeDb; bucket?: Pick<R2Bucket, 'get'>; listed: boolean; now?: () => number };
+export type DirectoryDependencies = { db: IntakeDb; bucket?: Pick<R2Bucket, 'get'>; listed: boolean; showGeneratedPins?: boolean; now?: () => number };
 // Exact project URLs only: a shared host or a similar name never establishes identity.
 export function noahProjectUrl(value: unknown): string | null {
   try {
@@ -46,6 +48,19 @@ export async function readNoahDirectory(deps: DirectoryDependencies): Promise<Di
       try { return parseCollectionSnapshot(await object.json(), now); } catch { return null; }
     })),
   ]);
+  const familyPins = new Map<string, NoahPin>();
+  if (deps.showGeneratedPins && deps.listed) {
+    const column = await deps.db.prepare("SELECT name FROM pragma_table_info('noah_intake_candidates') WHERE name='pin_json'").first();
+    if (column) {
+      const pins = (await deps.db.prepare(`SELECT f.id,c.pin_json FROM noah_intake_families f
+        JOIN noah_intake_candidates c ON c.id=f.representative_id
+        WHERE f.listed=1 AND f.withdrawn_at IS NULL AND f.hidden_at IS NULL AND c.pin_json IS NOT NULL`).all<{ id: string; pin_json: string }>()).results;
+      for (const row of pins) {
+        const pin = parseStoredNoahPin(row.pin_json);
+        if (pin) familyPins.set(row.id, pin);
+      }
+    }
+  }
   const entries = new Map<string, DirectoryEntry>();
   const base = (id: string, name: string, summary: string, provider: string, url: string | null): NoahAgentCard => ({ id, name, summary, provider,
     host: url ? new URL(url).hostname : null, users: 0, oneTap: false, savedIn: [], topic: noahPinTopic(name, summary), shape: noahPinShape(id) });
@@ -53,7 +68,8 @@ export async function readNoahDirectory(deps: DirectoryDependencies): Promise<Di
     const url = noahFamilyUrl(row), feedbackId = await noahCardIdentity(url, row.id);
     const existing = entries.get(feedbackId);
     if (existing) { existing.families.push(row.id); continue; }
-    entries.set(feedbackId, { families: [row.id], observedAt: 0, card: { ...base(row.id, row.name, row.summary, row.external_key.split('/')[0], url), feedbackId } });
+    entries.set(feedbackId, { families: [row.id], observedAt: 0, card: { ...base(row.id, row.name, row.summary, row.external_key.split('/')[0], url), feedbackId,
+      ...(familyPins.has(row.id) ? { pin: familyPins.get(row.id) } : {}) } });
   }
   const listedIds = new Set(rows.results.map(row => row.id));
   const records = snapshots.flatMap(snapshot => snapshot?.items ?? [])
@@ -72,6 +88,7 @@ export async function readNoahDirectory(deps: DirectoryDependencies): Promise<Di
       return true;
     });
     entry.card.run = item.run;
+    if (deps.showGeneratedPins && item.pin) entry.card.pin = item.pin;
     if (item.run === 'phone' && item.familyId && !entry.families.length) {
       entry.families.push(item.familyId);
       entry.card.id = item.familyId;

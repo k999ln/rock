@@ -15,8 +15,9 @@ import { noahTeikibinPlanSource } from './noah-teikibin-server';
 import { parseNoahShelfFlags } from './noah-shelf';
 import { createNoahShelfStore } from './noah-shelf-store';
 import { readNoahAgentExplanation } from './noah-explanation-source';
+import { noahGeneratedPinsPublic } from './noah-pin-review';
 export function noahIntakeDependencies() {
-  const config = env as unknown as Record<string, string | undefined>;
+  const config = env as unknown as Record<string, string | undefined> & { BUCKET?: R2Bucket; NOAH_PINS_PUBLIC?: string };
   const access = noahReviewerAccess(requestUser, config.NOAH_REVIEWER_USER_IDS, config.NOAH_REVIEWER_OWNER_SCOPES);
   const dependencies = { db: database(), revenueConfig: noahRevenueConfig(config), ...access, providerDirectory: noahAgentDirectory,
     availability: createNoahAvailabilityStore(database()),
@@ -25,6 +26,7 @@ export function noahIntakeDependencies() {
       runtime: noahCloudRuntime({ url: config.NOAH_CLOUD_URL, key: config.NOAH_CLOUD_KEY }) }),
     flags: parseNoahFlags(config), wakeKey: config.NOAH_PATROL_WAKE_KEY,
     explainPublic: config.NOAH_EXPLAIN_PUBLIC === 'true',
+    generatedPinsPublic: () => noahGeneratedPinsPublic(config.BUCKET, config),
     explainLabels: config.NOAH_EXPLAIN_LABELS === 'true',
     explainAgent: (input: Parameters<typeof readNoahAgentExplanation>[1]) => readNoahAgentExplanation(database(), input, {
       labels: config.NOAH_EXPLAIN_LABELS === 'true', connectionFallback: true,

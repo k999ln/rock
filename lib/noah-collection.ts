@@ -181,10 +181,12 @@ export function noahCollectionCards(items: NoahCollectionItem[], order: 'hot' | 
     const head = sorted[0];
     const run = RUN_ORDER.find(r => list.some(item => item.run === r));
     const familyId = list.find(item => item.run === 'phone' && item.familyId)?.familyId;
+    // 同じ配布先を複数の出所が紹介していても、検査済みの図解が 1 件あれば統合後のカードへ残す。
+    const pin = sorted.find(item => item.pin)?.pin;
     const sources = sorted.map(({ source, sourceUrl, author, metrics, observedAt, createdAt }) => ({ source, sourceUrl, author, metrics, observedAt, ...(createdAt ? { createdAt } : {}) }));
     const rank = { sources, run, name: head.name, summary: head.summary };
     const { run: _headRun, familyId: _headFamily, ...rest } = head;
-    return { ...rest, ...(run ? { run } : {}), ...(run === 'phone' && familyId ? { familyId } : {}), sources, createdAt: noahCollectionNewsAt(sources), hot: noahCollectionHot(rank) };
+    return { ...rest, ...(run ? { run } : {}), ...(run === 'phone' && familyId ? { familyId } : {}), ...(pin ? { pin } : {}), sources, createdAt: noahCollectionNewsAt(sources), hot: noahCollectionHot(rank) };
   });
   return cards.sort((a, b) => (order === 'new' ? b.createdAt - a.createdAt : b.hot - a.hot) || a.id.localeCompare(b.id));
 }

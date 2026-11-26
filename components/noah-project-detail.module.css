@@ -106,6 +106,9 @@
 .templateAction:has([data-noah-connect-confirmation]) form { grid-area:1 / 2; }
 .templateAction:has([data-noah-connect-confirmation]) :is(output,p[role="alert"]) { grid-column:1 / -1; }
 .templateMeta { display:flex; flex-wrap:wrap; gap:4px 14px; font-size:12px; color:var(--noah-theme-muted,#66666e); }
+.identityRow .noahDescription { color:var(--noah-theme-link,#8b3d0b); font-size:11px; font-weight:700; letter-spacing:.04em; }
+.pinExchange { display:flex; align-items:center; flex-wrap:wrap; gap:6px 10px; margin:4px 0 0; font-size:14px; font-weight:650; }
+.pinExchange > span[aria-hidden="true"] { color:var(--noah-theme-muted,#77717e); }
 .templateSummary { display:-webkit-box; -webkit-box-orient:vertical; -webkit-line-clamp:2; overflow:hidden; }
 .templateMore { border-bottom:1px solid var(--noah-theme-line,#e5e5e8); }
 .templateMore > summary { min-height:44px; align-content:center; cursor:pointer; font-size:13px; }
