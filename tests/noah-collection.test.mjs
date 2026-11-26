@@ -204,10 +204,14 @@ void test('collection retry immediately recovers from an error without losing so
 
 void test('shared catalog search keeps the chosen source, resets pagination and delegates clear', async () => {
   const props = { searchQuery: 'first', onClearQuery() { props.searchQuery = ''; } };
-  const ui = screen({ modules: { './noah-pin-grid': { default: ({items})=>JSON.stringify(items) }, '@/lib/noah-collection': collection }, fetch: async () => ({ body: { items: [], total: 40, nextCursor: '20', configured: true } }) });
+  let enter;
+  const ui = screen({ modules: { './noah-pin-grid': { default: ({items})=>JSON.stringify(items) }, '@/lib/noah-collection': collection },
+    hostElement:(_type,props)=>props['data-noah-feed-end']!==undefined?{}:null,
+    IntersectionObserver:class {constructor(callback){enter=()=>callback([{isIntersecting:true}]);}observe(){}disconnect(){}},
+    fetch: async ({url}) => ({ body: { items: [], total: 40, nextCursor: url.includes('cursor=0')?'20':null, configured: true } }) });
   const page = ui.mount('components/noah-collection-feed.tsx', props); await page.tick(200);
   assert.equal(page.find('input').length, 0);
-  await page.click('Hugging Face'); await page.tick(200); await page.click('もっと見る'); await page.tick(200);
+  await page.click('Hugging Face'); await page.tick(200); enter(); await page.tick(200);
   props.searchQuery = 'second'; page.render(); await page.tick(200);
   const updated = new URL(ui.calls.at(-1).url, 'https://avoado.si');
   assert.equal(updated.searchParams.get('source'), 'huggingface'); assert.equal(updated.searchParams.get('q'), 'second'); assert.equal(updated.searchParams.get('cursor'), '0');
