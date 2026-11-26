@@ -3,6 +3,7 @@ import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
 import { runInNewContext } from 'node:vm';
 import ts from 'typescript';
+import { noahSignInHref } from '../lib/noah-navigation.ts';
 const code = ts.transpileModule(
   readFileSync(
     new URL('../components/noah-launch.tsx', import.meta.url),
@@ -66,6 +67,7 @@ function harness(reply, activity = false, props) {
     },
     require(id) {
       if (id === 'react/jsx-runtime') return { jsx, jsxs: jsx };
+      if (id === '@/lib/noah-navigation') return { noahSignInHref };
       if (id === 'next/link') return { default: 'a' };
       if (id === 'next/navigation')
         return {
@@ -180,7 +182,7 @@ void test('initial load and signed-out state are not empty results and sign-in p
   const link = h.nodes.find((n) => n.type === 'a' && text(n) === 'サインイン');
   assert.equal(
     new URL(link.props.href, 'https://example.test').searchParams.get(
-      'returnTo',
+      'return_to',
     ),
     '/noah/activity?agent=anicca#library',
   );
@@ -270,7 +272,7 @@ void test('activity sign-in returns to the execution page', async (t) => {
   const link = h.nodes.find((n) => n.type === 'a' && text(n) === 'サインイン');
   assert.equal(
     new URL(link.props.href, 'https://example.test').searchParams.get(
-      'returnTo',
+      'return_to',
     ),
     '/noah/activity',
   );
@@ -414,11 +416,11 @@ void test('a work detail clears the previous result on sign-out and returns to t
     await ui.poll();
     assert.doesNotMatch(text(ui.tree), /本人の試験成果/);
     const signIn = ui.nodes.find(
-      (n) => n.type === 'a' && n.props.href.startsWith('/noah/account?'),
+      (n) => n.type === 'a' && n.props.href.startsWith('/signin-with-chatgpt?'),
     );
     assert.equal(
       new URL(signIn.props.href, 'https://example.test').searchParams.get(
-        'returnTo',
+        'return_to',
       ),
       '/noah/work/' + id,
     );

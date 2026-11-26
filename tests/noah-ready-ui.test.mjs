@@ -282,7 +282,7 @@ void test('not signed in: pressing 接続 goes to sign-in, and the detail screen
   connect.props.onClick();
   await page.flush();
   // サインインの画面へ移る。戻る先は、その Agent の詳細。置くのは、操作 ID と Agent の ID と時刻だけ。何も送らない。
-  assert.deepEqual(ui.visits, [`/noah/account?returnTo=${encodeURIComponent(detailPath)}`]);
+  assert.deepEqual(ui.visits, [`/signin-with-chatgpt?return_to=${encodeURIComponent(detailPath)}`]);
   const handoff = JSON.parse(ui.storage.get('noah-connect-handoff'));
   assert.deepEqual(Object.keys(handoff).sort((a, b) => a.localeCompare(b)), ['agentId', 'at', 'id']);
   assert.deepEqual([handoff.agentId, handoff.at], [familyId(1), ui.time()]);
@@ -335,8 +335,8 @@ void test('a handoff is used only for its own agent, only once, and only for ten
   await page.flush();
   assert.deepEqual([posts(anonymous.ui).length, anonymous.ui.storage.has('noah-connect-handoff'), w.rows().length], [0, true, 0]);
   // 戻る先に渡すのは、/noah/ready で始まるパスだけ。
-  assert.equal(view.noahReadyAccountHref('/noah/ready/agent?id=x'), '/noah/account?returnTo=%2Fnoah%2Fready%2Fagent%3Fid%3Dx');
-  for (const path of ['https://evil.example/noah/ready', '//evil.example', '/noah/readymade', '/account', '/noah/ready\r\n/x']) assert.equal(view.noahReadyAccountHref(path), '/noah/account?returnTo=%2Fnoah%2Fready', path);
+  assert.equal(view.noahReadyAccountHref('/noah/ready/agent?id=x'), '/signin-with-chatgpt?return_to=%2Fnoah%2Fready%2Fagent%3Fid%3Dx');
+  for (const path of ['https://evil.example/noah/ready', '//evil.example', '/noah/readymade', '/account', '/noah/ready\r\n/x']) assert.equal(view.noahReadyAccountHref(path), '/signin-with-chatgpt?return_to=%2Fnoah%2Fready', path);
 });
 
 void test('the detail screen: where the input goes is shown before connecting; then the tools; then cutting', async (t) => {
@@ -399,6 +399,46 @@ void test('the detail screen: where the input goes is shown before connecting; t
   // もう一度つなげる（新しい操作 ID）。
   await page.click('接続');
   assert.deepEqual(w.rows().map((row) => row.state), ['disconnected', 'connected']);
+});
+
+void test('Enzo’s example survives sign-in and prefills only the verified search input', async (t) => {
+  const id = 'mcp-registry:ai.enzos/enzos';
+  const server = mcpServer({ tools: [tool('search_homes', true, { inputSchema: {
+    type: 'object', required: ['query'], properties: { query: { type: 'string' } },
+  } })] });
+  const w = await world(t, { 'enzos.ai': server }, { records: [entry(1, {
+    name: 'ai.enzos/enzos', title: 'Enzo’s', remotes: [{ type: 'streamable-http', url: 'https://enzos.ai/mcp' }],
+  })] });
+  const { ui, session } = browser(w, null);
+  const visitor = ui.mount(DETAIL, { id });
+  await visitor.flush();
+  assert.equal(visitor.find('main').some(node => Object.hasOwn(node.props, 'data-noah-fullscreen-detail')), true);
+  const example = visitor.find('button', 'この例を使う')[0];
+  const connectForm = visitor.find('form').find(node => node.props.id === example.props.form);
+  connectForm.props.onSubmit({ preventDefault() {}, nativeEvent: { submitter: { getAttribute: () => example.props.value } } });
+  await visitor.flush();
+  assert.match(visitor.text(visitor.find('fieldset')[0]), /接続を確認.*送信先: enzos\.ai/);
+  assert.equal(handshakes(server), 0);
+  await visitor.press(visitor.nodes(visitor.find('fieldset')[0]).find(node => node.type === 'button' && visitor.text(node) === '接続'));
+  const handoff = JSON.parse(ui.storage.get('noah-connect-handoff'));
+  assert.equal(handoff.agentId, id);
+  const login = new URL(ui.visits.at(-1), 'https://noah.test');
+  assert.equal(login.pathname, '/signin-with-chatgpt');
+  assert.equal(new URL(login.searchParams.get('return_to'), 'https://noah.test').searchParams.get('id'), id);
+  assert.deepEqual(Object.keys(JSON.parse(ui.storage.get(`noah-agent-first-request:${id}`))).sort(), ['at', 'example']);
+  assert.equal(posts(ui).length, 0);
+
+  session.user = 'owner-a';
+  const detail = ui.mount(DETAIL, { id });
+  await detail.flush();
+  const request = detail.find('div').find(node => node.props.id === 'noah-agent-request');
+  assert.ok(request, 'the request form stays outside the collapsed instructions');
+  const input = detail.nodes(request).find(node => ['input', 'textarea'].includes(node.type) && node.props.id?.endsWith('-query'));
+  assert.match(input.props.value, /ロサンゼルス.*80万ドル/);
+  assert.equal(w.rows()[0].id, handoff.id);
+  assert.equal(ui.storage.has(`noah-agent-first-request:${id}`), false);
+  assert.deepEqual(posts(ui).map(call => call.url), ['/api/noah/connect']);
+  assert.equal(rpcs(server).includes('tools/call'), false);
 });
 
 void test('the detail screen: a failure shows its reason and もう一度; pressing again too soon is refused without contacting the provider', async (t) => {
@@ -727,7 +767,8 @@ void test('sign-in retains the selected shelf job and tool instead of returning 
   const page=ui.mount(DETAIL,{id:familyId(1),tool:'selected tool',from:'pkg:school-work'}); await page.flush();
   await page.click('接続');
   const account=new URL(ui.visits[0],'https://avoado.si');
-  const back=new URL(account.searchParams.get('returnTo'),'https://avoado.si');
+  assert.equal(account.pathname, '/signin-with-chatgpt');
+  const back=new URL(account.searchParams.get('return_to'),'https://avoado.si');
   assert.equal(back.pathname,'/noah/ready/agent'); assert.equal(back.searchParams.get('id'),familyId(1));
   assert.equal(back.searchParams.get('tool'),'selected tool'); assert.equal(back.searchParams.get('from'),'pkg:school-work');
   assert.equal(posts(ui).length,0);

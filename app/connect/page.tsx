@@ -26,7 +26,7 @@ export default async function ConnectPage({ searchParams }: {
     ? esimOrder : null;
   return <WorkspaceShell title="接続" hideTopActions hideAccountAccess>
     <div className={styles.page}>
-      <header className={styles.heading}><h1>利用環境をつなぐ</h1><p>Noahの専用クラウドを使うには、スマホに専用eSIMを追加し、購入した注文で回線と端末の利用権を確認します。接続後はAgentに仕事を任せ、成果・利用量・料金を確認できます。</p></header>
+      <header className={styles.heading}><h1>利用環境をつなぐ</h1><p>eSIM専用クラウドは準備中です。専用eSIMの回線・本人・端末・利用権を確認して、本人専用の環境でAgentを動かす設計です。模擬回線での試験は実施済みですが、事業者の実回線との接続、iPhone・Androidでの開通、実行から請求までの一連の検証は完了していません。公開NoahはWi-Fiや普段のSIMから利用できます。</p></header>
       {installOrder && <section id="ios-esim" className={styles.panel} aria-labelledby="ios-esim-title">
         <h2 id="ios-esim-title">iPhone・iPadのeSIM設定</h2>
         <EsimPurchaseSetup key={installOrder} orderId={installOrder} iosConnect />

@@ -1,4 +1,5 @@
 'use client';
+import { noahSignInHref } from '@/lib/noah-navigation';
 import { useNoahLocale } from './noah-locale';
 import { useEffect, useRef, useState } from 'react';
 import Link from 'next/link';
@@ -147,8 +148,8 @@ export function NoahAgentSignals({
         <output className={styles.notice}>
           {t(notice)}
           {auth && (
-            <Link href={`/noah/account?returnTo=${encodeURIComponent(detailHref)}`}>
-              {t("本人確認へ")}</Link>
+            <a href={noahSignInHref(detailHref)}>
+              {t("本人確認へ")}</a>
           )}
         </output>
       )}
@@ -398,7 +399,7 @@ export default function NoahAgentFeedback({ id, embedded = false }: { id: string
       ) : (
         data && (
           <p className={styles.setup}>
-            {data.authenticated ? <span>{t("コメントには公開名が必要です。")}</span> : <Link href={`/noah/account?returnTo=${encodeURIComponent(`/noah/feedback/${id}#feedback`)}`}>{t("本人確認してコメントする")} <ArrowUpRight size={15}/></Link>}
+            {data.authenticated ? <span>{t("コメントには公開名が必要です。")}</span> : <a href={noahSignInHref(`/noah/feedback/${id}#feedback`)}>{t("本人確認してコメントする")} <ArrowUpRight size={15}/></a>}
           </p>
         )
       )}

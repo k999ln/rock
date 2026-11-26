@@ -4,6 +4,7 @@ import { readFileSync } from 'node:fs';
 import { runInNewContext } from 'node:vm';
 import ts from 'typescript';
 import * as profileContract from '../lib/noah-profile-contract.ts';
+import { noahSignInHref } from '../lib/noah-navigation.ts';
 const code = ts.transpileModule(readFileSync(new URL('../components/noah-registration.tsx', import.meta.url), 'utf8'), { compilerOptions: { target: ts.ScriptTarget.ES2022, jsx: ts.JsxEmit.ReactJSX, module: ts.ModuleKind.CommonJS } }).outputText;
 const provider = { id: 'example', name: 'Example', agentIds: ['agent'], revision: 1, providerOrigin: 'https://provider.example.com', executorOrigin: 'https://executor.example.com', executorName: 'Registration Agent', termsUrl: 'https://provider.example.com/terms', termsVersion: '1', fields: [{ key: 'email', label: 'メール', type: 'email', required: true, maxLength: 100 }, { key: 'password', label: 'パスワード', type: 'password', required: true, maxLength: 100 }] };
 const job = state => ({ id: 'job', providerName: 'Example', providerOrigin: provider.providerOrigin, state, expiresAt: Date.now() + 86400000, verificationUrl: provider.providerOrigin + '/verify', returnTo: '/noah/launch?agent=agent#library' });
@@ -27,6 +28,7 @@ function harness(fetcher, initial = [], profileOptions = {}) {
       };
       if (id === './use-noah-profile') return {useNoahProfile:()=>({profile:savedProfile,guest:profileOptions.guest??!savedProfile,error:profileOptions.error??'',reload:async()=>{profileOptions.reloads=(profileOptions.reloads??0)+1;},save:async body=>{saves.push(body);if(profileOptions.fail)return null;savedProfile={...savedProfile,fields:body.fields,revision:savedProfile.revision+1,reuseEnabled:body.reuse};return savedProfile;}})};
       if (id === '@/lib/noah-profile-contract') return profileContract;
+      if (id === '@/lib/noah-navigation') return { noahSignInHref };
       if (id === '@/lib/owner-intent') return {OWNER_SCOPE_HEADER:'X-Rock-Owner-Scope'};
       if(id==='@/lib/noah-haptics')return {noahHaptic:()=>false};
       if (id === './noah-loading') return { default: 'noah-loading' };

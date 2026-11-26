@@ -1,4 +1,5 @@
 'use client';
+import { noahSignInHref } from '@/lib/noah-navigation';
 import { useCallback, useEffect, useState } from 'react';
 import Link from 'next/link';
 import { useSearchParams } from 'next/navigation';
@@ -279,11 +280,11 @@ export default function NoahLaunch({
       {signedOut && (
         <section className={styles.notice}>
           <p>自分のAgentとMacを管理するにはサインインしてください。</p>
-          <Link
-            href={`/noah/account?mode=login&returnTo=${encodeURIComponent(returnTo)}`}
+          <a
+            href={noahSignInHref(returnTo)}
           >
             サインイン
-          </Link>
+          </a>
         </section>
       )}
       {!workId && compose && (

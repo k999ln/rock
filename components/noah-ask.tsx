@@ -20,6 +20,7 @@ import {
 } from '@/lib/noah-ask-view';
 import { noahFormArgs, type NoahFormField, type NoahToolForm } from '@/lib/noah-form';
 import { NOAH_READY_TEXT } from '@/lib/noah-ready-view';
+import type { NoahDetailStarter } from '@/lib/noah-detail-starter';
 import { OWNER_SCOPE_HEADER } from '@/lib/owner-intent';
 import base from './noah-service.module.css';
 import styles from './noah-ready.module.css';
@@ -39,11 +40,12 @@ function readKept(connectionId: string): { host: string; tools: NoahAskTool[] } 
   }
 }
 
-export default function NoahAsk({ agentId, agentName, connectionId, initialTool = null, ownerScope, onUnusable, onAsked }: {
+export default function NoahAsk({ agentId, agentName, connectionId, initialTool = null, starter = null, ownerScope, onUnusable, onAsked }: {
   agentId?: string; agentName?:string;
   connectionId: string;
   /** 最初に選んでおく道具の名前（棚のカードから来た時）。使えない道具なら、一覧を出す。 */
   initialTool?: string | null;
+  starter?: NoahDetailStarter | null;
   ownerScope: string | null;
   /** 道具の一覧を開いた時に、その接続が使えなくなっていた（取り下げ・接続先の変更）。詳細の画面が、接続を読み直す。 */
   onUnusable: () => void;
@@ -58,7 +60,7 @@ export default function NoahAsk({ agentId, agentName, connectionId, initialTool 
     const kept = readKept(connectionId);
     return kept ? { attempt: 0, loaded: { state: 'ready', host: kept.host, tools: kept.tools } } : null;
   });
-  const [picked, setPicked] = useState<string | null>(initialTool), [word, setWord] = useState('');
+  const [picked, setPicked] = useState<{ name: string | null; example: boolean } | null>(null), [word, setWord] = useState('');
   // この画面で、本人が確かめた道具（名前と、その時の定義の hash）。同じ道具を続けて頼む時に、確かめ直さない。
   const [confirmedHere] = useState(() => new Set<string>());
   const loaded: Loaded = result?.attempt === attempt ? result.loaded : { state: 'loading' };
@@ -93,7 +95,9 @@ export default function NoahAsk({ agentId, agentName, connectionId, initialTool 
   const tools = loaded.state === 'ready' ? loaded.tools : [], usable = tools.filter((tool) => tool.usable);
   // 使える道具が 1 つだけなら、一覧を出さずに、入力欄を出す。
   const only = usable.length === 1 ? usable[0] : null;
-  const current = only ?? usable.find((tool) => tool.name === picked) ?? null;
+  const selection = picked?.example === Boolean(starter) ? picked.name : starter?.tool ?? initialTool;
+  const current = only ?? usable.find((tool) => tool.name === selection) ?? null;
+  const preset = starter && current?.name === starter.tool && loaded.state === 'ready' && loaded.host === starter.host ? starter : null;
   const shown = noahFilterTools(tools, word, (tool) => t(noahOperationLabel(tool.name)));
 
   return <section className={styles.section} aria-labelledby="noah-ask-tools">
@@ -105,15 +109,15 @@ export default function NoahAsk({ agentId, agentName, connectionId, initialTool 
       {tools.length >= 13 && <label className={base.search}><span className={base.srOnly}>{t(NOAH_ASK_TEXT.filter)}</span><input type="search" value={word} maxLength={80} placeholder={t(NOAH_ASK_TEXT.filter)} onChange={(event) => setWord(event.target.value)} /></label>}
       {shown.length === 0 ? <p className={styles.quiet}>{t(NOAH_ASK_TEXT.noMatch)}</p> : <ul className={styles.tools}>{shown.map((tool) => <li key={tool.name} data-usable={tool.usable || undefined}>
         {tool.usable
-          ? <button type="button" className={styles.toolButton} data-tool-name={tool.name} aria-pressed={current?.name === tool.name} onClick={() => setPicked(current?.name === tool.name ? null : tool.name)}><ToolRow tool={tool} /></button>
+          ? <button type="button" className={styles.toolButton} data-tool-name={tool.name} aria-pressed={current?.name === tool.name} onClick={() => setPicked({ name: current?.name === tool.name ? null : tool.name, example: Boolean(starter) })}><ToolRow tool={tool} /></button>
           : <div className={styles.toolRow}><ToolRow tool={tool} /></div>}
-        {loaded.state === 'ready' && current?.name === tool.name && <NoahAskForm key={`${current.name}:${current.sha256}`} connectionId={connectionId} agentId={agentId} agentName={agentName} ownerScope={ownerScope} host={loaded.host} tool={current}
-      titled={false} confirmedHere={confirmedHere} onAsked={onAsked} onChanged={reload} />}
+        {loaded.state === 'ready' && current?.name === tool.name && <NoahAskForm key={`${current.name}:${current.sha256}:${Boolean(preset)}`} connectionId={connectionId} agentId={agentId} agentName={agentName} ownerScope={ownerScope} host={loaded.host} tool={current}
+      titled={false} starter={preset} confirmedHere={confirmedHere} onAsked={onAsked} onChanged={reload} />}
         {current?.name !== tool.name && <details className={styles.toolExplanation}><summary>{t('提供者の説明')}</summary><code>{tool.name}</code><p>{tool.summary}</p></details>}
       </li>)}</ul>}
     </>}
-    {loaded.state === 'ready' && only && current && <NoahAskForm key={`${current.name}:${current.sha256}`} connectionId={connectionId} agentId={agentId} agentName={agentName} ownerScope={ownerScope} host={loaded.host} tool={current}
-      titled={false} confirmedHere={confirmedHere} onAsked={onAsked} onChanged={reload} />}
+    {loaded.state === 'ready' && only && current && <NoahAskForm key={`${current.name}:${current.sha256}:${Boolean(preset)}`} connectionId={connectionId} agentId={agentId} agentName={agentName} ownerScope={ownerScope} host={loaded.host} tool={current}
+      titled={false} starter={preset} confirmedHere={confirmedHere} onAsked={onAsked} onChanged={reload} />}
   </section>;
 }
 
@@ -129,9 +133,9 @@ function ToolRow({ tool }: { tool: NoahAskTool }) {
 }
 
 /** 道具 1 つの入力欄と「頼む」。 */
-function NoahAskForm({ agentId, agentName, connectionId, ownerScope, host, tool, titled, confirmedHere, onAsked, onChanged }: {
+function NoahAskForm({ agentId, agentName, connectionId, ownerScope, host, tool, titled, starter, confirmedHere, onAsked, onChanged }: {
   agentId?:string; agentName?:string; connectionId: string; ownerScope: string | null; host: string; tool: NoahAskTool; titled: boolean; confirmedHere: Set<string>;
-  onAsked: (askId: string) => void; onChanged: () => void;
+  starter: NoahDetailStarter | null; onAsked: (askId: string) => void; onChanged: () => void;
 }) {
   const {t}=useNoahLocale();
 
@@ -161,7 +165,9 @@ function NoahAskForm({ agentId, agentName, connectionId, ownerScope, host, tool,
   // 応答が届かなかった「頼む」は、押し直した時に、同じ操作 ID で送る（同じ依頼が 2 つにならない）。応答が届いたら、次は新しい ID。
   const operation = useRef<{ id: string; body: string } | null>(null);
   const fields = form?.fields ?? [];
-  const current = values ?? Object.fromEntries(fields.map((field) => [field.name, noahFieldInitial(field)]));
+  const current = values ?? Object.fromEntries(fields.map((field) => [
+    field.name, field.name === starter?.field && field.kind === 'text' ? starter.input : noahFieldInitial(field),
+  ]));
   const set = (name: string, value: NoahFieldValue) => { setValues({ ...current, [name]: value }); setProblem(null); setConfirming(null); setNotice(''); };
   const confirmKey = `${tool.name}:${tool.sha256}`;
 
@@ -208,7 +214,7 @@ function NoahAskForm({ agentId, agentName, connectionId, ownerScope, host, tool,
   return <form className={styles.form} noValidate onSubmit={(event) => { event.preventDefault(); submit(); }}>
     {titled && <h3>{t(noahOperationLabel(tool.name))}</h3>}
     {required.map(field)}
-    {(optional.length > 0 || form.omitted > 0) && <details className={styles.more} open={optionalProblem || undefined}>
+    {(optional.length > 0 || form.omitted > 0) && <details className={styles.more} open={optionalProblem || optional.some((item) => item.name === starter?.field) || undefined}>
       <summary>{t(NOAH_ASK_TEXT.more)}（{optional.length}）</summary>
       {optional.map(field)}
       {form.omitted > 0 && <p className={styles.quiet}>{noahAskOmittedText(form.omitted)}</p>}

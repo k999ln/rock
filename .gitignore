@@ -89,3 +89,6 @@ data/eve-runs/private/
 /output/inquiries/
 
 /output/pdf/mii-fire-f3-wiring.pdf
+
+/public/noah-offline.html
+/public/noah-sw.js

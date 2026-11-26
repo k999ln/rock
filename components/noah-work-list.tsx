@@ -1,4 +1,5 @@
 'use client';
+import { noahSignInHref } from '@/lib/noah-navigation';
 import {noahOperationLabel} from '@/lib/noah-operation-labels';
 /**
  * 頼んだ仕事の一覧（新しい順）と、成果。
@@ -246,12 +247,12 @@ export default function NoahWorkList({
         ) : listState === 'signed-out' ? (
           <>
             <p>{t('接続を確認すると、あなたの仕事と成果が開きます。')}</p>
-            <Link
+            <a
               className={styles.primary}
-              href={`/noah/account?returnTo=${encodeURIComponent(only === 'succeeded' ? '/noah/data' : '/noah/activity')}`}
+              href={noahSignInHref(only === 'succeeded' ? '/noah/saved?tab=results' : '/noah/activity')}
             >
               {t('接続を確認して続ける')}
-            </Link>
+            </a>
             <p>
               <Link href="/noah/explore">{t('Agentを見てみる')}</Link>
             </p>

@@ -8,8 +8,11 @@ import {
   HARD_GAP_FRAMES,
   HARD_HOLE_BOTTOMS,
   HARD_HOLE_HEIGHT,
+  MAGIC_CHANCE,
+  MAGIC_DURATION,
   NOAH_TIGER_ACTIVE,
   NOAH_TIGER_HARD,
+  NOAH_TIGER_MEDIUM,
   NOAH_TIGER_NORMAL,
   createNoahTigerGame,
   hardWall,
@@ -42,12 +45,54 @@ void test('トラは 24 × 10 点で、目・鼻・縞 4 本は点を抜いた�
   assert.match(ride[7], /^..b{21}/, '板は 2 点目から');
 });
 
-void test('今使う難しさは難しい版で、ふつう版はそのまま残っている', () => {
-  assert.equal(NOAH_TIGER_ACTIVE, NOAH_TIGER_HARD);
+void test('今使う難しさは中くらいで、旧版の難しさや記録キーも残っている', () => {
+  assert.equal(NOAH_TIGER_ACTIVE, NOAH_TIGER_MEDIUM);
+  assert.ok(NOAH_TIGER_MEDIUM.startSpeed > NOAH_TIGER_NORMAL.startSpeed);
+  assert.ok(NOAH_TIGER_MEDIUM.startSpeed < NOAH_TIGER_HARD.startSpeed);
   assert.equal(NOAH_TIGER_HARD.autoStart, true);
   assert.equal(NOAH_TIGER_NORMAL.autoStart, false);
   assert.equal(NOAH_TIGER_NORMAL.startSpeed, 5.2);
   assert.notEqual(NOAH_TIGER_HARD.hiScoreKey, NOAH_TIGER_NORMAL.hiScoreKey);
+  assert.notEqual(NOAH_TIGER_MEDIUM.hiScoreKey, NOAH_TIGER_HARD.hiScoreKey);
+});
+
+void test('中くらいの障害物ごとに星を抽選し、1/404未満の値が出た時だけ星が先に来る', () => {
+  for (const [roll, expected] of [[MAGIC_CHANCE / 2, 1], [MAGIC_CHANCE, 0]]) {
+    const game = createNoahTigerGame(NOAH_TIGER_MEDIUM);
+    startNoahTigerGame(game);
+    let rolls = 0;
+    stepNoahTigerGame(game, 1, { random: () => ++rolls === 1 ? roll : 0.5 });
+    assert.equal(game.magicStars.length, expected);
+    assert.ok(game.untilNextStreetObstacle > HARD_GAP_FRAMES.max);
+    if (expected) assert.ok(game.magicStars[0].x < game.obstacles[0].x);
+    for (let i = 0; i < 10; i++) stepNoahTigerGame(game, 1, { random: () => 0 });
+    assert.equal(game.magicStars.length, expected, 'every frame is not a new pickup draw');
+  }
+});
+
+void test('星を拾ってから実プレイ8秒は無敵で、期限後と再スタートで解除される', () => {
+  const game = createNoahTigerGame(NOAH_TIGER_MEDIUM);
+  startNoahTigerGame(game);
+  stepNoahTigerGame(game, 1, { random: () => 0 });
+  game.untilNextStreetObstacle = Infinity;
+  for (let frame = 0; frame < 100 && game.magicStars.length > 0; frame++) {
+    stepNoahTigerGame(game, 1, { random: () => 0.5 });
+  }
+  assert.equal(game.magicStars.length, 0);
+  assert.equal(game.wizardFrames, MAGIC_DURATION);
+  const placeObstacle = () => {
+    game.obstacles = [{ kind: 'pigeon', x: TIGER_X + 30, y: GROUND - 20, w: 24, h: 15 }];
+  };
+  placeObstacle();
+  assert.equal(stepNoahTigerGame(game, 1).crashed, false);
+  for (let i = 0; i < MAGIC_DURATION - 2; i++) stepNoahTigerGame(game, 1);
+  assert.equal(game.wizardFrames, 1);
+  placeObstacle();
+  assert.equal(stepNoahTigerGame(game, 1).crashed, true);
+  assert.equal(game.wizardFrames, 0);
+  pressNoahTigerJump(game);
+  assert.equal(game.phase, 'run');
+  assert.equal(game.wizardFrames, 0);
 });
 
 void test('難しい版の壁は、地面から上まで埋まっていて、穴が 1 つだけ', () => {

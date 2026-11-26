@@ -58,7 +58,7 @@ void test('home includes GitHub and HF ratings even while the registry has many 
   assert.equal(home.items[1].metrics.likes, 9); assert.equal(home.total, 32);
 });
 
-void test('Noah home renders collected cards and refreshes external ratings while the page is visible', async () => {
+void test('Noah home keeps the current cards stable and refreshes ratings when the user changes the collection', async () => {
   let likes = 7;
   const visibility = { hidden: false };
   const ui = screen({ document: visibility, modules: {
@@ -75,6 +75,8 @@ void test('Noah home renders collected cards and refreshes external ratings whil
   assert.match(home.text(), /Agentを見つける/); assert.match(home.text(), /"likes":7/);
   assert.equal(home.find('section').filter(node=>node.props['aria-label']==='Agent一覧').length,1);
   likes = 3; await home.tick(60000); await home.tick(200);
+  assert.match(home.text(), /"likes":7/);
+  await home.click('すべて');
   assert.match(home.text(), /"likes":3/);
   const requests = ui.calls.length; visibility.hidden = true; await home.tick(60000); await home.tick(200);
   assert.equal(ui.calls.length, requests);
@@ -204,10 +206,14 @@ void test('collection retry immediately recovers from an error without losing so
 
 void test('shared catalog search keeps the chosen source, resets pagination and delegates clear', async () => {
   const props = { searchQuery: 'first', onClearQuery() { props.searchQuery = ''; } };
-  const ui = screen({ modules: { './noah-pin-grid': { default: ({items})=>JSON.stringify(items) }, '@/lib/noah-collection': collection }, fetch: async () => ({ body: { items: [], total: 40, nextCursor: '20', configured: true } }) });
+  let enter;
+  const ui = screen({ modules: { './noah-pin-grid': { default: ({items})=>JSON.stringify(items) }, '@/lib/noah-collection': collection },
+    hostElement:(_type,props)=>props['data-noah-feed-end']!==undefined?{}:null,
+    IntersectionObserver:class {constructor(callback){enter=()=>callback([{isIntersecting:true}]);}observe(){}disconnect(){}},
+    fetch: async ({url}) => ({ body: { items: [], total: 40, nextCursor: url.includes('cursor=0')?'20':null, configured: true } }) });
   const page = ui.mount('components/noah-collection-feed.tsx', props); await page.tick(200);
   assert.equal(page.find('input').length, 0);
-  await page.click('Hugging Face'); await page.tick(200); await page.click('もっと見る'); await page.tick(200);
+  await page.click('Hugging Face'); await page.tick(200); enter(); await page.tick(200);
   props.searchQuery = 'second'; page.render(); await page.tick(200);
   const updated = new URL(ui.calls.at(-1).url, 'https://avoado.si');
   assert.equal(updated.searchParams.get('source'), 'huggingface'); assert.equal(updated.searchParams.get('q'), 'second'); assert.equal(updated.searchParams.get('cursor'), '0');
@@ -238,9 +244,14 @@ void test('unified source badges preserve additional collection metrics and zero
 });
 
 void test('changing discovery order keeps query and source but starts pagination again',async()=>{
-  const ui=screen({modules:{'./noah-pin-grid':{default:()=>null}},fetch:async()=>({body:{items:[],total:40,nextCursor:'20',ownerScope:null}})});
+  let enter;
+  const ui=screen({modules:{'./noah-pin-grid':{default:()=>null}},
+    hostElement:(_type,props)=>props['data-noah-feed-end']!==undefined?{}:null,
+    IntersectionObserver:class {constructor(callback){enter=()=>callback([{isIntersecting:true}]);}observe(){}disconnect(){}},
+    fetch:async({url})=>({body:{items:[],total:40,nextCursor:url.includes('cursor=0')?'20':null,ownerScope:null}})});
   const page=ui.mount('components/noah-pin-home.tsx',{searchQuery:'agent',initialSource:'npm'});await page.flush();
-  await page.click('もっと見る');await page.flush();
+  enter();await page.flush();
+  assert.equal(new URL(ui.calls.at(-1).url,'https://avoado.si').searchParams.get('cursor'),'20');
   await page.click('出た順');await page.flush();
   const params=new URL(ui.calls.at(-1).url,'https://avoado.si').searchParams;
   assert.equal(params.get('order'),'new');assert.equal(params.get('q'),'agent');assert.equal(params.get('source'),'npm');assert.equal(params.get('cursor'),'0');

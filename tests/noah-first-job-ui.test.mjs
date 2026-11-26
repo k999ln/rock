@@ -12,6 +12,20 @@ import { screen } from './fixtures/noah/screen.mjs';
 import { siteTool } from '../toolkits/noah-affiliate-agents/site-diagnostics.mjs';
 import { NOAH_LOCALES, noahTranslate } from '../lib/noah-i18n.ts';
 
+function feedScreen(options) {
+  const observers = new Set();
+  const ui = screen({...options,
+    hostElement:(type,props)=>props['data-noah-feed-end']!==undefined ? {end:true} : options.hostElement?.(type,props),
+    IntersectionObserver:class {
+      constructor(callback){this.callback=callback;}
+      observe(target){if(target.end)observers.add(this);}
+      disconnect(){observers.delete(this);}
+    },
+  });
+  ui.advance=async home=>{for(const observer of observers)observer.callback([{isIntersecting:true}]);await home.flush();};
+  return ui;
+}
+
 const project = 'project-' + 'a'.repeat(64);
 const choices = (await noahFirstJobs([], false)).map(job => ({
   ...job, href: `/noah/discover/agent?id=${project}&firstJob=${job.id}`,
@@ -30,7 +44,7 @@ const detail = (ui, firstJob) => ui.mount('components/noah-project-detail.tsx', 
 void test('the public home has one collection and available task links inside their matching card', async () => {
   const realModules = { ...modules }; delete realModules['./noah-pin-grid'];
   const items = [{id:'family-memory',feedbackId:project,name:'Memory',topic:'data',external:false,savedIn:[],shape:1}];
-  const ui = screen({modules:realModules, fetch:async()=>({body:{...pageReply(choices.slice(1)),items,total:1}})});
+  const ui = feedScreen({modules:realModules, fetch:async()=>({body:{...pageReply(choices.slice(1)),items,total:1}})});
   const home = ui.mount('components/noah-home.tsx',{mode:'public'}); await home.flush();
   const grids=home.find('ul').filter(node=>node.props['data-agent-pin-grid']);
   assert.equal(grids.length,1);
@@ -43,7 +57,8 @@ void test('the public home has one collection and available task links inside th
     assert.equal(link.props.href,job.href); assert.ok(home.nodes(card).includes(link));
   }
   assert.equal(home.find('a',choices[0].title).length,0);
-  assert.equal(home.find('a','専用クラウドを開く')[0].props.href,'/api/noah/cloud-work');
+  assert.equal(home.find('a','eSIM専用クラウド（準備中）')[0].props.href,'/connect');
+  assert.equal(home.find('a','接続状況を確認')[0].props.href,'/api/noah/cloud-work');
   assert.equal(ui.calls.length,1); assert.equal(ui.calls[0].method,'GET');
 });
 
@@ -51,7 +66,7 @@ void test('catalog cards appear once with or without an available featured job',
   const realModules = { ...modules }; delete realModules['./noah-pin-grid'];
   const items=['a','b','c','d','e','f'].map(key=>({id:'project-'+key.repeat(64),name:'Agent '+key,topic:'dev',external:true,savedIn:[]}));
   for(const jobs of [[choices.find(job=>job.id==='memory')],[]]) {
-    const ui=screen({modules:realModules,fetch:async()=>({body:{...pageReply(jobs),items,total:items.length}})});
+    const ui=feedScreen({modules:realModules,fetch:async()=>({body:{...pageReply(jobs),items,total:items.length}})});
     const home=ui.mount('components/noah-home.tsx',{mode:'public'});await home.flush();
     assert.deepEqual(home.find('li').filter(node=>node.props['data-agent-pin-id']).map(node=>node.props['data-agent-pin-id']),items.map(item=>item.id));
     assert.equal(home.find('ul').filter(node=>node.props['data-agent-pin-grid']).length,1);
@@ -65,7 +80,7 @@ void test('every page of catalog results uses pins and keeps the catalog actions
     summary: 'Agent purpose', provider: 'Test provider', external: index > 0,
     href: '/noah/ready/agent?id=local', savedIn: [],
   }));
-  const ui = screen({ fetch: async ({ url }) => {
+  const ui = feedScreen({ fetch: async ({ url }) => {
     const next = new URL(url, 'https://avoado.si').searchParams.get('cursor') === '6';
     return { body: { items: next ? items.slice(6) : items.slice(0, 6), nextCursor: next ? null : '6', total: 7, ownerScope: 'test-owner' } };
   } });
@@ -73,7 +88,7 @@ void test('every page of catalog results uses pins and keeps the catalog actions
   await home.flush();
   const pins = () => home.find('li').filter(node => node.props['data-agent-pin-id']);
   assert.deepEqual(pins().map(row => row.props['data-agent-pin-id']), items.slice(0, 6).map(item => item.id));
-  await home.click('もっと見る');
+  await ui.advance(home);
   await home.flush();
   assert.deepEqual(pins().map(row => row.props['data-shape']), items.map(item => item.shape));
   const nodes = home.nodes(pins()[0]);
@@ -90,7 +105,7 @@ void test('every page of catalog results uses pins and keeps the catalog actions
 void test('only available matching tasks are passed to the shared grid without a separate purpose section', async () => {
   const memory=choices.find(job=>job.id==='memory');
   let passed;
-  const ui=screen({modules:{...modules,'./noah-pin-grid':{default:props=>{passed=props.jobs;return null;}}},fetch:async()=>({body:pageReply([memory,{...choices[0],href:null}])})});
+  const ui=feedScreen({modules:{...modules,'./noah-pin-grid':{default:props=>{passed=props.jobs;return null;}}},fetch:async()=>({body:pageReply([memory,{...choices[0],href:null}])})});
   const home=ui.mount('components/noah-home.tsx',{mode:'public'});await home.flush();
   assert.deepEqual(passed,[memory]);
   assert.equal(home.find('h3').length,0);
@@ -99,7 +114,7 @@ void test('only available matching tasks are passed to the shared grid without a
 
 void test('all unavailable and a failed lookup both preserve exploration and saved results; the local home does not request choices', async () => {
   for (const state of ['unavailable', 'error', 'local']) {
-    const ui = screen({ modules, fetch: async () => state === 'error' ? { status: 503, body: { error: 'offline' } } : { body: pageReply(choices.map(job => ({ ...job, href: null }))) } });
+    const ui = feedScreen({ modules, fetch: async () => state === 'error' ? { status: 503, body: { error: 'offline' } } : { body: pageReply(choices.map(job => ({ ...job, href: null }))) } });
     const home = ui.mount('components/noah-home.tsx', { mode: state === 'local' ? 'local' : 'public' });
     await home.flush();
     assert.equal(ui.calls[0].url.includes('firstJobs'), state !== 'local');
@@ -112,7 +127,7 @@ void test('all unavailable and a failed lookup both preserve exploration and sav
 
 void test('loading the next page of cards preserves the selected task links without another availability lookup', async () => {
   let passed;
-  const ui = screen({ modules:{...modules,'./noah-pin-grid':{default:props=>{passed=props.jobs;return null;}}}, fetch: async ({url}) => {
+  const ui = feedScreen({ modules:{...modules,'./noah-pin-grid':{default:props=>{passed=props.jobs;return null;}}}, fetch: async ({url}) => {
     const params = new URL(url, 'https://noah.test').searchParams;
     return params.get('cursor') === '0'
       ? { body: { ...pageReply(choices), nextCursor: '20' } }
@@ -120,7 +135,7 @@ void test('loading the next page of cards preserves the selected task links with
   } });
   const home = ui.mount('components/noah-home.tsx', { mode: 'public' });
   await home.flush();
-  await home.click('もっと見る');
+  await ui.advance(home);
   assert.equal(ui.calls.length, 2);
   assert.ok(!ui.calls[1].url.includes('firstJobs'));
   assert.deepEqual(passed, choices);
@@ -129,7 +144,7 @@ void test('loading the next page of cards preserves the selected task links with
 void test('hiding a card reached on a later page also removes its matching task from the home', async () => {
   const otherId = 'project-' + 'b'.repeat(64), retained = { ...choices[1], href: choices[1].href.replace(project, otherId) };
   let passed;
-  const ui = screen({ modules: { ...modules, './noah-pin-grid': { default: ({items, onHide,jobs}) => {passed=jobs;return items.map(item => ({
+  const ui = feedScreen({ modules: { ...modules, './noah-pin-grid': { default: ({items, onHide,jobs}) => {passed=jobs;return items.map(item => ({
     type: 'button', props: { children: 'Hide ' + item.id, onClick: () => onHide(item.id) },
   }));} } }, fetch: async ({url, method, body}) => {
     if (method === 'POST') { assert.equal(body.familyId, 'family-hidden'); return { body: {} }; }
@@ -138,7 +153,7 @@ void test('hiding a card reached on a later page also removes its matching task 
       : { body: { ...pageReply(undefined), items: [{ id: 'family-hidden', feedbackId: project }] } };
   } });
   const home = ui.mount('components/noah-home.tsx', { mode: 'public' });
-  await home.flush(); await home.click('もっと見る'); await home.click('Hide family-hidden');
+  await home.flush(); await ui.advance(home); await home.click('Hide family-hidden');
   assert.equal(home.find('a', choices[0].title).length, 0);
   assert.deepEqual(passed,[retained]);
 });
@@ -146,7 +161,7 @@ void test('hiding a card reached on a later page also removes its matching task 
 for (const job of choices.filter(job => job.operation)) {
   void test(`${job.id} opens only the matching operation and goes to the owned result after explicit submission`, async () => {
     const requests = [], id = 'work-123';
-    const ui = screen({ modules, fetch: async request => {
+    const ui = feedScreen({ modules, fetch: async request => {
       const url = new URL(request.url, 'https://noah.test');
       if (url.pathname === '/api/noah/discover/project') {
         assert.equal(url.searchParams.get('firstJob'), job.id);
@@ -184,7 +199,7 @@ for (const job of choices.filter(job => job.operation)) {
 void test('the chosen project and operation must still match at the destination', async () => {
   const job = choices[0];
   for (const stale of ['project', 'operation']) {
-    const ui = screen({ modules, fetch: async ({url}) => url.startsWith('/api/noah/discover/project?')
+    const ui = feedScreen({ modules, fetch: async ({url}) => url.startsWith('/api/noah/discover/project?')
       ? { body: { card: {}, connection: { kind: 'setup' }, firstJob: stale === 'project' ? undefined : job } }
       : { body: { ownerScope: 'owner', plan: { endpoints: [{ name: 'unrelated', fields: [] }] } } } });
     const page = detail(ui, job.id);
@@ -200,7 +215,7 @@ void test('the chosen project and operation must still match at the destination'
 void test('Memory opens an empty note field, accepts only a deliberate request, then shows the returned result', async () => {
   const job = choices.find(choice => choice.id === 'memory'), prompt = '春の展示会は田中さんが会場を担当。';
   const jobs = [];
-  const ui = screen({ modules, fetch: async ({url, method, body}) => {
+  const ui = feedScreen({ modules, fetch: async ({url, method, body}) => {
     if (url.startsWith('/api/noah/discover/project?')) return { body: { card: {}, connection: { kind: 'cloud', profile: 'memory', providerFamilyId: null }, firstJob: job } };
     if (method === 'POST') {
       assert.equal(body.action, 'start'); assert.equal(body.prompt, prompt);
@@ -233,7 +248,7 @@ void test('English and other supported locales retain the meaning of first-party
         assert.notEqual(noahTranslate(locale, text), text, locale + ' ' + text);
       }
     }
-    const ui = screen({ modules, locale: 'en', fetch: async ({url}) => url.startsWith('/api/noah/discover/project?')
+    const ui = feedScreen({ modules, locale: 'en', fetch: async ({url}) => url.startsWith('/api/noah/discover/project?')
       ? { body: { card: {}, connection: {kind:'setup'}, firstJob:job } }
       : { body: { ownerScope: 'owner', plan: { host: 'https://provider.example', endpoints: [{ name: job.operation, description: tool.description, fields }] } } } });
     const page = detail(ui, job.id);
@@ -250,7 +265,7 @@ void test('the English Memory flow labels the destination, explicit connection, 
   const job = choices.find(choice => choice.id === 'memory');
   let connected = false, running = false;
   const work = { id:'work', state:'running', prompt:'Note text', files:[] };
-  const ui = screen({ modules, locale: 'en', fetch: async ({url, method, body}) => {
+  const ui = feedScreen({ modules, locale: 'en', fetch: async ({url, method, body}) => {
     if (url.startsWith('/api/noah/discover/project?')) return { body: { card:{}, connection:{ kind:'cloud', profile:'memory' }, firstJob:job } };
     if (method === 'POST') {
       if (!body.confirm && body.action !== 'stop') return { status:409, body:{confirmationRequired:true} };
@@ -282,7 +297,7 @@ void test('a ready project uses the family detail once and shows a dated source 
   const familyId = 'mcp-registry:ai.callmcp/server';
   const listing = 'https://registry.modelcontextprotocol.io/v0.1/servers/ai.callmcp%2Fserver/versions/latest';
   const detailIds = [];
-  const ui = screen({ modules: { ...modules, './noah-ready-detail': {
+  const ui = feedScreen({ modules: { ...modules, './noah-ready-detail': {
     default: ({ id, sourceNotes }) => { detailIds.push(id); return sourceNotes; },
   } }, fetch: async () => ({ body: {
     card: { id: familyId, sources: [{ source: 'mcp-registry', sourceUrl: listing, observedAt: 1795433820330 }] },
@@ -330,7 +345,7 @@ function assertTrainingVideo(page, fullscreen = false) {
 }
 
 void test('the training detail loops silently, switches themes and only adds a plugin after a deliberate click', async () => {
-  const ui = screen({ modules, fetch: async ({ url }) => url.startsWith('/api/noah/feedback')
+  const ui = feedScreen({ modules, fetch: async ({ url }) => url.startsWith('/api/noah/feedback')
     ? { body: { agentName: trainingCard.name, summary: { users: 0, crowns: 0, comments: 0, crowned: false }, comments: [], cursor: null, canComment: false, authenticated: false } }
     : { body: { card: trainingCard, connection: { kind: 'setup' } } } });
   const page = ui.mount(projectDetail, { id: trainingId });
@@ -357,7 +372,7 @@ void test('the training detail loops silently, switches themes and only adds a p
 
 void test('plugin addition persists the MCP definition, retries the same id and reopens an existing addition without running it', async () => {
   let saved, attempts = 0;
-  const ui = screen({ modules, fetch: async ({ url, method, body }) => {
+  const ui = feedScreen({ modules, fetch: async ({ url, method, body }) => {
     assert.equal(url, '/api/noah/agents');
     if (method === 'GET') return { body: { ownerScope: 'owner-a', agents: saved ? [saved] : [] } };
     assert.equal(body.rightsConfirmed, true);
@@ -378,7 +393,7 @@ void test('plugin addition persists the MCP definition, retries the same id and 
 
 void test('the ready training project keeps its connect button and renders the film on the family detail', async () => {
   const familyId = 'mcp-registry:test.provider/training';
-  const ui = screen({ modules: { ...sharedModules, '@/lib/noah-bot-notice': botNotice, './noah-ask': quiet }, fetch: async ({ url }) => {
+  const ui = feedScreen({ modules: { ...sharedModules, '@/lib/noah-bot-notice': botNotice, './noah-ask': quiet }, fetch: async ({ url }) => {
     if (url === '/api/noah/discover/project?id=' + trainingId) return { body: {
       card: trainingCard, connection: { kind: 'ready', familyId },
     } };
@@ -406,7 +421,7 @@ void test('a same-named project, a first-job entry, and a failed detail load hav
     [{ id: trainingId, firstJob: job.id }, { body: { ...setup, firstJob: job } }, job.title],
     [{ id: trainingId }, { status: 503, body: { error: 'offline' } }, 'offline'],
   ]) {
-    const ui = screen({ modules, fetch: async () => reply });
+    const ui = feedScreen({ modules, fetch: async () => reply });
     const page = ui.mount(projectDetail, props);
     await page.flush();
     assert.ok(page.text().includes(expected));
@@ -417,7 +432,7 @@ void test('a same-named project, a first-job entry, and a failed detail load hav
 
 void test('appearance selected in preferences reaches home, account and Agent detail shells across navigation', async () => {
   let path = '/noah';
-  const ui = screen({ modules: { ...modules,
+  const ui = feedScreen({ modules: { ...modules,
     'next/navigation': { usePathname: () => path },
     '@/lib/noah-surface': noahSurface,
     './noah-revenue-pack': { NoahRevenuePackMenuItem: () => null },
@@ -439,7 +454,7 @@ void test('appearance selected in preferences reaches home, account and Agent de
 void test('ready detail resolves family feedback through the real project API before loading ratings',async()=>{
   const family='mcp-registry:ac.mizan/registry';
   const api=createNoahProjectApi({directory:async()=>[{card:{id:family,feedbackId:project,name:'Mizan',summary:'Public catalog entry'},families:[family]}]});
-  const ui=screen({modules,fetch:async({url})=>{
+  const ui=feedScreen({modules,fetch:async({url})=>{
     if(url.startsWith('/api/noah/discover/project?')) {const r=await api(new Request('https://noah.test'+url));return {status:r.status,body:await r.json()};}
     assert.equal(url,'/api/noah/feedback?agent='+project);
     return {body:{agentName:'Mizan',summary:{users:1,crowns:0,comments:0,crowned:false},comments:[],cursor:null,canComment:false,authenticated:false}};
