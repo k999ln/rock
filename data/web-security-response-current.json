@@ -1,6 +1,6 @@
 {
   "schema": "rockstaros-web-security-response-evidence/1",
-  "observedAt": "2026-11-26T12:58:07Z",
+  "observedAt": "2026-11-26T13:06:38Z",
   "scope": "LOCAL_PRODUCTION_BUILD_NOT_SITES_DEPLOYMENT",
   "server": {
     "runtime": "wrangler-local",
@@ -50,7 +50,7 @@
       "/rock-icon-192.png",
       "/rock-icon-512.png",
       "/rock-icon-maskable.svg",
-      "/_next/static/chunks/index-CnK91BYu.js"
+      "/_next/static/chunks/index-Db5b7Om0.js"
     ],
     "evePwa": {
       "manifest": "/connect/eve.webmanifest",
