@@ -6,6 +6,7 @@ import Image from 'next/image';
 import { usePathname, useSearchParams } from 'next/navigation';
 import { Bot, Home, UserRound, RefreshCw, ArrowLeft, Globe, Bookmark, MoreHorizontal, Search, SquareTerminal } from 'lucide-react';
 import { noahLegacyHref, type NoahSurfaceMode } from '@/lib/noah-surface';
+import { NOAH_PROFILE_PATH, noahShortPageDestination } from '../services/sky-web/noah-page-routes.mjs';
 import { useNoahLocale } from './noah-locale';
 import styles from './noah-service-shell.module.css';
 import { NoahRevenuePackMenuItem } from './noah-revenue-pack';
@@ -13,7 +14,8 @@ import { NoahSurfaceContext } from './noah-surface-context';
 import { useNoahAppearance } from './noah-appearance';
 
 export default function NoahShell({ children, mode = 'local' }: { children: ReactNode; mode?: NoahSurfaceMode }) {
-  const pathname = usePathname();
+  const browserPath = usePathname();
+  const pathname = noahShortPageDestination(browserPath)?.split('?')[0] ?? browserPath;
   const searchParams = useSearchParams();
   const appearance = useNoahAppearance();
   const { t } = useNoahLocale();
@@ -39,6 +41,7 @@ export default function NoahShell({ children, mode = 'local' }: { children: Reac
   const isTimeline = pathname === base || pathname === '/' || pathname === '/os';
   const gridHome = isTimeline;
   const publicStore = effectiveMode === 'public';
+  const profileHref = publicStore && !preview ? NOAH_PROFILE_PATH : `${base}/profile`;
   const localPath = pathname.startsWith(base + '/') ? pathname.slice(base.length + 1) : '';
   const localPrimary = [
     { href: base, label: 'ホーム', Icon: Home, selected: isTimeline },
@@ -88,7 +91,7 @@ export default function NoahShell({ children, mode = 'local' }: { children: Reac
           <search popover="auto" id={storeSearchId} className={styles.storeSearchPanel}>{searchForm}</search>
         </>}
         {menu}
-        <Link href={`${base}/profile`} className={styles.gridAccount} aria-label={t('登録情報を見る')} title={t('登録情報')}><UserRound size={22}/></Link>
+        <Link href={profileHref} className={styles.gridAccount} aria-label={t('登録情報を見る')} title={t('登録情報')}><UserRound size={22}/></Link>
       </header>
       <div className={gridHome ? styles.gridBody : styles.content} id="noah-content" tabIndex={-1}>{children}</div>
     </div>

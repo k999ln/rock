@@ -23,6 +23,8 @@
 
 ## 状態
 
+2026-11-26追補。[PR #89](https://github.com/iceiceice999/rock/pull/89) でNoahの既存画面12か所に星座名の短いURLを割り当てた。対応は [公開ルート表](../../services/sky-web/noah-page-routes.mjs) の `NOAH_SHORT_PAGES`。人型アイコンと旧プロフィールから `/aries` を開く。ビルド済みWorkerで12経路の200、旧プロフィールの308とクエリ保持、未知経路の404、廃止経路の410を確認。Runnerの接続承認ルートと現行の画面更新を取り込んだ状態で対象80試験が成功。公開は正本mainへの統合とSites配備のあと。
+
 実装済み。[PR #81](https://github.com/iceiceice999/rock/pull/81)。対象40試験、typecheck、production build、9経路のHTTPセキュリティ実測が成功。390px/1280pxのホーム・メニュー、未認証の審査画面404を確認。ローカルDBは初期migrationの既存問題でカタログ未投入のため、表示確認は取得失敗状態を含む。初回の全体試験で新しいmoduleを含まない試験fixtureが4件失敗したため、fixtureを更新し実Workerで410/404/200・sitemapを検証。最新の全体verify結果・main SHA・Sites保存SHA・公開版・本番応答はPRの検証／公開記録へ残す。
 
 ## Mac Runner接続の復旧（2026-11-26）

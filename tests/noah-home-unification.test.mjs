@@ -4,6 +4,39 @@ import { screen } from './fixtures/noah/screen.mjs';
 import * as surface from '../lib/noah-surface.ts';
 import { withMiniSite } from '../services/sky-web/domain-router.mjs';
 import { MAIN_DISCOVERY_PATHS } from '../services/sky-web/main-page-policy.mjs';
+import { noahReturnPath } from '../lib/noah-navigation.ts';
+import { NOAH_SHORT_PAGES } from '../services/sky-web/noah-page-routes.mjs';
+
+void test('short URLs reach the Noah app with the original URL and stay out of the public sitemap', async () => {
+  const seen = [];
+  const app = withMiniSite({fetch: request => {
+    seen.push(request.url);
+    return new Response();
+  }}, () => assert.fail('unexpected Mini proxy'));
+  assert.equal(new Set(NOAH_SHORT_PAGES.map(([short]) => short)).size, 12);
+  for (const [short] of NOAH_SHORT_PAGES) {
+    const target = `${short}?source=fixture&tag=a&tag=b#section`;
+    assert.equal(noahReturnPath(target), target);
+    assert.ok(!MAIN_DISCOVERY_PATHS.includes(short));
+    for (const method of ['GET', 'HEAD']) {
+      const url = `https://avoado.si${target}`;
+      const response = await app.fetch(new Request(url, {method}));
+      assert.equal(response.status, 200, `${method} ${short}`);
+      assert.equal(response.headers.get('location'), null, short);
+      assert.equal(seen.at(-1), url);
+    }
+  }
+  for (const path of ['/aries/more', '/Aries', '/aries-extra']) {
+    assert.equal(noahReturnPath(path), '/noah');
+    assert.equal((await app.fetch(new Request(`https://avoado.si${path}`))).status, 404);
+  }
+  assert.equal(noahReturnPath('//elsewhere.test/aries'), '/noah');
+  for (const host of ['avoado.si', 'localhost:8787']) {
+    const response = await app.fetch(new Request(`https://${host}/noah/profile?from=menu#permissions`));
+    assert.equal(response.status, 308);
+    assert.equal(response.headers.get('location'), `https://${host}/aries?from=menu#permissions`);
+  }
+});
 
 void test('old discovery URLs keep queries, repeated filters, category and anchors on the home without a loop', async () => {
   const app = withMiniSite({fetch: () => new Response('home')}, () => assert.fail('unexpected proxy'));
@@ -48,13 +81,13 @@ void test('public menu has one home entry and no separate discovery or timeline 
   assert.equal(links.filter(node=>shell.text(node)==='ホーム').length,1);
   assert.ok(links.every(node=>!['Agentを探す','タイムライン','登録情報','任せる範囲','ココナラの仕事'].includes(shell.text(node))));
   assert.ok(links.every(node=>!node.props.href.includes('/explore') && !node.props.href.includes('#timeline')));
-  assert.equal(shell.find('a').filter(node=>node.props.href === '/noah/profile').length, 1);
+  assert.equal(shell.find('a').filter(node=>node.props.href === '/aries').length, 1);
   assert.ok(shell.find('form').every(node=>node.props.action==='/noah'));
   assert.ok(shell.find('input').every(node=>node.props.defaultValue==='資料'));
 });
 
 void test('all Noah pages keep every primary destination in one top menu without a sidebar or bottom tabs', () => {
-  for (const mode of ['public', 'local']) for (const pathname of ['/noah', '/noah/my', '/noah/activity', '/noah/saved', '/noah/profile', '/noah/preferences', '/noah/engineering', '/noah/discover/agent', '/noah/public/my']) {
+  for (const mode of ['public', 'local']) for (const pathname of ['/noah', '/noah/my', '/noah/activity', '/noah/saved', '/noah/profile', '/noah/preferences', '/noah/engineering', '/noah/discover/agent', '/noah/public/my', ...NOAH_SHORT_PAGES.map(([short])=>short)]) {
     const ui = screen({modules:{'next/navigation':{usePathname:()=>pathname},'@/lib/noah-surface':surface}});
     const shell = ui.mount('components/noah-shell.tsx',{mode,children:'PAGE CONTENT'});
     assert.equal(shell.find('aside').length, 0, pathname);
@@ -70,7 +103,7 @@ void test('all Noah pages keep every primary destination in one top menu without
     const destinations = mode==='public'||base==='/noah/public' ? [base,'/noah/engineering',`${base}/my?view=agents`,`${base}/activity`,`${base}/saved?tab=results`,`${base}/preferences`] : [base,`${base}/activity`,`${base}/saved`,`${base}/registration`,`${base}/preferences`];
     for (const href of destinations) assert.equal(urls.filter(url=>url===href).length,1,`${pathname} → ${href}`);
     assert.equal(shell.find('nav').length,1,pathname);
-    assert.equal(shell.find('a').filter(node=>node.props.href===`${base}/profile`).length,1,pathname);
+    assert.equal(shell.find('a').filter(node=>node.props.href===(mode==='public'&&base==='/noah'?'/aries':`${base}/profile`)).length,1,pathname);
     let closed=0;panel.props.ref.current={hidePopover(){closed++;}};
     for (const link of menuLinks) link.props.onClick();
     assert.equal(closed,menuLinks.length);
