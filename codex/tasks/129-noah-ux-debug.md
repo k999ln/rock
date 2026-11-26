@@ -144,3 +144,5 @@
 - 全画面テーマの最終検証: `PATH="/opt/homebrew/opt/openssl@3/bin:$PATH" npm run verify` の本体5,570成功・失敗0・5 skip、型・lint・関連パッケージ検査成功。ビルド前に検証用Workerが生成したdist内状態の保全が必要となったため、そのWorkerを停止して状態を `/private/tmp/noah-theme-security-state-20261126-0924` へ退避後、`npm run build` とverifyの残り（release:web-bundle:check、release:web-assets:check、test:api、mission:check、work:check、bot:check）を再開して全て成功。asset参照424件・欠落0、仕事API1,918・CSV385 assertions成功。最終ビルドのHTTP検査、release:check、design:checkも成功。実行はローカルの合成環境であり、本番公開・外部Agent実行の証拠ではない。
 
 - 共通雛形の確認: 接続対応・収集・紹介・本人用の詳細を共通部品へ移した。Mizanの390×667pxと1280×900pxで縦横のあふれなしを確認。研修以外は各Agent自身の素材を使用する。公開評価は正規IDへ解決し、失敗時は読み込めない旨を表示。最新mainの検索・ナビゲーション・プロフィール変更を統合し、型検査と関連60試験が成功。
+
+- [PR #90](https://github.com/iceiceice999/rock/pull/90)。統合後の本番build・HTTP検査（9経路/8ヘッダー）・release:check・公開asset検査（414参照、欠落0）が成功。公開後のmain SHAとSites版はPRに追記する。
