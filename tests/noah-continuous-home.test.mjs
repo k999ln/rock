@@ -44,7 +44,7 @@ void test('late pages from old search conditions cannot enter the replacement co
   assert.deepEqual(Array.from(t.cards(),i=>i.id),['new']);
 });
 void test('a changed ranking offers a controlled restart rather than silently skipping cards',async()=>{
-  const t=mount(async({url})=>url.includes('cursor=0')?page(['a'],'20'):{status:409,body:{error:'一覧が更新されました。',restart:true}});
+  const t=mount(async({url})=>url.includes('cursor=0')?page(['a'],'20'):{status:409,body:{error:'一覧が更新されました。',restart:true,ownerScope:null}});
   await t.home.flush();t.enter();await t.home.flush();assert.equal(t.watchers.size,0);
   assert.deepEqual(Array.from(t.cards(),i=>i.id),['a']);await t.home.click('一覧を読み直す');
   assert.equal(t.ui.calls.length,3);assert.ok(t.ui.calls[2].url.includes('cursor=0'));
@@ -73,4 +73,11 @@ void test('directory composition uses the policy pools, not outside stars, and m
   const db={prepare:()=>({bind(){return this;},all:async()=>({results:facts})})};
   const ranked=await rankNoahDirectory(entries,db,['alias','personal']);
   assert.deepEqual(ranked.map(e=>e.card.id),['personal','hot1','ran','hot2','fresh']);
+});
+
+void test('an account change clears the old collection and starts a fresh scoped request',async()=>{
+  let calls=0;
+  const t=mount(async()=>++calls===1?page(['old'],'20'):calls===2?{status:409,body:{error:'changed',restart:true,ownerScope:'new-owner'}}:{body:{...page(['new']).body,ownerScope:'new-owner'}});
+  await t.home.flush();t.enter();await t.home.flush();
+  assert.deepEqual(Array.from(t.cards(),i=>i.id),['new']);assert.equal(t.ui.calls.length,3);
 });

@@ -58,16 +58,18 @@ export default function NoahPinHome({fallback,searchQuery='',initialSource='noah
       const params=new URLSearchParams(key);params.set('cursor',cursor);params.delete('firstJobs');
       const r=await fetch(`/api/noah/discover?${params}`,{cache:'no-store'}),page=await r.json() as Page & {error?:string;restart?:boolean};
       if(r.status===409 && page.restart){
-        if(version===generation.current)setState({...current,error:page.error,restart:true});
+        if(version!==generation.current)return;
+        if(page.ownerScope!==current.page.ownerScope){setState(undefined);setAttempt(n=>n+1);return;}
+        setState(old=>old?.key===key?{...old,more:false,error:page.error,restart:true}:old);
         return;
       }
       if(!r.ok || !Array.isArray(page.items))throw Error(page.error??'続きを読み込めませんでした。');
       if(version!==generation.current)return;
       if(page.nextCursor===cursor)throw Error('続きを確認できませんでした。再試行してください。');
-      if(page.ownerScope!==current.page.ownerScope){setAttempt(n=>n+1);return;}
+      if(page.ownerScope!==current.page.ownerScope){setState(undefined);setAttempt(n=>n+1);return;}
       const known=new Set(current.page.items.map(i=>i.feedbackId??i.id));
       setState(old=>old?.key===key && old.page ? {key,page:{...page,firstJobs:old.page.firstJobs,items:[...old.page.items,...page.items.filter(i=>{const id=i.feedbackId??i.id;if(known.has(id))return false;known.add(id);return true;})]}}:old);
-    }catch(e){if(version===generation.current)setState({...current,error:e instanceof Error?e.message:'続きを読み込めませんでした。'});}
+    }catch(e){if(version===generation.current)setState(old=>old?.key===key?{...old,more:false,error:e instanceof Error?e.message:'続きを読み込めませんでした。'}:old);}
     finally{if(inFlight.current===requestKey)inFlight.current=null;}
   }
   async function hide(id:string){

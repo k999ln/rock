@@ -28,7 +28,7 @@ export function createNoahDirectoryApi(deps: PinsApiDependencies & { directory: 
       // A changed ranking or account must never silently skip an unseen card.
       const fingerprint=await sha256Hex(JSON.stringify([owner,source,q,topic,order,all.map(e=>e.card.feedbackId??e.card.id)]));
       const [position,previous]=cursor.split('.');
-      if(previous && previous!==fingerprint)return json({error:'一覧が更新されました。読み直してください。',restart:true},409);
+      if(previous && previous!==fingerprint)return json({error:'一覧が更新されました。読み直してください。',restart:true,ownerScope:owner?await ownerScopeFor(owner):null},409);
       const offset=Number(position), page=all.slice(offset,offset+20);
       const pins=await store.pins(page.flatMap(e=>e.families.slice(0,1)),owner), byId=new Map(pins.map(p=>[p.id,p]));
       const items=page.map(e=>{const pin=byId.get(e.card.id);return pin?{...e.card,...pin,topic:e.card.topic,feedbackId:e.card.feedbackId,sources:e.card.sources}:e.card;});
