@@ -26,6 +26,10 @@ void test('current workflows, retained detail records, API writes and shared ass
   for (const path of [...MAIN_PAGE_PATHS, '/noah/agents/fixture', '/noah/tasks/fixture', '/noah/releases/fixture', '/noah/engineering/combinations/fixture', '/connect/status']) {
     assert.equal((await app.fetch(new Request(`https://avoado.si${path}`))).status, 200, path);
   }
+  for (const path of ['/noah-offline.html', '/noah-sw.js']) {
+    assert.equal(mainPageStatus(path), null, path);
+    assert.equal((await app.fetch(new Request(`https://avoado.si${path}`))).status, 200, path);
+  }
   for (const path of ['/api/noah/jobs', '/api/sky/settle', '/api/eve/history']) {
     const request = new Request(`https://avoado.si${path}`, { method: 'POST', body: 'unchanged', headers: { cookie: 'owner-fixture' } });
     assert.equal((await app.fetch(request)).status, 200);
