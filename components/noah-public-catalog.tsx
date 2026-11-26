@@ -20,6 +20,6 @@ export default function NoahPublicCatalog({basePath='/noah',embedded=false,initi
     {query.trim() && ['daisuke','anicca','ココナラ','coconala'].some(word=>query.toLowerCase().includes(word)) && <p><Link href="/noah/coconala/agent">DaisukeのココナラAgent · Macで案件を探して提案を下書き</Link></p>}
     <NoahPinHome searchQuery={query} initialSource={params.get('collectionSource')??initialSource} onClearQuery={()=>search('')}/>
     {embedded && <Link className={styles.statusLink} href="/noah/agents/verified">{t('Agentの稼働状況を見る')}</Link>}
-    <details className={styles.sourceFilter}><summary>{t('Toolを探す')}</summary><Link href={`${basePath}/explore?tab=tools&q=${encodeURIComponent(query)}`}>{t('Toolを探す')}</Link></details>
+    <details className={styles.sourceFilter}><summary>{t('Toolを探す')}</summary><Link href={`${basePath}?tab=tools&q=${encodeURIComponent(query)}`}>{t('Toolを探す')}</Link></details>
   </main>;
 }

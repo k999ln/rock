@@ -7,11 +7,11 @@ export function noahPageTab<T extends string>(value: unknown, tabs: readonly T[]
 }
 export function noahPageHref(page: 'explore' | 'saved', params: NoahPageParams = {}, tab?: string) {
   const query = new URLSearchParams();
-  const keys = page === 'explore' ? ['q', 'via', 'collectionSource'] : ['board', 'job'];
+  const keys = page === 'explore' ? ['q', 'via', 'collectionSource', 'collectionTopic', 'collectionQuery'] : ['board', 'job'];
   if (tab) query.set('tab', noahPageTab(tab, page === 'explore' ? NOAH_EXPLORE_TABS : NOAH_SAVED_TABS, page === 'explore' ? 'ready' : 'boards'));
   for (const key of keys) {
     const value = params[key];
     if (typeof value === 'string' && (value.trim() || key === 'collectionSource')) query.set(key, value.trim().slice(0, key === 'q' ? 200 : 160));
   }
-  return `/noah/${page}${query.size ? `?${query}` : ''}`;
+  return `${page === 'explore' ? '/noah' : '/noah/saved'}${query.size ? `?${query}` : ''}`;
 }

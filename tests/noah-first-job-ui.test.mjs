@@ -47,7 +47,7 @@ void test('the public home opens available tasks directly with their expected ou
   assert.ok(!home.find('a').some(link => ['/noah/agents/new', '/noah/registration', '/noah/publisher'].includes(link.props.href)));
   assert.equal(home.find('a', 'ピックアップ')[0].props.href, choices.find(job => job.id === 'memory').href);
   const links = home.nodes(region).filter(n => n.type === 'a');
-  assert.deepEqual(links.map(link => link.props.href), [...choices.slice(1).map(job => job.href), '/noah/explore', '/noah/saved?tab=results']);
+  assert.deepEqual(links.map(link => link.props.href), [...choices.slice(1).map(job => job.href), '/noah#noah-collection', '/noah/saved?tab=results']);
   for (const [index, job] of choices.slice(1).entries()) {
     assert.equal(home.text(links[index]), job.title + job.output);
     assert.equal(links[index].props.target, undefined);
@@ -92,7 +92,7 @@ void test('Today places a real featured job and the catalog ahead of store servi
     assert.equal(home.nodes(pins[0]).find(node => node.props?.['data-agent-art'])?.props['data-agent-art'], 'signature');
     assert.equal(home.nodes(pins[0]).some(node => node.type === 'canvas'), true);
     assert.equal(shelfNodes.some(node => node.type === 'button'), false);
-    assert.equal(home.find('a', 'See all')[0].props.href, '/noah/explore');
+    assert.equal(home.find('a', 'See all')[0].props.href, '/noah#noah-collection');
     assert.ok(anchors.indexOf(feature) < anchors.indexOf(directory));
     assert.ok(anchors.indexOf(directory) < anchors.indexOf(services));
   }
@@ -152,7 +152,7 @@ void test('all unavailable and a failed lookup both preserve exploration and sav
     assert.equal(ui.calls[0].url.includes('firstJobs'), state !== 'local');
     const region = home.find('section').find(s => s.props.id === 'first-jobs');
     if (state === 'local') { assert.equal(region, undefined); continue; }
-    assert.deepEqual(home.nodes(region).filter(n => n.type === 'a').map(n => n.props.href), ['/noah/explore', '/noah/saved?tab=results']);
+    assert.deepEqual(home.nodes(region).filter(n => n.type === 'a').map(n => n.props.href), ['/noah#noah-collection', '/noah/saved?tab=results']);
     assert.match(home.text(region), state === 'unavailable' ? /選べる仕事はありません/ : /確認できませんでした/);
   }
 });
