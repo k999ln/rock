@@ -16,3 +16,6 @@
 .information>p{font-size:14px;line-height:1.8;margin:0 0 14px}
 .information dl{margin:0}.information dl>div{display:grid;grid-template-columns:36px minmax(0,1fr);gap:14px;padding-block:8px;font-size:12px;line-height:1.8}
 .information dt{color:var(--noah-ink,#913c04)}.information dd{margin:0}.information>a{display:inline-flex;align-items:center;gap:6px;min-height:44px;color:var(--noah-theme-link, var(--noah-action,#a14206));font-size:13px;margin-top:8px}
+.reuseExplanation{margin-top:24px;font-size:1rem;line-height:1.8}
+.reuseExplanation summary{display:flex;align-items:center;min-height:44px;cursor:pointer}
+.reuseExplanation p{margin:12px 0}

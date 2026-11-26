@@ -48,7 +48,7 @@ function ProfileEditor({profile,busy,save,beginFileSelection,endFileSelection,ca
 
     {!profile.available&&<output>{t("保存機能は準備中です。")}</output>}
     <NoahProfileReadiness profile={profile}/>
-    <details className={styles.receipts}>
+    <details className={styles.reuseExplanation}>
       <summary>{t('eSIM・Agent登録での情報の再利用について')}</summary>
       {PROFILE_CONSENT_DETAILS.map(section=><p key={section.title}><strong>{t(section.title)}</strong><br/>{t(section.text)}</p>)}
     </details>

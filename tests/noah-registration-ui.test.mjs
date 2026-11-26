@@ -205,8 +205,10 @@ void test('editing a saved value keeps it in the field and submits the changed v
 });
 void test('storage, external submission and pricing explanations are translated in all supported languages',async()=>{
   const {NOAH_REGISTRATION_MESSAGES}=await import('../lib/noah-i18n-registration.ts');
+  const {PROFILE_CONSENT_TEXT,PROFILE_CONSENT_DETAILS}=await import('../lib/noah-profile-contract.ts');
   const {noahTranslate,NOAH_LOCALES}=await import('../lib/noah-i18n.ts');
-  for(const source of Object.keys(NOAH_REGISTRATION_MESSAGES))for(const locale of NOAH_LOCALES.filter(l=>l!=='ja')){
+  const sources=[...Object.keys(NOAH_REGISTRATION_MESSAGES),PROFILE_CONSENT_TEXT,...PROFILE_CONSENT_DETAILS.flatMap(section=>[section.title,section.text])];
+  for(const source of sources)for(const locale of NOAH_LOCALES.filter(l=>l!=='ja')){
     const translated=noahTranslate(locale,source);assert.notEqual(translated,source,`${locale}: ${source}`);assert.ok(translated.length);
   }
 });
