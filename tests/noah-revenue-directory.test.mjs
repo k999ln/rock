@@ -259,7 +259,8 @@ await test('自社MCPから匿名準備票を作り、共通Workへ保存・再�
     } });
     const home = ui.mount('components/noah-home.tsx', { mode: 'public' });
     await home.flush();
-    assert.ok(home.find('a').some(link => link.props.href === '/noah#noah-collection'));
+    assert.equal(home.find('section').filter(node => node.props.id === 'noah-collection').length, 1);
+    assert.ok(home.find('a').some(link => link.props.href === noahCardHref(entries[0].card)));
     assert.equal(home.find('a').some(link => link.props.href?.includes('/business-si')), false);
     assert.doesNotMatch(home.text(), /siの導入準備を、ここから|3回|10回|UTC/);
     const search = ui.mount('components/noah-public-catalog.tsx', { embedded: true });
