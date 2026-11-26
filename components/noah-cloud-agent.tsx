@@ -1,5 +1,6 @@
 'use client';
 import { useCallback, useEffect, useRef, useState } from 'react';
+import Link from 'next/link';
 import { NOAH_CLOUD_MODEL, NOAH_CLOUD_PROFILES, noahCloudListYen, type NoahCloudConnection, type NoahCloudFile, type NoahCloudProfile, type NoahCloudUsage } from '@/lib/noah-cloud-contract';
 import { OWNER_SCOPE_HEADER } from '@/lib/owner-intent';
 import NoahLoading from './noah-loading';
@@ -9,7 +10,7 @@ import { useNoahLocale } from './noah-locale';
 import styles from './noah-cloud-agent.module.css';
 
 type Job = { id: string; state: string; prompt: string; result?: { text: string }; proposal?: EveProposal; runtimePurpose?: 'eve-combination-advice'; files: NoahCloudFile[]; error?: string; calls: number; usage?: NoahCloudUsage | null };
-type State = { ownerScope: string; connection: NoahCloudConnection | null; jobs: Job[] };
+type State = { ownerScope: string; connection: NoahCloudConnection | null; jobs: Job[]; firstEarning?: { availableMs: number; usedMs: number } };
 const active = (job: Job) => ['queued', 'running'].includes(job.state);
 const label: Record<string, string> = { queued: '受付済み', running: '実行中', returned: '結果を受け取りました', failed: '実行できませんでした', cancelled: '停止済み', unknown: '結果を確認できません' };
 function download(file: NoahCloudFile) {
@@ -122,13 +123,17 @@ export default function NoahCloudAgent({ projectId, profile, providerFamilyId, e
       {consultation && <><label htmlFor="eve-engineering-question">{t('相談したいこと')}</label>
         <textarea id="eve-engineering-question" value={prompt} placeholder={proposeCombination ? t('例：会議メモから要点をまとめ、担当者ごとのタスクを作りたい') : undefined} maxLength={12000} rows={5} disabled={pending} onChange={event => { setPrompt(event.target.value); setConfirmation(null); }} /></>}
       {state && <>
+        {state.firstEarning && <p className={styles.note}>
+          <Link href="/noah/first-earning">初回の売上・納品・振込確認</Link>
+          {' · '}AI実行の残り {Math.floor(state.firstEarning.availableMs / 60_000)}分 {Math.floor(state.firstEarning.availableMs / 1000) % 60}秒
+        </p>}
         {state.connection?.state === 'preparing' ? <div className={styles.preparing}><NoahLoading variant="connection" label={t('実行環境を準備しています')} /><p>{t('実行環境を準備しています')}</p><button disabled={pending} onClick={() => void act('disconnect')}>{t('準備を止める')}</button></div> : state.connection?.state === 'connected' ? <>
           <div className={styles.connected}><span>{t('接続済み')}</span><button disabled={pending} onClick={() => void act('disconnect')}>{t('切断')}</button></div>
           <form onSubmit={event => { event.preventDefault(); void act('start'); }}>
             {!consultation && <><label htmlFor={`cloud-prompt-${profile}`}>{profile === 'boss' ? '面接を準備したい求人票' : profile === 'memory' ? t('整理したいメモ') : '何をしてほしいですか'}</label>
             <textarea id={`cloud-prompt-${profile}`} value={prompt} maxLength={12000} onChange={event => { setPrompt(event.target.value); setConfirmation(null); }} placeholder={profile === 'boss' ? '求人票の仕事内容・応募条件を貼り付ける' : profile === 'time' ? '例: 東京の現在時刻とロンドンとの時差を教えて' : profile === 'hermes' ? '例: 小さなサービスを公開する3工程の計画を作り、重要な条件をメモして' : profile === 'thinking' ? '例: 小さなサービスを公開するまでの作業順を整理して' : profile === 'memory' ? t('例：春の展示会は田中さんが会場、森さんが招待状を担当。人と担当の関係をまとめて。') : '例: 1200と800の合計を計算し、total.txtに保存して'} rows={5} disabled={pending} />
             </>}
-            <button className={styles.primary} disabled={pending || !prompt.trim() || state.jobs.some(active)}>{t(pending ? '受付中…' : consultation ? 'Eveに送る' : '依頼する')}</button>
+            <button className={styles.primary} disabled={pending || !prompt.trim() || state.jobs.some(active) || state.firstEarning?.availableMs === 0}>{t(pending ? '受付中…' : consultation ? 'Eveに送る' : '依頼する')}</button>
 
           </form>
         </> : <><button className={styles.primary} disabled={pending} onClick={() => void act('connect')}>{t(pending ? '接続中…' : '接続して使う')}</button>{state.connection?.error && <p role="alert">{t(state.connection.error)}</p>}</>}

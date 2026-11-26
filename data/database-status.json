@@ -4,7 +4,7 @@
   "scope": "repository source, local schema convergence, and recorded deployment evidence",
   "summary": {
     "boundaryCount": 6,
-    "tableCount": 257,
+    "tableCount": 259,
     "sourceVerifiedCount": 6,
     "currentProductionReadbackCount": 0
   },
@@ -18,7 +18,7 @@
     "nextAction": "掲載Agent別の認証・実行器を整えてWorkで成果を確認する。収益パックと仕事別明細の接続、実入金後の作者分、専用eSIMの実回線、定期便の実配送を個別に検収する。従来の端末・収集・運用の残件はproject.mdを参照。"
   },
   "webSchema": {
-    "tableCount": 180,
+    "tableCount": 182,
     "tables": [
       "a2a_live_usage_snapshots",
       "a2a_price_quote_consent_events",
@@ -96,6 +96,8 @@
       "noah_draft_objects",
       "noah_draft_storage_scans",
       "noah_feed_preferences",
+      "noah_first_earning_runs",
+      "noah_first_earnings",
       "noah_instances",
       "noah_intake_candidates",
       "noah_intake_checks",
@@ -207,8 +209,8 @@
       "sky_linux_service_receipts"
     ],
     "sourceOnlyStatus": "local synthetic schema; production tables unverified; no new production migration",
-    "migrationCount": 40,
-    "latestMigration": "0059_noah_agent_availability.sql",
+    "migrationCount": 41,
+    "latestMigration": "0060_noah_first_earning.sql",
     "accidentalDuplicateCount": 0,
     "publishedConvergenceDeclarations": 25,
     "marketplaceRelationGuardCount": 8,
@@ -293,6 +295,8 @@
           "noah_draft_objects",
           "noah_draft_storage_scans",
           "noah_feed_preferences",
+          "noah_first_earning_runs",
+          "noah_first_earnings",
           "noah_instances",
           "noah_intake_candidates",
           "noah_intake_checks",
@@ -376,7 +380,7 @@
           "sky_x_feed_state",
           "sky_x_oauth_states"
         ],
-        "tableCount": 110
+        "tableCount": 112
       },
       {
         "id": "marketplace",
@@ -525,6 +529,8 @@
         "noah_draft_objects",
         "noah_draft_storage_scans",
         "noah_feed_preferences",
+        "noah_first_earning_runs",
+        "noah_first_earnings",
         "noah_instances",
         "noah_intake_candidates",
         "noah_intake_checks",
@@ -630,8 +636,8 @@
         "tool_runs",
         "work_jobs"
       ],
-      "expectedAppliedThrough": "0059_noah_agent_availability.sql",
-      "tableCount": 180,
+      "expectedAppliedThrough": "0060_noah_first_earning.sql",
+      "tableCount": 182,
       "sourceStatus": "VERIFIED",
       "deployment": {
         "runtime": "Cloudflare D1 / currently owner-only Sites, public access requested",

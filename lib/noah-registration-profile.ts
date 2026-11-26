@@ -1,7 +1,7 @@
 import { NoahAgentError } from './noah-agent-upload.ts';
 import { OWNER_SCOPE_HEADER, ownerScopeFor } from './owner-intent.ts';
 import { canonicalJson, sha256Hex } from './noah-connect-requirements.ts';
-import { profileField } from './noah-profile-contract.ts';
+import { hasCurrentProfileConsent, profileField } from './noah-profile-contract.ts';
 import { toBase64, type NoahProfileStore } from './noah-profile-store.ts';
 import type { ConfiguredRegistration } from './noah-registration.ts';
 export type RegistrationDocument={name:string;type:string;base64:string};
@@ -18,6 +18,7 @@ export function registrationProfileResolver(store:NoahProfileStore,authenticate:
     const values:Record<string,string>={},documents:Record<string,RegistrationDocument>={};
     if(reuse!==undefined){
       if(!profile.reuseEnabled)throw new NoahAgentError('登録情報の再利用は停止中です。保存情報の設定から再開できます。',403);
+      if(!hasCurrentProfileConsent(profile))throw new NoahAgentError('保存・再利用の説明が更新されました。登録情報で内容を確認して同意し直してください。',409);
       const v=reuse as {revision?:unknown;fields?:unknown;documentId?:unknown};
       if(!v || typeof v!=='object' || Array.isArray(v) || Object.keys(v).some(k=>!['revision','fields','documentId'].includes(k)) || v.revision!==profile.revision || !Array.isArray(v.fields) || v.fields.length>16 || new Set(v.fields).size!==v.fields.length)throw new NoahAgentError('保存情報が更新されました。使う項目を確認し直してください。',409);
       for(const key of v.fields){

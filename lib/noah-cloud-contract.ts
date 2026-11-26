@@ -88,7 +88,7 @@ export const noahCloudId = (value: unknown): value is string => typeof value ===
 export type NoahCloudFile = { name: string; base64: string; bytes: number; sha256: string };
 export const NOAH_EVE_ADVICE_PURPOSE = 'eve-combination-advice' as const;
 export type NoahCloudResult = { text: string; files: NoahCloudFile[]; exitCode: number; calls: number; operationCount?: 0 };
-export type NoahCloudJob = { id: string; profile: NoahCloudProfile; version: string; distribution: string; purpose?: typeof NOAH_EVE_ADVICE_PURPOSE; mode: 'probe' | 'run'; state: 'queued' | 'running' | 'returned' | 'failed' | 'cancelled' | 'unknown'; createdAt: number; deadlineAt: number; completedAt?: number; result?: NoahCloudResult; error?: string; calls: number; usage?: NoahCloudUsage };
+export type NoahCloudJob = { id: string; profile: NoahCloudProfile; version: string; distribution: string; purpose?: typeof NOAH_EVE_ADVICE_PURPOSE; mode: 'probe' | 'run'; state: 'queued' | 'running' | 'returned' | 'failed' | 'cancelled' | 'unknown'; createdAt: number; deadlineAt: number; completedAt?: number; activeMs?: number; result?: NoahCloudResult; error?: string; calls: number; usage?: NoahCloudUsage };
 /** 1 件で使ったモデルの量（無料のクラウドで数える。有料の Containers 版はまだ数えない）。 */
 export type NoahCloudUsage = { inputTokens: number; outputTokens: number; neurons: number };
 /** 実行器から届いた usage を確かめる（おかしければ null。結果そのものは捨てない）。 */

@@ -125,7 +125,9 @@ export class NoahFreeCloudJob extends NoahCloudJob {
       const job = await this.ctx.blockConcurrencyWhile(async () => {
         const current = await this.ctx.storage.get('job');
         if (!current || current.state !== 'queued') return null;
-        await this.ctx.storage.put('job', { ...current, state: 'running' });
+        const startedAt = Date.now();
+        if (current.trial && startedAt >= current.deadlineAt) return null;
+        await this.ctx.storage.put('job', { ...current, state: 'running', startedAt });
         await this.ctx.storage.setAlarm(current.deadlineAt); return current;
       });
       if (!job) return;
