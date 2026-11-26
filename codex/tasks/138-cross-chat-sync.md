@@ -90,10 +90,10 @@ PR #64のMac接続・アイコンは#76にも含まれる。両方の履歴を�
 - 11月26日05:03（日本時間）に [PR #80](https://github.com/iceiceice999/rock/pull/80) を含む main `fe7ffba6f9` を第243版として公開。保存ソース `84d7392f0d` と共通のtreeは `62dfaa530c72bcb5042452eea816d1d54ba2c04e`。[最終CI](https://github.com/iceiceice999/rock/actions/runs/45689267883)は5,560件成功・失敗0・スキップ5。公開後、390pxと1280pxでホーム・Mac接続・収益パックを確認した。
 - 11月26日17:06に [PR #81](https://github.com/iceiceice999/rock/pull/81) の main `13f2c6dd97` を第244版として公開。Sitesの保存ソースは `196fa0401d`、共通のtreeは `b8f3534f1b8eb3c24d34a78e8173505476b4e027`。本番30経路の応答と公開sitemapの8入口を確認した。
 
-同日付の共有Wordは `outputs/avokado-business-design/` に置く。第244版の公開時点に合わせて更新した3冊は、次のSHA-256で識別する。Gitの仕様正本は引き続きMarkdownである。
+共有フォルダの `outputs/avokado-business-design/` にあるWordと同じファイルを、Gitの [docs/avokado-business-design/](../../docs/avokado-business-design/) から取得できる。第244版の公開時点に合わせて更新した3冊は、次のSHA-256で識別する。Gitの仕様正本は引き続きMarkdownである。
 
 | Wordファイル | SHA-256 |
 | --- | --- |
-| `avokado-business-plan-2026-11-26.docx` | `a5f62083db437658d289e0dd5cc798532cdfc60faff313d9edef74a7586a7608` |
-| `avokado-product-spec-2026-11-26.docx` | `a3114afd33a298747f8f89c16147c96a936144b7ee1427d624b3445128a94edd` |
-| `avokado-system-design-2026-11-26.docx` | `e36b1c41d0eb425c0346c7be6849cfdf74ea18d459378a60c76c7617b8d4e559` |
+| [avokado-business-plan-2026-11-26.docx](../../docs/avokado-business-design/avokado-business-plan-2026-11-26.docx) | `a5f62083db437658d289e0dd5cc798532cdfc60faff313d9edef74a7586a7608` |
+| [avokado-product-spec-2026-11-26.docx](../../docs/avokado-business-design/avokado-product-spec-2026-11-26.docx) | `a3114afd33a298747f8f89c16147c96a936144b7ee1427d624b3445128a94edd` |
+| [avokado-system-design-2026-11-26.docx](../../docs/avokado-business-design/avokado-system-design-2026-11-26.docx) | `e36b1c41d0eb425c0346c7be6849cfdf74ea18d459378a60c76c7617b8d4e559` |

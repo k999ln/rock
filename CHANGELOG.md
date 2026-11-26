@@ -26,6 +26,8 @@
 
 - 最新`origin/main`を土台にローカル設計・収益パックを`avokdo`へ統合。旧`avokado-main`と35ファイルを復元用に保全し、VS Codeの単一入口`avokado.code-workspace`と配置表を追加。ローカルtask番号を131・132へ整理（task133、PR未作成）。
 
+- 第244版の共有Word 3冊をGitに収録し、[設計索引](docs/README.md#共有word-3冊)と[ハッシュ台帳](codex/tasks/138-cross-chat-sync.md)から開けるようにした（[PR #88](https://github.com/iceiceice999/rock/pull/88)）。
+
 ## 2026-11-25
 
 - ルートに Claude Code 用の `CLAUDE.md` を追加（Opus / Noelle。本人指示「これ全部とりこんで」）。「Fable 5.2必須プロンプト100選」を作業規則に整理し、冒頭で `AGENTS.md` を読み込み、食い違ったら `AGENTS.md` を優先と明記。このリポジトリでは `progress.txt`・`tests.json`・`init.sh` を作らず、記録は PR 本文と CHANGELOG に残す形に合わせた。コードの変更はなし。（旧リポジトリ k999ln/rock の PR #408 から移した。本人「この3日間の成果ぜんぶgitにあげて」） [PR #71](https://github.com/iceiceice999/rock/pull/71)
