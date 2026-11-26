@@ -85,3 +85,28 @@ void test('public menu has one home entry and no separate discovery or timeline 
   assert.ok(shell.find('form').every(node=>node.props.action==='/noah'));
   assert.ok(shell.find('input').every(node=>node.props.defaultValue==='資料'));
 });
+
+void test('all Noah pages keep every primary destination in one top menu without a sidebar or bottom tabs', () => {
+  for (const mode of ['public', 'local']) for (const pathname of ['/noah', '/noah/my', '/noah/activity', '/noah/saved', '/noah/profile', '/noah/preferences', '/noah/engineering', '/noah/discover/agent', '/noah/public/my']) {
+    const ui = screen({modules:{'next/navigation':{usePathname:()=>pathname},'@/lib/noah-surface':surface}});
+    const shell = ui.mount('components/noah-shell.tsx',{mode,children:'PAGE CONTENT'});
+    assert.equal(shell.find('aside').length, 0, pathname);
+    assert.equal(shell.find('header').length, 1, pathname);
+    assert.ok(!shell.nodes().some(node=>['rail','desktopNav','bottomNav'].includes(node.props.className)), pathname);
+    const [trigger] = shell.find('button').filter(node=>node.props['aria-label']==='メニュー');
+    assert.ok(trigger, pathname);
+    const panel = shell.find('div').find(node=>node.props.id===trigger.props.popoverTarget && node.props.popover==='auto');
+    assert.ok(panel && shell.nodes(shell.find('header')[0]).includes(panel), pathname);
+    const base = pathname.startsWith('/noah/public') ? '/noah/public' : '/noah';
+    const menuLinks = shell.nodes(panel).filter(node=>node.type==='a');
+    const urls = menuLinks.map(node=>node.props.href);
+    const destinations = mode==='public'||base==='/noah/public' ? [base,'/noah/engineering',`${base}/my?view=agents`,`${base}/activity`,`${base}/saved?tab=results`,`${base}/preferences`] : [base,`${base}/activity`,`${base}/saved`,`${base}/registration`,`${base}/preferences`];
+    for (const href of destinations) assert.equal(urls.filter(url=>url===href).length,1,`${pathname} → ${href}`);
+    assert.equal(shell.find('nav').length,1,pathname);
+    assert.equal(shell.find('a').filter(node=>node.props.href===`${base}/profile`).length,1,pathname);
+    let closed=0;panel.props.ref.current={hidePopover(){closed++;}};
+    for (const link of menuLinks) link.props.onClick();
+    assert.equal(closed,menuLinks.length);
+    assert.match(shell.text(),/PAGE CONTENT/);
+  }
+});
