@@ -5,6 +5,7 @@ import { createNoahFirstEarningApi } from '../lib/noah-first-earning-api.ts';
 import { FIRST_EARNING_LIMIT_MS, noahFirstEarningStore } from '../lib/noah-first-earning.ts';
 import { createNoahCloudApi, createNoahCloudResultApi } from '../lib/noah-cloud-api.ts';
 import { NOAH_CLOUD_PROFILES, NOAH_EVE_HERMES_PROJECT } from '../lib/noah-cloud-contract.ts';
+import { NoahAgentError } from '../lib/noah-agent-upload.ts';
 import { OWNER_SCOPE_HEADER, ownerScopeFor } from '../lib/owner-intent.ts';
 import { fixture } from './fixtures/noah/intake.mjs';
 
@@ -56,7 +57,9 @@ void test('only an independently checked bank deposit unlocks the offer; seller 
   const key = 'test-only-secret-'.repeat(3), starts = [];
   const cloud = createNoahCloudApi({
     db: w.f.db, now: w.f.time, authenticate: w.authenticate, firstEarning: true, freeRuntime: true, receiptKey: key,
-    authorize: async () => {},
+    authorize: async (_owner, _target, action, _digest, confirmed) => {
+      if (action === 'run' && !confirmed) throw new NoahAgentError('実行する内容を確認してください。', 409);
+    },
     directory: async () => [{ card: { id: project, href: profile.repository, name: 'Hermes', sources: [] }, families: [] }],
     runtime: async input => {
       if (input.action === 'status') return Response.json({ trialProtocol: 1 });
@@ -64,21 +67,26 @@ void test('only an independently checked bank deposit unlocks the offer; seller 
       return Response.json({ id: input.jobId, profile: 'hermes', version: profile.version, distribution: profile.sha256, mode: 'run', state: 'running', calls: 0 });
     },
   });
-  const start = jobId => request(cloudPath, seller, { action: 'start', projectId: project, jobId, connectionId: id(80), prompt: '制作例' }).then(cloud);
-  assert.equal((await start(id(81))).status, 202);
+  const start = (jobId, confirm = false) => request(cloudPath, seller, {
+    action: 'start', projectId: project, jobId, connectionId: id(80), prompt: '制作例', ...(confirm ? { confirm: true } : {}),
+  }).then(cloud);
+  const confirmation = await start(id(81));
+  assert.equal(confirmation.status, 409);
+  assert.equal((await confirmation.json()).confirmationRequired, true);
+  assert.equal((await start(id(81), true)).status, 202);
   assert.equal(starts[0].trial.ms, 1000);
-  assert.equal((await start(id(82))).status, 429);
+  assert.equal((await start(id(82), true)).status, 429);
   assert.equal(starts.length, 1);
   const result = createNoahCloudResultApi({ db: w.f.db, receiptKey: key, now: w.f.time });
-  const receipt = () => result(new Request(origin + cloudPath + '/result', {
+  const receipt = (activeMs = 1000, text = '成果物') => result(new Request(origin + cloudPath + '/result', {
     method: 'POST', headers: { Authorization: `Bearer ${key}` },
     body: JSON.stringify({
       ticket: starts[0].receipt,
-      job: { id: id(81), profile: 'hermes', version: profile.version, distribution: profile.sha256, mode: 'run', state: 'returned', activeMs: 1000, calls: 1, result: { text: '成果物', files: [], exitCode: 0, calls: 1 } },
+      job: { id: id(81), profile: 'hermes', version: profile.version, distribution: profile.sha256, mode: 'run', state: 'returned', activeMs, calls: 1, result: { text, files: [], exitCode: 0, calls: 1 } },
     }),
   }));
   assert.equal((await receipt()).status, 200);
-  assert.equal((await receipt()).status, 200);
+  assert.equal((await receipt(0, '重複通知で差し替えない')).status, 200);
   assert.equal((await w.status()).usedMs, FIRST_EARNING_LIMIT_MS);
   const saved = await request(`${cloudPath}?projectId=${project}&jobId=${id(81)}`, seller).then(cloud);
   assert.equal((await saved.json()).job.result.text, '成果物');
@@ -92,7 +100,28 @@ void test('only an independently checked bank deposit unlocks the offer; seller 
   const confirmed = await w.use(reviewer, 'verifyBank', { reference: 'case-000001', checked: true });
   assert.equal(confirmed.offerPaidPlan, true);
   assert.equal(confirmed.amountYen, 3900);
-  assert.equal((await w.use(reviewer, 'returnBank')).offerPaidPlan, false);
+  assert.equal((await w.post(reviewer, 'verifyBank', {
+    scope: w.scope, revision: reported.revision, reference: 'case-000001', checked: true,
+  })).status, 409);
+  const returned = await w.use(reviewer, 'returnBank');
+  assert.equal(returned.offerPaidPlan, false);
+  assert.equal((await w.post(reviewer, 'returnBank', { scope: w.scope, revision: confirmed.revision })).status, 409);
+});
+
+void test('the reviewer can cancel and restart an invited case without duplicating its transaction record', async t => {
+  const w = await setup(t);
+  await w.use(reviewer, 'enroll');
+  const contracted = await w.use(reviewer, 'contract', { reference: 'coconala-cancel-1' });
+  assert.equal((await w.post(seller, 'cancel', { revision: contracted.revision })).status, 403);
+  const cancelled = await w.use(reviewer, 'cancel');
+  assert.equal(cancelled.stage, 'cancelled');
+  assert.equal(cancelled.availableMs, 0);
+  assert.equal(cancelled.offerPaidPlan, false);
+  assert.equal((await w.post(reviewer, 'cancel', { scope: w.scope, revision: contracted.revision })).status, 409);
+  const restarted = await w.use(reviewer, 'restart');
+  assert.equal(restarted.stage, 'preparing');
+  const second = await w.use(reviewer, 'contract', { reference: 'coconala-cancel-1' });
+  assert.equal(second.stage, 'contracted');
 });
 
 void test('reservations are atomic and shared across runtimes, replays and calendar days', async t => {

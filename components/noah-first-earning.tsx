@@ -113,12 +113,13 @@ export default function NoahFirstEarning() {
       {!progress && <section className={styles.task}>
         {reviewing
           ? <button className={styles.primary} disabled={loading} onClick={() => void update('enroll')}>この利用者を登録する</button>
-          : <><p>担当者に確認コードを伝えると、初回の仕事を始められます。</p><label className={formStyle.form}>利用者の確認コード<input value={state.ownerScope} readOnly onFocus={event => event.currentTarget.select()} /></label></>}
+          : <><p>この試行への参加に同意する場合だけ、担当者に確認コードを伝えてください。担当者が登録するまで仕事や取引は始まりません。</p><label className={formStyle.form}>利用者の確認コード<input value={state.ownerScope} readOnly onFocus={event => event.currentTarget.select()} /></label></>}
       </section>}
       {progress && <section className={styles.task}>
         {!reviewing && progress.offerPaidPlan && progress.amountYen !== null
           ? <div className={formStyle.offer} aria-live="polite">
             <h2>初めての売上 ¥{progress.amountYen.toLocaleString('ja-JP')} が口座に入りました</h2>
+            <p>本人の報告を別の担当者が照合した、今回の手取りの実績です。収益予測や分配額ではありません。</p>
             <p>次の案件に使う有料クラウドプランは、契約受付を準備中です。</p>
           </div>
           : <>
