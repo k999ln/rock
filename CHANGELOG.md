@@ -1,5 +1,7 @@
 ## 2026-11-26
-- Noahの既存12画面に星座名の短いURLを割り当て、人型アイコンと旧プロフィールURLを `/aries` に接続（task139）。
+- Noahの既存12画面に星座名の短いURLを割り当て、人型アイコンと旧プロフィールURLを `/aries` に接続（task139、[PR #89](https://github.com/iceiceice999/rock/pull/89)）。
+
+- Noah Runnerの接続承認URLが公開ページ制限で404になる回帰を修正。接続コードの受け渡しと未知の配下URLの拒否を検証（task139、[PR #87](https://github.com/iceiceice999/rock/pull/87)）。
 
 - Noahの保存情報の読込中・失敗時に再入力を求めず、Safari/Chromeの自動入力にプロフィールとAgent登録を対応。Chrome標準の自動入力・保存・再利用を390px/1280pxで検証（task136、[PR #82](https://github.com/iceiceice999/rock/pull/82)。未公開、Safari実機は未検証）。
 
