@@ -1,4 +1,5 @@
 ## 2026-11-26
+- Eveでの新規Agent開発・収益見込み・農家への支払いとNoahの定期便を、現行台帳と照合して設計。実装と実資金の受入は今後（[PR #100](https://github.com/iceiceice999/rock/pull/100)）。
 - NoahホームのToday・注目・目的別・タイムラインを一つのAgent一覧へ統合。利用できる仕事はカード内に表示し、スマホ上部メニューの重なりを解消（[PR #97](https://github.com/iceiceice999/rock/pull/97)）。
 
 - Noahの既存12画面に星座名の短いURLを割り当て、人型アイコンと旧プロフィールURLを `/aries` に接続。Sites v251 で公開し、12経路を本番で確認（[対応表と配備記録](codex/tasks/139-main-public-pages.md#noahの星座名url)、[PR #89](https://github.com/iceiceice999/rock/pull/89)）。
