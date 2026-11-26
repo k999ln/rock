@@ -15,6 +15,7 @@ import { resetAccountHandoffs } from '@/lib/account-handoff';
 import styles from './rockstar-account.module.css';
 
 type Mode = 'signup' | 'add' | 'recover' | 'login';
+type Kind = 'password' | 'passkey';
 type Access = { signedIn: boolean; method?: string; recoveryConfigured?: boolean; passwordLogin?: { handle: string } | null; credentials?: { id: string; label: string; createdAt: number }[] };
 async function post<T = Record<string, unknown>>(input: unknown): Promise<T> {
   const response = await fetch('/api/os/access', { method: 'POST', credentials: 'same-origin', cache: 'no-store', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(input) });
@@ -42,13 +43,15 @@ function message(value: unknown) {
 export default function RockstarAccount({ service = 'os' }: { service?: 'os' | 'noah' } = {}) {
   const {t}=useNoahLocale();
 
-  const query = useSearchParams().toString();
+  const params = useSearchParams();
+  const query = params.toString();
   const noah = service === 'noah';
-  const returnNavigation = noah ? { href: noahReturnPath(new URLSearchParams(query).get('returnTo')), label: 'Noahへ戻る' } : accountReturnNavigation(query);
+  const returnNavigation = noah ? { href: noahReturnPath(params.get('returnTo') ?? '/noah/profile'), label: 'Noahへ戻る' } : accountReturnNavigation(query);
   const accountPath = noah ? `/noah/account?${new URLSearchParams({ returnTo: returnNavigation.href })}` : '/account';
   const [access, setAccess] = useState<Access | null>(null);
-  const [mode, setMode] = useState<Mode>(noah || new URLSearchParams(query).get('mode') === 'login' ? 'login' : 'signup');
-  const [kind, setKind] = useState<'password' | 'passkey'>('password');
+  const [mode, setMode] = useState<Mode>(noah || params.get('mode') === 'login' ? 'login' : 'signup');
+  const [kind, setKind] = useState<Kind>('password');
+  const [choosing, setChoosing] = useState(noah && params.get('mode') !== 'login');
   const [handle, setHandle] = useState('');
   const [secret, setSecret] = useState('');
   const [confirmation, setConfirmation] = useState('');
@@ -74,25 +77,30 @@ export default function RockstarAccount({ service = 'os' }: { service?: 'os' | '
     return () => window.clearTimeout(timer);
   }, []);
   const signedIn = access?.signedIn === true;
+  const showChoices = choosing && !signedIn;
   const configured = Boolean(access?.passwordLogin);
   const enteringPassword = kind === 'password' && !(signedIn && configured && mode === 'add');
-  async function authenticate() {
+  async function authenticate(authMode = mode, authKind = kind) {
     if (busy) return;
-    if (kind === 'password' && mode !== 'login' && secret !== confirmation) { setError('パスワードの確認が一致しません。'); return; }
+    if (authKind === 'password' && authMode !== 'login' && secret !== confirmation) { setError('パスワードの確認が一致しません。'); return; }
     setBusy(true); setError('');
     try {
       let result: { recoveryCode?: string | null };
-      if (kind === 'password') {
-        result = await post({ action: 'password', mode, handle, password: secret, ...(mode === 'recover' ? { recoveryCode: recoveryInput.trim(), confirmRevoke } : {}) });
+      if (authKind === 'password') {
+        result = await post({ action: 'password', mode: authMode, handle, password: secret, ...(authMode === 'recover' ? { recoveryCode: recoveryInput.trim(), confirmRevoke } : {}) });
       } else {
-        const options = await post<{ challengeId: string; publicKey: Record<string, unknown> }>({ action: 'options', mode, ...(mode === 'recover' ? { recoveryCode: recoveryInput.trim(), confirmRevoke } : {}) });
-        const credential = mode === 'login' ? await getPasskeyAssertion(options.publicKey) : await createPasskey(options.publicKey);
+        const options = await post<{ challengeId: string; publicKey: Record<string, unknown> }>({ action: 'options', mode: authMode, ...(authMode === 'recover' ? { recoveryCode: recoveryInput.trim(), confirmRevoke } : {}) });
+        const credential = authMode === 'login' ? await getPasskeyAssertion(options.publicKey) : await createPasskey(options.publicKey);
         result = await post({ action: 'verify', challengeId: options.challengeId, credential });
       }
-      if (mode === 'recover') resetAccountHandoffs(window.sessionStorage);
+      if (authMode === 'recover') resetAccountHandoffs(window.sessionStorage);
       if (noah) noahHaptic('success');
+      if (noah && !signedIn && !result.recoveryCode) {
+        window.location.replace(returnNavigation.href);
+        return;
+      }
       setRecoveryCode(result.recoveryCode ?? null); setComplete(true); setSaved(false);
-      await refresh();
+      if (!noah || signedIn) await refresh();
     } catch (value) { setError(message(value)); }
     finally { setSecret(''); setConfirmation(''); setRecoveryInput(''); setBusy(false); }
   }
@@ -107,6 +115,11 @@ export default function RockstarAccount({ service = 'os' }: { service?: 'os' | '
     } catch (value) { setError(message(value)); setBusy(false); }
   }
   function change(nextMode: Mode, nextKind = kind) { setMode(nextMode); setKind(nextKind); setError(''); setComplete(false); setSecret(''); setConfirmation(''); }
+  function select(nextMode: Mode, nextKind: Kind) {
+    change(nextMode, nextKind);
+    setChoosing(false);
+  }
+  function returnToNoah() { window.location.replace(returnNavigation.href); }
   async function revoke(id: string) {
     setBusy(true); setError('');
     try { await post({ action: 'revokeCredential', id }); await refresh(); }
@@ -118,17 +131,28 @@ export default function RockstarAccount({ service = 'os' }: { service?: 'os' | '
       : <nav className={styles.top}><Link href="/noah"><img src="/company-mark.png" alt="" width="28" height="28" />Noah</Link><Link href="/os/eve">Eve</Link><Link href={returnNavigation.href}>{t(returnNavigation.label)}</Link></nav>}
     <section className={styles.card} aria-labelledby="account-title" aria-busy={busy}>
       <p className={styles.eyebrow}>{noah ? 'NOAH ACCOUNT' : 'YOUR OWN SPACE'}</p>
-      <h1 id="account-title">{complete || configured ? noah ? t("あなたのNoahへ。") : t("自分のNoahとEveへ。") : mode === 'login' ? t("おかえりなさい。") : mode === 'recover' ? t("続きを、取り戻そう。") : noah ? t("あなたの成果を、ここに。") : t("登録して、はじめよう。")}</h1>
+      <h1 id="account-title">{showChoices && !recoveryCode && !complete ? t("利用開始") : complete || configured ? noah ? t("あなたのNoahへ。") : t("自分のNoahとEveへ。") : mode === 'login' ? t("おかえりなさい。") : mode === 'recover' ? t("続きを、取り戻そう。") : noah ? t("あなたの成果を、ここに。") : t("登録して、はじめよう。")}</h1>
       <p className={styles.description}>{noah ? signedIn ? t("Agentとの仕事と成果を引き継げます。") : t("Agentの接続と成果を保存できます。閲覧だけなら登録は不要です。") : signedIn ? t("今までの会話・仕事・成果を引き継ぎます。") : t("自分のNoahとEveを、PixelでもWebでも。ChatGPTアカウントは必要ありません。")}</p>
       {signedIn && !recoveryCode && <NoahContractLinks />}
       {recoveryCode ? <div className={styles.notice}>
         <h2>{t("復旧コードを安全な場所に保存")}</h2><p>{t("ログイン方法を失ったときに必要です。一度だけ表示します。パスワード管理アプリなどへ保存し、チャットや投稿には送らないでください。")}</p>
         <textarea aria-label={t("復旧コード")} value={recoveryCode} readOnly rows={3} spellCheck={false} />
-        <label><input type="checkbox" checked={saved} onChange={e => setSaved(e.target.checked)} />{t("復旧コードを保存しました")}</label>
-        <button className={styles.primary} disabled={!saved} onClick={() => window.location.assign(returnNavigation.href)}>{t(returnNavigation.label)}</button>
+        {noah && choosing ? <button className={styles.primary} onClick={returnToNoah}>{t("復旧コードを保存したので戻る")}</button> : <>
+          <label><input type="checkbox" checked={saved} onChange={e => setSaved(e.target.checked)} />{t("復旧コードを保存しました")}</label>
+          <button className={styles.primary} disabled={!saved} onClick={() => window.location.assign(returnNavigation.href)}>{t(returnNavigation.label)}</button>
+        </>}
       </div> : complete ? <div className={styles.success}>
         <svg width="52" height="52" viewBox="0 0 52 52" aria-hidden="true"><circle cx="26" cy="26" r="24" fill="#e6eee2" /><path d="m15 26 7 7 15-15" fill="none" stroke="#285541" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" /></svg>
         <h2>{t("準備できました。")}</h2><p>{t("同じアカウントで、続きから使えます。")}</p><button className={styles.primary} onClick={() => window.location.assign(returnNavigation.href)}>{t(returnNavigation.label)}</button>
+      </div> : showChoices ? <div className={styles.step}>
+        <div className={styles.choices}>
+          <button className={styles.primary} disabled={busy || !access || !supported} onClick={() => void authenticate('signup', 'passkey')}>
+            {busy ? <NoahLoading compact label={t("確認しています…")} /> : t("パスキーで新しく始める")}
+          </button>
+          <button className={styles.secondary} disabled={busy} onClick={() => select('login', supported ? 'passkey' : 'password')}>{t("ログイン")}</button>
+        </div>
+        {!supported && <p className={styles.hint}>{t("このブラウザではパスキーを使えません。ユーザーIDとパスワードへ切り替えてください。")}</p>}
+        <div className={styles.links}><button disabled={busy} onClick={() => select('signup', 'password')}>{t("ユーザーIDとパスワードで新規登録")}</button></div>
       </div> : <div className={styles.step} key={kind + ':' + mode}>
         {!signedIn && !noah && <div className={styles.tabs} aria-label={t("登録方法")}><button disabled={busy} aria-pressed={mode === 'signup'} onClick={() => change('signup')}>{t("新規登録")}</button><button disabled={busy} aria-pressed={mode === 'login'} onClick={() => change('login')}>{t("ログイン")}</button></div>}
         {signedIn && configured && mode === 'add' && kind === 'password' ? <div className={styles.success}><p>{t("ログインID：")}<strong>@{access?.passwordLogin?.handle}</strong></p><button className={styles.primary} onClick={() => window.location.assign(returnNavigation.href)}>{t(returnNavigation.label)}</button></div> : <form onSubmit={e => { e.preventDefault(); void authenticate(); }} className={styles.form}>
@@ -138,11 +162,11 @@ export default function RockstarAccount({ service = 'os' }: { service?: 'os' | '
           {mode !== 'login' && mode !== 'recover' && <p className={styles.hint}>{signedIn ? noah ? t("今のデータへログイン方法を追加します。") : t("今のデータへログイン方法を追加します。Pixelの接続は保持します。") : t("登録だけで請求や有料実行は始まりません。")}</p>}
           <button className={styles.primary} type="submit" disabled={busy || !access || kind === 'passkey' && !supported}><span className={busy && !noah ? styles.spinner : undefined} aria-hidden="true" />{busy ? noah ? <NoahLoading compact label={t("確認しています…")} /> : t("確認しています…") : kind === 'password' ? mode === 'login' ? t("ログイン") : mode === 'recover' ? t("復旧して続ける") : t("登録して続ける") : mode === 'login' ? t("パスキーでログイン") : mode === 'recover' ? t("新しいパスキーで復旧") : t("パスキーを追加")}</button>
         </form>}
-        <div className={styles.links}><button disabled={busy} onClick={() => change(mode === 'recover' ? 'recover' : signedIn ? 'add' : mode, kind === 'password' ? 'passkey' : 'password')}>{kind === 'password' ? t("パスキーを使う") : t("ユーザーIDとパスワードを使う")}</button><button disabled={busy} onClick={() => change(mode === 'recover' ? signedIn ? 'add' : 'login' : 'recover')}>{mode === 'recover' ? t("戻る") : t("ログインできないとき")}</button>{signedIn && <button disabled={busy} onClick={() => void logout()}>{t("ログアウト")}</button>}</div>
+        <div className={styles.links}><button disabled={busy} onClick={() => change(mode === 'recover' ? 'recover' : signedIn ? 'add' : mode, kind === 'password' ? 'passkey' : 'password')}>{kind === 'password' ? t("パスキーを使う") : t("ユーザーIDとパスワードを使う")}</button><button disabled={busy} onClick={() => change(mode === 'recover' ? signedIn ? 'add' : 'login' : 'recover')}>{mode === 'recover' ? t("戻る") : t("ログインできないとき")}</button>{signedIn && <button disabled={busy} onClick={() => void logout()}>{t("ログアウト")}</button>}{noah && !signedIn && <button disabled={busy} onClick={() => { setChoosing(true); setError(''); }}>{t("利用開始に戻る")}</button>}</div>
       </div>}
       {error && <p role="alert" className={styles.error}>{t(error)}</p>}
       {signedIn && !recoveryCode && <details className={styles.credentials}><summary>{noah ? t("ログイン方法の管理") : t("アカウントと端末の管理")}</summary><p>{t("パスキー：")}{access?.credentials?.length ?? 0}{t("個")}</p><ul>{access?.credentials?.map(c => <li key={c.id}><span>{c.label}<small>{new Date(c.createdAt).toLocaleDateString('ja-JP')} {t("登録")}</small></span><button disabled={busy || (access.credentials?.length ?? 0) < 2} onClick={() => void revoke(c.id)}>{t("解除")}</button></li>)}</ul><button disabled={busy} onClick={() => change('login', 'passkey')}>{t("パスキーで本人確認")}</button>{!noah && <p><Link href="/connect">{t("接続済みの端末を管理")}</Link></p>}</details>}
-      {!signedIn && !recoveryCode && <details className={styles.credentials}><summary>{t("以前のアカウントを使っていた方")}</summary><p>{t("既存アカウントでログイン後、同じデータへログイン方法を追加できます。")}</p><a href={`/signin-with-chatgpt?return_to=${encodeURIComponent(accountPath)}`} target="_top">{t("以前のデータを引き継ぐ")}</a></details>}
+      {!signedIn && !recoveryCode && !showChoices && <details className={styles.credentials}><summary>{t(noah ? "ほかのログイン方法" : "以前のアカウントを使っていた方")}</summary><p>{t("既存アカウントでログイン後、同じデータへログイン方法を追加できます。")}</p><a href={`/signin-with-chatgpt?return_to=${encodeURIComponent(noah ? returnNavigation.href : accountPath)}`} target="_top">{t(noah ? "ChatGPTでログイン" : "以前のデータを引き継ぐ")}</a></details>}
     </section><p className={styles.footer}>{noah ? 'Noah · by avokado' : 'Noah・Eve · by avokado'}</p>
   </main>;
 }

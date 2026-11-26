@@ -55,13 +55,13 @@ void test('the list: sections, one main button per card, badges in words, where 
     assert.deepEqual(buttonsIn(page, card).map((node) => page.text(node)), ['接続']);
     const facts = page.nodes(card).filter((node) => node.type === 'li').map((node) => page.text(node));
     // 印・動く所・料金は、必ず文字で出る。
-    assert.match(facts[0], /^(あと 1 タップ（サインイン）|まだ誰も動かしていない)$/);
+    assert.match(facts[0], /^(ログインまたは新規登録が必要|まだ誰も動かしていない)$/);
     assert.match(facts[1], /^相手のサーバー（agent-\d\.example\.com）$/);
     assert.equal(facts[2], '無料');
     assert.match(page.text(card), /提供: test\.provider/);
   }
   const of = (name) => cards(page).find((card) => page.text(card).includes(name));
-  assert.match(page.text(of('Agent 2')), /あと 1 タップ（サインイン）/, '動いた物を、未サインインの人が見た時');
+  assert.match(page.text(of('Agent 2')), /ログインまたは新規登録が必要/, '動いた物を、未サインインの人が見た時');
   assert.match(page.text(of('Agent 1')), /押すだけで試せる.*道具 2 個/);
   assert.doesNotMatch(page.text(of('Agent 3')), /押すだけで試せる/);
   // 出どころと、申し出の窓口、Mac で動かす Agent への道。
@@ -275,14 +275,14 @@ void test('not signed in: pressing 接続 goes to sign-in, and the detail screen
   const server = mcpServer();
   const w = await world(t, { [hostOf(1)]: server, [hostOf(2)]: mcpServer() });
   const detailPath = `/noah/ready/agent?id=${encodeURIComponent(familyId(1))}`;
-  const { session, ui } = browser(w, null);
+  const { session, ui } = browser(w, `noah-browser:${'a'.repeat(64)}`);
   const page = ui.mount(LIST);
   await page.flush();
   const [connect] = buttonsIn(page, cards(page).find((node) => page.text(node).includes('Agent 1')));
   connect.props.onClick();
   await page.flush();
   // サインインの画面へ移る。戻る先は、その Agent の詳細。置くのは、操作 ID と Agent の ID と時刻だけ。何も送らない。
-  assert.deepEqual(ui.visits, [`/signin-with-chatgpt?return_to=${encodeURIComponent(detailPath)}`]);
+  assert.deepEqual(ui.visits, [`/noah/account?returnTo=${encodeURIComponent(detailPath)}`]);
   const handoff = JSON.parse(ui.storage.get('noah-connect-handoff'));
   assert.deepEqual(Object.keys(handoff).sort((a, b) => a.localeCompare(b)), ['agentId', 'at', 'id']);
   assert.deepEqual([handoff.agentId, handoff.at], [familyId(1), ui.time()]);
@@ -335,8 +335,8 @@ void test('a handoff is used only for its own agent, only once, and only for ten
   await page.flush();
   assert.deepEqual([posts(anonymous.ui).length, anonymous.ui.storage.has('noah-connect-handoff'), w.rows().length], [0, true, 0]);
   // 戻る先に渡すのは、/noah/ready で始まるパスだけ。
-  assert.equal(view.noahReadyAccountHref('/noah/ready/agent?id=x'), '/signin-with-chatgpt?return_to=%2Fnoah%2Fready%2Fagent%3Fid%3Dx');
-  for (const path of ['https://evil.example/noah/ready', '//evil.example', '/noah/readymade', '/account', '/noah/ready\r\n/x']) assert.equal(view.noahReadyAccountHref(path), '/signin-with-chatgpt?return_to=%2Fnoah%2Fready', path);
+  assert.equal(view.noahReadyAccountHref('/noah/ready/agent?id=x'), '/noah/account?returnTo=%2Fnoah%2Fready%2Fagent%3Fid%3Dx');
+  for (const path of ['https://evil.example/noah/ready', '//evil.example', '/noah/readymade', '/account', '/noah/ready\r\n/x']) assert.equal(view.noahReadyAccountHref(path), '/noah/account?returnTo=%2Fnoah%2Fready', path);
 });
 
 void test('the detail screen: where the input goes is shown before connecting; then the tools; then cutting', async (t) => {
@@ -423,8 +423,8 @@ void test('Enzo’s example survives sign-in and prefills only the verified sear
   const handoff = JSON.parse(ui.storage.get('noah-connect-handoff'));
   assert.equal(handoff.agentId, id);
   const login = new URL(ui.visits.at(-1), 'https://noah.test');
-  assert.equal(login.pathname, '/signin-with-chatgpt');
-  assert.equal(new URL(login.searchParams.get('return_to'), 'https://noah.test').searchParams.get('id'), id);
+  assert.equal(login.pathname, '/noah/account');
+  assert.equal(new URL(login.searchParams.get('returnTo'), 'https://noah.test').searchParams.get('id'), id);
   assert.deepEqual(Object.keys(JSON.parse(ui.storage.get(`noah-agent-first-request:${id}`))).sort(), ['at', 'example']);
   assert.equal(posts(ui).length, 0);
 
@@ -556,7 +556,9 @@ void test('what the button shows for every state of a connection', () => {
   assert.deepEqual(show('blocked', { error: 'この Agent は、取り下げられました。使えません。' }), { label: null, disabled: true, action: null, note: 'この Agent は、取り下げられました。使えません。' });
   assert.deepEqual(show(null, { listed: false }), { label: null, disabled: true, action: null, note: 'この Agent は、今はつなげません。' });
   // 印は、必ず文字。
-  assert.deepEqual(['one_click', 'taps', 'setup', 'unverified', 'blocked'].map((badge) => view.noahBadgeText({ badge, taps: 1, need: 'サインイン' })), ['1 クリック', 'あと 1 タップ（サインイン）', '準備が必要（サインイン）', 'まだ誰も動かしていない', 'つなげません']);
+  assert.deepEqual(['one_click', 'taps', 'setup', 'unverified', 'blocked'].map((badge) => view.noahBadgeText({ badge, taps: 1, need: badge === 'one_click' ? null : 'サインイン' })), ['1 クリック', 'ログインまたは新規登録が必要', '準備が必要（サインイン）', 'まだ誰も動かしていない', 'つなげません']);
+  assert.equal(view.noahBadgeText({ badge: 'one_click', taps: 0, need: null }, true), 'ログインまたは新規登録が必要');
+  assert.equal(view.noahBadgeText({ badge: 'taps', taps: 1, need: '許可' }), 'あと 1 タップ（許可）');
   assert.deepEqual([view.noahPriceText({ model: 'free' }), view.noahPriceText({ model: 'one_time', amountMinor: 3000 })], ['無料', '¥3,000']);
 });
 
@@ -767,8 +769,8 @@ void test('sign-in retains the selected shelf job and tool instead of returning 
   const page=ui.mount(DETAIL,{id:familyId(1),tool:'selected tool',from:'pkg:school-work'}); await page.flush();
   await page.click('接続');
   const account=new URL(ui.visits[0],'https://avoado.si');
-  assert.equal(account.pathname, '/signin-with-chatgpt');
-  const back=new URL(account.searchParams.get('return_to'),'https://avoado.si');
+  assert.equal(account.pathname, '/noah/account');
+  const back=new URL(account.searchParams.get('returnTo'),'https://avoado.si');
   assert.equal(back.pathname,'/noah/ready/agent'); assert.equal(back.searchParams.get('id'),familyId(1));
   assert.equal(back.searchParams.get('tool'),'selected tool'); assert.equal(back.searchParams.get('from'),'pkg:school-work');
   assert.equal(posts(ui).length,0);

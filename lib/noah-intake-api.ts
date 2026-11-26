@@ -39,6 +39,7 @@ export function createIntakeApi(deps: IntakeApiDependencies) {
       const reviewer = !!owner && deps.reviewers.includes(owner), url = new URL(request.url);
       if (!noahAllowed(deps.flags, 'list', reviewer)) return json({ error: '見つかりません。' }, 404);
       const ownerScope = owner ? await ownerScopeFor(owner) : null;
+      const accountSignedIn = owner !== null && !owner.startsWith('noah-browser:');
       if (request.method === 'GET') {
         // 運営の画面（審査者だけ）。launch は、見張る数（docs/noah/spec-97-launch-ops.md の 6 章）。数えられない時は null（取り込みの節の、他の行は出す）。
         if (url.searchParams.get('state') === '1') return reviewer ? json({ ...await store.status(url.searchParams), launch: await launch(deps.flags).catch(() => null), warnings: deps.flags.warnings, ownerScope }) : json({ error: '見つかりません。' }, 404);
@@ -49,11 +50,11 @@ export function createIntakeApi(deps: IntakeApiDependencies) {
         }
         const showGeneratedPins = reviewer || await deps.generatedPinsPublic?.().catch(() => false) === true;
         const id = url.searchParams.get('id');
-        if (!id) return json({ ...await store.list(owner, url.searchParams, showGeneratedPins), ownerScope });
+        if (!id) return json({ ...await store.list(owner, url.searchParams, showGeneratedPins), ownerScope, accountSignedIn });
         const detail = await store.detail(id, owner, reviewer, showGeneratedPins);
         const explain = reviewer || (detail.listed && deps.explainPublic);
         const extra = explain ? await deps.explainAgent?.({ id, owner, reviewer }).catch(() => null) : null;
-        return json({ ...detail, ...extra, ownerScope });
+        return json({ ...detail, ...extra, ownerScope, accountSignedIn });
       }
       if (!reviewer || request.headers.get('origin') !== url.origin) return json({ error: '同じNoahから操作してください。' }, 403);
       if (request.headers.get(OWNER_SCOPE_HEADER) !== ownerScope) return json({ error: 'アカウントが変わりました。再読込してください。' }, 409);

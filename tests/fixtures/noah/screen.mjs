@@ -112,6 +112,10 @@ export function screen(options = {}) {
   };
   if (options.matchMedia) context.window.matchMedia = options.matchMedia;
   if (options.IntersectionObserver) context.IntersectionObserver = options.IntersectionObserver;
+  if (options.passkeys) {
+    context.window.PublicKeyCredential = class PublicKeyCredential {};
+    context.window.isSecureContext = true;
+  }
 
   const loaded = new Map();
   function load(file) {

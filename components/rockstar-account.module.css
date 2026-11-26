@@ -275,4 +275,26 @@
 .noah .form input:not([type="checkbox"]) { background:var(--noah-theme-panel, #fff); color:var(--noah-theme-text, #202024); border-color:var(--noah-theme-line, #dddde2); }
 .noah .primary:hover:not(:disabled) { background:#643ab0; box-shadow:none; }
 .noah .top { max-width:520px; }
+.choices {
+  display: grid;
+  grid-template-columns: 3fr 2fr;
+  gap: 10px;
+}
+.choices .primary, .choices .secondary {
+  margin: 0;
+  padding: 12px;
+  min-height: 52px;
+  line-height: 1.4;
+}
+.secondary {
+  border: 1px solid #7546c8;
+  border-radius: 16px;
+  background: var(--noah-theme-panel, #fff);
+  color: var(--noah-theme-info, #643ab0);
+  font: inherit;
+  font-weight: 650;
+  cursor: pointer;
+}
+.secondary:hover:not(:disabled) { background:var(--noah-theme-raised, #f3eefb); }
+.secondary:disabled { opacity:.45; cursor:not-allowed; }
 @media(max-width:600px) { .noah .card { padding:24px 20px; } .noah .card h1 { font-size:26px; } }

@@ -34,7 +34,7 @@ import type { NoahExplanation } from '@/lib/noah-agent-explanation';
 import base from './noah-service.module.css';
 import styles from './noah-ready.module.css';
 
-type Detail = NoahReadyItem & { listed: boolean; website: string | null; connection: NoahReadyConnection | null; ownerScope: string | null; explanation?: NoahExplanation; summaryJa?: string | null; error?: string };
+type Detail = NoahReadyItem & { listed: boolean; website: string | null; connection: NoahReadyConnection | null; ownerScope: string | null; accountSignedIn?: boolean; explanation?: NoahExplanation; summaryJa?: string | null; error?: string };
 // A schematic waveform for the example, independent of calls or audio recordings.
 const WAVEFORM = [8, 14, 20, 10, 29, 44, 24, 17, 36, 56, 70, 51, 32, 59, 85, 68, 47, 29, 39, 72, 100, 78, 55, 74, 47, 28, 41, 66, 49, 33, 23, 39, 51, 30, 18, 11, 23, 16, 9, 5];
 type Loaded = { state: 'loading' } | { state: 'missing' } | { state: 'error' } | { state: 'ready'; detail: Detail };
@@ -110,7 +110,8 @@ export default function NoahReadyDetail({ id, tool = null, from = null, internal
     {loaded.state === 'error' && <div className={base.empty} role="alert"><p>{t(NOAH_READY_TEXT.unavailable)}</p><button type="button" onClick={() => setAttempt((n) => n + 1)}>{t("読み直す")}</button></div>}
   </main>;
 
-  const { detail } = loaded, signedIn = detail.ownerScope !== null;
+  const { detail } = loaded, hasWorkspace = detail.ownerScope !== null;
+  const signedIn = detail.accountSignedIn ?? hasWorkspace;
   const live = connection && connection.state !== 'disconnected' ? connection : null;
   const checked = noahCheckedText(detail.checkedAt);
   const guide = noahDetailGuide(detail.id, locale);
@@ -120,7 +121,7 @@ export default function NoahReadyDetail({ id, tool = null, from = null, internal
   const lead = guide?.summary || starter?.summary || translated || detail.summary;
   const pitch = guide?.headline || starter?.headline;
   const connected = live?.state === 'connected';
-  const facts = [noahBadgeText(detail.connect), detail.connect.placeLabel, guide?.priceLabel || noahPriceText(detail.connect.price), noahUsersText(detail.users), detail.tools > 0 ? `道具 ${detail.tools} 個` : null].filter((text): text is string => !!text);
+  const facts = [noahBadgeText(detail.connect, !signedIn && !live), detail.connect.placeLabel, guide?.priceLabel || noahPriceText(detail.connect.price), noahUsersText(detail.users), detail.tools > 0 ? `道具 ${detail.tools} 個` : null].filter((text): text is string => !!text);
 
   async function cut(current: NoahReadyConnection) {
     if (cutting) return;
@@ -207,8 +208,8 @@ export default function NoahReadyDetail({ id, tool = null, from = null, internal
       {live?.state!=='connected' && <NoahRegistrationSheet agentId={detail.id}/>}
     </article>
 
-    {/* 仕事（この Agent への依頼と成果）。つないでいない時・切った後も、前に受け取った成果を出す。サインインしていない人には、出さない。 */}
-    {signedIn && <div id="noah-agent-work" tabIndex={-1}><NoahWorkList key={`work:${detail.id}`} agentId={detail.id} ownerScope={detail.ownerScope} refresh={asked} /></div>}
+    {/* 仕事（この Agent への依頼と成果）。ブラウザの保存先も含め、本人の成果を出す。 */}
+    {hasWorkspace && <div id="noah-agent-work" tabIndex={-1}><NoahWorkList key={`work:${detail.id}`} agentId={detail.id} ownerScope={detail.ownerScope} refresh={asked} /></div>}
     <details className={styles.agentDetails}>
       <summary>{t('Agentの詳細')}</summary>
       {detail.summary && detail.summary !== lead && <p className={styles.description}>{detail.summary}</p>}

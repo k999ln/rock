@@ -6,7 +6,7 @@
  * 仕様: docs/noah/spec-74-one-click-connect.md の 5.2・6.3・11.4・11.5、spec-96-connect-plan.md の 6 章。
  */
 
-import { noahSignInHref } from './noah-navigation.ts';
+import { noahAccountHref } from './noah-navigation.ts';
 import type { NoahPin } from './noah-pin-scene.ts';
 
 /** 一覧の 1 件（GET /api/noah/intake の items。lib/noah-intake-store.ts の item）。 */
@@ -59,7 +59,8 @@ export const NOAH_READY_TEXT = {
 export const noahSendsToText = (host: string) => `入力は ${host} へ送られます。Noah が送るのは、あなたが入力した内容だけです。`;
 
 /** カードの印（色だけで分けない。必ず文字で出す）。 */
-export function noahBadgeText(connect: Pick<NoahReadyItem['connect'], 'badge' | 'taps' | 'need'>): string {
+export function noahBadgeText(connect: Pick<NoahReadyItem['connect'], 'badge' | 'taps' | 'need'>, needsAccount = false): string {
+  if ((connect.badge === 'one_click' || connect.badge === 'taps') && (needsAccount || connect.need === 'サインイン')) return 'ログインまたは新規登録が必要';
   if (connect.badge === 'one_click') return '1 クリック';
   if (connect.badge === 'taps') return `あと ${connect.taps} タップ${connect.need ? `（${connect.need}）` : ''}`;
   if (connect.badge === 'setup') return `準備が必要${connect.need ? `（${connect.need}）` : ''}`;
@@ -84,7 +85,7 @@ export function noahReadyDetailHref(agentId: string, context: { tool?: string | 
 /** サインインの画面の場所。戻る先に渡すのは、/noah/ready で始まるパスだけ（それ以外は、一覧へ戻す）。 */
 export function noahReadyAccountHref(returnTo: string): string {
   const safe = /^\/noah\/ready(?:[/?#]|$)/.test(returnTo) && !/[\\\r\n]/.test(returnTo) && returnTo.length < 2000 ? returnTo : '/noah/ready';
-  return noahSignInHref(safe);
+  return noahAccountHref(safe);
 }
 
 // ---------------------------------------------------------------------------
