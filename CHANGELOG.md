@@ -1,6 +1,7 @@
 ## 2026-11-27
 - PR #100 の設計監査補正として、Eve需要とファンド候補、容量・出典・canonical Receipt、PAPER/no-deposits、農家/受取人Receipt、catalog gate、候補額の表示境界を明文化。実装・実資金は未着手。
 
+- Noahの購入用カタログをホームのタイムラインへ統合。共通検索・連続スクロールから料金と購入条件を開き、旧marketplace URLも同じ一覧へ転送（task140、[PR #113](https://github.com/iceiceice999/rock/pull/113)）。
 - Noahの審査済みピンを、審査者の一覧・ディレクトリ・詳細へ接続。読む時にも形を確かめ、200件のうち190件以上が合うまで一般表示を閉じる。詳細には同じ図解、日本語の題、「Noah の説明」、「入れる物 → 返る物」、提供者の原文を表示。本番D1と一般公開は変更なし（task131、[PR #109](https://github.com/iceiceice999/rock/pull/109)）。
 - NoahのeSIM案内・登録情報・Agent登録に、保存情報の再利用目的と送信前確認を共通表示。6言語対応と、現行同意版への再同意がない旧プロフィールの自動再利用停止を追加（task11、[PR #96](https://github.com/iceiceice999/rock/pull/96)）。実eSIM契約・発行・クラウド接続は対象外。
 

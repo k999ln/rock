@@ -78,7 +78,7 @@ function NoahPublishedContent({ query = '', order = 'recommended', settings = fa
     {error && <div className={styles.notice} role="alert"><p>{error}</p><button onClick={() => setAttempt(n => n + 1)}>先頭から読み直す</button></div>}
     {!page && !error && <output className={styles.loading}>公開Agentを読み込み中…</output>}
     {!settings && page && page.entries.length > 0 && <NoahAgentPinGrid>{page.entries.map(entry => {
-      const href = `/noah/marketplace?package=${encodeURIComponent(entry.packageKey)}`;
+      const href = `/noah?package=${encodeURIComponent(entry.packageKey)}`;
       const published = new Date(entry.publishedAt);
       const byline = <div className={styles.postHeader}><span className={styles.author}>{entry.author}</span><time className={styles.postMeta} dateTime={published.toISOString()}> · {published.toLocaleDateString('ja-JP')}</time></div>;
       const terms = <><p>{entry.priceNote}</p><div className={styles.researchBadges}><span>v{entry.version}</span><span>{entry.reason}</span>{entry.categories.map(c => <span key={c}>{c}</span>)}</div></>;

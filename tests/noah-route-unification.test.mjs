@@ -28,6 +28,7 @@ void test('Noah pages reuse the original features, including dynamic Tool/code p
   for(const [source,destination] of NOAH_PAGES){
     const file=new URL('../app/noah/'+destination.replace(/:(\w+)/g,'[$1]')+'/page.tsx',import.meta.url);
     assert.equal(existsSync(file),true,destination);
+    if (destination === 'marketplace') { assert.match(readFileSync(file,'utf8'), /permanentRedirect\(noahMarketplaceHref/); continue; }
     assert.ok(readFileSync(file,'utf8').includes('@/app/sky/'+source.replace(/:(\w+)/g,'[$1]')+'/page'),destination);
   }
 });

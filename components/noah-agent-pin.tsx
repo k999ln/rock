@@ -65,7 +65,7 @@ export function NoahAgentPinFace({ id, name, href, prefetch, topic, shape, summa
     {!videoTitle && <strong className={styles.name}>{name}</strong>}
     {summary && !plain && !videoTitle && <span className={styles.summary}>{summary}</span>}
   </>;
-  if (href) return <Link {...attributes} href={href} prefetch={noahDetailTarget(href) ? false : prefetch} onClick={event => {
+  if (href) return <Link {...attributes} href={href} scroll={/^\/noah\?.*(?:package|model)=/.test(href) ? false : undefined} prefetch={noahDetailTarget(href) ? false : prefetch} onClick={event => {
     const preview = { id, name, summary: summary ?? '' };
     const record = noahDetailPreviewRecord(href, preview);
     if (record) try { window.sessionStorage.setItem(NOAH_DETAIL_PREVIEW_KEY, record); } catch { /* Browsing still works without storage. */ }

@@ -18,7 +18,7 @@ export default function NoahReleaseDetail({ digest }: { digest: string }) {
     return()=>c.abort();
   },[digest,attempt]);
   return <main className={styles.page}>
-    <nav className={styles.nav}><Link href="/noah/saved?tab=agents">自分のAgent</Link><Link href="/noah/marketplace">マーケット</Link><Link href="/noah/purchases">購入履歴</Link></nav>
+    <nav className={styles.nav}><Link href="/noah/saved?tab=agents">自分のAgent</Link><Link href="/noah">マーケット</Link><Link href="/noah/purchases">購入履歴</Link></nav>
     {error?<section className={styles.notice}><h1>配布版の利用条件を確認してください</h1><p role="alert">{error}</p><button onClick={()=>setAttempt(n=>n+1)}>再確認</button><p>購入・審査・配布の有効性を確認してから接続します。購入履歴から支払い状況を確認できます。</p></section>:!release?<output>配布版と利用権を確認中…</output>:<>
       <header className={styles.storeProduct}><span className={styles.productMark} aria-hidden="true">
         <NoahPinMotion id={release.packageKey} name={release.manifest.name} summary={release.manifest.summary}
