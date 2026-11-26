@@ -41,8 +41,8 @@ void test('the public home opens available tasks directly with their expected ou
   assert.equal(home.find('time').length, 1);
   assert.equal(home.find('h1', 'この仕事、誰の担当だっけ？').length, 1);
   assert.ok(home.find('h2').some(h => h.props.id === region.props['aria-labelledby']));
-  assert.equal(home.find('a', '専用クラウドを開く')[0].props.href, '/api/noah/cloud-work');
-  assert.equal(home.find('a', 'eSIMでつなぐ専用クラウド')[0].props.href, '/connect');
+  assert.equal(home.find('a', '接続状況を確認')[0].props.href, '/api/noah/cloud-work');
+  assert.equal(home.find('a', 'eSIM専用クラウド（準備中）')[0].props.href, '/connect');
   assert.equal(home.find('a', 'Agentを買う')[0].props.href, '/noah/marketplace');
   const engineering = home.find('a', 'Agentエンジニアリング');
   assert.deepEqual(engineering.map(link => link.props.href), ['/noah/engineering']);
