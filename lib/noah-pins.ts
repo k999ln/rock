@@ -159,7 +159,7 @@ const PATTERN: (keyof NoahPinSources)[] = ['personal', 'popular', 'ran', 'popula
  * 出所を決まった順に混ぜ、同じ Agent を 2 回出さず、同じ提供者が近くに続かないように、同じ分野が sameTopicRun 枚より続かないように並べる。
  * 決まりを守れる候補が無い時は、決まりを緩めて、出所の順に出す（空きを作らない）。size 枚まで。exclude（前の頁で出した物）は出さない。
  */
-export function noahComposePins(sources: NoahPinSources, size: number, exclude: ReadonlySet<string> = new Set()): NoahPinCandidate[] {
+export function noahComposePins(sources: NoahPinSources, size: number, exclude: ReadonlySet<string> = new Set(), personalSlots = Infinity): NoahPinCandidate[] {
   const queues = Object.fromEntries((Object.keys(sources) as (keyof NoahPinSources)[]).map((key) => [key, sources[key].filter((item) => !exclude.has(item.id))])) as NoahPinSources;
   const used = new Set<string>(), out: NoahPinCandidate[] = [];
   const fits = (item: NoahPinCandidate) => {
@@ -177,6 +177,7 @@ export function noahComposePins(sources: NoahPinSources, size: number, exclude: 
     return item;
   };
   for (let slot = 0; out.length < size; slot++) {
+    if (slot >= personalSlots) queues.personal = [];
     const want = PATTERN[slot % PATTERN.length];
     const order: (keyof NoahPinSources)[] = [want, ...PATTERN.filter((key) => key !== want)];
     let item: NoahPinCandidate | null = null;

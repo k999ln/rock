@@ -304,5 +304,5 @@ export function createNoahBoardsStore(deps: BoardsDependencies) {
     return { familyId, hidden: on };
   }
 
-  return { feed, related, boardPicks, pins, boards, board, create, update, remove, save, unsave, follow, hide, recount, rollupIfDue };
+  return { feed, personal, related, boardPicks, pins, boards, board, create, update, remove, save, unsave, follow, hide, recount, rollupIfDue };
 }
