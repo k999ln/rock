@@ -35,12 +35,12 @@ void test('purpose labels translate in all six languages without changing API va
  for(const locale of NOAH_LOCALES){const label=noahTranslate(locale,noahOperationLabel('search_gta6_guide'));assert.ok(label);assert.doesNotMatch(label,/search_gta6_guide/);if(locale!=='ja')assert.notEqual(label,'ゲーム情報を調べる');}
  assert.equal(noahChoiceLabel('character'),'人物');assert.equal(noahChoiceLabel('provider-custom'),'provider-custom');
 });
-void test('home and legacy timeline hashes retain the same home and timeline section',()=>{
+void test('home and legacy timeline hashes retain one home without a second timeline',()=>{
  let hash='';
  const ui=screen({modules:{'./noah-collection-feed':{default:()=>null},'./noah-surface-context':{useNoahSurface:()=>({hash})},'./noah-pin-home':{default:()=>({type:'main',props:{children:'PIN HOME'}})},'./noah-timeline':{default:()=>({type:'main',props:{children:'POST TIMELINE'}})}}});
- for(const mode of ['local','public'])assert.equal(ui.mount('components/noah-home.tsx',{mode}).text(),'PIN HOMEPOST TIMELINE');
- for(const value of ['#timeline','#following','#agents']){hash=value;assert.equal(ui.mount('components/noah-home.tsx').text(),'PIN HOMEPOST TIMELINE');}
- hash='';for(const mode of ['local','public'])assert.equal(ui.mount('components/noah-home.tsx',{mode}).text(),'PIN HOMEPOST TIMELINE');
+ for(const mode of ['local','public'])assert.equal(ui.mount('components/noah-home.tsx',{mode}).text(),'PIN HOME');
+ for(const value of ['#timeline','#following','#agents']){hash=value;assert.equal(ui.mount('components/noah-home.tsx').text(),'PIN HOME');}
+ hash='';for(const mode of ['local','public'])assert.equal(ui.mount('components/noah-home.tsx',{mode}).text(),'PIN HOME');
 });
 
 void test('operation labels distinguish provider tools and translate known purposes without changing IDs', () => {
