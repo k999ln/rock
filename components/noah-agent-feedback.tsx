@@ -155,7 +155,7 @@ export function NoahAgentSignals({
     </div>
   );
 }
-export default function NoahAgentFeedback({ id }: { id: string }) {
+export default function NoahAgentFeedback({ id, embedded = false }: { id: string; embedded?: boolean }) {
   const {t}=useNoahLocale();
 
   const [snapshot, setSnapshot] = useState<{
@@ -207,7 +207,7 @@ export default function NoahAgentFeedback({ id }: { id: string }) {
     })
       .then(async (r) => {
         const d = (await r.json()) as AgentFeedbackPage & { error?: string };
-        if (!r.ok) throw Error(d.error || 'コメントを読み込めませんでした。');
+        if (!r.ok || !d.summary || !Array.isArray(d.comments)) throw Error(d.error || 'コメントを読み込めませんでした。');
         if (!controller.signal.aborted && version === generation.current) {
           setSnapshot({ id, data: d });
           setError('');
@@ -312,6 +312,21 @@ export default function NoahAgentFeedback({ id }: { id: string }) {
       setBusy(false);
     }
   }
+  if (embedded) {
+    const review = data?.comments.find(comment => !comment.deleted && !comment.parentId);
+    return <section id="feedback" className={styles.embeddedPanel} aria-label={t('Agentの評価とコメント')}>
+      <div className={styles.embeddedHeading}>
+        <h2>{t('口コミ・評価')}</h2>
+        <Link href={`/noah/feedback/${id}#feedback`}>{t('口コミを見る・書く')} ↗</Link>
+      </div>
+      <NoahAgentSignals id={id} summary={data?.summary} error={t(error)}
+        onRetry={() => setAttempt(n => n + 1)}
+        onChange={summary => setSnapshot(s => s?.id === id ? { id, data: { ...s.data, summary } } : s)}
+        detailHref={`/noah/feedback/${id}#feedback`} />
+      {review ? <p className={styles.reviewPreview}><strong>{review.author}</strong> {review.content}</p>
+        : <p className={styles.reviewPreview}>{t(error ? '評価を取得できませんでした。' : data ? 'まだコメントはありません。' : 'コメントを読み込んでいます…')}</p>}
+    </section>;
+  }
   return (
     <section
       id="feedback"
@@ -319,9 +334,9 @@ export default function NoahAgentFeedback({ id }: { id: string }) {
       aria-label={t("Agentの評価とコメント")}
     >
       <div className={styles.heading}>
-        <span>COMMUNITY VOICES</span>
-        <h2>{t("みんなの声")}</h2>
-        <p>{data?.agentName ?? "使って感じたことが、次の改善につながる。"}</p>
+        {!embedded && <span>COMMUNITY VOICES</span>}
+        <h2>{t(embedded ? '口コミ・評価' : 'みんなの声')}</h2>
+        {!embedded && <p>{data?.agentName ?? "使って感じたことが、次の改善につながる。"}</p>}
       </div>
       <NoahAgentSignals
         id={id}
@@ -453,14 +468,14 @@ export default function NoahAgentFeedback({ id }: { id: string }) {
         >
           {t("以前のコメントを見る")}</button>
       )}
-      <aside className={styles.developer}>
+      {!embedded && <aside className={styles.developer}>
         <span>FOR DEVELOPERS</span>
         <strong>{t("ユーザーの声を、次のアップデートへ。")}</strong>
         <p>{t("要望の整理から改善・リファクタリング、検証済みPRの納品まで。")}</p>
         <Link href={`/noah/developers?agent=${encodeURIComponent(id)}`}>
           {t("運用パッケージを見る")}<ArrowUpRight size={15} />
         </Link>
-      </aside>
+      </aside>}
     </section>
   );
 }

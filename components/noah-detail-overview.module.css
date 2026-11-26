@@ -4,24 +4,24 @@
   box-sizing: border-box;
   margin: 0 auto;
   padding: 12px clamp(16px, 4vw, 44px) 64px;
-  color: #201e1c;
+  color: var(--noah-theme-text, #201e1c);
 }
 .back { margin: 0 0 12px; }
-.page .back a { display: inline-flex; align-items: center; min-height: 44px; gap: 3px; color: #984009; font-size: 14px; font-weight: 600; text-decoration: none; }
+.page .back a { display: inline-flex; align-items: center; min-height: 44px; gap: 3px; color: var(--noah-theme-link, #984009); font-size: 14px; font-weight: 600; text-decoration: none; }
 .back a:dir(rtl) svg { transform: rotate(180deg); }
 .overview, .product { min-width: 0; }
 .intro { padding-block: 4px 26px; }
 .identity { display: flex; align-items: center; gap: 14px; min-width: 0; }
 .identity > div { min-width: 0; }
 .page .identity h1 { margin: 0; font-size: clamp(24px, 4vw, 38px); line-height: 1.12; letter-spacing: -.045em; overflow-wrap: anywhere; text-wrap: balance; }
-.identity p { margin: 5px 0 0; color: #66615d; font-size: 13px; line-height: 1.4; overflow-wrap: anywhere; }
+.identity p { margin: 5px 0 0; color: var(--noah-theme-muted, #66615d); font-size: 13px; line-height: 1.4; overflow-wrap: anywhere; }
 .appMark, .phoneMark { --noah-app-icon-size: 62px; flex: none; }
 .phoneMark { display: grid; place-items: center; width: 62px; height: 62px; border-radius: 16px; color: #fffaf5; background: linear-gradient(145deg, #ff9552, #e8590d 68%, #ce4500); box-shadow: inset 0 0 0 1px #ad37061c, inset 0 1px 0 #ffb482; }
-.page .pitch { max-width: 18em; margin: 17px 0 0; color: #201e1c; font-size: clamp(21px, 2.5vw, 30px); font-weight: 730; line-height: 1.38; letter-spacing: -.045em; text-wrap: balance; }
+.page .pitch { max-width: 18em; margin: 17px 0 0; color: var(--noah-theme-text, #201e1c); font-size: clamp(21px, 2.5vw, 30px); font-weight: 730; line-height: 1.38; letter-spacing: -.045em; text-wrap: balance; }
 .pitch > span { display: inline-block; max-width: 100%; }
-.lead { max-width: 60ch; margin: 9px 0 0; color: #514e4a; line-height: 1.7; font-size: clamp(14px, 1.6vw, 16px); overflow-wrap: anywhere; }
-.terms { display: flex; align-items: baseline; flex-wrap: wrap; gap: 3px 14px; margin: 13px 0 0; color: #615e58; font-size: 13px; line-height: 1.5; overflow-wrap: anywhere; }
-.terms > .price { color: #994209; font-weight: 650; text-decoration: underline; text-decoration-thickness: 1px; text-underline-offset: 3px; }
+.lead { max-width: 60ch; margin: 9px 0 0; color: var(--noah-theme-text, #514e4a); line-height: 1.7; font-size: clamp(14px, 1.6vw, 16px); overflow-wrap: anywhere; }
+.terms { display: flex; align-items: baseline; flex-wrap: wrap; gap: 3px 14px; margin: 13px 0 0; color: var(--noah-theme-muted, #615e58); font-size: 13px; line-height: 1.5; overflow-wrap: anywhere; }
+.terms > .price { color: var(--noah-theme-link, #994209); font-weight: 650; text-decoration: underline; text-decoration-thickness: 1px; text-underline-offset: 3px; }
 .action { width: fit-content; max-width: 100%; }
 .page .action > div { margin-top: 12px; padding-top: 0; border-top: 0; align-items: flex-start; }
 .page .action button { min-width: 110px; min-height: 44px; padding: 7px 24px; border-radius: 100px; background: #a94107; border-color: #a94107; font-size: 15px; }
@@ -46,17 +46,17 @@
 .sample div { display: grid; gap: 4px; }
 .sample dt { color: #e5b79c; font-size: 12px; font-weight: 650; }
 .sample dd { margin: 0; color: #fffaf4; font-size: 14px; line-height: 1.6; }
-.block { min-width: 0; border-top: 1px solid #e9e4df; padding: 23px 0 26px; scroll-margin-top: 75px; }
+.block { min-width: 0; border-top: 1px solid var(--noah-theme-line, #e9e4df); padding: 23px 0 26px; scroll-margin-top: 75px; }
 .page .block h2 { margin: 0 0 15px; font-size: clamp(20px, 2.3vw, 25px); line-height: 1.32; letter-spacing: -.035em; }
-.example { border-inline-start: 3px solid #e79a66; padding-inline-start: 15px; }
+.example { border-inline-start: 3px solid var(--noah-theme-line, #e79a66); padding-inline-start: 15px; }
 .example + .example { margin-top: 17px; }
-.page .example h3 { margin: 0 0 8px; color: #272422; font-size: 16px; line-height: 1.5; }
+.page .example h3 { margin: 0 0 8px; color: var(--noah-theme-text, #272422); font-size: 16px; line-height: 1.5; }
 .example dl,.requirements { display: grid; gap: 10px; margin: 0; }
 .example dl > div,.requirements > div { display: grid; grid-template-columns: minmax(76px, 105px) minmax(0,1fr); align-items: baseline; gap: 12px; }
-.example dt,.requirements dt { margin: 0; font-size: 13px; line-height: 1.5; font-weight: 600; color: #615d58; overflow-wrap: anywhere; }
-.example dd,.requirements dd { margin: 0; font-size: 14px; line-height: 1.75; color: #383430; overflow-wrap: anywhere; }
+.example dt,.requirements dt { margin: 0; font-size: 13px; line-height: 1.5; font-weight: 600; color: var(--noah-theme-muted, #615d58); overflow-wrap: anywhere; }
+.example dd,.requirements dd { margin: 0; font-size: 14px; line-height: 1.75; color: var(--noah-theme-text, #383430); overflow-wrap: anywhere; }
 .links { display: flex; flex-wrap: wrap; gap: 0 18px; margin-top: 4px; }
-.page .links a { min-height: 44px; display: inline-flex; align-items: center; gap: 2px; color: #994209; font-size: 13px; font-weight: 600; }
+.page .links a { min-height: 44px; display: inline-flex; align-items: center; gap: 2px; color: var(--noah-theme-link, #994209); font-size: 13px; font-weight: 600; }
 .page :is(button,a,summary):focus-visible { outline: 3px solid #c05a16; outline-offset: 3px; }
 @media (min-width: 760px) {
   .intro[data-preview] { display: grid; grid-template-columns: minmax(0, 1.04fr) minmax(0, 1fr); align-items: center; gap: clamp(28px, 5vw, 60px); padding: 10px 0 32px; }

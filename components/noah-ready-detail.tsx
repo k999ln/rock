@@ -8,11 +8,10 @@
 import { useEffect, useRef, useState, type ReactNode } from 'react';
 import { useNoahLocale } from './noah-locale';
 import NoahAgentVisual from './noah-agent-visual';
-import NoahAppIcon from './noah-app-icon';
-import { ChevronLeft, PhoneCall, ArrowUpRight, PhoneOutgoing } from 'lucide-react';
+import NoahDetailTemplate from './noah-detail-template';
+import { ChevronLeft, ArrowUpRight, PhoneOutgoing } from 'lucide-react';
 import { noahDetailGuide } from '@/lib/noah-detail-guide';
 import pageStyles from './noah-detail-overview.module.css';
-import { noahPinTopic } from '@/lib/noah-pins';
 import NoahAgentShare from './noah-agent-share';
 import NoahLoading from './noah-loading';
 import Link from 'next/link';
@@ -36,7 +35,7 @@ const WAVEFORM = [8, 14, 20, 10, 29, 44, 24, 17, 36, 56, 70, 51, 32, 59, 85, 68,
 type Loaded = { state: 'loading' } | { state: 'missing' } | { state: 'error' } | { state: 'ready'; detail: Detail };
 
 /** tool: 最初に選んでおく道具（棚のカードから来た時。/noah/ready/agent?tool=…）。from: そのカードの ID（試行の本人の報告を、下に出す）。 */
-export default function NoahReadyDetail({ id, tool = null, from = null, internalOnly = false, sourceNotes, trailer }: { id: string; tool?: string | null; from?: string | null; internalOnly?: boolean; sourceNotes?: ReactNode; trailer?: ReactNode }) {
+export default function NoahReadyDetail({ id, tool = null, from = null, internalOnly = false, sourceNotes, trailer, mediaId }: { id: string; tool?: string | null; from?: string | null; internalOnly?: boolean; sourceNotes?: ReactNode; trailer?: ReactNode; mediaId?: string }) {
   const {t, locale}=useNoahLocale();
   // 読んだ詳細は、何回目の読み取りの物かと一緒に持つ（「読み直す」を押したら、届くまでは「読み込み中」）。
   const [result, setResult] = useState<{ attempt: number; loaded: Loaded } | null>(null), [connection, setConnection] = useState<NoahReadyConnection | null>(null);
@@ -106,31 +105,14 @@ export default function NoahReadyDetail({ id, tool = null, from = null, internal
     }).catch(() => undefined);
   }
 
-  return <main className={`${base.page} ${styles.page} ${pageStyles.page}`}>
-    {back}
+  return <NoahDetailTemplate id={detail.id} mediaId={mediaId} name={guide?.name || detail.name} provider={detail.provider || undefined}
+    summary={guide?.summary || (locale === 'ja' && detail.summaryJa) || detail.summary || t('（説明はありません）')}
+    feedbackId={detail.listed ? detail.id : undefined} expanded={Boolean(live)}
+    meta={<>{guide ? <a href="#noah-guide-terms">{guide.priceLabel}</a> : <span>{t(noahPriceText(detail.connect.price))}</span>}{detail.host && <span>{t('送信先: {host}',{host:detail.host})}</span>}</>}
+    action={<NoahConnectButton agentId={detail.id} listed={detail.listed} signedIn={signedIn} ownerScope={detail.ownerScope} connection={live} onChange={setConnection} resume askAs="none" packageId={from} initialTool={tool} />}>
     <article className={pageStyles.overview}>
       <div className={pageStyles.intro} data-preview={Boolean(preview) || undefined}>
-        <div className={pageStyles.product}>
-          <header className={pageStyles.identity}>
-            {guide ? <span className={pageStyles.phoneMark} aria-hidden="true"><PhoneCall size={31} strokeWidth={1.8} /></span>
-              : <NoahAppIcon name={detail.name} topic={noahPinTopic(detail.name, detail.summary)} className={pageStyles.appMark} />}
-            <div>
-              <h1>{guide?.name || detail.name}</h1>
-              {detail.provider && <p>{t('提供:')} {detail.provider}</p>}
-            </div>
-          </header>
-          {guide && <h2 className={pageStyles.pitch}>{locale === 'ja'
-            ? guide.headline.split(/(?<=、)/u).map((phrase) => <span key={phrase}>{phrase}</span>)
-            : guide.headline}</h2>}
-          <p className={pageStyles.lead}>{guide?.summary || (locale === 'ja' && detail.summaryJa) || detail.summary || t('（説明はありません）')}</p>
-          <div className={pageStyles.terms}>
-            {guide ? <a href="#noah-guide-terms" className={pageStyles.price}>{guide.priceLabel}</a> : <span>{t(noahPriceText(detail.connect.price))}</span>}
-            {detail.host && <span>{t('送信先: {host}',{host:detail.host})}</span>}
-          </div>
-          <div className={pageStyles.action}>
-            <NoahConnectButton agentId={detail.id} listed={detail.listed} signedIn={signedIn} ownerScope={detail.ownerScope} connection={live} onChange={setConnection} resume askAs="none" packageId={from} initialTool={tool} />
-          </div>
-        </div>
+        {guide && <h2 className={pageStyles.pitch}>{guide.headline}</h2>}
         {preview && <figure className={pageStyles.memo} aria-label={t('通話メモの見本')}>
           <figcaption><PhoneOutgoing size={19} strokeWidth={1.8} aria-hidden="true" />{t('通話メモの見本')}</figcaption>
           <div className={pageStyles.wave} aria-hidden="true">{WAVEFORM.map((height, i) => <i key={i} style={{ height: height + '%' }} />)}</div>
@@ -191,5 +173,5 @@ export default function NoahReadyDetail({ id, tool = null, from = null, internal
 
     {sourceNotes}
     <footer className={styles.source}><p>{t(guide ? '登録情報はOfficial MCP Registryの掲載内容です。' : NOAH_READY_TEXT.source)}{NOAH_REPORT_CONTACT && <> <Link href="/noah/help#bot">{t(NOAH_READY_TEXT.report)} →</Link></>}</p></footer>
-  </main>;
+  </NoahDetailTemplate>;
 }
