@@ -8,7 +8,7 @@ void test('both Noah modes use the canonical saved/search destinations without M
     assert.equal(noahActionHref(mode,base,'work'),base+'/activity');
     assert.equal(noahActionHref(mode,base,'register'),'/noah/agents/new');
     assert.equal(noahActionHref(mode,base,'agent','anicca'),base+'/agents/anicca');
-    for(const target of ['models','../../secret','https://evil.test']) assert.equal(noahActionHref(mode,base,target),base+'/explore');
+    for(const target of ['models','../../secret','https://evil.test']) assert.equal(noahActionHref(mode,base,target),base);
   }
 });
 void test('handoff parameters cannot select an external destination, traversal or script', () => {
@@ -18,7 +18,7 @@ void test('handoff parameters cannot select an external destination, traversal o
     assert.equal(noahMacPath('agent', id), '/noah/library');
 });
 void test('legacy discovery and management keep their purpose while community hashes remain intact', () => {
-  assert.equal(noahLegacyHref('#sky', 'public', '/noah'), '/noah/explore?tab=tools');
+  assert.equal(noahLegacyHref('#sky', 'public', '/noah'), '/noah?tab=tools');
   assert.equal(noahLegacyHref('#sky-manage', 'public', '/noah'), '/noah/saved?tab=roles');
   assert.equal(noahLegacyHref('#sky-manage', 'local', '/noah'), '/noah/my?view=agents');
   for (const hash of ['#timeline', '#community=abc', '#social']) assert.equal(noahLegacyHref(hash, 'public', '/noah'), null);

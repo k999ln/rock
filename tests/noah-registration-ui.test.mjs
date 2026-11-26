@@ -25,7 +25,7 @@ function harness(fetcher, initial = [], profileOptions = {}) {
         useRef(value) { const i = cursor++; return slots[i] ??= { current: value }; },
         useEffect(fn, deps) { const i = cursor++, old = slots[i]; if (!old || deps.some((v, n) => v !== old.deps[n])) { slots[i] = { deps }; effects.push(() => { old?.cleanup?.(); slots[i].cleanup = fn(); }); } },
       };
-      if (id === './use-noah-profile') return {useNoahProfile:()=>({profile:savedProfile,guest:!savedProfile,error:'',save:async body=>{saves.push(body);if(profileOptions.fail)return null;savedProfile={...savedProfile,fields:body.fields,revision:savedProfile.revision+1,reuseEnabled:body.reuse};return savedProfile;}})};
+      if (id === './use-noah-profile') return {useNoahProfile:()=>({profile:savedProfile,guest:profileOptions.guest??!savedProfile,error:profileOptions.error??'',reload:async()=>{profileOptions.reloads=(profileOptions.reloads??0)+1;},save:async body=>{saves.push(body);if(profileOptions.fail)return null;savedProfile={...savedProfile,fields:body.fields,revision:savedProfile.revision+1,reuseEnabled:body.reuse};return savedProfile;}})};
       if (id === '@/lib/noah-profile-contract') return profileContract;
       if (id === '@/lib/owner-intent') return {OWNER_SCOPE_HEADER:'X-Rock-Owner-Scope'};
       if(id==='@/lib/noah-haptics')return {noahHaptic:()=>false};
@@ -44,6 +44,7 @@ function harness(fetcher, initial = [], profileOptions = {}) {
   return { calls, saves, storage, timers, document,
     async tick() { const tasks=[...timers]; timers.clear(); for(const [,task] of tasks) await task.fn(); await this.flush(); },
     async visibility(hidden) { document.hidden=hidden; listeners.get('visibilitychange')?.(); await this.flush(); },
+    setProfile(value) { savedProfile=value; render(); },
     nodes: () => walk(tree), text: () => text(tree), button,
     async flush() { for (let n=0;n<4;n++) { await new Promise(setImmediate); render(); } },
     input(name,value) { const n = walk(tree).find(n => n.type === 'input' && n.props.name === name); assert.ok(n); n.props.onChange({ target:{value} }); render(); },
@@ -206,4 +207,27 @@ void test('storage, external submission and pricing explanations are translated 
   for(const source of Object.keys(NOAH_REGISTRATION_MESSAGES))for(const locale of NOAH_LOCALES.filter(l=>l!=='ja')){
     const translated=noahTranslate(locale,source);assert.notEqual(translated,source,`${locale}: ${source}`);assert.ok(translated.length);
   }
+});
+
+void test('saved profile loading and read failure never ask the user to re-enter known information', async t=>{
+  const p={...provider,fields:[{...provider.fields[0],profileField:'email'}]};
+  const h=harness(async()=>Response.json({providers:[p]}),[],{guest:false});t.after(()=>h.close());await h.flush();
+  assert.equal(h.nodes().filter(n=>n.type==='input').length,0);
+  assert.ok(h.nodes().some(n=>n.type==='noah-loading'&&n.props.label==='保存情報を読み込んでいます…'));
+  h.setProfile({...profileContract.emptyNoahProfile(),available:true,ownerScope:'owner-a',revision:1,reuseEnabled:true,fields:{email:'saved@example.com'}});await h.flush();
+  assert.match(h.text(),/saved@example.com/);assert.equal(h.nodes().filter(n=>n.type==='input').length,0);
+  const options={guest:false,error:'保存情報を開けません。'};
+  const failed=harness(async()=>Response.json({providers:[p]}),[],options);t.after(()=>failed.close());await failed.flush();
+  assert.equal(failed.nodes().filter(n=>n.type==='input').length,0);assert.match(failed.text(),/保存情報を開けません/);
+  failed.click('再読み込み');await failed.flush();assert.equal(options.reloads,1);
+  assert.equal(failed.calls.some(c=>c.options.method==='POST'),false);
+});
+void test('native autofill uses the shared field semantics and saves address and phone for the next Agent',async t=>{
+  const fields=[['address','street-address'],['phone','tel'],['businessName','organization'],['birthDate','bday'],['displayName','nickname']];
+  const p={...provider,fields:fields.map(([key])=>({key,label:key,type:'text',profileField:key,required:true,maxLength:500}))};
+  const h=harness(async(_u,o)=>o.method==='POST'?Response.json({job:job('completed')}):Response.json({providers:[p]}),[],{profile:{...profileContract.emptyNoahProfile(),available:true,ownerScope:'owner-a'}});t.after(()=>h.close());await h.flush();
+  const values={address:'Synthetic street',phone:'+81000000000',businessName:'Synthetic Company',birthDate:'2000-01-01',displayName:'Synthetic'};
+  for(const [key,autocomplete] of fields){const input=h.nodes().find(n=>n.type==='input'&&n.props.name===key);assert.equal(input.props.autoComplete,autocomplete);assert.equal(input.props.id,`noah-registration-${key}`);input.props.onInput({currentTarget:{value:values[key]}});await h.flush();}
+  assert.equal(h.button('同意して登録').props.disabled,false);h.submit();await h.flush();
+  assert.equal(h.saves.length,1);assert.deepEqual(JSON.parse(JSON.stringify(h.saves[0].fields)),values);
 });

@@ -11,10 +11,10 @@ import {screen} from './fixtures/noah/screen.mjs';
 void test('canonical search keeps a Unicode query and trial attribution without accepting executable or return parameters',()=>{
  const href=noahPageHref('explore',{q:'資料 & image',via:'trial-300',returnTo:'https://evil.test',execute:'1',q2:['a','b']},'catalog');
  const url=new URL(href,'https://avoado.si');
- assert.equal(url.pathname,'/noah/explore');assert.equal(url.searchParams.get('q'),'資料 & image');assert.equal(url.searchParams.get('via'),'trial-300');
+ assert.equal(url.pathname,'/noah');assert.equal(url.searchParams.get('q'),'資料 & image');assert.equal(url.searchParams.get('via'),'trial-300');
  assert.deepEqual([...url.searchParams.keys()],['tab','q','via']);
  assert.equal(noahPageTab('__proto__',NOAH_EXPLORE_TABS,'ready'),'ready');
- assert.equal(noahPageHref('explore',{q:['a','b']},'https://evil.test'),'/noah/explore?tab=ready');
+ assert.equal(noahPageHref('explore',{q:['a','b']},'https://evil.test'),'/noah?tab=ready');
 });
 void test('saved board and work references survive old entry redirects without changing owners or executing writes',()=>{
  assert.equal(noahPageHref('saved',{board:'board-one'},'boards'),'/noah/saved?tab=boards&board=board-one');
@@ -93,7 +93,7 @@ void test('selecting a saved Agent pin opens settings and protects an unsaved ed
  assert.equal(view.find('button', agents[1].name)[0].props.disabled, false);
  assert.ok(ui.calls.every(call => call.method === 'GET'));
 });
-void test('old links keep the theater and personal readers while the section menu shows only work utilities',()=>{
+void test('old links keep the theater and personal readers without duplicating the shared navigation',()=>{
  const child=name=>({default:props=>({type:'section',props:{...props,children:name}})});
  const modules={'@/lib/noah-my-routes':myRoutes, './noah-work-page':child('WORK'), './noah-library':child('LIBRARY'), './noah-saved':child('SAVED'),
   './noah-theater':child('THEATER')};
@@ -107,10 +107,7 @@ void test('old links keep the theater and personal readers while the section men
   const title={THEATER:'シアター',LIBRARY:'自分のAgent',WORK:'実行中',SAVED:'保存したもの'}[reader];
   assert.match(page.text(),new RegExp(reader)); assert.deepEqual(page.find('h1').map(node=>page.text(node)),[title]);
   assert.equal(page.text().includes('THEATER'),reader==='THEATER');
-  const nav=page.nodes(page.find('nav')[0]).filter(node=>node.type==='a');
-  assert.equal(page.find('nav')[0].props['aria-label'],'Agentと仕事');
-  assert.deepEqual(nav.map(link=>page.text(link)),['自分のAgent','実行中','保存したもの']);
-  assert.deepEqual(nav.filter(link=>link.props['aria-current']==='page').map(link=>page.text(link)),reader==='THEATER'?[]:[title]);
+  assert.equal(page.find('nav').length,0,'page heading must not duplicate the shared navigation');
   assert.equal(ui.calls.length,0);
  }
  assert.deepEqual(myRoutes.noahMySelection({},'saved'),{view:'saved',saved:'boards'});

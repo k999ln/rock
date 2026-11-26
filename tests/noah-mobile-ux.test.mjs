@@ -10,7 +10,7 @@ void test('home search preserves the selected source and defaults to connectable
     // FormData is provided by the browser; test the submitted form with a compatible constructor.
     page.find('form')[0].props.onSubmit({preventDefault(){},currentTarget:{values:{q:'BeevR'}}});
     const url=new URL(ui.visits.at(-1),'https://avoado.si');
-    assert.equal(url.pathname,'/noah/explore');assert.equal(url.searchParams.get('collectionSource'),source??'noah');assert.equal(url.searchParams.get('q'),'BeevR');
+    assert.equal(url.pathname,'/noah');assert.equal(url.searchParams.get('collectionSource'),source??'noah');assert.equal(url.searchParams.get('q'),'BeevR');
     assert.equal(url.searchParams.has('tab'),false);
   }
 });

@@ -18,11 +18,10 @@ await test('Mac の PC だけが Mac の画面をメニューに出し、スマ�
   assert.equal(noahMacMenuAllowed('', 0), false);
 });
 
-await test('メニューは、端末が分かるまで Mac の画面を出さず、Mac と分かった時だけ足す', () => {
+await test('ココナラは専用メニューを置かずホームへ統合し、個別Agentを保持する', () => {
   const shell = readFileSync(new URL('../components/noah-shell.tsx', import.meta.url), 'utf8');
-  assert.match(shell, /const macMenu = useSyncExternalStore\(noSubscription, macMenuOnThisDevice, \(\) => false\);/, 'サーバーの描画と最初の描画は出さない');
-  assert.match(shell, /return noahMacMenuAllowed\(agent\.userAgentData\?\.platform \|\| navigator\.platform \|\| '', navigator\.maxTouchPoints \?\? 0\);/);
-  assert.match(shell, /\.\.\.\(macMenu \? \[\{ href: '\/noah\/coconala', label: 'ココナラの仕事', Icon: Bot \}\] : \[\]\)/);
-  assert.equal(shell.match(/'\/noah\/coconala'/g)?.length, 1, 'ほかの所から、全員に出していない');
-  assert.ok(shell.indexOf('useSyncExternalStore(noSubscription') < shell.indexOf("if (pathname === '/noah/account') return"), 'フックは早い return より前');
+  assert.doesNotMatch(shell, /ココナラの仕事|href: '\/noah\/coconala'/);
+  const page = readFileSync(new URL('../app/noah/coconala/page.tsx', import.meta.url), 'utf8');
+  assert.match(page, /permanentRedirect\('\/noah'\)/);
+  assert.ok(readFileSync(new URL('../app/noah/coconala/agent/page.tsx', import.meta.url), 'utf8').length);
 });

@@ -301,7 +301,8 @@ void test('Eve retains its app header while Noah has standalone navigation', () 
   }
   assert.doesNotMatch(source('components/noah-shell.tsx'), /<ProductAppHeader/);
   assert.match(source('components/noah-shell.tsx'), /aria-label=\{t\('メインメニュー'\)\}/);
-  assert.match(source('components/noah-shell.tsx'), /label: 'タイムライン'/);
+  assert.match(source('components/noah-shell.tsx'), /label: 'ホーム'/);
+  assert.doesNotMatch(source('components/noah-shell.tsx'), /label: 'タイムライン'/);
 });
 
 void test('shared app header preserves running guards, actions, and the active Eve query by preventing a reset', () => {

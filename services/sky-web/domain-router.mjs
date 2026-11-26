@@ -245,8 +245,8 @@ export function withMiniSite(skyWorker, upstreamFetch = fetch) {
           ['/os', '/noah'], ['/rockstaros', '/noah'], ['/rockstaros/crowdfunding', '/noah'],
           ['/chat', '/os/eve?mode=tools'], ['/activity', '/os/eve?mode=tools&view=work'],
           ['/work', '/os/eve?mode=tools&view=work'],
-          ['/noah/agents', '/noah/explore?tab=catalog'], ['/noah/ready', '/noah/explore?tab=ready'],
-          ['/noah/tools', '/noah/explore?tab=tools'], ['/noah/features', '/noah'],
+          ['/noah/agents', '/noah?tab=catalog'], ['/noah/ready', '/noah?tab=ready'],
+          ['/noah/tools', '/noah?tab=tools'], ['/noah/features', '/noah'],
           ['/noah/boards', '/noah/saved?tab=boards'], ['/noah/library', '/noah/saved?tab=agents'],
           ['/noah/data', '/noah/saved?tab=results'], ['/noah/data/saved', '/noah/saved?tab=results'],
           ['/noah/outputs', '/noah/saved?tab=files'], ['/noah/launch', '/noah/activity'],
@@ -255,7 +255,7 @@ export function withMiniSite(skyWorker, upstreamFetch = fetch) {
         const destination = legacy || compatibility.get(path.replace(/\/$/, ''));
         const targetPath = destination ? new URL(destination, source).pathname : path;
         const lab = NOAH_LOCAL_LABS.some(name => ['/sky/', '/os/sky/'].some(prefix => path.replace(/\/$/, '') === prefix + name));
-        const status = mainPageStatus(lab ? '/noah/explore' : targetPath);
+        const status = mainPageStatus(lab ? '/noah' : targetPath);
         if (status === 404 || status === 410) return mainPageUnavailable(status, request.method);
         if (['GET', 'HEAD'].includes(request.method)) {
           if (path === '/sitemap.xml' || path === '/noah/sitemap.xml') {
@@ -272,7 +272,7 @@ export function withMiniSite(skyWorker, upstreamFetch = fetch) {
         const legacy = noahPageRedirect(path);
         if (legacy) return Response.redirect(noahRedirectURL(source, legacy).href, 308);
         if (source.hostname === MINI_PUBLIC_HOST && NOAH_LOCAL_LABS.some(lab => ['/sky/', '/os/sky/'].some(prefix => path.replace(/\/$/, '') === prefix + lab)))
-          return Response.redirect(noahRedirectURL(source, '/noah/explore').href, 307);
+          return Response.redirect(noahRedirectURL(source, '/noah').href, 307);
       }
       // Owner-approved retirement of duplicate screens; keep installation guidance.
       if (source.hostname === MINI_PUBLIC_HOST) {
