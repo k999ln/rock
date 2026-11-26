@@ -53,8 +53,7 @@ export function mainPageStatus(pathname) {
   // authorization, streaming, callbacks, static assets and other products.
   if (below(path, '/api') || below(path, '/_next') || below(path, '/.well-known') ||
       path.startsWith('/MATOU') || ['/pro', '/mini', '/create', '/avocado-mini'].includes(path) ||
-      ['/offline.html', '/noah-offline.html'].includes(path) ||
-      /\.(?:js|mjs|css|map|json|xml|txt|webmanifest|wasm|png|jpg|jpeg|gif|svg|webp|avif|ico|woff2?|ttf|otf|mp4|webm|mp3|wav|pdf|zip|sha256)$/.test(path)) return null;
+      path === '/offline.html' || /\.(?:js|mjs|css|map|json|xml|txt|webmanifest|wasm|png|jpg|jpeg|gif|svg|webp|avif|ico|woff2?|ttf|otf|mp4|webm|mp3|wav|pdf|zip|sha256)$/.test(path)) return null;
   return 404;
 }
 
