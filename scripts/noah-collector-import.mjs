@@ -5,9 +5,20 @@
 // 本番の D1 の書き込みを守るため、1 日（UTC）に入れる系列の数と、1 回に入れる数に上限を置く。押すだけで試せる物・新しく握手が通った物から先に入れる。
 import { createHash } from 'node:crypto';
 import { collectionSignature, noahCollectionBlocked } from '../lib/noah-collection.ts';
-import { NOAH_INTAKE_IMPORT_PATH, noahIntakeExport, noahIntakeImportParts } from '../lib/noah-intake-import.ts';
+import { NOAH_INTAKE_IMPORT_ERROR_CATEGORIES, NOAH_INTAKE_IMPORT_PATH, noahIntakeExport, noahIntakeImportParts } from '../lib/noah-intake-import.ts';
 export const NOAH_COLLECTOR_IMPORT = { familiesPerDay: 400, familiesPerRun: 120 };
 const DAY = 86_400_000;
+const IMPORT_ERROR_CATEGORIES = new Set(NOAH_INTAKE_IMPORT_ERROR_CATEGORIES);
+
+/** Read only the allow-listed category; never retain or print the response body. */
+async function importErrorCategory(response) {
+  try {
+    const body = await response.json();
+    return IMPORT_ERROR_CATEGORIES.has(body?.category) ? body.category : 'other';
+  } catch {
+    return 'other';
+  }
+}
 
 function tables(sql) {
   sql.exec(`CREATE TABLE IF NOT EXISTS _noah_collector_sent(family_id TEXT PRIMARY KEY, sha256 TEXT NOT NULL, listed INTEGER NOT NULL, sent_at INTEGER NOT NULL);
@@ -70,7 +81,14 @@ export async function importFamilies({ local, origin, key, fetcher, now = Date.n
       headers: { 'Content-Type': 'application/json', 'x-noah-collector-time': time, 'x-noah-collector-signature': await collectionSignature(key, time, body, NOAH_INTAKE_IMPORT_PATH) } });
     // 本番が、まだ収集機からの取り込みを受け付けない版（配備の前）なら、失敗ではなく「準備中」。次の巡回で、もう一度。
     if ([401, 403, 404, 405, 503].includes(response.status)) { await response.body?.cancel(); return { status: 'not_ready', code: response.status, sent, rowsWritten }; }
-    if (!response.ok) { await response.body?.cancel(); return { status: `http_${response.status}`, sent, rowsWritten }; }
+    if (!response.ok) {
+      if (response.status === 400) {
+        const category = await importErrorCategory(response);
+        return { status: `http_${response.status}`, category, sent, rowsWritten };
+      }
+      await response.body?.cancel();
+      return { status: `http_${response.status}`, sent, rowsWritten };
+    }
     const result = await response.json().catch(() => ({}));
     rowsWritten += Number(result.rowsWritten) || 0; sent += part.families.length;
     local.assertLease();

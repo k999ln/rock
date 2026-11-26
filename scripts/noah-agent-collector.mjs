@@ -54,7 +54,7 @@ export async function collectAgents({ local, directory, fetcher, now = Date.now,
   if (importOrigin && !signal?.aborted) {
     try { steps.import = await importFamilies({ local, origin: importOrigin, key: publishKey, fetcher, now, includePins: !!pinWriter && pinImportEnabled, includePinFor }); }
     catch (error) { steps.import = { status: 'failed' }; errors.push({ source: 'import', code: error.message.startsWith('collector_') ? error.message : 'unavailable' }); }
-    if (steps.import?.status?.startsWith('http_')) errors.push({ source: 'import', code: steps.import.status });
+    if (steps.import?.status?.startsWith('http_')) errors.push({ source: 'import', code: steps.import.status, ...(steps.import.category ? { category: steps.import.category } : {}) });
   }
   writeCollectorJson(join(directory, 'discovery.json'), { schema: 'noah-discovery-export/1', exportedAt, candidates });
   writeCollectorJson(join(directory, 'import.json'), exported);

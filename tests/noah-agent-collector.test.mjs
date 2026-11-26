@@ -52,6 +52,18 @@ void test('three sources are collected separately; only checked MCP exports reac
   assert.equal(readCollectorStatus(dir, NOW).running, false);
 });
 
+void test('import failures expose only an allow-listed category, never the response body', async t => {
+  const dir = directory(t), net = world();
+  const fetcher = async (raw, init) => new URL(String(raw)).pathname === '/api/noah/intake/import'
+    ? Response.json({ error: 'private database detail', category: 'db_constraint' }, { status: 400 })
+    : net.fetch(raw, init);
+  const state = await runCollector({ directory: dir, fetcher, now: () => NOW, budget, importOrigin: 'https://avoado.si', publishKey: 'k'.repeat(32) });
+  assert.equal(state.steps.import.status, 'http_400');
+  assert.equal(state.steps.import.category, 'db_constraint');
+  assert.deepEqual(state.errors.find(error => error.source === 'import'), { source: 'import', code: 'http_400', category: 'db_constraint' });
+  assert.ok(!JSON.stringify(state).includes('private database detail'));
+});
+
 void test('restart resumes cursor, retains candidates and does not repeat discovery or recent handshakes', async t => {
   const dir = directory(t), cursors = [];
   const net = world(async url => { cursors.push(url.searchParams.get('cursor')); return url.searchParams.has('cursor') ? page([entry(2)]) : page([entry(1)], 'page-2'); });

@@ -21,6 +21,13 @@ import { verifyCollectionSignature } from './noah-collection.ts';
 import { NOAH_PIN_COLUMNS, NOAH_PIN_SKIP_REASONS, parseStoredNoahPin } from './noah-pin-storage.ts';
 
 export const NOAH_INTAKE_IMPORT_SCHEMA = 'noah-intake-import/1';
+/**
+ * Safe, non-sensitive categories used when the collector needs to report a
+ * rejected import.  The response must never contain a database message or the
+ * rejected row; operators only need to know which validation boundary failed.
+ */
+export const NOAH_INTAKE_IMPORT_ERROR_CATEGORIES = ['malformed', 'validation', 'db_constraint', 'other'] as const;
+export type NoahIntakeImportErrorCategory = typeof NOAH_INTAKE_IMPORT_ERROR_CATEGORIES[number];
 /** 1 回の要求で入れる系列の数と、本文の大きさ。 */
 
 const CANDIDATE_COLUMNS = ['id', 'source', 'external_key', 'family_id', 'group_key', 'name', 'summary', 'summary_ja', 'repository', 'host', 'record_sha256', 'record_json', 'state', 'reason', 'running', 'likes', 'source_updated_at', 'first_seen_at', 'changed_at', 'seen_at', 'revision'] as const;
@@ -261,11 +268,11 @@ export function createIntakeImportApi(deps: { db: IntakeDb; now?: () => number; 
       const input: unknown = JSON.parse(new TextDecoder('utf-8', { fatal: true }).decode(await boundedNoahBody(request, NOAH_INTAKE_IMPORT_LIMITS.bytes)));
       return json({ ...await noahIntakeImport(deps.db, input, (deps.now ?? Date.now)()), ownerScope });
     } catch (error) {
-      if (error instanceof NoahAgentError) return json({ error: error.message }, error.status);
-      if (error instanceof SyntaxError) return json({ error: '入力形式を確認してください。' }, 400);
+      if (error instanceof NoahAgentError) return json({ error: error.message, ...(error.status === 400 ? { category: 'validation' as const } : {}) }, error.status);
+      if (error instanceof SyntaxError) return json({ error: '入力形式を確認してください。', category: 'malformed' as const }, 400);
       if (error instanceof Error && error.message === 'UNAUTHORIZED') return json({ error: 'サインインしてください。' }, 401);
-      if (error instanceof Error && /CHECK constraint|FOREIGN KEY|NOT NULL/u.test(error.message)) return json({ error: '取り込みの結果: 行が表の決まりに合いません。' }, 400);
-      return json({ error: '取り込みの結果を入れられません。少し待ってから再試行してください。' }, 503);
+      if (error instanceof Error && /CHECK constraint|FOREIGN KEY|NOT NULL|UNIQUE constraint/u.test(error.message)) return json({ error: '取り込みの結果: 行が表の決まりに合いません。', category: 'db_constraint' as const }, 400);
+      return json({ error: '取り込みの結果を入れられません。少し待ってから再試行してください。', category: 'other' as const }, 503);
     }
   };
 }
