@@ -1,31 +1,24 @@
 'use client';
 /* oxlint-disable next/no-html-link-for-pages -- Hash destinations work in the local OS as well. */
-import { useEffect, useId, useRef, useState, useSyncExternalStore, type ReactNode } from 'react';
+import { useEffect, useId, useRef, useState, type ReactNode } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
-import { usePathname } from 'next/navigation';
-import { ShieldCheck, Bot, Home, UserRound, Settings2, RefreshCw, ArrowLeft, Globe, Bookmark, Menu, MoreHorizontal, Search, Store, SquareTerminal } from 'lucide-react';
-import { noahLegacyHref, noahMacMenuAllowed, type NoahSurfaceMode } from '@/lib/noah-surface';
+import { usePathname, useSearchParams } from 'next/navigation';
+import { Bot, Home, UserRound, RefreshCw, ArrowLeft, Globe, Bookmark, Menu, MoreHorizontal, Search, SquareTerminal } from 'lucide-react';
+import { noahLegacyHref, type NoahSurfaceMode } from '@/lib/noah-surface';
 import { useNoahLocale } from './noah-locale';
 import styles from './noah-service-shell.module.css';
 import { NoahRevenuePackMenuItem } from './noah-revenue-pack';
 import { NoahSurfaceContext } from './noah-surface-context';
 
-const noSubscription = () => () => {};
-function macMenuOnThisDevice() {
-  const agent = navigator as Navigator & { userAgentData?: { platform?: string } };
-  return noahMacMenuAllowed(agent.userAgentData?.platform || navigator.platform || '', navigator.maxTouchPoints ?? 0);
-}
-
 export default function NoahShell({ children, mode = 'local' }: { children: ReactNode; mode?: NoahSurfaceMode }) {
   const pathname = usePathname();
+  const searchParams = useSearchParams();
   const { t } = useNoahLocale();
   const preview = pathname.startsWith('/noah/public');
   const effectiveMode = preview ? 'public' : mode, base = preview ? '/noah/public' : '/noah';
   const [hash, setHash] = useState('');
   const storeSearchId = useId(), gridMenuId = useId(), gridMenu = useRef<HTMLDivElement>(null);
-  // Mac だけの画面は、Mac で開いた時だけメニューに出す（サーバーの描画と最初の描画は出さず、端末が分かってから出す）。
-  const macMenu = useSyncExternalStore(noSubscription, macMenuOnThisDevice, () => false);
   useEffect(() => {
     const update = () => {
       const currentHash = window.location.hash;
@@ -41,35 +34,28 @@ export default function NoahShell({ children, mode = 'local' }: { children: Reac
     return () => { cancelAnimationFrame(frame); window.removeEventListener('hashchange', update); window.removeEventListener('popstate', update); };
   }, [pathname, effectiveMode, base]);
   if (pathname === '/noah/account') return <NoahSurfaceContext.Provider value={{ mode: effectiveMode, base, hash }}><div className={styles.shell} data-noah-surface={effectiveMode} data-noah-standalone>{children}</div></NoahSurfaceContext.Provider>;
-  const timeline = `${base}#timeline`;
   const isTimeline = pathname === base || pathname === '/' || pathname === '/os';
-  const gridHome = isTimeline && !['#timeline','#following','#agents'].includes(hash);
+  const gridHome = isTimeline;
   const publicStore = effectiveMode === 'public';
   const brandName = publicStore ? 'Nöah' : 'Noah';
   const localPath = pathname.startsWith(base + '/') ? pathname.slice(base.length + 1) : '';
   const localPrimary = [
-    { href: timeline, label: 'タイムライン', Icon: Home, selected: isTimeline },
-    { href: `${base}/explore`, label: 'Agent', Icon: Bot, selected: pathname.endsWith('/explore') },
+    { href: base, label: 'ホーム', Icon: Home, selected: isTimeline },
     { href: `${base}/activity`, label: '実行中', Icon: RefreshCw, selected: pathname.endsWith('/activity') },
     { href: `${base}/saved`, label: '保存', Icon: Bookmark, selected: pathname.endsWith('/saved') },
   ];
   const isMain = isTimeline || ['explore','my','activity','saved'].includes(localPath);
   const secondary = [
     ...(publicStore ? [
-      { href: `${base}/explore`, label: 'Agentを探す', Icon: Search },
       ...(!gridHome ? [{ href: '/noah/engineering', label: 'Agentエンジニアリング', Icon: SquareTerminal }] : []),
       { href: `${base}/my?view=agents`, label: '自分のAgent', Icon: Bot },
       { href: `${base}/activity`, label: '実行中', Icon: RefreshCw },
       { href: `${base}/saved?tab=results`, label: '保存した成果を見る', Icon: Bookmark },
-      { href: timeline, label: 'タイムライン', Icon: Home },
     ] : []),
-    { href: `${base}/profile`, label: '登録情報', Icon: ShieldCheck },
-    { href: `${base}/profile#permissions`, label: '任せる範囲', Icon: Settings2 },
-    ...(macMenu ? [{ href: '/noah/coconala', label: 'ココナラの仕事', Icon: Bot }] : []),
     { href: `${base}/preferences`, label: '操作の設定', Icon: Globe },
   ];
   const gridItems = [
-    ...(publicStore ? [{ href: base, label: 'ストア', Icon: Store }] : [{ href: base, label: 'ホーム', Icon: Home }, ...localPrimary]),
+    ...(publicStore ? [{ href: base, label: 'ホーム', Icon: Home }] : localPrimary),
     ...(!publicStore ? [{ href: `${base}/registration`, label: '登録サポート', Icon: Bot }] : []),
     ...secondary,
   ];
@@ -80,15 +66,15 @@ export default function NoahShell({ children, mode = 'local' }: { children: Reac
       <nav aria-label={t('メインメニュー')}><NoahRevenuePackMenuItem onClick={() => gridMenu.current?.hidePopover()}/>{gridItems.map(({ href, label, Icon }) => <a key={href} href={href} onClick={() => gridMenu.current?.hidePopover()}><Icon size={19}/><span>{t(label)}</span></a>)}</nav>
     </div>
   </>;
-  const searchForm = <form action={`${base}/explore`} className={styles.gridSearch} onSubmit={event=>{
+  const searchForm = <form action={base} className={styles.gridSearch} onSubmit={event=>{
           event.preventDefault();
           const params=new URLSearchParams(window.location.search),data=new FormData(event.currentTarget);
           const word=data.get('q');
-          const next=new URLSearchParams({q:typeof word==='string'?word:'',collectionSource:params.get('collectionSource')??'noah'});
+          const next=new URLSearchParams({q:typeof word==='string'?word:'',collectionSource:params.get('collectionSource')??(params.get('tab')==='catalog'?'':'noah')});
           const topic=params.get('collectionTopic'); if(topic) next.set('collectionTopic',topic);
-          window.location.assign(`${base}/explore?${next}`);
+          window.location.assign(`${base}?${next}#noah-collection`);
         }}>
-          <Search size={18} aria-hidden="true" /><input aria-label={t('Agentを探す')} name="q" maxLength={80} placeholder={t('Agentを探す')} type="search" />
+          <Search size={18} aria-hidden="true" /><input aria-label={t('Agentを探す')} name="q" key={searchParams.get('q') ?? searchParams.get('collectionQuery') ?? ''} defaultValue={searchParams.get('q') ?? searchParams.get('collectionQuery') ?? ''} maxLength={200} placeholder={t('Agentを探す')} type="search" />
         </form>;
   if (gridHome) return <NoahSurfaceContext.Provider value={{ mode: effectiveMode, base, hash }}>
     <div className={styles.shell} data-noah-surface={effectiveMode} data-noah-standalone>
@@ -101,7 +87,7 @@ export default function NoahShell({ children, mode = 'local' }: { children: Reac
           <search popover="auto" id={storeSearchId} className={styles.storeSearchPanel}>{searchForm}</search>
         </>}
         {menu}
-        <Link href={`${base}/profile`} className={styles.gridAccount} aria-label={t('登録情報を見る')}><UserRound size={22}/></Link>
+        <Link href={`${base}/profile`} className={styles.gridAccount} aria-label={t('登録情報を見る')} title={t('登録情報')}><UserRound size={22}/></Link>
       </header>
       <div className={styles.gridBody} id="noah-content" tabIndex={-1}>{children}</div>
     </div>
@@ -110,9 +96,9 @@ export default function NoahShell({ children, mode = 'local' }: { children: Reac
     <div className={styles.shell} data-noah-surface={effectiveMode} data-noah-standalone>
       <a href="#noah-content" className={styles.skip}>{t('メインコンテンツへ')}</a>
       <header className={styles.mobileHeader}>
-        {!isMain&&<Link href={`${base}/explore`} className={styles.back} aria-label={t('戻る')}><ArrowLeft size={22}/></Link>}
+        {!isMain&&<Link href={base} className={styles.back} aria-label={t('戻る')}><ArrowLeft size={22}/></Link>}
         <a href={base} className={styles.brand}><Image className={styles.mark} src="/brand/noah-icon-v2.png" width={40} height={40} alt="" unoptimized/><strong>{brandName}</strong></a>
-        <div className={styles.headerActions}>{publicStore && menu}<Link href={`${base}/profile`} className={styles.profileLink} aria-label={t('登録情報を見る')}><UserRound size={20}/></Link></div>
+        <div className={styles.headerActions}>{publicStore && menu}<Link href={`${base}/profile`} className={styles.profileLink} aria-label={t('登録情報を見る')} title={t('登録情報')}><UserRound size={20}/></Link></div>
       </header>
       <div className={styles.body} data-wide data-noah-home={isTimeline||undefined}>
         <aside className={styles.rail}><div className={styles.railInner}>

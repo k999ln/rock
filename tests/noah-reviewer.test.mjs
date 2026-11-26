@@ -3,6 +3,33 @@ import assert from 'node:assert/strict';
 import { noahReviewerAccess } from '../lib/noah-reviewer.ts';
 import { ownerScopeFor } from '../lib/owner-intent.ts';
 
+void test('all review pages require authenticated reviewer access before returning children', async () => {
+  const { readFileSync } = await import('node:fs');
+  const { runInNewContext } = await import('node:vm');
+  const ts = (await import('typescript')).default;
+  const source = ts.transpileModule(readFileSync(new URL('../app/noah/review/layout.tsx', import.meta.url), 'utf8'), {
+    compilerOptions: { module: ts.ModuleKind.CommonJS, target: ts.ScriptTarget.ES2022 },
+  }).outputText;
+  for (const owner of ['approved-owner', 'other-owner', null, 'service-down']) {
+    const modules = {
+      'next/headers': { headers: async () => new Headers({ cookie: 'session-fixture' }) },
+      'next/navigation': { notFound: () => { throw Error('NOT_FOUND'); } },
+      '@/lib/noah-intake-server': { noahIntakeDependencies: () => {
+        if (owner === 'service-down') throw Error('service unavailable');
+        return noahReviewerAccess(async request => {
+          assert.equal(request.headers.get('cookie'), 'session-fixture');
+          if (!owner) throw Error('UNAUTHORIZED');
+          return owner;
+        }, 'approved-owner');
+      } },
+    };
+    const exports = {};
+    runInNewContext(source, { exports, Request, require: name => { assert.ok(name in modules, name); return modules[name]; } });
+    if (owner === 'approved-owner') assert.equal(await exports.default({ children: 'operator-controls' }), 'operator-controls');
+    else await assert.rejects(exports.default({ children: 'operator-controls' }), /NOT_FOUND/);
+  }
+});
+
 void test('reviewer scope resolves only after authenticating the pinned owner, never from caller headers', async () => {
   const scope=await ownerScopeFor('approved-owner');
   let actual='other-owner';

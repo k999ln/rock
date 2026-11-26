@@ -80,7 +80,7 @@ export default function NoahStoreEntry({ jobs, items }: { jobs?: (NoahFirstJob &
       {related.length > 0 && <section className={styles.collection} aria-labelledby="noah-featured-agents-title">
         <header className={styles.listHeading}>
           <h2 id="noah-featured-agents-title">{t('注目のAgent')}</h2>
-          <Link href="/noah/explore">{t('すべて見る')}</Link>
+          <Link href="/noah#noah-collection">{t('すべて見る')}</Link>
         </header>
         <NoahAgentPinGrid compact>{related.map(item =>
           <NoahAgentPin key={item.id} id={item.id} name={item.name} summary={item.summary || item.provider}

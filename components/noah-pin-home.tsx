@@ -101,7 +101,7 @@ export default function NoahPinHome({fallback,searchQuery='',initialSource='noah
       </div>;
     }) : <output>{t(!current ? '利用できる仕事を確認しています…' : availableJobs ? '今選べる仕事はありません。' : '今選べる仕事を確認できませんでした。')}</output>}
     <nav className={styles.firstJobLinks} aria-label={t('仕事を探す・成果を見る')}>
-      <Link href="/noah/explore">{t('ほかの仕事を探す')}</Link>
+      <Link href="/noah#noah-collection">{t('ほかの仕事を探す')}</Link>
       <Link href="/noah/saved?tab=results">{t('保存した成果を見る')}</Link>
     </nav>
   </section>}

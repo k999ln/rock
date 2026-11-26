@@ -1376,9 +1376,9 @@
       "savedCommit": "0f724cf6efeb04a2971283ea73740c28c8780ff3"
     }
   },
-  "updatedAt": "2026-11-23",
-  "milestone": "Noahの現main統合・限定本番受入・運用と集客の残件を照合",
-  "nextAction": "Pixelでの残り2種の実行とダウンロード操作、有料Containersの配備判断、収集の24時間鮮度と実行先移行、紹介の実注文/承認を進める。全掲載Agent対応、300人の試行は未受入。現行の作業別状態はcodex/tasks/00-index.mdを参照する。",
+  "updatedAt": "2026-11-26",
+  "milestone": "Noah第244版の公開と事業の受入範囲を照合。旧タスクの件数は11月23日の記録を維持",
+  "nextAction": "掲載Agent別の認証・実行器を整えてWorkで成果を確認する。収益パックと仕事別明細の接続、実入金後の作者分、専用eSIMの実回線、定期便の実配送を個別に検収する。従来の端末・収集・運用の残件はproject.mdを参照。",
   "tasks": [
     {
       "id": "AMC02",
@@ -13362,7 +13362,17 @@
         "mergeCommit": "21518016a125a78307c19b10b50f0e219d29ba20",
         "scope": "公開212で対応済みの公式CLIを検索対象に追加。Pixelで公式Memoryの検索・接続・実行・成果とファイルの受取・再読込を確認。Pixelでのダウンロード操作は試験対象外。"
       }
-    ]
+    ],
+    "releaseFollowUp": {
+      "observedAt": "2026-11-26T17:06:25+09:00",
+      "main": "13f2c6dd971cc40f9cf9f03894551717527210e5",
+      "siteVersion": 244,
+      "siteSource": "196fa0401d827d697c20d391b9608922d817f41b",
+      "tree": "b8f3534f1b8eb3c24d34a78e8173505476b4e027",
+      "productionRecord": "https://github.com/iceiceice999/rock/pull/81",
+      "previousProductionRecord": "https://github.com/iceiceice999/rock/pull/80",
+      "coverage": "Noahの公開と関連する事業条件のみ。旧タスク個別の再検収は含まない。"
+    }
   },
   "miiPrototypeDesign": {
     "date": "2026-11-02",

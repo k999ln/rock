@@ -2,7 +2,7 @@
 
 > `data/project-status.json`、schema、migration、`data/database-deployments.json`から生成する。source検証と本番readbackを混同しない。
 
-更新日: 2026-11-23
+更新日: 2026-11-26
 
 ## 全体
 
@@ -10,7 +10,7 @@
 - source inventory: 6/6確認済み
 - current production readback: 0/6
 - 作業進捗: 393 task中 114 done、48 in progress、230 planned、1 blocked
-- 現在milestone: Noahの現main統合・限定本番受入・運用と集客の残件を照合
+- 現在milestone: Noah第244版の公開と事業の受入範囲を照合。旧タスクの件数は11月23日の記録を維持
 
 ## 保存境界と配備状態
 
@@ -93,6 +93,6 @@
 
 ## 次の作業
 
-Pixelでの残り2種の実行とダウンロード操作、有料Containersの配備判断、収集の24時間鮮度と実行先移行、紹介の実注文/承認を進める。全掲載Agent対応、300人の試行は未受入。現行の作業別状態はcodex/tasks/00-index.mdを参照する。
+掲載Agent別の認証・実行器を整えてWorkで成果を確認する。収益パックと仕事別明細の接続、実入金後の作者分、専用eSIMの実回線、定期便の実配送を個別に検収する。従来の端末・収集・運用の残件はproject.mdを参照。
 
 本番readbackは読み取り専用で行い、migration適用やデータ変更とは分離して記録する。

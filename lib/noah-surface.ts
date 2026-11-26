@@ -19,8 +19,8 @@ export function noahHomeView(hash: string): NoahHomeView {
 }
 
 export function noahLegacyHref(hash: string, mode: NoahSurfaceMode, base: string): string | null {
-  if (hash === '#sky') return `${base}/explore?tab=tools`;
-  if (['#catalog', '#optional-features'].includes(hash)) return `${base}/explore?tab=catalog`;
+  if (hash === '#sky') return `${base}?tab=tools`;
+  if (['#catalog', '#optional-features'].includes(hash)) return `${base}?tab=catalog`;
   if (hash === '#sky-manage') return mode === 'public' ? `${base}/saved?tab=roles` : noahActionHref(mode, base, 'library');
   return null;
 }
@@ -31,7 +31,7 @@ export function noahActionHref(mode: NoahSurfaceMode, base: string, target: stri
   if (target === 'library') return `${base}/my?view=agents`;
   if (target === 'work') return `${base}/activity`;
   if (target === 'agent' && /^[a-zA-Z0-9_-]{1,160}$/.test(agentId)) return `${base}/agents/${agentId}`;
-  return `${base}/explore`;
+  return `${base}`;
 }
 
 export function noahMacPath(target: string, agentId = '') {
