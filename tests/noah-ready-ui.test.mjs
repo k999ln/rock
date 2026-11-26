@@ -576,7 +576,9 @@ void test('the public store and detail pages keep work and saved results in the 
     const links = shell.nodes(panel).filter(node => node.type === 'a').map(link => link.props.href);
     assert.equal(links.includes('/noah/engineering'), pathname !== '/noah');
     assert.ok(!links.includes('/noah/registration'));
-    for (const href of ['/noah', '/noah/my?view=agents', '/noah/activity', '/noah/saved?tab=results', '/noah/profile']) assert.ok(links.includes(href), pathname + ' → ' + href);
+    assert.ok(!links.includes('/noah/profile') && !links.includes('/noah/profile#permissions') && !links.includes('/noah/coconala'));
+    assert.ok(shell.find('a').some(link => link.props.href === '/noah/profile'));
+    for (const href of ['/noah', '/noah/my?view=agents', '/noah/activity', '/noah/saved?tab=results']) assert.ok(links.includes(href), pathname + ' → ' + href);
     const [rail] = shell.find('aside');
     if (rail) assert.ok(shell.nodes(rail).some(node => node.type === 'a' && node.props.href === '/noah/saved?tab=results'));
     assert.equal(ui.calls.length, 0);

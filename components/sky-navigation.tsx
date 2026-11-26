@@ -2,7 +2,7 @@ import Link from 'next/link';
 import { Bookmark, MessageCircle, Store, Plug, CreditCard } from 'lucide-react';
 import styles from './sky-application.module.css';
 const destinations = [
-  { id: 'market', href: '/noah/explore', label: 'Agentを探す', Icon: Store },
+  { id: 'market', href: '/noah', label: 'Noahホーム', Icon: Store },
   { id: 'compute', href: '/noah/saved', label: '保存したもの', Icon: Bookmark },
   { id: 'purchases', href: '/noah/purchases', label: '決済・購入履歴', Icon: CreditCard },
   { id: 'network', href: '/noah/network', label: '接続', Icon: Plug },
