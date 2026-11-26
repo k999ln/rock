@@ -343,6 +343,8 @@ node --experimental-strip-types --test docs/design-validation/noah/noah-loop.tes
 <details>
 <summary>公開版の作りと各段階の検証記録（MVP L1〜L9）</summary>
 
+タイガーのゲームはオフライン時だけ表示します。オンラインの読み込みは小さなスピナーで知らせ、一覧の続きを取得する間も表示済みのカードを保持します。詳細では取得済みの公開IDを引き継ぎ、口コミ用の同じAgentの再検索を省きます。
+
 以下のMVP各段階には当時の画面名やURLが含まれます。旧一覧の `/noah/ready` は現在 [Agent一覧](https://avoado.si/noah?tab=ready) へ転送されます。
 
 開発時は `npm run noah:screenless:check` で、固定Agent・登録コード・VMの起動引数を検査します。画面・音・hostファイルへアクセスする変更を通常の `npm run verify` で検出します。画面を閉じた後の成果保存はローカルDBの回帰試験で確認しました。Agentの依存関係や審査済みの実行記録から、必要な画面・入力と実行先の候補を判定する関数も実装しました。受付への組み込みとMacでの4項目の実機観測は[task84](codex/tasks/84-noah-screenless-rule.md)で追跡します。

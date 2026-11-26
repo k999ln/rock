@@ -42,7 +42,7 @@ const requestTarget = 'noah-agent-request';
 const askIntentKey = (id: string) => `noah-agent-first-request:${id}`;
 
 /** tool: 最初に選んでおく道具（棚のカードから来た時。/noah/ready/agent?tool=…）。from: そのカードの ID（試行の本人の報告を、下に出す）。 */
-export default function NoahReadyDetail({ id, tool = null, from = null, internalOnly = false, sourceNotes, trailer, mediaId, preview: cardPreview }: { id: string; tool?: string | null; from?: string | null; internalOnly?: boolean; sourceNotes?: ReactNode; trailer?: ReactNode; mediaId?: string; preview?: NoahDetailPreview }) {
+export default function NoahReadyDetail({ id, tool = null, from = null, internalOnly = false, sourceNotes, trailer, mediaId, feedbackId, preview: cardPreview }: { id: string; tool?: string | null; from?: string | null; internalOnly?: boolean; sourceNotes?: ReactNode; trailer?: ReactNode; mediaId?: string; feedbackId?: string; preview?: NoahDetailPreview }) {
   const {t, locale}=useNoahLocale();
   const browserReady = useNoahBrowserReady();
   // 読んだ詳細は、何回目の読み取りの物かと一緒に持つ（「読み直す」を押したら、届くまでは「読み込み中」）。
@@ -160,7 +160,7 @@ export default function NoahReadyDetail({ id, tool = null, from = null, internal
 
   return <NoahDetailTemplate id={detail.id} mediaId={mediaId} name={guide?.name || detail.name} provider={detail.provider || undefined}
     summary={lead || t('（説明はありません）')} overviewTitle={pitch}
-    feedbackId={detail.listed ? detail.id : undefined} expanded={Boolean(live)}
+    feedbackId={detail.listed ? feedbackId ?? detail.id : undefined} expanded={Boolean(live)}
     detailsLabel={detail.explanation ? t('操作の流れと道具') : undefined}
     icon={guide ? <span className={pageStyles.phoneMark} aria-hidden="true"><PhoneCall size={26} strokeWidth={1.8} /></span>
       : <NoahAppIcon name={detail.name} topic={noahPinTopic(detail.name, detail.summary)} className={pageStyles.appMark} />}

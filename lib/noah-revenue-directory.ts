@@ -147,3 +147,8 @@ export async function noahRevenueTarget(
     provenance: catalog,
   };
 }
+
+/** An unrelated Agent detail must not wait for this external first-party catalog. */
+export async function isNoahRevenueProject(id: string) {
+  return (await Promise.all(reviewed.map(item => noahCardIdentity(item.landing, item.id)))).includes(id);
+}

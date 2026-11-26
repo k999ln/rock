@@ -1,5 +1,6 @@
 ## 2026-11-26
 
+- Noahのタイガーをオフライン専用に分離し、通常の読込を小さな表示へ変更。詳細の重複取得・無関係な外部応答の待機・カードの再計測ループを削減（task140、[PR #105](https://github.com/iceiceice999/rock/pull/105)）。
 - Noah詳細の待機画面を公開情報の先行表示へ変更し、全件を初期表示、トップの帯を撤去、登録の不足情報を詳細に表示（task140、[PR #104](https://github.com/iceiceice999/rock/pull/104)）。
 
 - READMEの開発状況と設計書を公開第258版のホーム・Agent詳細に合わせ、収益明細と専用eSIMの確認範囲を更新。[PR #103](https://github.com/iceiceice999/rock/pull/103)
