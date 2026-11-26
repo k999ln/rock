@@ -4,6 +4,39 @@ import { screen } from './fixtures/noah/screen.mjs';
 import * as surface from '../lib/noah-surface.ts';
 import { withMiniSite } from '../services/sky-web/domain-router.mjs';
 import { MAIN_DISCOVERY_PATHS } from '../services/sky-web/main-page-policy.mjs';
+import { noahReturnPath } from '../lib/noah-navigation.ts';
+import { NOAH_SHORT_PAGES } from '../services/sky-web/noah-page-routes.mjs';
+
+void test('short URLs reach the Noah app with the original URL and stay out of the public sitemap', async () => {
+  const seen = [];
+  const app = withMiniSite({fetch: request => {
+    seen.push(request.url);
+    return new Response();
+  }}, () => assert.fail('unexpected Mini proxy'));
+  assert.equal(new Set(NOAH_SHORT_PAGES.map(([short]) => short)).size, 12);
+  for (const [short] of NOAH_SHORT_PAGES) {
+    const target = `${short}?source=fixture&tag=a&tag=b#section`;
+    assert.equal(noahReturnPath(target), target);
+    assert.ok(!MAIN_DISCOVERY_PATHS.includes(short));
+    for (const method of ['GET', 'HEAD']) {
+      const url = `https://avoado.si${target}`;
+      const response = await app.fetch(new Request(url, {method}));
+      assert.equal(response.status, 200, `${method} ${short}`);
+      assert.equal(response.headers.get('location'), null, short);
+      assert.equal(seen.at(-1), url);
+    }
+  }
+  for (const path of ['/aries/more', '/Aries', '/aries-extra']) {
+    assert.equal(noahReturnPath(path), '/noah');
+    assert.equal((await app.fetch(new Request(`https://avoado.si${path}`))).status, 404);
+  }
+  assert.equal(noahReturnPath('//elsewhere.test/aries'), '/noah');
+  for (const host of ['avoado.si', 'localhost:8787']) {
+    const response = await app.fetch(new Request(`https://${host}/noah/profile?from=menu#permissions`));
+    assert.equal(response.status, 308);
+    assert.equal(response.headers.get('location'), `https://${host}/aries?from=menu#permissions`);
+  }
+});
 
 void test('old discovery URLs keep queries, repeated filters, category and anchors on the home without a loop', async () => {
   const app = withMiniSite({fetch: () => new Response('home')}, () => assert.fail('unexpected proxy'));
@@ -48,7 +81,7 @@ void test('public menu has one home entry and no separate discovery or timeline 
   assert.equal(links.filter(node=>shell.text(node)==='ホーム').length,1);
   assert.ok(links.every(node=>!['Agentを探す','タイムライン','登録情報','任せる範囲','ココナラの仕事'].includes(shell.text(node))));
   assert.ok(links.every(node=>!node.props.href.includes('/explore') && !node.props.href.includes('#timeline')));
-  assert.equal(shell.find('a').filter(node=>node.props.href === '/noah/profile').length, 1);
+  assert.equal(shell.find('a').filter(node=>node.props.href === '/aries').length, 1);
   assert.ok(shell.find('form').every(node=>node.props.action==='/noah'));
   assert.ok(shell.find('input').every(node=>node.props.defaultValue==='資料'));
 });

@@ -577,7 +577,7 @@ void test('the public store and detail pages keep work and saved results in the 
     assert.equal(links.includes('/noah/engineering'), pathname !== '/noah');
     assert.ok(!links.includes('/noah/registration'));
     assert.ok(!links.includes('/noah/profile') && !links.includes('/noah/profile#permissions') && !links.includes('/noah/coconala'));
-    assert.ok(shell.find('a').some(link => link.props.href === '/noah/profile'));
+    assert.ok(shell.find('a').some(link => link.props.href === '/aries'));
     for (const href of ['/noah', '/noah/my?view=agents', '/noah/activity', '/noah/saved?tab=results']) assert.ok(links.includes(href), pathname + ' → ' + href);
     const [rail] = shell.find('aside');
     if (rail) assert.ok(shell.nodes(rail).some(node => node.type === 'a' && node.props.href === '/noah/saved?tab=results'));

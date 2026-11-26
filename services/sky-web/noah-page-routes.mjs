@@ -13,7 +13,29 @@ export const NOAH_PAGES = [
   ['tools/:toolId', 'tools/:toolId', 'Toolの詳細'], ['code/:id', 'code/:id', '共有コード'],
 ];
 export const NOAH_LOCAL_LABS = ['add/linux','add/zoom/device','add/zoom/interpret','add/zoom/lab','apps/planner/lab'];
+export const NOAH_PROFILE_PATH = '/aries';
+export const NOAH_SHORT_PAGES = [
+  [NOAH_PROFILE_PATH, '/noah/profile'],
+  ['/taurus', '/noah/saved'],
+  ['/gemini', '/noah'],
+  ['/cancer', '/noah/registration'],
+  ['/leo', '/noah/my?view=agents'],
+  ['/virgo', '/noah/preferences'],
+  ['/libra', '/noah/combinations'],
+  ['/scorpio', '/noah/activity'],
+  ['/sagittarius', '/noah/devices'],
+  ['/capricorn', '/noah/engineering'],
+  ['/aquarius', '/noah/network'],
+  ['/pisces', '/noah/help'],
+];
+
+export function noahShortPageDestination(pathname) {
+  const path = pathname.replace(/\/$/, '');
+  return NOAH_SHORT_PAGES.find(([source]) => source === path)?.[1] ?? null;
+}
+
 export const NOAH_REDIRECTS = [
+  ['/noah/profile', NOAH_PROFILE_PATH],
   ['/noah/explore', '/noah'],
   ['/noah/coconala', '/noah'],
   ['/noah/public/explore', '/noah'],
