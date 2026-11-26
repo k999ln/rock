@@ -96,8 +96,8 @@ void test('publisher can reuse owner-scoped details without an assumed free pric
 });
 
 void test('all catalog tools remain individually discoverable without claiming candidates are operational', () => {
-  assert.equal(catalog.length, 38);
-  assert.equal(catalog.filter((tool) => tool.status === 'candidate').length, 22);
+  assert.equal(catalog.length, 39);
+  assert.equal(catalog.filter((tool) => tool.status === 'candidate').length, 23);
   assert.match(marketplace, /catalog\.filter/);
   assert.match(marketplace, /skyToolUiState\(tool, runtimeContext\)/);
   assert.equal(skyToolUiState(catalog.find((tool) => tool.id === 'jev-router')).label, 'Noah未接続・PC CLIのみ');

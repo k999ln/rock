@@ -21,8 +21,8 @@ requireValue(
   `Web/PC readyは16件です（実際: ${readyCount}）`,
 );
 requireValue(
-  candidateCount === 22,
-  `導入候補は22件です（実際: ${candidateCount}）`,
+  candidateCount === 23,
+  `導入候補は23件です（実際: ${candidateCount}）`,
 );
 const jobTools = new Set(JOB_TOOLS);
 const connectionTools = new Set(SKY_CONNECTION_TOOLS);

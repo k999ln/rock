@@ -6,7 +6,7 @@ import {
   Globe, Inbox, LayoutTemplate, Lightbulb, ListChecks, MessageSquare,
   MessagesSquare, Monitor, MousePointer2, PackageCheck, Palette, PenLine,
   Radar, Receipt, Route, Scale, Search, Send, Shirt, ShoppingBag,
-  Smartphone, Sparkles, TrendingUp, Users, Waypoints, Workflow, ShieldCheck,
+  Smartphone, Sparkles, TrendingUp, Users, Waypoints, Workflow, ShieldCheck, Wrench,
   type LucideIcon,
 } from 'lucide-react';
 
@@ -38,6 +38,7 @@ export const toolIcons: Record<string, LucideIcon> = {
   'jev-router': Route,
   'jev-browser': Compass,
   'mobile-jev': Smartphone,
+  'noah-local-device-maintenance': Wrench,
   'coconala-proposal-draft': MessageSquare,
   'gig-workflow': Workflow,
   'coconala-inbox': Inbox,
