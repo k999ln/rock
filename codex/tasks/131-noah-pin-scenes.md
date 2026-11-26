@@ -86,3 +86,5 @@
 - 2.1 の保存と取り込みを [PR #73](https://github.com/iceiceice999/rock/pull/73) に出しました。本番 D1 には適用していません。
 - 2.2 の生成を [PR #74](https://github.com/iceiceice999/rock/pull/74) に出しました。実際の生成は、収集機の設定後に行います。
 - 2.3 の審査画面を [PR #75](https://github.com/iceiceice999/rock/pull/75) に出しました。実データの審査は 0 / 200 件です。画面は未配備です。
+- PR #73〜#75 は未マージで閉じました。三つの内容をまとめたコミットは、[PR #70](https://github.com/iceiceice999/rock/pull/70) から main に入りました。
+- 2.4 の一覧・ディレクトリ・詳細への接続を [PR #109](https://github.com/iceiceice999/rock/pull/109) に出しました。審査者には表示します。一般表示は 200 件のうち 190 件以上が合うまで閉じます。本番 D1 と一般公開は変えていません。
