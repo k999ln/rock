@@ -10,7 +10,7 @@
 .hero {
   padding: 28px 22px;
   border-radius: 22px;
-  background: linear-gradient(135deg, #fff8ec 0%, #f1f8ee 100%);
+  background: linear-gradient(135deg, var(--noah-theme-panel, #fff8ec) 0%, var(--noah-theme-raised, #f1f8ee) 100%);
   border: 1px solid var(--os-line, #e8e5ee);
 }
 .hero h1 {
@@ -118,8 +118,8 @@
 .chip {
   padding: 4px 10px;
   border-radius: 999px;
-  background: #eaf4e6;
-  color: #2f5f3a;
+  background: var(--noah-theme-raised, #eaf4e6);
+  color: var(--noah-theme-success, #2f5f3a);
   font-size: 0.8rem;
 }
 .amount {
@@ -167,7 +167,7 @@
 }
 .alert {
   margin: 0;
-  color: #b42318;
+  color: var(--noah-theme-link, #b42318);
 }
 @media (max-width: 420px) {
   .detail {

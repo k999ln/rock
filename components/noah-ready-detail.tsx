@@ -9,11 +9,12 @@ import { useEffect, useId, useRef, useState, type ReactNode } from 'react';
 import { useNoahLocale } from './noah-locale';
 import NoahAgentVisual from './noah-agent-visual';
 import NoahAppIcon from './noah-app-icon';
-import { ChevronLeft, PhoneCall, ArrowUpRight, PhoneOutgoing, ChevronDown } from 'lucide-react';
+import NoahDetailTemplate from './noah-detail-template';
+import { ChevronLeft, PhoneCall, ArrowUpRight, PhoneOutgoing } from 'lucide-react';
+import { noahPinTopic } from '@/lib/noah-pins';
 import { noahDetailGuide } from '@/lib/noah-detail-guide';
 import { noahDetailStarter } from '@/lib/noah-detail-starter';
 import pageStyles from './noah-detail-overview.module.css';
-import { noahPinTopic } from '@/lib/noah-pins';
 import NoahAgentShare from './noah-agent-share';
 import NoahLoading from './noah-loading';
 import Link from 'next/link';
@@ -39,7 +40,7 @@ const requestTarget = 'noah-agent-request';
 const askIntentKey = (id: string) => `noah-agent-first-request:${id}`;
 
 /** tool: 最初に選んでおく道具（棚のカードから来た時。/noah/ready/agent?tool=…）。from: そのカードの ID（試行の本人の報告を、下に出す）。 */
-export default function NoahReadyDetail({ id, tool = null, from = null, internalOnly = false, sourceNotes, trailer }: { id: string; tool?: string | null; from?: string | null; internalOnly?: boolean; sourceNotes?: ReactNode; trailer?: ReactNode }) {
+export default function NoahReadyDetail({ id, tool = null, from = null, internalOnly = false, sourceNotes, trailer, mediaId }: { id: string; tool?: string | null; from?: string | null; internalOnly?: boolean; sourceNotes?: ReactNode; trailer?: ReactNode; mediaId?: string }) {
   const {t, locale}=useNoahLocale();
   // 読んだ詳細は、何回目の読み取りの物かと一緒に持つ（「読み直す」を押したら、届くまでは「読み込み中」）。
   const [result, setResult] = useState<{ attempt: number; loaded: Loaded } | null>(null), [connection, setConnection] = useState<NoahReadyConnection | null>(null);
@@ -149,50 +150,38 @@ export default function NoahReadyDetail({ id, tool = null, from = null, internal
     }).catch(() => undefined);
   }
 
-  return <main className={`${base.page} ${styles.page} ${pageStyles.page}`}>
-    {back}
+  const starterExample = starter && <section className={pageStyles.starter}>
+    <h2>{t('依頼例')}</h2>
+    <p>{starter.input}</p>
+    {connected ? <button type="button" className={pageStyles.starterAction} onClick={() => { setExampleConnection(connectedId); focusRequest(); }}>{t('この例を使う')}</button>
+      : detail.listed && !live && <button type="submit" form={connectForm} value="example" className={pageStyles.starterAction}>{t('この例を使う')}</button>}
+  </section>;
+
+  return <NoahDetailTemplate id={detail.id} mediaId={mediaId} name={guide?.name || detail.name} provider={detail.provider || undefined}
+    summary={lead || t('（説明はありません）')} overviewTitle={pitch}
+    feedbackId={detail.listed ? detail.id : undefined} expanded={Boolean(live)}
+    detailsLabel={detail.explanation ? t('操作の流れと道具') : undefined}
+    icon={guide ? <span className={pageStyles.phoneMark} aria-hidden="true"><PhoneCall size={26} strokeWidth={1.8} /></span>
+      : <NoahAppIcon name={detail.name} topic={noahPinTopic(detail.name, detail.summary)} className={pageStyles.appMark} />}
+    meta={<>{guide ? <a href="#noah-guide-terms">{guide.priceLabel}</a> : <span>{t(noahPriceText(detail.connect.price))}</span>}{detail.host && <span>{t('送信先: {host}',{host:detail.host})}</span>}</>}
+    action={<>
+      {connected && <a className={styles.primary} href={`#${requestTarget}`} onClick={(event) => { event.preventDefault(); focusRequest(); }}>{t('依頼する')}</a>}
+      <NoahConnectButton agentId={detail.id} listed={detail.listed} signedIn={signedIn} ownerScope={detail.ownerScope} connection={live} onChange={setConnection} resume askAs="none" packageId={from} initialTool={tool} onboarding={{ formId: starter ? connectForm : undefined, host: detail.host, beforeConnect: (example) => rememberAsk(detail.id, example) }} />
+    </>}
+    intro={starterExample}
+    requestForm={connected && <div id={requestTarget} ref={request} tabIndex={-1} className={pageStyles.request}>
+      <NoahAsk agentId={detail.id} agentName={detail.name} key={live.id} connectionId={live.id} initialTool={tool} starter={exampleConnection === live.id ? starter : null} ownerScope={detail.ownerScope} onUnusable={() => refresh(live)} onAsked={() => setAsked((n) => n + 1)} />
+    </div>}>
     <article className={pageStyles.overview}>
-      <div className={pageStyles.intro}>
-        <div className={pageStyles.product}>
-          <header className={pageStyles.identity}>
-            {guide ? <span className={pageStyles.phoneMark} aria-hidden="true"><PhoneCall size={31} strokeWidth={1.8} /></span>
-              : <NoahAppIcon name={detail.name} topic={noahPinTopic(detail.name, detail.summary)} className={pageStyles.appMark} />}
-            <div>
-              <h1>{guide?.name || detail.name}</h1>
-              {detail.provider && <p>{t('提供:')} {detail.provider}</p>}
-              {detail.host && <p>{t('送信先: {host}', { host: detail.host })}</p>}
-            </div>
-          </header>
-          <div className={pageStyles.action}>
-            {connected && <a className={styles.primary} href={`#${requestTarget}`} onClick={(event) => { event.preventDefault(); focusRequest(); }}>{t('依頼する')}</a>}
-            <NoahConnectButton agentId={detail.id} listed={detail.listed} signedIn={signedIn} ownerScope={detail.ownerScope} connection={live} onChange={setConnection} resume askAs="none" packageId={from} initialTool={tool} onboarding={{ formId: starter ? connectForm : undefined, host: detail.host, beforeConnect: (example) => rememberAsk(detail.id, example) }} />
-            {guide ? <a href="#noah-guide-terms" className={pageStyles.price}>{guide.priceLabel}</a> : <small>{t(noahPriceText(detail.connect.price))}</small>}
-          </div>
-        </div>
-        <div className={pageStyles.introContent} data-preview={Boolean(preview || starter) || undefined}>
-          <div>
-            {pitch && <h2 className={pageStyles.pitch}>{locale === 'ja'
-              ? pitch.split(/(?<=、)/u).map((phrase) => <span key={phrase}>{phrase}</span>)
-              : pitch}</h2>}
-            <p className={pageStyles.lead}>{lead || t('（説明はありません）')}</p>
-          </div>
-          {starter && <section className={pageStyles.starter}>
-            <h2>{t('依頼例')}</h2>
-            <p>{starter.input}</p>
-            {connected ? <button type="button" className={pageStyles.starterAction} onClick={() => { setExampleConnection(connectedId); focusRequest(); }}>{t('この例を使う')}</button>
-              : detail.listed && !live && <button type="submit" form={connectForm} value="example" className={pageStyles.starterAction}>{t('この例を使う')}</button>}
-          </section>}
-        {preview && <figure className={pageStyles.memo} aria-label={t('通話メモの見本')}>
-          <figcaption><PhoneOutgoing size={19} strokeWidth={1.8} aria-hidden="true" />{t('通話メモの見本')}</figcaption>
-          <div className={pageStyles.wave} aria-hidden="true">{WAVEFORM.map((height, i) => <i key={i} style={{ height: height + '%' }} />)}</div>
-          <h3>{preview.title}</h3>
-          <dl className={pageStyles.sample}>
-            <div><dt>{t('依頼例')}</dt><dd>{preview.input}</dd></div>
-            <div><dt>{t('返答の例')}</dt><dd>{preview.output}</dd></div>
-          </dl>
-        </figure>}
-        </div>
-      </div>
+      {preview && <figure className={pageStyles.memo} aria-label={t('通話メモの見本')}>
+        <figcaption><PhoneOutgoing size={19} strokeWidth={1.8} aria-hidden="true" />{t('通話メモの見本')}</figcaption>
+        <div className={pageStyles.wave} aria-hidden="true">{WAVEFORM.map((height, i) => <i key={i} style={{ height: height + '%' }} />)}</div>
+        <h3>{preview.title}</h3>
+        <dl className={pageStyles.sample}>
+          <div><dt>{t('依頼例')}</dt><dd>{preview.input}</dd></div>
+          <div><dt>{t('返答の例')}</dt><dd>{preview.output}</dd></div>
+        </dl>
+      </figure>}
       {trailer}
       {guide && <>
         {guide.examples.length > 1 && <section className={pageStyles.block} aria-labelledby="noah-guide-examples">
@@ -211,17 +200,11 @@ export default function NoahReadyDetail({ id, tool = null, from = null, internal
           {guide.sources.length > 0 && <div className={pageStyles.links}>{guide.sources.map(source => <a key={source.href} href={source.href} target="_blank" rel="noopener noreferrer nofollow">{source.label}<ArrowUpRight size={15} aria-hidden="true" /></a>)}</div>}
         </section>
       </>}
-      {detail.explanation && <details className={pageStyles.disclosure}>
-        <summary>{t('操作の流れと道具')}<ChevronDown size={16} aria-hidden="true" /></summary>
-        <NoahExplanationSection explanation={detail.explanation} summary="" connected={connected} />
-      </details>}
+      {detail.explanation && <NoahExplanationSection explanation={detail.explanation} summary="" connected={connected} />}
       {from && <NoahPackageExplanation key={from} id={from} familyId={detail.id} tool={tool} />}
       {live?.state!=='connected' && <NoahRegistrationSheet agentId={detail.id}/>}
     </article>
 
-    {connected && <div id={requestTarget} ref={request} tabIndex={-1} className={pageStyles.request}>
-      <NoahAsk agentId={detail.id} agentName={detail.name} key={live.id} connectionId={live.id} initialTool={tool} starter={exampleConnection === live.id ? starter : null} ownerScope={detail.ownerScope} onUnusable={() => refresh(live)} onAsked={() => setAsked((n) => n + 1)} />
-    </div>}
     {/* 仕事（この Agent への依頼と成果）。つないでいない時・切った後も、前に受け取った成果を出す。サインインしていない人には、出さない。 */}
     {signedIn && <div id="noah-agent-work" tabIndex={-1}><NoahWorkList key={`work:${detail.id}`} agentId={detail.id} ownerScope={detail.ownerScope} refresh={asked} /></div>}
     <details className={styles.agentDetails}>
@@ -248,5 +231,5 @@ export default function NoahReadyDetail({ id, tool = null, from = null, internal
 
     {sourceNotes}
     <footer className={styles.source}><p>{t(guide ? '登録情報はOfficial MCP Registryの掲載内容です。' : NOAH_READY_TEXT.source)}{NOAH_REPORT_CONTACT && <> <Link href="/noah/help#bot">{t(NOAH_READY_TEXT.report)} →</Link></>}</p></footer>
-  </main>;
+  </NoahDetailTemplate>;
 }

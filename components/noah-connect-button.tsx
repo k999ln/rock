@@ -175,7 +175,7 @@ export default function NoahConnectButton({ agentId, listed, signedIn, ownerScop
   return <div className={styles.connect}>
     {waiting && <div className={styles.connectionOverlay} data-noah-connection-loading="true"><NoahLoading variant="connection" label={t('接続しています…')} /></div>}
     {main}
-    {onboarding && confirmation !== null && <fieldset id={confirmationId} className={overview.confirmation}>
+    {onboarding && confirmation !== null && <fieldset id={confirmationId} className={overview.confirmation} data-noah-connect-confirmation>
       <legend>{t('接続を確認')}</legend>
       {onboarding.host && <p>{t('送信先: {host}', { host: onboarding.host })}</p>}
       <p>{t('依頼に入力した内容は、依頼を送るときに提供元へ送信されます。')}</p>

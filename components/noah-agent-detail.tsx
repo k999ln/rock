@@ -10,13 +10,15 @@ import { adapterLabels } from './noah-agent-catalog';
 import { permissionLabels } from './noah-agent-upload-form';
 import styles from './noah-agent-catalog.module.css';
 import { NOAH_COVER_TYPES, noahPrivateCoverUrl } from '@/lib/noah-cover';
-import { NoahPinMotion } from './noah-art-motion';
+import NoahDetailTemplate from './noah-detail-template';
 import NoahLocalConnectionPanel from './noah-local-connection';
 import NoahLaunch from './noah-launch';
 import NoahEngineeringMcpTrial from './noah-engineering-mcp-trial';
 import NoahManagedInstallation from './noah-managed-installation';
 import { NoahInviteManager } from './noah-invites';
 import { NOAH_TEST_MANIFEST_SHA256 } from '@/lib/noah-local-connection';
+import { isNoahTrainingPlugin, NOAH_TRAINING_PROJECT } from '@/lib/noah-training-plugin';
+import NoahProviderRunner from './noah-provider-runner';
 export default function NoahAgentDetail({ id, remote = false, engineering = false }: { id: string; remote?: boolean; engineering?: boolean }) {
   const router = useRouter(), builtin = id === 'anicca';
   const [upload, setUpload] = useState<NoahUpload | null>(null), [scope, setScope] = useState('');
@@ -35,6 +37,7 @@ export default function NoahAgentDetail({ id, remote = false, engineering = fals
   }, [id, builtin, attempt]);
   const m = builtin ? aniccaAgent : upload?.manifest;
   const testConnection = upload?.manifestSha256 === NOAH_TEST_MANIFEST_SHA256;
+  const trainingPlugin = upload?.uploadState === 'ready' && isNoahTrainingPlugin(m);
   async function connect() {
     if (!m || pending || (upload && upload.uploadState !== 'ready')) return;
     setPending(true); setError(''); setMessage(''); setLaunchUrl('');
@@ -84,13 +87,11 @@ export default function NoahAgentDetail({ id, remote = false, engineering = fals
       setUpload(data.agent); setRetrySource(null); setRetryCover(null); setMessage('ファイルの保存が完了しました。');
     } catch (e) { setError((e as Error).message); } finally { setPending(false); }
   }
-  return <div className={engineering ? styles.formPage : `${styles.page} ${styles.formPage}`}>
+  const content = <div className={engineering ? styles.formPage : `${styles.page} ${styles.formPage}`}>
     {!engineering && <nav className={styles.nav}><Link href="/noah/explore">← Agent一覧</Link><Link href="/noah/saved?tab=agents">自分のAgent</Link></nav>}
     {error && <div role="alert" className={styles.error}>{error} {!m && <button onClick={() => setAttempt(n => n + 1)}>再試行</button>}</div>}
     {!m && !error && <output>読み込んでいます…</output>}
     {m && <>
-      {!engineering && <><header className={styles.storeProduct}><span className={styles.productMark} aria-hidden="true"><NoahPinMotion id={id} name={m.name} summary={m.summary} cover={m.cover && upload?.uploadState === 'ready' ? {type:m.cover.type,url:noahPrivateCoverUrl(id)} : undefined} /></span><div><h1>{m.name}</h1><p>{builtin ? '外部Agent' : '自分のAgent'}</p></div></header>
-      <p className={styles.productSummary}>{m.summary}</p></>}
       <div className={styles.facts}><div><small>接続方式</small><strong>{builtin ? '背景実行・本人Codex接続' : m.runtime ? 'ターミナル用テンプレート' : testConnection ? 'テストAgent接続' : adapterLabels[m.adapter]}</strong></div><div><small>作者 / 版</small><strong>{m.author} / {m.version}</strong></div><div><small>実行する場所</small><strong>{builtin || m.runtime ? 'このMacの隔離環境' : testConnection ? 'クラウド / このMac' : m.adapter === 'source' ? '未設定' : m.adapter === 'local_app' ? '隔離環境の対応待ち' : '接続先のサービス'}</strong></div></div>
       {testConnection && upload?.uploadState === 'ready' && <NoahLocalConnectionPanel key={id + scope} id={id} ownerScope={scope} />}
       {builtin && !remote && <NoahManagedInstallation key={id} id={id} />}
@@ -102,9 +103,10 @@ export default function NoahAgentDetail({ id, remote = false, engineering = fals
         {upload.original && <label>再送する原本ファイル · {upload.original.name}<input type="file" disabled={pending} onChange={e => setRetrySource(e.target.files?.[0] || null)} /></label>}
         {m.cover && <label>未保存のカバーを再送<input type="file" accept={NOAH_COVER_TYPES.join(',')} disabled={pending} onChange={e => setRetryCover(e.target.files?.[0] || null)} /></label>}
         <button disabled={Boolean(upload.original && !retrySource) || (!retrySource && !retryCover) || pending} onClick={() => void retryUpload()}>アップロードを再試行</button></div> :
-        !testConnection && !builtin && m.adapter !== 'source' && <div className={styles.actions}><button className={styles.primary} disabled={pending} onClick={() => void connect()}>{pending ? '確認しています…' : engineering && m.adapter !== 'web' ? '接続を試す' : '接続する'}</button>
+        !trainingPlugin && !testConnection && !builtin && m.adapter !== 'source' && <div className={styles.actions}><button className={styles.primary} disabled={pending} onClick={() => void connect()}>{pending ? '確認しています…' : engineering && m.adapter !== 'web' ? '接続を試す' : '接続する'}</button>
           {launchUrl && <a className={styles.primary} href={launchUrl} target="_blank" rel="noopener noreferrer">{m.adapter === 'local_app' ? 'Aniccaの設定画面を開く ↗' : 'Agentを使う ↗'}</a>}
           {launchUrl && m.adapter === 'local_app' && <button disabled={pending} onClick={() => void disconnectLocal()}>設定画面を停止</button>}</div>}
+      {trainingPlugin && scope && <NoahProviderRunner key={id + scope} projectId={NOAH_TRAINING_PROJECT} />}
       {engineering && m.adapter === 'mcp_http' && upload?.uploadState === 'ready' && scope && <NoahEngineeringMcpTrial key={id + scope} id={id} ownerScope={scope} />}
       {engineering && m.adapter === 'source' && upload?.uploadState === 'ready' && (m.runtime && upload.source
         ? <NoahLaunch key={id + scope} engineeringAgentId={id} expectedOwnerScope={scope} />
@@ -132,4 +134,8 @@ export default function NoahAgentDetail({ id, remote = false, engineering = fals
       {!engineering && upload?.uploadState === 'ready' && scope && <NoahInviteManager key={`${id}/${scope}`} agentId={id} scope={scope} hasSource={Boolean(upload.source)} hasRuntime={Boolean(upload.manifest.runtime)} />}
     </>}
   </div>;
+  return !engineering && m ? <NoahDetailTemplate id={id} mediaId={trainingPlugin ? NOAH_TRAINING_PROJECT : id}
+    name={m.name} provider={m.author} summary={m.summary} privateAgent
+    cover={m.cover && upload?.uploadState === 'ready' ? { type: m.cover.type, url: noahPrivateCoverUrl(id) } : undefined}
+    meta={<span>{m.priceNote}</span>}>{content}</NoahDetailTemplate> : content;
 }
