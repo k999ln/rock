@@ -22,12 +22,18 @@ if (repositories.size !== map.repositories.length)
 const productOwners = map.repositories.filter(
   (entry) => entry.role === 'product-ssot',
 );
+const productRepository = 'iceiceice999/rock';
 if (
   productOwners.length !== 1 ||
-  productOwners[0].repository !== 'k999ln/rock' ||
-  map.product.productRepository !== 'k999ln/rock'
+  productOwners[0].repository !== productRepository ||
+  map.product.productRepository !== productRepository ||
+  map.sharing.contractsOwner !== productRepository
 )
-  throw new Error('repository-map: 製品正本はk999ln/rockの1件だけです。');
+  throw new Error(`repository-map: 製品と契約の正本は${productRepository}の1件です。`);
+
+const legacyRock = repositories.get('k999ln/rock');
+if (legacyRock?.role !== 'legacy-history' || legacyRock.newWork !== false || legacyRock.successor !== productRepository)
+  throw new Error('repository-map: 旧rockは履歴として保持し、新しい作業は正本に集約します。');
 
 const operations = repositories.get('k999ln/Mr.');
 if (

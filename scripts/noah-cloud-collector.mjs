@@ -11,6 +11,7 @@ import { createCollectorNetwork } from './noah-collector-network.mjs';
 import { runCollector } from './noah-agent-collector.mjs';
 import { createNoahPinWriter } from './noah-collector-pins.mjs';
 import { publishCollection } from './noah-collector-publish.mjs';
+import { readCollectionFreshness } from './noah-collection-freshness.mjs';
 
 const SQLITE_LIMIT = 256 * 1024 * 1024;
 async function boundedResponse(response) {
@@ -110,10 +111,24 @@ export function collectorAlerts(status, repeat = COLLECTOR_ALERT_REPEAT) {
   }
   return { alerts, warnings };
 }
+/** The workflow conclusion and the actual public writes are separate facts. */
+export function collectorOutcomes(result) {
+  const successful = (result.published ?? []).filter(item => Number.isSafeInteger(item?.items) && item.items >= 0)
+    .map(item => ({ source: item.source, items: item.items }));
+  const skipped = (result.published ?? []).filter(item => item?.status && !Number.isSafeInteger(item?.items))
+    .map(item => ({ source: item.source, status: item.status }));
+  return {
+    execution: result.alerts?.length ? 'needs_attention' : result.warnings?.length ? 'completed_with_warnings' : 'completed',
+    publication: successful.length ? skipped.length ? 'partially_published' : 'published' : skipped.length ? 'not_ready' : 'none',
+    successful,
+    skipped,
+  };
+}
 const cell = (value) => String(value ?? '—').replace(/[|\r\n]/g, ' ');
 /** GitHub の実行の要約（GITHUB_STEP_SUMMARY）に書く、1 回分の数。鍵や中身は書かない。 */
 export function collectorSummary(result) {
-  const counts = result.counts ?? {}, lines = ['## Noah の Agent 収集', ''];
+  const counts = result.counts ?? {}, outcomes = result.outcomes ?? collectorOutcomes(result), lines = ['## Noah の Agent 収集', ''];
+  lines.push(`実行全体の結果: ${outcomes.execution}`, `実際の掲載結果: ${outcomes.publication}`, '');
   lines.push('| 台帳 | 有効 | 握手した | 一覧に載る | まだ確かめていない |', '| ---: | ---: | ---: | ---: | ---: |',
     `| ${cell(counts.registry)} | ${cell(counts.active)} | ${cell(counts.handshake)} | ${cell(counts.listed)} | ${cell(counts.unchecked)} |`, '');
   if (result.import) lines.push(`本番の一覧へ入れた: ${cell(result.import.status)}（送った系列 ${cell(result.import.sent)}・書いた行 ${cell(result.import.rowsWritten)}・待っている ${cell(result.import.waiting)}）`, '');
@@ -123,6 +138,7 @@ export function collectorSummary(result) {
     for (const item of result.published) lines.push(`| ${cell(item.source)} | ${cell(item.items)} | ${cell(result.feeds?.[item.source] ?? '')} |`);
     lines.push('');
   }
+  if (result.freshness) lines.push(`本番 ${cell(result.freshness.source)} の鮮度: ${cell(result.freshness.status)}（確認 ${cell(result.freshness.checkedAt)}・最新 ${cell(result.freshness.observedAt)}・経過 ${cell(result.freshness.ageMs)} ms）`, '');
   const { alerts = [], warnings = [] } = result;
   lines.push(alerts.length ? `**人が見る失敗: ${alerts.length} 件**` : '人が見る失敗: なし');
   for (const item of alerts) lines.push(`- ${cell(item.source)}: ${cell(item.code)}${item.failures ? `（${item.failures} 回続けて）` : ''}`);
@@ -155,8 +171,14 @@ export async function runCloudCollector({ directory, origin, key, xToken, runId,
     await request({ action: 'write', etag: saved.etag, checkpoint });
     const { snapshots } = JSON.parse(readFileSync(join(directory, 'collection.json'), 'utf8'));
     const published = await publishCollection({ snapshots, origin, key, fetcher: transport, now });
-    return { runId, updatedAt: checkpoint.updatedAt, previousRunId: saved.checkpoint.runId, counts: status.counts, errors: status.errors, ...collectorAlerts(status), x: status.steps.x.status,
-      feeds: Object.fromEntries(Object.entries(status.steps.feeds ?? {}).map(([id, feed]) => [id, feed.status])), import: status.steps.import ?? null, pins: status.steps.pins ?? null, published };
+    let freshness;
+    try { freshness = await readCollectionFreshness({ origin, source: 'hackernews', fetcher: transport, now }); }
+    catch { freshness = { source: 'hackernews', checkedAt: now(), total: null, observedAt: null, ageMs: null, limitMs: 7_200_000, status: 'unavailable' }; }
+    const notices = collectorAlerts(status);
+    if (freshness.status !== 'fresh') notices.alerts.push({ source: 'freshness', code: freshness.status });
+    const result = { runId, updatedAt: checkpoint.updatedAt, previousRunId: saved.checkpoint.runId, counts: status.counts, errors: status.errors, ...notices, x: status.steps.x.status,
+      feeds: Object.fromEntries(Object.entries(status.steps.feeds ?? {}).map(([id, feed]) => [id, feed.status])), import: status.steps.import ?? null, pins: status.steps.pins ?? null, published, freshness };
+    return { ...result, outcomes: collectorOutcomes(result) };
   } finally { await network?.close(); }
 }
 async function main() {

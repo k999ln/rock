@@ -1,6 +1,6 @@
 # Gitの正本・保存・復元方針
 
-製品と設計の正本は `k999ln/rock`。読む入口は[サービス統合設計](service-design/README.md)、現行要望は[製品ベース](product-baseline.md)、repository境界の機械可読正本は[`data/repository-map.json`](../data/repository-map.json)。GitHubへの保存、本設計のmain統合、Sitesでの公開、実機/本番受入は別に記録する。
+製品と設計の正本は `iceiceice999/rock` の `main`。旧 `k999ln/rock` は過去のPRとソースの参照元として保持する。読む入口は[サービス統合設計](service-design/README.md)、現行要望は[製品ベース](product-baseline.md)、repository境界の機械可読正本は[`data/repository-map.json`](../data/repository-map.json)。GitHubへの保存、本設計のmain統合、Sitesでの公開、実機/本番受入は別に記録する。
 
 ## 所有と境界
 

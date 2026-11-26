@@ -1,15 +1,15 @@
 {
   "schemaVersion": 1,
-  "updatedAt": "2026-10-13",
+  "updatedAt": "2026-11-26",
   "product": {
     "canonicalName": "RockstarOS",
     "publicBrand": "RockstarOS",
     "internalRuntimeName": "Rockstar_ibot",
-    "productRepository": "k999ln/rock"
+    "productRepository": "iceiceice999/rock"
   },
   "repositories": [
     {
-      "repository": "k999ln/rock",
+      "repository": "iceiceice999/rock",
       "visibility": "public",
       "role": "product-ssot",
       "newWork": true,
@@ -24,6 +24,15 @@
         "restoreCommit": "96845e6006c15e39ba5b45495f79c21bdff7399e",
         "note": "Removed files stay in Git history. Use data/archived-paths.json restoreCommits[path] when present, otherwise its original commit; history is never rewritten."
       }
+    },
+    {
+      "repository": "k999ln/rock",
+      "visibility": "public",
+      "role": "legacy-history",
+      "newWork": false,
+      "owns": [],
+      "successor": "iceiceice999/rock",
+      "githubArchived": false
     },
     {
       "repository": "k999ln/Mr.",
@@ -57,7 +66,7 @@
     }
   ],
   "sharing": {
-    "contractsOwner": "k999ln/rock",
+    "contractsOwner": "iceiceice999/rock",
     "privateOperationsOwner": "k999ln/Mr.",
     "mrVendorSnapshot": {
       "repository": "k999ln/Mr.",
