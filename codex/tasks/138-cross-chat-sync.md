@@ -94,6 +94,6 @@ PR #64のMac接続・アイコンは#76にも含まれる。両方の履歴を�
 
 | Wordファイル | SHA-256 |
 | --- | --- |
-| `avokado-business-plan-2026-11-26.docx` | `b001437bc20f342c9a06fc19de270cf87504c0c30ae405106a3bc4927e105e36` |
-| `avokado-product-spec-2026-11-26.docx` | `0bac02b95dfc14446aba115a6659e586a415b1b4f9de8c847f3dc85fa546dc58` |
-| `avokado-system-design-2026-11-26.docx` | `57cad4019106ba5efd3b025dae953a36d648fbf6670bb5829c46343cba1fab52` |
+| `avokado-business-plan-2026-11-26.docx` | `a5f62083db437658d289e0dd5cc798532cdfc60faff313d9edef74a7586a7608` |
+| `avokado-product-spec-2026-11-26.docx` | `a3114afd33a298747f8f89c16147c96a936144b7ee1427d624b3445128a94edd` |
+| `avokado-system-design-2026-11-26.docx` | `e36b1c41d0eb425c0346c7be6849cfdf74ea18d459378a60c76c7617b8d4e559` |

@@ -1,6 +1,6 @@
 ## 2026-11-26
 
-- 第243・244版の公開記録とAgentの受入状況を進捗台帳に反映。READMEの無料クラウド枠と設計案内のEve表記を更新（[task138](codex/tasks/138-cross-chat-sync.md)）。
+- 第243・244版の公開記録とAgentの受入状況を進捗台帳に反映。READMEの無料クラウド枠と設計案内のEve表記を更新（[task138](codex/tasks/138-cross-chat-sync.md)、[PR #83](https://github.com/iceiceice999/rock/pull/83)）。
 
 - avoado.siの公開画面を現mainのNoah・Eveの導線へ整理。旧企画の画面を410、未知の画面を404にし、旧URL転送・審査者限定・sitemapを整合（task139、[PR #81](https://github.com/iceiceice999/rock/pull/81)）。
 
