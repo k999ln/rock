@@ -101,6 +101,12 @@
 
 - 旧 `main` の収集で、チャンク保存完了後のマニフェスト確定が60秒でタイムアウトし、公開 Hacker News の鮮度が2時間を超えた。チャンクの存在確認を R2 メタデータの読み取りに変え、古い断片の掃除を確定応答後に移す。掲載再開と24時間観測の実測は [修正 PR #26](https://github.com/iceiceice999/rock/pull/26) に記録する。
 
+#### 2026-11-26 実行結果と実掲載の計測
+
+- 旧収集元の run #102 / #103 は、取り込み HTTP 400 と Hugging Face の一時失敗で実行全体は failure。ただし両方とも `feeds.hackernews=updated` で、`published` は Hacker News 161件、公開 API の `observedAt` も前進した。実行全体の結論だけで未掲載と判定しない。
+- 収集結果に `outcomes.execution` / `outcomes.publication` を別々残し、掲載後の公開 Hacker News API を再読した `freshness` も残す。最新の実掲載から2時間以上なら、実行の色にかかわらず鮮度の異常とする。
+- 2026-11-27 00:01 JST の公開 API は166件、最新 `observedAt` は2026-11-26 20:29 JSTで、約3.52時間の超過。旧 `k999ln/rock` の掲載workflowがactiveのまま、正本 `iceiceice999/rock` は有効化を確認できていない。二重掲載を避けて旧側停止→新側有効化→公開時刻の前進→24時間計測の順で切り替える。
+
 #### 2026-11-23 Switchの公式版とEveへの引き継ぎ
 
 - Switch Console 0.41.1をApple Silicon Macにインストールし、ローカルのSwitch BuddyをCodexで起動した。

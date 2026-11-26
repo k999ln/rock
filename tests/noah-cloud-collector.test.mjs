@@ -9,7 +9,8 @@ import { createCollectorCheckpointApi, NOAH_CHECKPOINT_PATH, NOAH_CHECKPOINT_BYT
 import { collectionSignature } from '../lib/noah-collection.ts';
 import { createCollectionApi } from '../lib/noah-collection-api.ts';
 import { openCollectorStore, writeCollectorJson } from '../scripts/noah-collector-store.mjs';
-import { checkpointClient, collectorAlerts, collectorSummary, COLLECTOR_ALERT_REPEAT, encodeCheckpoint, restoreCheckpoint, runCloudCollector } from '../scripts/noah-cloud-collector.mjs';
+import { checkpointClient, collectorAlerts, collectorOutcomes, collectorSummary, COLLECTOR_ALERT_REPEAT, encodeCheckpoint, restoreCheckpoint, runCloudCollector } from '../scripts/noah-cloud-collector.mjs';
+import { measureCollectionFreshness, NOAH_COLLECTION_FRESHNESS_LIMIT } from '../scripts/noah-collection-freshness.mjs';
 
 const key = randomBytes(32).toString('hex'), NOW = Date.UTC(2026, 10, 22);
 function bucket() {
@@ -198,10 +199,39 @@ void test('the run summary shows the counts, what went into the grid, and the fa
   assert.match(text, /\| 31200 \| 29038 \| 126 \| 125 \| 29401 \|/);
   assert.match(text, /送った系列 7/);
   assert.match(text, /\| smithery \| 0 \| needs_credentials \|/);
+  assert.match(text, /実行全体の結果: completed_with_warnings/);
+  assert.match(text, /実際の掲載結果: published/);
   assert.match(text, /人が見る失敗: なし/);
   assert.match(text, /- github: unavailable（1 回目）/);
   assert.doesNotMatch(text, new RegExp(key));
   assert.match(collectorSummary({ counts: {}, alerts: [{ source: 'import', code: 'http_500' }], warnings: [] }), /\*\*人が見る失敗: 1 件\*\*/);
+});
+
+void test('run #102 and #103 keep the failed execution separate from the successful Hacker News publication', () => {
+  for (const runId of ['45749033618', '45756023648']) {
+    const result = {
+      runId,
+      alerts: [{ source: 'import', code: 'http_400' }],
+      warnings: [{ source: 'huggingface', code: 'unavailable' }],
+      feeds: { hackernews: 'updated' },
+      published: [{ source: 'hackernews', items: 161 }],
+    };
+    assert.deepEqual(collectorOutcomes(result), {
+      execution: 'needs_attention', publication: 'published',
+      successful: [{ source: 'hackernews', items: 161 }], skipped: [],
+    });
+    const text = collectorSummary(result);
+    assert.match(text, /実行全体の結果: needs_attention/);
+    assert.match(text, /実際の掲載結果: published/);
+    assert.match(text, /\| hackernews \| 161 \| updated \|/);
+  }
+});
+
+void test('public freshness measures the latest actual card and marks the two-hour boundary', () => {
+  const payload = { total: 161, items: [{ observedAt: NOW - NOAH_COLLECTION_FRESHNESS_LIMIT + 1 }, { observedAt: NOW - 10_000_000 }] };
+  assert.equal(measureCollectionFreshness(payload, { checkedAt: NOW }).status, 'fresh');
+  assert.equal(measureCollectionFreshness({ ...payload, items: [{ observedAt: NOW - NOAH_COLLECTION_FRESHNESS_LIMIT }] }, { checkedAt: NOW }).status, 'stale');
+  assert.equal(measureCollectionFreshness({ total: 0, items: [] }, { checkedAt: NOW }).status, 'unavailable');
 });
 
 void test('chunked manifest commits without opening chunk bodies or waiting for cleanup', { timeout: 3000 }, async () => {

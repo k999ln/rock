@@ -72,6 +72,8 @@
 
 ### D8 サインインの行き先
 
+- 2026-11-26 [PR #91](https://github.com/iceiceice999/rock/pull/91) を正本に統合し、Sites v257で公開した。認証が必要な接続・登録・保存・審査ではChatGPTのサインインへ進む。選んだAgentや道具を戻り先に引き継ぐ仕様と回帰試験を入れた。
+
 - 2026-11-23 Claude が調べた: `/noah/account` は、元の画面へ戻すだけだが、戻った先で「ブラウザだけの本人」が自動で作られるので、ブラウザの本人で足りる画面では、行き止まりにならない。行き止まりになり得るのは、本当のサインインが要る画面（例: `noah-launch.tsx` の「自分のAgentとMacを管理するには」）。ただし、その行き先は既存の試験（`tests/noah-launch-ui.test.mjs` など）が `/noah/account?…` で固定している。試験を書き換えずに直せないので、本人の判断に回す。
 
 - わかっている事: いくつかの画面の「サインイン」は `/noah/account?mode=login&returnTo=…` へ行く。`/noah/account` は会員の表を外したので、すぐ元の画面へ戻る（サインインにならない）。使っている所: `components/noah-agent-feedback.tsx`・`noah-agent-upload-form.tsx`・`noah-boards.tsx`・`noah-launch.tsx`・`noah-pin-grid.tsx`。
@@ -102,6 +104,8 @@
 - 合格: 50 語の表で、0 件の語が無い（関係のある Agent が無い語は、表に理由を書く）。
 
 ### D12 repository-map の製品の正本を、移った先に合わせる
+
+- 2026-11-26 ローカル候補で、製品と契約の正本を `iceiceice999/rock` にそろえ、`k999ln/rock` を旧PRとソースの履歴として保全。`npm run repository:check` で検証する。
 
 - わかっている事: `data/repository-map.json` と `scripts/check-repository-map.mjs` は、製品の正本を `k999ln/rock` としている。AGENTS.md の 8 は `iceiceice999/rock` を正本にした。
 - やる事: 2 つを `iceiceice999/rock` に合わせ、`k999ln/rock` を履歴の扱いにする。

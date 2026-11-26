@@ -4,12 +4,18 @@
 ## 2026-11-26
 - Eveでの新規Agent開発・収益見込み・農家への支払いとNoahの定期便を、現行台帳と照合して設計。実装と実資金の受入は今後（[PR #100](https://github.com/iceiceice999/rock/pull/100)）。
 
+- Noahの収集実行の結論と出所ごとの実掲載を分離し、掲載後の公開 Hacker News API から2時間鮮度を計測。全体 failure でも161件を掲載した run #102/#103 を回帰例に追加（task125）。
+
 - Noahの詳細1件のカード構築と接続DB読取を軽量化。一覧を一行の下線タブへ整理し、動画上の反転文字と画面外の動画解放を追加（task140、[PR #106](https://github.com/iceiceice999/rock/pull/106)）。
 
 - Noahのタイガーをオフライン専用に分離し、通常の読込を小さな表示へ変更。詳細の重複取得・無関係な外部応答の待機・カードの再計測ループを削減（task140、[PR #105](https://github.com/iceiceice999/rock/pull/105)）。
 - Noah詳細の待機画面を公開情報の先行表示へ変更し、全件を初期表示、トップの帯を撤去、登録の不足情報を詳細に表示（task140、[PR #104](https://github.com/iceiceice999/rock/pull/104)）。
 
 - READMEの開発状況と設計書を公開第258版のホーム・Agent詳細に合わせ、収益明細と専用eSIMの確認範囲を更新。[PR #103](https://github.com/iceiceice999/rock/pull/103)
+
+- Noahの全体設計・図解・定期便仕様を11月24日の決定にそろえ、試行中の無料・配分なし、翌月以降の差し引き、定期便の公開前条件を明記（task124）。
+- 製品と契約の正本を現行GitHubリポジトリにそろえ、旧リポジトリはPRとソースの履歴として記録（task129 D12）。
+
 - Noahの戻る導線をロゴに統一し、詳細ヘッダーと表紙の境界を撤去（task140、[PR #102](https://github.com/iceiceice999/rock/pull/102)）。
 
 - Noahの単一一覧を既存推薦規則に接続し、スクロールによる連続読込へ変更（task140、[PR #99](https://github.com/iceiceice999/rock/pull/99)）。
