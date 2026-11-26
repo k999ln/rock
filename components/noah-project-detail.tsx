@@ -92,7 +92,7 @@ export default function NoahProjectDetail({ id, firstJob, initialDetail }: { id:
   }
   if (!detail) return !error ? <NoahDetailPending href={`/noah/discover/agent?${new URLSearchParams({ id })}`} /> : <main className={styles.page}><div role="alert" className={styles.error}><p>{error}</p><button onClick={() => { setError(''); setAttempt(n => n + 1); }}>読み直す</button></div></main>;
   const training = id === noahTrainingFilm.projectId;
-  return <NoahDetailTemplate id={id} name={detail.card.name} provider={detail.card.provider} summary={detail.card.summary}
+  return <NoahDetailTemplate id={id} name={detail.card.pin?.title ?? detail.card.name} provider={detail.card.provider} summary={detail.card.summary} pin={detail.card.pin}
     intro={!training && detail.connection.kind === 'setup' ? <NoahRegistrationStatus key={id} id={id} /> : undefined}
     feedbackId={id} category={detail.card.topic ? `${t('カテゴリ')} · ${t(NOAH_PIN_TOPIC_LABELS[detail.card.topic])}` : undefined}
     action={training ? <NoahTrainingPlugin /> : undefined}>

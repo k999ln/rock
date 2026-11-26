@@ -12,6 +12,8 @@ import type { NoahExplanation } from './noah-agent-explanation.ts';
 export type IntakeApiDependencies = IntakeDependencies & {
   authenticate: (request: Request) => Promise<string>; reviewers: string[]; flags: NoahFlags; wakeKey?: string;
   explainPublic?: boolean;
+  /** 一般表示は、明示フラグと 200 件の審査結果がそろった時だけ true。 */
+  generatedPinsPublic?: () => Promise<boolean>;
   explainAgent?: (input: { id: string; owner: string | null; reviewer: boolean }) => Promise<{
     explanation: NoahExplanation; summaryJa: string | null;
   } | null>;
@@ -45,9 +47,10 @@ export function createIntakeApi(deps: IntakeApiDependencies) {
           if (!noahAllowed(deps.flags, 'ask', reviewer)) return json({ match: null, ownerScope });
           return json({ match: await store.engineeringTrial(owner, url.searchParams.get('engineeringAgent') || ''), ownerScope });
         }
+        const showGeneratedPins = reviewer || await deps.generatedPinsPublic?.().catch(() => false) === true;
         const id = url.searchParams.get('id');
-        if (!id) return json({ ...await store.list(owner, url.searchParams), ownerScope });
-        const detail = await store.detail(id, owner, reviewer);
+        if (!id) return json({ ...await store.list(owner, url.searchParams, showGeneratedPins), ownerScope });
+        const detail = await store.detail(id, owner, reviewer, showGeneratedPins);
         const explain = reviewer || (detail.listed && deps.explainPublic);
         const extra = explain ? await deps.explainAgent?.({ id, owner, reviewer }).catch(() => null) : null;
         return json({ ...detail, ...extra, ownerScope });

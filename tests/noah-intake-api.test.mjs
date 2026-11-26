@@ -17,6 +17,20 @@ void test('closed flags fail closed, reviewers retain access, state is never pub
   assert.equal((await publicApi(new Request('https://noah.test/api/noah/intake?state=1'))).status, 404);
   assert.equal((await publicApi(new Request('https://noah.test/api/noah/intake?limit=0'))).status, 200);
 });
+void test('generated pins reach reviewers first and public readers only after the audit gate', async t => {
+  const f = fixture(t, async () => page([entry(1)])); await f.store.sync(); markListed(f, 1);
+  const pin = { title: '天気を調べる', give: '都市名', get: '天気予報', scene: { template: 'concentric', labels: ['都市', '天気予報'], parts: [], variant: null } };
+  f.sql.exec('ALTER TABLE noah_intake_candidates ADD COLUMN pin_json TEXT');
+  f.sql.prepare('UPDATE noah_intake_candidates SET pin_json=?').run(JSON.stringify(pin));
+  const request = new Request('https://noah.test/api/noah/intake');
+  const publicApi = open => createIntakeApi(depsFor(f, {
+    flags: parseNoahFlags({ NOAH_INTAKE_PUBLIC: 'true' }), generatedPinsPublic: async () => open,
+  }));
+  assert.equal((await (await publicApi(false)(request)).json()).items[0].pin, undefined);
+  assert.deepEqual((await (await publicApi(true)(request)).json()).items[0].pin, pin);
+  const reviewer = createIntakeApi(depsFor(f, { authenticate: async () => 'reviewer', generatedPinsPublic: async () => false }));
+  assert.deepEqual((await (await reviewer(request)).json()).items[0].pin, pin);
+});
 void test('write guards enforce origin, account scope, strict JSON, reviewer and local-only sync', async t => {
   const f = fixture(t, async () => page([entry(1)])); await f.store.sync(); markListed(f, 1);
   const api = createIntakeApi(depsFor(f, { authenticate: async () => 'reviewer' })), scope = await ownerScopeFor('reviewer'), id = 'mcp-registry:test.provider/agent-1';

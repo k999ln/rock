@@ -5,6 +5,7 @@ import NoahAgentFeedback from './noah-agent-feedback';
 import { useNoahAppearance } from './noah-appearance';
 import { useNoahLocale } from './noah-locale';
 import { noahTrainingFilm } from '@/lib/noah-theater-films';
+import type { NoahPin } from '@/lib/noah-pin-scene';
 import styles from './noah-project-detail.module.css';
 
 function DetailFeedback({ id }: { id: string }) {
@@ -30,9 +31,9 @@ function DetailFeedback({ id }: { id: string }) {
 /** One presentation for catalog, connected and private Agents. Actions stay owned by each caller. */
 export default function NoahDetailTemplate({ id, name, provider, summary, action, children, meta, feedbackId,
   icon, overviewTitle, intro, requestForm, detailsLabel,
-  cover, mediaId = id, expanded = false, category, privateAgent = false,
+  cover, pin, mediaId = id, expanded = false, category, privateAgent = false,
 }: { id: string; name: string; provider?: string; summary?: string; action?: ReactNode; children?: ReactNode;
-  meta?: ReactNode; feedbackId?: string; cover?: NoahCoverView; mediaId?: string; expanded?: boolean;
+  meta?: ReactNode; feedbackId?: string; cover?: NoahCoverView; pin?: NoahPin; mediaId?: string; expanded?: boolean;
   category?: string; privateAgent?: boolean;
   icon?: ReactNode; overviewTitle?: string; intro?: ReactNode; requestForm?: ReactNode; detailsLabel?: string;
 }) {
@@ -44,16 +45,18 @@ export default function NoahDetailTemplate({ id, name, provider, summary, action
       {film ? <video className={styles.screenVideo} autoPlay loop playsInline muted preload="auto" disablePictureInPicture
         aria-label={t(film.title)} poster={film.poster} src={film.video} />
         : cover?.type.startsWith('video/') ? <video className={styles.screenVideo} autoPlay loop playsInline muted preload="metadata" disablePictureInPicture src={cover.url} aria-label={name} />
-        : <div className={styles.screenArt}><NoahPinMotion id={id} name={name} summary={summary} cover={cover} /></div>}
+        : <div className={styles.screenArt}><NoahPinMotion id={id} name={name} summary={summary} cover={cover}
+          diagram={pin ? { scene: pin.scene, tone: 0 } : undefined} /></div>}
     </section>
     <div className={`${styles.page} ${styles.compactPage}`} id="noah-project-details" tabIndex={-1}>
-      <header className={styles.identityRow}><div className={styles.templateIdentity}>{icon}<div><h1>{name}</h1>{provider && <p>{t('提供:')} {provider}</p>}{meta && <div className={styles.templateMeta}>{meta}</div>}</div></div>
+      <header className={styles.identityRow}><div className={styles.templateIdentity}>{icon}<div><h1>{name}</h1>{pin && <p className={styles.noahDescription}>{t('Noah の説明')}</p>}{provider && <p>{t('提供:')} {provider}</p>}{meta && <div className={styles.templateMeta}>{meta}</div>}</div></div>
         <div className={styles.templateAction}>{action || <button className={styles.primary} onClick={() => {
           if (more.current) { more.current.open = true; more.current.scrollIntoView({ block: 'start', behavior: 'smooth' }); }
         }}>{t('利用条件を見る')}</button>}</div>
       </header>
       <section className={styles.overview} aria-label={t('詳細')}><h2>{overviewTitle ?? t('詳細')}</h2>
         {category && <p className={styles.category}>{category}</p>}
+        {pin && <p className={styles.pinExchange}><span>{pin.give}</span><span aria-hidden="true">→</span><span>{pin.get}</span></p>}
         {summary && <p className={`${styles.summary} ${styles.templateSummary}`} title={summary}>{summary}</p>}
       </section>
       {intro}

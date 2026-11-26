@@ -8,6 +8,7 @@ import { noahIntakeExport, noahIntakeImport } from '../lib/noah-intake-import.ts
 import { world, familyId, hostOf } from './fixtures/noah/connect-world.mjs';
 import { fixture } from './fixtures/noah/intake.mjs';
 import { mcpServer, tool } from './fixtures/noah/mcp-server.mjs';
+import { noahReadyItems } from '../lib/noah-intake-store.ts';
 
 const pin = { title: '天気を調べる', give: '都市名', get: '天気予報', scene: { template: 'concentric', labels: ['都市', '天気予報'], parts: [], variant: null } };
 const migration = readFileSync(new URL('../docs/noah/migrations/0061_noah_intake_pins.sql', import.meta.url), 'utf8');
@@ -69,6 +70,7 @@ void test('a candidate pin imports and exports in place, ignores replay and stal
   const original = exported.candidates[0];
   const prod = fixture(t, source.net.fetch);
   await noahIntakeImport(prod.db, exported, now);
+  await assert.doesNotReject(() => noahReadyItems(prod.db, [familyId(1)], false, true), 'migration前は図解を付けずに従来のカードを返す');
   prod.sql.exec(migration);
   const generated = { pin_json: JSON.stringify(pin), pin_source_sha256: 'b'.repeat(64), pin_model: 'gpt-example', pin_at: now, pin_skip: null };
   const send = (candidate, exportedAt = now) => noahIntakeImport(prod.db, { ...exported, exportedAt, candidates: [candidate] }, exportedAt);
@@ -77,6 +79,11 @@ void test('a candidate pin imports and exports in place, ignores replay and stal
   await assert.rejects(send({ ...original, ...generated, pin_json: generated.pin_json.padEnd(3000) }), /ピンの記録/u);
   assert.ok((await send({ ...original, ...generated })).rowsWritten > 0);
   assert.equal(current().pin_json, generated.pin_json);
+  assert.deepEqual((await noahReadyItems(prod.db, [familyId(1)], false, false))[0].pin, undefined);
+  assert.deepEqual((await noahReadyItems(prod.db, [familyId(1)], false, true))[0].pin, pin);
+  prod.sql.prepare('UPDATE noah_intake_candidates SET pin_json=? WHERE id=?').run(JSON.stringify({ ...pin, scene: {} }), familyId(1));
+  assert.equal((await noahReadyItems(prod.db, [familyId(1)], false, true))[0].pin, undefined, '形の違う図解は読む時に落とす');
+  prod.sql.prepare('UPDATE noah_intake_candidates SET pin_json=? WHERE id=?').run(generated.pin_json, familyId(1));
   assert.equal((await send({ ...original, ...generated })).rowsWritten, 0);
   assert.equal((await send(original)).rowsWritten, 0);
   assert.equal((await noahIntakeExport(prod.db, now)).candidates[0].pin_json, generated.pin_json);

@@ -6,14 +6,19 @@ import { noahRevenueDirectory, isNoahRevenueProject } from './noah-revenue-direc
 import { noahCloudSupported } from './noah-cloud-contract';
 import { withNoahCloudAvailability } from './noah-project-api';
 import { noahVerifiedDirectory, mergeNoahVerifiedDirectory } from './noah-verified-directory';
-export async function noahAgentDirectory(target?: { id: string; family: string | null }) {
+import { noahGeneratedPinsPublic } from './noah-pin-review';
+export async function noahAgentDirectory(target?: { id?: string; family?: string | null; reviewer?: boolean; showGeneratedPins?: boolean }) {
   const config = env as unknown as Record<string, string | undefined> & {
     BUCKET?: R2Bucket;
+    NOAH_PINS_PUBLIC?: string;
   };
-  const listed = noahAllowed(parseNoahFlags(config), 'list', false);
+  const listed = noahAllowed(parseNoahFlags(config), 'list', target?.reviewer === true);
+  const showGeneratedPins = target?.showGeneratedPins === true || await noahGeneratedPinsPublic(config.BUCKET, config);
+  const scoped = Boolean(target?.id || target?.family);
+  const lookup = target?.id ? { id: target.id, family: target.family ?? null } : undefined;
   const [collected, revenue, verified] = await Promise.all([
-    readNoahDirectory({ db: database(), bucket: config.BUCKET, listed }, target),
-    listed && (!target || (!target.family && await isNoahRevenueProject(target.id))) ? noahRevenueDirectory() : Promise.resolve([]),
+    readNoahDirectory({ db: database(), bucket: config.BUCKET, listed, showGeneratedPins }, lookup),
+    listed && (!scoped || (!target?.family && !!target?.id && await isNoahRevenueProject(target.id))) ? noahRevenueDirectory() : Promise.resolve([]),
     listed ? noahVerifiedDirectory() : Promise.resolve([]),
   ]);
   const cloudEnabled = listed && Boolean(config.NOAH_CLOUD_URL && config.NOAH_CLOUD_KEY);
