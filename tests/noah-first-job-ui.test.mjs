@@ -3,6 +3,7 @@ import assert from 'node:assert/strict';
 import * as noahSurface from '../lib/noah-surface.ts';
 import * as cloudContract from '../lib/noah-cloud-contract.ts';
 import * as botNotice from '../lib/noah-bot-notice.ts';
+import { createNoahProjectApi } from '../lib/noah-project-api.ts';
 import { noahFirstJobs } from '../lib/noah-first-jobs.ts';
 import * as theaterFilms from '../lib/noah-theater-films.ts';
 import * as trainingPlugin from '../lib/noah-training-plugin.ts';
@@ -483,4 +484,18 @@ void test('appearance selected in preferences reaches home, account and Agent de
     }
   }
   assert.equal(ui.calls.length, 0);
+});
+
+void test('ready detail resolves family feedback through the real project API before loading ratings',async()=>{
+  const family='mcp-registry:ac.mizan/registry';
+  const api=createNoahProjectApi({directory:async()=>[{card:{id:family,feedbackId:project,name:'Mizan',summary:'Public catalog entry'},families:[family]}]});
+  const ui=screen({modules,fetch:async({url})=>{
+    if(url.startsWith('/api/noah/discover/project?')) {const r=await api(new Request('https://noah.test'+url));return {status:r.status,body:await r.json()};}
+    assert.equal(url,'/api/noah/feedback?agent='+project);
+    return {body:{agentName:'Mizan',summary:{users:1,crowns:0,comments:0,crowned:false},comments:[],cursor:null,canComment:false,authenticated:false}};
+  }});
+  const page=ui.mount('components/noah-detail-template.tsx',{id:family,name:'Mizan',feedbackId:family});await page.flush();
+  assert.equal(ui.calls[0].url,'/api/noah/discover/project?'+new URLSearchParams({family}));
+  assert.equal(ui.calls.length,2);assert.ok(ui.calls.every(call=>call.method==='GET'));
+  assert.doesNotMatch(page.text(),/評価を読み込めませんでした/);assert.match(page.text(),/人が利用/);
 });
