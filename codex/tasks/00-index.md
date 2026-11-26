@@ -136,7 +136,7 @@
 | 2 | —（出した後） | 111 | [111-noah-shelf-rank.md](111-noah-shelf-rank.md) | 実績の並び（学習なし）、見せた記録、カードをタイムラインへ流す |✅ [#355](https://github.com/k999ln/rock/pull/355) |
 | 2 | —（出した後） | 112 | [112-noah-package-chains.md](112-noah-package-chains.md) | 家の端末のカード、工程をつなぐカード、札の候補、工程の計画へのつなぎ | |
 | 2 | —（出した後） | 113 | [113-noah-plan-limits.md](113-noah-plan-limits.md) | つなげる数を料金ごとに（無料 6 枚・有料 50 枚。数えるのはカード） |✅ [#357](https://github.com/k999ln/rock/pull/357) |
-| 2 | 出した直後 | 114 | [114-noah-trial-300.md](114-noah-trial-300.md) | 300 人の試行: 経路の札、段を終えたかの判定、本人の報告（売れた件数・手取り・掛けた分） | ✅ 試行を記録する仕組み（[旧PR #354](https://github.com/k999ln/rock/pull/354)）。300人の実ユーザー試行は未確認。100ブラウザの限定読み取り・同時5フロー試験を300人の受入としない |
+| 2 | 出した直後 | 114 | [114-noah-trial-300.md](114-noah-trial-300.md) | 300 人の試行: 経路の札、段を終えたかの判定、本人の報告（売れた件数・手取り・掛けた分） | ✅ 試行を記録する仕組み（[旧PR #354](https://github.com/k999ln/rock/pull/354)）。初回売上の招待制実装と模擬検証は [PR #101](https://github.com/iceiceice999/rock/pull/101)。300人の実ユーザー試行、実顧客への納品、銀行着金は未確認。限定読み取り・模擬フローを実受入としない |
 | 3 | 一般公開の時に出る | 115 | [../../docs/noah/spec-115-pin-grid.md](../../docs/noah/spec-115-pin-grid.md) | ピンタレスト風のホーム: 今動かせる Agent のグリッド、ボードへ保存・公開・フォロー、学習なしの並び（X の作りの形・Reddit hot・Pixie） |✅ [#375](https://github.com/k999ln/rock/pull/375) |
 
 カードを動かして確かめる事（[カード案](../../docs/services/noah-shelf.md) の 12 枚）、投稿・動画・人への連絡、切り替えを開ける事、本番の migration は、task ではなく本人と運営の作業。
