@@ -46,6 +46,63 @@ const accountModules = (query) => ({
   '@/lib/eve-noah-navigation': accountNavigation, '@/lib/noah-navigation': navigation,
   '@/lib/passkey-browser': {}, '@/lib/account-handoff': { resetAccountHandoffs() {} },
 });
+void test('Noah account page starts passkey signup on its first press and returns to the selected Agent', async () => {
+  const returnTo = '/noah/ready/agent?id=Tipline&tool=search&from=pkg:tipline#work';
+  const publicKey = { challenge: 'registration-challenge' };
+  const credential = { id: 'new-credential' };
+  const ui = screen({
+    passkeys: true,
+    modules: {
+      ...accountModules({ returnTo }),
+      '@/lib/passkey-browser': { createPasskey: async (options) => { assert.deepEqual(options, publicKey); return credential; } },
+    },
+    fetch: async ({ body }) => {
+      if (!body) return { body: { signedIn: false } };
+      if (body.action === 'options') return { body: { challengeId: 'challenge-id', publicKey } };
+      return { body: { signedIn: true, recoveryCode: 'test-recovery' } };
+    },
+  });
+  const page = ui.mount('components/noah-access.tsx');
+  await page.tick(0);
+  assert.deepEqual(page.find('button').slice(0, 2).map(node => page.text(node)), ['パスキーで新しく始める', 'ログイン']);
+  assert.doesNotMatch(page.text(), /eSIM|以前のログインを使う|保存済みの成果を引き継ぐ/);
+  assert.deepEqual(ui.visits, []);
+
+  await page.click('パスキーで新しく始める');
+  assert.deepEqual(ui.calls.filter(call => call.method === 'POST').map(call => call.body), [
+    { action: 'options', mode: 'signup' },
+    { action: 'verify', challengeId: 'challenge-id', credential },
+  ]);
+  assert.equal(page.find('textarea')[0].props.value, 'test-recovery');
+  await page.click('復旧コードを保存したので戻る');
+  assert.deepEqual(ui.visits, [returnTo]);
+});
+
+void test('Noah existing login names each method and completes back at the original Agent', async () => {
+  const returnTo = '/noah/ready/agent?id=Tipline';
+  const ui = screen({
+    passkeys: true,
+    modules: {
+      ...accountModules({ returnTo }),
+      '@/lib/passkey-browser': { getPasskeyAssertion: async () => ({ id: 'existing-credential' }) },
+    },
+    fetch: async ({ body }) => {
+      if (!body) return { body: { signedIn: false } };
+      if (body.action === 'options') return { body: { challengeId: 'challenge-id', publicKey: {} } };
+      return { body: { signedIn: true } };
+    },
+  });
+  const page = ui.mount('components/noah-access.tsx');
+  await page.tick(0);
+  await page.click('ログイン');
+  assert.equal(page.find('summary', 'ほかのログイン方法').length, 1);
+  const link = new URL(page.find('a', 'ChatGPTでログイン')[0].props.href, 'https://avoado.si');
+  assert.equal(link.searchParams.get('return_to'), returnTo);
+  await page.submit(page.find('form')[0]);
+  assert.equal(ui.calls.find(call => call.body?.action === 'options').body.mode, 'login');
+  assert.deepEqual(ui.visits, [returnTo]);
+});
+
 void test('Noah account uses the shared identity service without OS navigation, and logout returns to Noah', async () => {
   for (const gatewaySignout of [false, true]) {
     const ui = screen({ modules: accountModules({ returnTo: '/noah/ready/agent?id=family-1' }), fetch: async ({ method }) => ({ body: method === 'DELETE' ? { gatewaySignout } : { signedIn: true, passwordLogin: { handle: 'reader' }, credentials: [] } }) });

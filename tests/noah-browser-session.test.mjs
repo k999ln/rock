@@ -169,6 +169,12 @@ void test('access gate waits for persisted ownership and retries outages without
   assert.match(page.text(), /保存先を開けませんでした/); assert.equal(page.find('form').length, 0);
   failed = false; await page.click('再試行'); assert.equal(page.text(), 'Private tasks');
   assert.deepEqual(s.calls.map(c => c.method), ['POST', 'POST']);
+
+  const account = screen({ pathname: '/noah/account', modules: { '@/lib/noah-browser-start': { startNoahBrowser } } });
+  const entry = account.mount('components/noah-browser-access.tsx', { children: 'Account choices' });
+  await entry.flush();
+  assert.equal(entry.text(), 'Account choices');
+  assert.deepEqual(account.calls, []);
 });
 
 void test('browser private intake allows only its exact customer methods and UUID resources',async()=>{

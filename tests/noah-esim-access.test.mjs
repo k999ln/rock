@@ -3,6 +3,7 @@ import test from 'node:test';
 import { createNoahSessionApi, noahEsimRequestScope } from '../lib/noah-esim-access.ts';
 import { esimCloudRequestScope } from '../lib/esim-cloud-access.ts';
 import { noahReturnPath } from '../lib/noah-navigation.ts';
+import { accountReturnNavigation } from '../lib/eve-noah-navigation.ts';
 import { screen } from './fixtures/noah/screen.mjs';
 const request = (path, method = 'GET') => new Request(`https://avoado.si${path}`, { method });
 
@@ -37,24 +38,32 @@ void test('session observation never exposes owner data or mistakes outages for 
 });
 
 function accessScreen(search = '') {
-  const s = screen({ fetch: async () => { throw Error('The retired login page must not fetch'); }, modules: {
+  const s = screen({ passkeys: true, fetch: async () => ({ body: { signedIn: false } }), modules: {
     'next/navigation': { useSearchParams: () => new URLSearchParams(search) },
     '@/lib/noah-navigation': { noahReturnPath },
+    '@/lib/eve-noah-navigation': { accountReturnNavigation },
+    '@/lib/passkey-browser': {},
+    '@/lib/account-handoff': {},
   } });
   return { ...s, page: s.mount('components/noah-access.tsx') };
 }
 
-void test('old login links keep the chosen Agent without rendering membership or eSIM setup', async () => {
-  for (const search of ['returnTo=%2Fnoah%2Fready%2Fagent%3Fid%3Dagentboard', 'method=existing&mode=signup&returnTo=%2Fnoah%2Fready%2Fagent%3Fid%3Dagentboard']) {
-    const s = accessScreen(search); await s.page.flush();
-    assert.deepEqual(s.visits, ['/noah/ready/agent?id=agentboard']);
-    assert.equal(s.calls.length, 0); assert.equal(s.page.find('form').length, 0);
-    assert.doesNotMatch(s.page.text(), /パスワード|ユーザーID|ログイン|eSIM/);
+void test('account and old login links keep the chosen Agent without initializing eSIM setup', async () => {
+  for (const [prefix, label] of [['', 'パスキーで新しく始める'], ['method=existing&mode=login&', 'ログイン']]) {
+    const s = accessScreen(`${prefix}returnTo=%2Fnoah%2Fready%2Fagent%3Fid%3Dagentboard`);
+    await s.page.tick(0);
+    assert.equal(s.page.find('a', '戻る')[0].props.href, '/noah/ready/agent?id=agentboard');
+    assert.equal(s.page.find('button').filter(node => s.page.text(node) === label).length, 1);
+    assert.deepEqual(s.visits, []);
+    assert.deepEqual(s.calls.map(call => call.url), ['/api/os/access']);
+    assert.doesNotMatch(s.page.text(), /eSIM/);
   }
 });
 
-void test('retired account links reject external return paths and open saved information by default', async () => {
+void test('account links reject external return paths and open saved information by default', async () => {
   for (const [search, expected] of [['returnTo=https%3A%2F%2Fevil.test', '/noah'], ['', '/noah/profile'], ['returnTo=%2Fnoah%2Faccount', '/noah']]) {
-    const s = accessScreen(search); await s.page.flush(); assert.deepEqual(s.visits, [expected]);
+    const s = accessScreen(search);
+    await s.page.tick(0);
+    assert.equal(s.page.find('a', '戻る')[0].props.href, expected);
   }
 });

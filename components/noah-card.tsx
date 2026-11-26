@@ -25,7 +25,7 @@ export default function NoahCard({ item, signedIn, ownerScope, connection, onCha
     meta={<>
       <span className={styles.provider}>{t("提供:")} {item.provider}</span>
       <ul className={styles.facts} aria-label={t("つなぎ方")}>
-        <li className={styles.badge}>{t(noahBadgeText(item.connect))}</li>
+        <li className={styles.badge}>{t(noahBadgeText(item.connect, !signedIn && (!connection || connection.state === 'disconnected')))}</li>
         <li>{t(item.connect.placeLabel ?? '動く所は未確認')}</li>
         <li>{t(noahPriceText(item.connect.price))}</li>
         {extras.map((text) => <li key={text}>{t(text)}</li>)}

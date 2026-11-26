@@ -19,6 +19,7 @@ function subscribeToConnection(update: () => void) {
 
 export default function NoahBrowserAccess({ children }: { children: ReactNode }) {
   const pathname = usePathname();
+  const account = pathname === '/noah/account';
   const publicDetail = pathname === '/noah/discover/agent' || pathname === '/noah/ready/agent';
   const { t } = useNoahLocale();
   const [ready, setReady] = useState(false);
@@ -35,15 +36,16 @@ export default function NoahBrowserAccess({ children }: { children: ReactNode })
   }, []);
 
   useEffect(() => {
-    if (ready || offline || navigator.onLine === false) return;
+    if (account || ready || offline || navigator.onLine === false) return;
     const controller = new AbortController();
     const timeout = window.setTimeout(() => { setFailed(true); controller.abort(); }, 15_000);
     void startNoahBrowser(fetch, controller.signal).then(() => {
       if (!controller.signal.aborted) setReady(true);
     }).catch(() => { if (!controller.signal.aborted) setFailed(true); }).finally(() => window.clearTimeout(timeout));
     return () => { controller.abort(); window.clearTimeout(timeout); };
-  }, [attempt, offline, ready]);
+  }, [account, attempt, offline, ready]);
 
+  if (account) return children;
   if (ready || offline || publicDetail) {
     return <>
       <NoahBrowserReady.Provider value={ready}>
