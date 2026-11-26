@@ -3,7 +3,7 @@ import { noahSignInHref } from '@/lib/noah-navigation';
 import {noahOperationLabel} from '@/lib/noah-operation-labels';
 import { useEffect, useRef, useState } from 'react';
 import Link from 'next/link';
-import { ArrowLeft, ArrowUpRight, Check, Fingerprint, Pause, Play, Plus, Trash2 } from 'lucide-react';
+import { ArrowUpRight, Check, Fingerprint, Pause, Play, Plus, Trash2 } from 'lucide-react';
 import { NOAH_PROFILE_FIELDS, NOAH_PROFILE_SIGNED_IN_GROUPS, NOAH_PROFILE_SIGNED_IN_ONLY, PROFILE_CONSENT_VERSION, PROFILE_CONSENT_TEXT, PROFILE_CONSENT_DETAILS, type NoahProfileView, type ProfileField, type DelegationMode } from '@/lib/noah-profile-contract';
 import { useNoahProfile } from './use-noah-profile';
 import styles from './noah-profile.module.css';
@@ -18,7 +18,6 @@ export default function NoahProfile(){
 
   const state=useNoahProfile();
   return <main className={styles.page}>
-    <Link href="/noah" className={styles.back}><ArrowLeft size={17}/> {t("タイムライン")}</Link>
     <header className={styles.heading}><h1>{t("登録情報")}</h1><p>{t('次のAgentでも、入力は少なく。')}</p></header>
     <section className={styles.information} aria-label={t('保存・送信・料金')}>
       <p>{t('全部を埋める必要はありません。Agentを使う途中で、必要な情報だけ追加できます。')}</p>

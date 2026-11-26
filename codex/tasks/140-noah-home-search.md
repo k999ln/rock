@@ -53,3 +53,5 @@
 `/noah/marketplace` を `/noah` へ統合。旧Packageリンクを保持し、審査済みPackage・既存Tool・モデルを共通推薦・検索・連続読込へ入れる。料金・購入条件は共通ホーム上の詳細で開く。購入履歴・販売管理・既存の権利/互換性確認は保持。合格条件: 一つのグリッド、取りこぼし/同一配布の重複なし、失効Packageは購入不可、閲覧のみでPOSTなし、390px/1280px、verify/CIと公開tree照合。
 
 実装: [PR #113](https://github.com/iceiceice999/rock/pull/113)。旧購入入口から同じ一覧への転送、共通検索、390px/1280pxの詳細開閉と検索条件保持を確認。全体検証・main/Sitesのtree照合・公開版の記録はPR本文へ残す。
+
+2026-11-27 登録情報（/aries）上部の「← タイムライン」と余白を撤去。390px/1280pxで見出しから表示されることを確認。[PR #116](https://github.com/iceiceice999/rock/pull/116)に全体検証・公開版を記録する。
