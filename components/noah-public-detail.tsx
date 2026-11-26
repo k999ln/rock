@@ -32,17 +32,18 @@ export default function NoahPublicDetail({ id }: { id: string; basePath?: string
     return () => controller.abort();
   }, [id, key]);
   const agent = entry?.kind === 'agent' || entry?.kind === 'candidate';
+  const runnable = agent && entry?.connection !== 'not_tested';
   const content = <div><div className={`${styles.page} ${styles.formPage} ${styles.catalogDetail}`}>
     {error && <div role="alert" className={styles.error}>{t(error)} <button onClick={() => setAttempt(n => n + 1)}>{t("再試行")}</button></div>}
     {!entry && !error && <NoahLoading/>}
     {entry && <>
       <p className={styles.productSummary}>{entry.summary}</p>
       <div className={styles.facts}><div><small>{t("分類")}</small><strong>{t(researchKindLabels[entry.kind])}</strong></div><div><small>{t("確認状況")}</small><strong>{entry.level === 'primary' ? t("一次資料を確認") : t("資料確認待ち")}</strong></div></div>
-      <section className={styles.notice} id="noah-product-access"><h2>{agent ? t("このAgentを使う") : t("この関連資産について")}</h2>
-        <p>{agent ? t("このAgentは紹介情報です。スマホで使える接続先は、対応一覧から選べます。") : t("Agentを作る・動かすための関連資産です。単独の業務Agentとは区別しています。")}</p>
+      <section className={styles.notice} id="noah-product-access"><h2>{runnable ? t("このAgentを使う") : agent ? t("このAgentについて") : t("この関連資産について")}</h2>
+        <p>{runnable ? t("このAgentは紹介情報です。入力と送信先を確認して使えます。") : agent ? t("このAgentは紹介情報です。Noahでの接続と実行はまだ確認していません。スマホで使える接続先は、対応一覧から選べます。") : t("Agentを作る・動かすための関連資産です。単独の業務Agentとは区別しています。")}</p>
         <p>{t("利用費用：")}{entry.price}</p><p>{t("ライセンス：")}{entry.license || '未確認'}{t("。利用条件は配布元で確認してください。")}</p>
-        {agent && <Link className={styles.primary} href={`/noah/explore?${new URLSearchParams({q:entry.name.slice(0,80)})}`}>{t("スマホで使えるAgentを探す")}</Link>}
-        {agent && <NoahRegistrationSheet agentId={id}/>}
+        {agent && <Link className={styles.primary} href={`/noah?${new URLSearchParams({q:entry.name.slice(0,80)})}`}>{t("スマホで使えるAgentを探す")}</Link>}
+        {runnable && <NoahRegistrationSheet agentId={id}/>}
       </section>
       <section className={styles.notice}><h2>{t("配布元・出典")}</h2><ul>{entry.sources.filter(source => /^https?:\/\//.test(source.url)).map(source => <li key={source.url}><a href={source.url} target="_blank" rel="noopener noreferrer">{source.label || '配布元・資料を見る'} ↗</a><p>{source.url}</p></li>)}</ul></section>
       <section className={styles.notice}><h2>{t("確認した情報")}</h2><p>{entry.tags.join(' · ')}</p><ul>{entry.notes.map((note, n) => <li key={n}>{note}</li>)}</ul><p>{t("調査日：")}{entry.asOf}{t("。掲載は動作試験・購入・継続運用の完了を示しません。")}</p></section>

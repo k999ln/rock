@@ -49,3 +49,8 @@
 ## Mac Runner接続の復旧（2026-11-26）
 
 本人の本番反映依頼で `/noah/mac/connect` の404を実測。11月24日に追加したRunnerの本人承認画面は現行CLIが案内するURLであり、許可一覧にこの1画面を追加する。旧Mac活動画面は復活させない。GET/HEADで一回限りのコードを変更せず既存画面へ渡し、未知の配下URLは404。認証・接続承認APIは変更しない。追補は [PR #87](https://github.com/iceiceice999/rock/pull/87)。全体検証と公開結果はPRへ記録する。
+
+## YouTubeのCowAgentガイド（2026-11-26）
+
+- YouTubeチャンネルのプロフィールが案内している `/noah/guides/cowagent-mac` は、公開画面整理後に404になっていた。task141でこの1画面だけを公開一覧とsitemapへ戻す。旧 `/noah/mac` は復活させない。
+- ガイドは現行の `/noah/devices#mac`、Runnerが発行したコードの `/noah/mac/connect`、実行対応Agent、`/noah/activity` と保存成果へ接続する。CowAgentは `connection=not_tested` の紹介情報であり、実行・成果受取済みとは表示しない。未知の `/noah/guides/*` は404のままにする。
