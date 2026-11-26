@@ -41,6 +41,7 @@ export default function NoahShell({ children, mode = 'local' }: { children: Reac
   const isTimeline = pathname === base || pathname === '/' || pathname === '/os';
   const gridHome = isTimeline;
   const publicStore = effectiveMode === 'public';
+  const brandName = publicStore ? 'Nöah' : 'Noah';
   const profileHref = publicStore && !preview ? NOAH_PROFILE_PATH : `${base}/profile`;
   const localPath = pathname.startsWith(base + '/') ? pathname.slice(base.length + 1) : '';
   const localPrimary = [
@@ -84,7 +85,7 @@ export default function NoahShell({ children, mode = 'local' }: { children: Reac
       <a href="#noah-content" className={styles.skip}>{t('メインコンテンツへ')}</a>
       <header className={styles.gridTopbar} data-store-header={(publicStore && gridHome) || undefined} data-detail-header={!gridHome || undefined}>
         {!isMain && <Link href={base} className={styles.back} aria-label={t('戻る')}><ArrowLeft size={22}/></Link>}
-        <a href={base} className={styles.gridBrand} aria-label="Noah"><Image className={styles.mark} src="/brand/noah-icon-v2.png" width={40} height={40} alt="" unoptimized/><strong>Noah</strong></a>
+        <a href={base} className={styles.gridBrand}><Image className={styles.mark} src="/brand/noah-icon-v2.png" width={40} height={40} alt="" unoptimized/><strong>{brandName}</strong></a>
         <search className={styles.gridSearchSlot}>{searchForm}</search>
         {publicStore && <>
           <button type="button" className={styles.mobileStoreSearch} aria-label={t('Agentを探す')} popoverTarget={storeSearchId}><Search size={21}/></button>

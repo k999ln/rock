@@ -3,10 +3,12 @@
 - Noahの単一一覧を既存推薦規則に接続し、スクロールによる連続読込へ変更（task140、[PR #99](https://github.com/iceiceice999/rock/pull/99)）。
 - NoahホームのToday・注目・目的別・タイムラインを一つのAgent一覧へ統合。利用できる仕事はカード内に表示し、スマホ上部メニューの重なりを解消（[PR #97](https://github.com/iceiceice999/rock/pull/97)）。
 
-- Noahの既存12画面に星座名の短いURLを割り当て、人型アイコンと旧プロフィールURLを `/aries` に接続（task139、[PR #89](https://github.com/iceiceice999/rock/pull/89)）。
+- Noahの既存12画面に星座名の短いURLを割り当て、人型アイコンと旧プロフィールURLを `/aries` に接続。Sites v251 で公開し、12経路を本番で確認（[対応表と配備記録](codex/tasks/139-main-public-pages.md#noahの星座名url)、[PR #89](https://github.com/iceiceice999/rock/pull/89)）。
 
 - Noah全画面の左ナビと常設下タブを撤去し、全項目を右上の「… メニュー」へ統合（task140、[PR #93](https://github.com/iceiceice999/rock/pull/93)）。
 - 接続対応Agent詳細の口コミ取得で系列IDをproject IDとして送っていた不具合を修正。掲載済み系列から正規評価IDを読み取り専用で解決（task129、[PR #94](https://github.com/iceiceice999/rock/pull/94)）。
+
+- 公開ストアのヘッダーを Nöah 表記に更新（[PR #92](https://github.com/iceiceice999/rock/pull/92)）。
 
 - NoahトップのMemoryがツール実行前の文章や空の要約で終了する回帰を修正。公式ツールの実行と成果ファイルを確認する試験を追加（task125、[PR #95](https://github.com/iceiceice999/rock/pull/95)）。
 
