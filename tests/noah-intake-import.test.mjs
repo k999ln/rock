@@ -140,6 +140,16 @@ void test('only reviewers, from the same Noah, with well-formed rows; listing is
   assert.equal((await prod.send(part, { headers: { 'Content-Type': 'text/plain' } })).status, 415);
   const bad = async (change) => (await prod.send({ ...part, ...change })).status;
   assert.equal(await bad({ schema: 'other' }), 400);
+  assert.equal((await prod.send('{"schema":')).body.category, 'malformed');
+  assert.equal((await prod.send({ ...part, schema: 'other' })).body.category, 'validation');
+  const constraint = await prod.send({ ...part, candidates: [{ ...part.candidates[0], name: 'x'.repeat(201) }] });
+  assert.equal(constraint.status, 400);
+  assert.equal(constraint.body.category, 'db_constraint');
+  prod.f.hooks.beforeBatch = () => { throw Error('UNIQUE constraint failed: noah_intake_candidates.source, external_key'); };
+  const unique = await prod.send(part);
+  assert.equal(unique.status, 400);
+  assert.equal(unique.body.category, 'db_constraint');
+  prod.f.hooks.beforeBatch = undefined;
   assert.equal(await bad({ families: [] }), 400);
   assert.equal(await bad({ families: [{ ...part.families[0], extra: 1 }] }), 400);
   assert.equal(await bad({ candidates: [{ ...part.candidates[0], source: 'hf-mcp-space' }] }), 400);
