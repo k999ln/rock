@@ -1,5 +1,5 @@
 import { validEveMessages, eveChatModelMessages, parseEveChatReply, eveChatBytes } from '../../lib/eve-chat.ts';
-import { NOAH_CLOUD_MODEL, noahCloudId, noahCloudCallNeuronsCap, noahCloudReplyUsage, NOAH_FREE_CLOUD_LIMITS } from '../../lib/noah-cloud-contract.ts';
+import { NOAH_CLOUD_MODEL, noahCloudId, noahCloudCallNeuronsCap, NOAH_FREE_CLOUD_LIMITS } from '../../lib/noah-cloud-contract.ts';
 const json = (body, status = 200) => Response.json(body, { status, headers: { 'Cache-Control': 'private, no-store' } });
 /** Never dispatch through a connection/job DO: model content exists only for this request. */
 export async function eveChat(body, env, ctx) {
@@ -12,15 +12,16 @@ export async function eveChat(body, env, ctx) {
   const rpc = value => budget.fetch('https://runtime.internal/', { method: 'POST', body: JSON.stringify({ id, owner: body.owner, ...value }) });
   const admitted = await rpc({ action: 'admit-chat', mode: 'run' });
   if (!admitted.ok) return admitted;
+  // Charge the conservative single-call cap before dispatch. An isolate can be
+  // terminated after a client disconnect, so accounting must not depend on a reply.
+  const charged = await rpc({ action: 'use', neurons: cap });
+  if (!charged.ok) return json({ error: 'usage_unconfirmed' }, 503);
   // A lost response never retries inference. Keep only admission IDs and usage in Budget.
   // A client timeout does not prove that Workers AI stopped; account/release on settlement.
   const work = (async () => {
     let reply;
     try { reply = await env.AI.run(NOAH_CLOUD_MODEL, input); }
-    catch { /* Failed inference may still consume tokens; charge the preflight cap below. */ }
-    const usage = reply ? noahCloudReplyUsage(reply, inputBytes, input.max_tokens) : { neurons: cap };
-    const charged = await rpc({ action: 'use', neurons: usage.neurons });
-    if (!charged.ok) return json({ error: 'usage_unconfirmed' }, 503); // retain the lease on accounting failure
+    catch { /* The preflight cap already covers failed or interrupted inference. */ }
     await rpc({ action: 'release' });
     const content = reply?.choices?.[0]?.message?.content;
     if (typeof content !== 'string' || content.length > 16000 || reply?.choices?.[0]?.finish_reason === 'length') return json({ error: 'invalid_reply' }, 502);

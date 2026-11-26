@@ -25,7 +25,10 @@ void test('stateless chat uses shared quota and deduplicates requests without pe
   assert.equal((await rpc(1, { messages: [{ role: 'system', content: 'bad' }] })).status, 400);
   const first = rpc(1);
   for (let i = 0; !release && i < 100; i++) await new Promise(r => setTimeout(r, 20));
-  assert.ok(release); assert.equal((await rpc(1)).status, 409); assert.equal(calls, 1);
+  assert.ok(release);
+  const pending = await (await mf.dispatchFetch('https://runtime/inspect')).json();
+  assert.ok(pending.neurons > 0, 'quota is charged before the model can lose its response');
+  assert.equal((await rpc(1)).status, 409); assert.equal(calls, 1);
   release(); assert.equal((await first).status, 200);
   assert.equal((await rpc(1)).status, 409); assert.equal(calls, 1);
   const state = await (await mf.dispatchFetch('https://runtime/inspect')).json();

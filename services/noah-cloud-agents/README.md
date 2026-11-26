@@ -45,4 +45,4 @@ Memoryは `/workspace/memory.jsonl` へ依頼内の情報を保存し、成果�
 
 ## 開発相談（端末保存）
 
-`eve-chat.mjs` は固定モデルの1回の設計相談だけを返す。Tool・外部Agentは実行しない。既存Budgetの全体/本人の件数・neuron・同時枠を使い、受付ID（24時間）と利用量のみ保存する。同一受付IDの再送は409で拒否し、応答を失っても自動で計算をやり直さない。計算の失敗は入力bytesと出力上限で保守的に課算し、応答期限後もモデルの終了・課算まで枠を保持する。呼出本文をログへ出さず、AI Gatewayのログ/キャッシュは設定しない。公開資料の[Workers AIのデータ取扱い](https://developers.cloudflare.com/workers-ai/platform/data-usage/)は提供元の処理・保持条件として別に示す。
+`eve-chat.mjs` は固定モデルの1回の設計相談だけを返す。Tool・外部Agentは実行しない。既存Budgetの全体/本人の件数・neuron・同時枠を使い、受付ID（24時間）と利用量のみ保存する。同一受付IDの再送は409で拒否し、応答を失っても自動で計算をやり直さない。相談は入力bytesと出力上限で見積もった保守的なneuron上限を呼出前に消費枠へ計上する（請求額や実測量ではない）。応答喪失・isolate終了でも未計上にならず、応答期限後もモデルの終了まで同時枠を保持する。呼出本文をログへ出さず、AI Gatewayのログ/キャッシュは設定しない。公開資料の[Workers AIのデータ取扱い](https://developers.cloudflare.com/workers-ai/platform/data-usage/)は提供元の処理・保持条件として別に示す。
