@@ -24,7 +24,13 @@ void test('current workflows, retained detail records, API writes and shared ass
   const seen = [];
   const app = withMiniSite({ fetch(request) { seen.push(request); return new Response('native'); } }, request => { seen.push(request); return new Response('product'); });
   for (const path of [...MAIN_PAGE_PATHS, '/noah/agents/fixture', '/noah/tasks/fixture', '/noah/releases/fixture', '/noah/engineering/combinations/fixture', '/connect/status']) {
-    assert.equal((await app.fetch(new Request(`https://avoado.si${path}`))).status, 200, path);
+    const response = await app.fetch(new Request(`https://avoado.si${path}`));
+    if (path === '/noah/profile') {
+      assert.equal(response.status, 308);
+      assert.equal(response.headers.get('location'), 'https://avoado.si/aries');
+    } else {
+      assert.equal(response.status, 200, path);
+    }
   }
   for (const path of ['/api/noah/jobs', '/api/sky/settle', '/api/eve/history']) {
     const request = new Request(`https://avoado.si${path}`, { method: 'POST', body: 'unchanged', headers: { cookie: 'owner-fixture' } });
