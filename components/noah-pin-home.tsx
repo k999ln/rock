@@ -89,17 +89,21 @@ export default function NoahPinHome({fallback,searchQuery='',initialSource='',on
   const availableJobs=current?.page?.firstJobs?.filter((job):job is NoahFirstJob & {href:string}=>job.href!==null);
   return <><span id="timeline" /><span id="first-jobs" tabIndex={-1} />
   <section id="noah-collection" className={styles.home} aria-label="Agent一覧">
-    <div className={styles.feedHeading}><h1>{t(searchQuery ? '検索結果' : source && source!=='noah' ? '新しく見つかったAgent' : 'Agentを見つける')}</h1>{current?.page && <span>{current.page.total.toLocaleString('ja-JP')}件</span>}</div>
-    <div className={styles.catalogTools}><div className={styles.filters} aria-label="Agentを絞り込む">{[['noah','接続できる'],['','すべて'],['discovered','新しく見つかった']].map(([value,label])=><button key={value} type="button" aria-pressed={source===value} onClick={()=>chooseSource(value)}>{label}</button>)}</div>
-    <select className={styles.topicSelect} aria-label={t('カテゴリ')} value={topic} onChange={event=>chooseTopic(event.currentTarget.value)}>
-      <option value="">{t('すべてのカテゴリ')}</option>
-      {Object.entries(NOAH_PIN_TOPIC_LABELS).map(([id,label])=><option key={id} value={id}>{t(label)}</option>)}
-    </select></div>
-    {source!=='noah' && <details className={styles.sourceFilter}><summary>提供元で絞り込む</summary><div className={styles.filters}>{NOAH_COLLECTION_SOURCES.map(value=><button key={value} type="button" aria-pressed={source===value} onClick={()=>chooseSource(value)}>{NOAH_COLLECTION_LABELS[value]}</button>)}</div></details>}
-    {source!=='noah' && <div className={styles.filters} aria-label="並び">
-      <button type="button" aria-pressed={order==='hot'} onClick={()=>setOrder('hot')}>おすすめ順</button>
-      <button type="button" aria-pressed={order==='new'} onClick={()=>setOrder('new')}>出た順</button>
-    </div>}
+    <h1 className={styles.feedTitle}>{t(searchQuery ? '検索結果' : 'Agentを見つける')}</h1>
+    <div className={styles.timelineTools}>
+      <div className={styles.timelineTabs} aria-label="Agentを絞り込む">
+        {[['','すべて'],['noah','接続できる'],['discovered','新しく見つかった']].map(([value,label])=><button key={value} type="button" aria-pressed={source===value && !topic} onClick={()=>{chooseSource(value);chooseTopic('');}}>{label}</button>)}
+        {Object.entries(NOAH_PIN_TOPIC_LABELS).map(([id,label])=><button key={id} type="button" aria-pressed={topic===id} onClick={()=>{chooseSource('');chooseTopic(id);}}>{t(label)}</button>)}
+      </div>
+      <details className={styles.timelineOptions}>
+        <summary aria-label="一覧の表示設定">＋</summary>
+        <div className={styles.timelineMenu}>
+          <label>並び<select aria-label="並び" value={order} onChange={event=>setOrder(event.target.value as 'hot'|'new')}><option value="hot">おすすめ順</option><option value="new">出た順</option></select></label>
+          <label>提供元<select aria-label="提供元で絞り込む" value={source} onChange={event=>chooseSource(event.target.value)}><option value="">すべて</option><option value="noah">接続できる</option><option value="discovered">新しく見つかった</option>{NOAH_COLLECTION_SOURCES.map(value=><option key={value} value={value}>{NOAH_COLLECTION_LABELS[value]}</option>)}</select></label>
+          {current?.page && <span>{current.page.total.toLocaleString('ja-JP')}件</span>}
+        </div>
+      </details>
+    </div>
     {(searchQuery && onClearQuery) && <button type="button" className={styles.recovery} onClick={()=>{onClearQuery?.();}}>検索条件をクリア</button>}
     {!current && <NoahLoading label="読み込んでいます…" variant="cards"/>}
     {current?.error && <div role="alert" className={styles.status}>{current.error}<button type="button" className={styles.recovery} onClick={()=>current.page&&!current.restart?void more():setAttempt(n=>n+1)}>{current.restart?'一覧を読み直す':'再試行'}</button></div>}

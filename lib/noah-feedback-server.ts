@@ -4,12 +4,18 @@ import { noahResearchCatalog } from './noah-research-catalog';
 import { recipeFor } from './noah-execution-contract.mjs';
 import { createNoahLaunchService } from './noah-launch';
 import { noahReleaseDependencies } from './noah-release-server';
-import { noahAgentDirectory } from './noah-agent-directory-server';
+import { findNoahAgentEntry, noahAgentDirectory } from './noah-agent-directory-server';
 import type { DirectoryEntry } from './noah-agent-directory';
-export function noahFeedbackApi() {
+export function noahFeedbackApi(request?: Request) {
+  const single = request?.method === 'GET' ? new URL(request.url).searchParams.get('ids') : null;
+  const lookups = new Map<string, Promise<DirectoryEntry | undefined>>();
   let directory: Promise<DirectoryEntry[]> | undefined;
   const entryFor = async (id: string) => {
     if (!/^project-[a-f0-9]{64}$/.test(id)) return undefined;
+    if (single === id) {
+      if (!lookups.has(id)) lookups.set(id, findNoahAgentEntry(id));
+      return lookups.get(id);
+    }
     directory ??= noahAgentDirectory();
     return (await directory).find(e=>e.card.feedbackId===id);
   };

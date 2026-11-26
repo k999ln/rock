@@ -76,3 +76,30 @@ void test('reused project hashes never retain stale catalog rows or listing perm
   assert.equal(await isNoahRevenueProject(first[0].card.feedbackId), false);
   assert.equal(await isNoahRevenueProject(await noahCardIdentity('https://avoado.si/noah/business-si', 'unused')), true);
 });
+
+
+void test('ready detail reads public facts and the exact owner connection in one database batch', async t => {
+  const { world, familyId, hostOf } = await import('./fixtures/noah/connect-world.mjs');
+  const { mcpServer, tool } = await import('./fixtures/noah/mcp-server.mjs');
+  const { createIntakeStore } = await import('../lib/noah-intake-store.ts');
+  const w = await world(t, { [hostOf(1)]: mcpServer({ tools: [tool('lookup')] }) });
+  const batches = [];
+  const db = { prepare: sql => w.f.db.prepare(sql), batch: async queries => { batches.push(queries.length); return w.f.db.batch(queries); } };
+  const store = createIntakeStore({ ...w.f.deps, db });
+  const detail = await store.detail(familyId(1), 'viewer', false);
+  assert.equal(detail.listed, true); assert.equal(detail.connection, null);
+  assert.deepEqual(batches, [3]);
+  await store.detail(familyId(1), null, false);
+  assert.deepEqual(batches, [3, 2], 'anonymous reads do not query an owner connection');
+});
+
+void test('video card keeps its accessible name and description once inside the media panel', () => {
+  const ui = screen({ modules: { './noah-art-motion': { NoahPinMotion: () => null } } });
+  const page = ui.mount('components/noah-agent-pin.tsx#NoahAgentPinFace', {
+    id: 'video-demo', name: 'Moving title', summary: 'Short description', href: '/noah',
+    video: { url: '/example.mp4', poster: '/example.jpg' }, plain: true,
+  });
+  assert.equal(page.find('strong').length, 1);
+  assert.match(page.text(), /Moving title/); assert.match(page.text(), /Short description/);
+  assert.equal(page.find('a')[0].props.href, '/noah');
+});
