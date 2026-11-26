@@ -1,6 +1,7 @@
 /** Consent and pricing remain visible in every supported locale. */
 export const NOAH_REGISTRATION_MESSAGES: Record<string, readonly [string, string, string, string, string]> = {
   'パスワードは登録先へ送り、Noahには保存しません。': ['Your password is sent for registration and is not stored in Noah.', '密码将用于向服务注册，不会保存在 Noah 中。', '비밀번호는 등록을 위해 전송하며 Noah에는 저장하지 않습니다.', 'La contraseña se envía para el registro y no se guarda en Noah.', 'تُرسل كلمة المرور للتسجيل ولا تُحفظ في Noah.'],
+  'Safari・Chromeに保存した情報を、入力欄の自動入力候補から使えます。': ['Use saved details from Safari or Chrome’s autofill suggestions in the fields.', '可通过输入框的自动填充建议使用 Safari 或 Chrome 中保存的信息。', '입력란의 자동 완성 후보에서 Safari 또는 Chrome에 저장한 정보를 사용할 수 있어요.', 'Usa los datos guardados en las sugerencias de autocompletar de Safari o Chrome.', 'استخدم البيانات المحفوظة من اقتراحات الملء التلقائي في Safari أو Chrome داخل الحقول.'],
   '送信': ['Sharing', '发送', '전송', 'Envío', 'الإرسال'],
   '必須': ['Required', '必填', '필수', 'Obligatorio', 'مطلوب'],
   '利用の準備': ['Getting ready', '使用准备', '이용 준비', 'Preparar el uso', 'الاستعداد للاستخدام'],
