@@ -17,9 +17,9 @@ function mount(fetch,props={}) {
     IntersectionObserver:class {constructor(cb){this.cb=cb;}observe(){watchers.add(this);}disconnect(){watchers.delete(this);}},
   });
   const home=ui.mount('components/noah-pin-home.tsx',props);
-  return {ui,home,cards:()=>cards,watchers,enter:()=>{for(const w of [...watchers])w.cb([{isIntersecting:true}]);}};
+  return {ui,home,cards:()=>cards,watchers,enter:()=>{for(const w of watchers)w.cb([{isIntersecting:true}]);}};
 }
-test('scrolling appends once, preserves order, deduplicates and stops at the end without a more button',async()=>{
+void test('scrolling appends once, preserves order, deduplicates and stops at the end without a more button',async()=>{
   let resolve;
   const t=mount(async({url})=>url.includes('cursor=0')?page(['a'],'20'):await new Promise(r=>resolve=r));
   await t.home.flush();assert.equal(t.home.find('button','もっと見る').length,0);
@@ -29,7 +29,7 @@ test('scrolling appends once, preserves order, deduplicates and stops at the end
   t.enter();assert.equal(t.ui.calls.length,2);
   await t.home.tick(120000);assert.equal(t.ui.calls.length,2,'no background refresh moves the reader');
 });
-test('a failed continuation pauses automatic fetches and explicit retry retains the loaded cards',async()=>{
+void test('a failed continuation pauses automatic fetches and explicit retry retains the loaded cards',async()=>{
   let tries=0;
   const t=mount(async({url})=>url.includes('cursor=0')?page(['a'],'20'):++tries===1?{status:503,body:{error:'offline'}}:page(['b']));
   await t.home.flush();t.enter();await t.home.flush();
@@ -37,19 +37,19 @@ test('a failed continuation pauses automatic fetches and explicit retry retains 
   t.enter();assert.equal(tries,1);await t.home.click('再試行');
   assert.deepEqual(Array.from(t.cards(),i=>i.id),['a','b']);
 });
-test('late pages from old search conditions cannot enter the replacement collection',async()=>{
+void test('late pages from old search conditions cannot enter the replacement collection',async()=>{
   let resolve;const props={searchQuery:''};
   const t=mount(async({url})=>url.includes('q=new')?page(['new']):url.includes('cursor=0')?page(['old'],'20'):await new Promise(r=>resolve=r),props);
   await t.home.flush();t.enter();props.searchQuery='new';t.home.render();resolve(page(['stale']));await t.home.flush();
   assert.deepEqual(Array.from(t.cards(),i=>i.id),['new']);
 });
-test('a changed ranking offers a controlled restart rather than silently skipping cards',async()=>{
+void test('a changed ranking offers a controlled restart rather than silently skipping cards',async()=>{
   const t=mount(async({url})=>url.includes('cursor=0')?page(['a'],'20'):{status:409,body:{error:'一覧が更新されました。',restart:true}});
   await t.home.flush();t.enter();await t.home.flush();assert.equal(t.watchers.size,0);
   assert.deepEqual(Array.from(t.cards(),i=>i.id),['a']);await t.home.click('一覧を読み直す');
   assert.equal(t.ui.calls.length,3);assert.ok(t.ui.calls[2].url.includes('cursor=0'));
 });
-test('directory recommendation uses saved/followed board facts, unique project identities and scoped continuation',async t=>{
+void test('directory recommendation uses saved/followed board facts, unique project identities and scoped continuation',async t=>{
   const w=await world(t,Object.fromEntries(Array.from({length:25},(_,i)=>[hostOf(i+1),mcpServer({tools:[tool('lookup')]})])));
   const entries=await readNoahDirectory({db:w.f.db,listed:true,now:w.f.time});
   entries.forEach((e,i)=>{e.card.provider='provider-'+i;e.card.topic=i%2?'data':'dev';});
@@ -66,7 +66,7 @@ test('directory recommendation uses saved/followed board facts, unique project i
   assert.equal((await get('&cursor='+first.nextCursor)).status,409);
   const refreshed=await get('');assert.equal(refreshed.total,24);assert.ok(refreshed.items.every(i=>i.id!==familyId(25)));
 });
-test('directory composition uses the policy pools, not outside stars, and merges family aliases before mixing',async()=>{
+void test('directory composition uses the policy pools, not outside stars, and merges family aliases before mixing',async()=>{
   const entries=['personal','hot1','ran','hot2','fresh'].map((id,i)=>({card:{...item(id),feedbackId:'project-'+id,topic:i%2?'dev':'data'},families:[id],observedAt:0}));
   entries[0].families.push('alias');entries[4].hot=9999999;
   const facts=[{id:'hot1',votes:20,hot:100,level:1,fresh:0},{id:'hot2',votes:2,hot:90,level:1,fresh:0},{id:'ran',votes:0,hot:0,level:2,ran:100,fresh:0}];

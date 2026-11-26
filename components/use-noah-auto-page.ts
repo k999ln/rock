@@ -3,7 +3,7 @@ import { useEffect, useRef } from 'react';
 
 /** Read ahead near the end, one request at a time; errors require explicit retry. */
 export function useNoahAutoPage(enabled: boolean, cursor: string | null | undefined, load: () => Promise<void>) {
-  const end = useRef<HTMLDivElement>(null);
+  const end = useRef<HTMLOutputElement>(null);
   const latest = useRef(load);
   useEffect(() => { latest.current = load; }, [load]);
   useEffect(() => {

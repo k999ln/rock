@@ -22,7 +22,7 @@ function feedScreen(options) {
       disconnect(){observers.delete(this);}
     },
   });
-  ui.advance=async home=>{for(const observer of [...observers])observer.callback([{isIntersecting:true}]);await home.flush();};
+  ui.advance=async home=>{for(const observer of observers)observer.callback([{isIntersecting:true}]);await home.flush();};
   return ui;
 }
 
