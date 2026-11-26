@@ -13,6 +13,19 @@ import { noahReadyItems } from '../lib/noah-intake-store.ts';
 const pin = { title: '天気を調べる', give: '都市名', get: '天気予報', scene: { template: 'concentric', labels: ['都市', '天気予報'], parts: [], variant: null } };
 const migration = readFileSync(new URL('../docs/noah/migrations/0061_noah_intake_pins.sql', import.meta.url), 'utf8');
 
+void test('the approved Pin migration is the canonical next Sites migration', () => {
+  assert.equal(migration, readFileSync(new URL('../drizzle/0061_noah_intake_pins.sql', import.meta.url), 'utf8'));
+  assert.equal(migration, readFileSync(new URL('../drizzle-main/0061_noah_intake_pins.sql', import.meta.url), 'utf8'));
+  const journal = JSON.parse(readFileSync(new URL('../drizzle-main/meta/_journal.json', import.meta.url), 'utf8')).entries;
+  assert.deepEqual(journal.at(-1), {
+    idx: 41,
+    version: '6',
+    when: 4102444800033,
+    tag: '0061_noah_intake_pins',
+    breakpoints: true,
+  });
+});
+
 void test('migration preserves old rows and limits pin JSON by UTF-8 bytes', () => {
   const sql = new DatabaseSync(':memory:');
   try {
