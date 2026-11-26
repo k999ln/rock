@@ -334,7 +334,7 @@ function assertTrainingVideo(page, fullscreen = false) {
     assert.equal(target.props.tabIndex, -1);
     assert.ok(page.nodes().indexOf(video) < page.nodes().indexOf(target));
     assert.equal(page.find('a', '詳細 ↓').length, 0);
-    assert.equal(page.find('a', 'Agentを探す')[0].props.href, '/noah');
+    assert.equal(page.find('a', 'Agentを探す').length, 0);
     assert.ok(page.find('summary', '使い方を読む').length);
     return video;
   }

@@ -78,7 +78,7 @@ export default function NoahProjectDetail({ id, firstJob }: { id: string; firstJ
       <Link className={styles.back} href="/noah/saved?tab=results">{t('保存した成果を見る')}</Link>
     </div>;
     return detail && job ? <NoahDetailTemplate id={id} mediaId={`${id}:job:${firstJob}`} name={t(job.title)} provider={detail.card.provider}
-      summary={t(job.output)} feedbackId={id} backHref="/noah#first-jobs" backLabel="目的を選び直す">{content}</NoahDetailTemplate> : content;
+      summary={t(job.output)} feedbackId={id}>{content}</NoahDetailTemplate> : content;
   }
   const sourceNotes = detail?.card.sources?.length ? <ProjectSources sources={detail.card.sources} /> : null;
   const trailer = detail && id === noahTrainingFilm.projectId ? <details className={styles.trailer}>
@@ -87,7 +87,7 @@ export default function NoahProjectDetail({ id, firstJob }: { id: string; firstJ
   if (detail?.connection.kind === 'ready') {
     return <NoahReadyDetail id={detail.connection.familyId} internalOnly sourceNotes={sourceNotes} trailer={trailer} mediaId={id} />;
   }
-  if (!detail) return <main className={styles.page}><Link className={styles.back} href="/noah">← {t('Agentを探す')}</Link>
+  if (!detail) return <main className={styles.page}>
     {!error ? <NoahLoading label="Agentを確認しています…" /> : <div role="alert" className={styles.error}><p>{error}</p><button onClick={() => { setError(''); setAttempt(n => n + 1); }}>読み直す</button></div>}
   </main>;
   const training = id === noahTrainingFilm.projectId;

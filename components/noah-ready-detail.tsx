@@ -10,7 +10,7 @@ import { useNoahLocale } from './noah-locale';
 import NoahAgentVisual from './noah-agent-visual';
 import NoahAppIcon from './noah-app-icon';
 import NoahDetailTemplate from './noah-detail-template';
-import { ChevronLeft, PhoneCall, ArrowUpRight, PhoneOutgoing } from 'lucide-react';
+import { PhoneCall, ArrowUpRight, PhoneOutgoing } from 'lucide-react';
 import { noahPinTopic } from '@/lib/noah-pins';
 import { noahDetailGuide } from '@/lib/noah-detail-guide';
 import { noahDetailStarter } from '@/lib/noah-detail-starter';
@@ -101,9 +101,7 @@ export default function NoahReadyDetail({ id, tool = null, from = null, internal
     }).catch(() => done({ state: 'error' }));
   }, [id, attempt, valid]);
 
-  const back = <p className={pageStyles.back}><Link href="/noah/explore"><ChevronLeft size={18} aria-hidden="true" />{t('Agentを探す')}</Link></p>;
   if (loaded.state !== 'ready') return <main className={`${base.page} ${styles.page} ${pageStyles.page}`}>
-    {back}
     {loaded.state === 'loading' && <p className={base.loading}><NoahLoading label={t("読み込んでいます…")} /></p>}
     {loaded.state === 'missing' && <p className={base.empty}>{t(NOAH_READY_TEXT.missing)}</p>}
     {loaded.state === 'error' && <div className={base.empty} role="alert"><p>{t(NOAH_READY_TEXT.unavailable)}</p><button type="button" onClick={() => setAttempt((n) => n + 1)}>{t("読み直す")}</button></div>}
