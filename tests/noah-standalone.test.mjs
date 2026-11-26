@@ -16,8 +16,12 @@ void test('Noah return paths stay within the service, preserve an agent handoff 
   assert.equal(new URL(navigation.noahAccountHref(engineering), 'https://avoado.si').searchParams.get('returnTo'), engineering);
   assert.equal(navigation.noahReturnPath(detail), detail);
   assert.equal(new URL(navigation.noahAccountHref(detail), 'https://avoado.si').searchParams.get('returnTo'), detail);
+  const signIn = new URL(navigation.noahSignInHref(detail), 'https://avoado.si');
+  assert.equal(signIn.pathname, '/signin-with-chatgpt');
+  assert.equal(signIn.searchParams.get('return_to'), detail);
   for (const invalid of [undefined, '', '//evil.test/noah', '/os', '/noahish', '/noah/../../os', '/noah/account?returnTo=/noah', '/noah/account/other', '/noah\\evil', '/noah\n']) {
     assert.equal(navigation.noahReturnPath(invalid), '/noah', String(invalid));
+    assert.equal(navigation.noahSignInHref(invalid), '/signin-with-chatgpt?return_to=%2Fnoah', String(invalid));
   }
 });
 
@@ -73,7 +77,9 @@ void test('standalone work distinguishes signed out, empty and failed reads, wit
   const signedOut = ui.mount('components/noah-work-list.tsx', { ownerScope: null, refresh: 0, only: 'succeeded', showEmpty: true });
   await signedOut.flush();
   assert.match(signedOut.text(), /接続を確認すると/);
-  assert.equal(new URL(signedOut.find('a', '接続を確認して続ける')[0].props.href, 'https://avoado.si').searchParams.get('returnTo'), '/noah/data');
+  const signIn = new URL(signedOut.find('a', '接続を確認して続ける')[0].props.href, 'https://avoado.si');
+  assert.equal(signIn.pathname, '/signin-with-chatgpt');
+  assert.equal(signIn.searchParams.get('return_to'), '/noah/saved?tab=results');
   assert.doesNotMatch(signedOut.text(), /成果はまだ/);
 });
 

@@ -12,6 +12,10 @@ export function noahReturnPath(value: string | null | undefined): string {
   } catch { return '/noah'; }
 }
 
+export function noahSignInHref(returnTo = '/noah'): string {
+  return `/signin-with-chatgpt?${new URLSearchParams({ return_to: noahReturnPath(returnTo) })}`;
+}
+
 export function noahAccountHref(returnTo = '/noah'): string {
   return `/noah/account?${new URLSearchParams({ returnTo: noahReturnPath(returnTo) })}`;
 }

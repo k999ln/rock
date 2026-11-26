@@ -1,4 +1,5 @@
 'use client';
+import { noahSignInHref } from '@/lib/noah-navigation';
 import {noahOperationLabel} from '@/lib/noah-operation-labels';
 import { useEffect, useRef, useState } from 'react';
 import Link from 'next/link';
@@ -28,7 +29,7 @@ export default function NoahProfile(){
       </dl>
       <Link href="/noah/explore">{t('Agentを探す')}<ArrowUpRight size={16}/></Link>
     </section>
-    {state.guest?<div className={styles.empty}><Fingerprint size={32}/><h2>{t("次のAgentでも、入力は少なく。")}</h2><p>{t("保存すると、必要な項目だけ使い回せます。")}</p><Link className={styles.primary} href="/noah/account?returnTo=%2Fnoah%2Fprofile">{t("接続を確認して続ける")}<ArrowUpRight size={17}/></Link></div>:state.profile?<ProfileEditor key={state.profile.ownerScope} profile={state.profile} busy={state.busy} save={state.save} beginFileSelection={state.beginFileSelection} endFileSelection={state.endFileSelection} cancelFileSelection={state.cancelFileSelection}/>:!state.error?<NoahLoading label={t("保存情報を読み込んでいます…")}/>:null}
+    {state.guest?<div className={styles.empty}><Fingerprint size={32}/><h2>{t("次のAgentでも、入力は少なく。")}</h2><p>{t("保存すると、必要な項目だけ使い回せます。")}</p><a className={styles.primary} href={noahSignInHref('/noah/profile')}>{t("接続を確認して続ける")}<ArrowUpRight size={17}/></a></div>:state.profile?<ProfileEditor key={state.profile.ownerScope} profile={state.profile} busy={state.busy} save={state.save} beginFileSelection={state.beginFileSelection} endFileSelection={state.endFileSelection} cancelFileSelection={state.cancelFileSelection}/>:!state.error?<NoahLoading label={t("保存情報を読み込んでいます…")}/>:null}
     {state.error&&<div role="alert" className={styles.error}>{state.error}<button type="button" onClick={()=>void state.reload()}>{t("読み直す")}</button></div>}
     <NoahContractLinks/>
     <NoahLanguageSetting/><NoahHapticsSetting/>

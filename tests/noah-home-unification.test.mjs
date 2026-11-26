@@ -103,7 +103,10 @@ void test('all Noah pages keep every primary destination in one top menu without
     const destinations = mode==='public'||base==='/noah/public' ? [base,'/noah/engineering',`${base}/my?view=agents`,`${base}/activity`,`${base}/saved?tab=results`,`${base}/preferences`] : [base,`${base}/activity`,`${base}/saved`,`${base}/registration`,`${base}/preferences`];
     for (const href of destinations) assert.equal(urls.filter(url=>url===href).length,1,`${pathname} → ${href}`);
     assert.equal(shell.find('nav').length,1,pathname);
-    assert.equal(shell.find('a').filter(node=>node.props.href===(mode==='public'&&base==='/noah'?'/aries':`${base}/profile`)).length,1,pathname);
+    const profileHref = mode === 'public' && base === '/noah' ? '/aries' : `${base}/profile`;
+    const brandName = mode === 'public' || base === '/noah/public' ? 'Nöah' : 'Noah';
+    assert.equal(shell.find('a').filter(node=>node.props.href===profileHref).length,1,pathname);
+    assert.equal(shell.find('a').filter(node=>node.props.href===base && node.props['aria-label']===brandName).length,1,pathname);
     let closed=0;panel.props.ref.current={hidePopover(){closed++;}};
     for (const link of menuLinks) link.props.onClick();
     assert.equal(closed,menuLinks.length);

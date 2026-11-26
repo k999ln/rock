@@ -1,4 +1,5 @@
 'use client';
+import { noahSignInHref } from '@/lib/noah-navigation';
 import { noahTerminalTemplate } from '@/lib/noah-terminal-template';
 import { noahUploadPath } from '@/lib/noah-surface';
 import { useCallback, useEffect, useRef, useState, type SyntheticEvent } from 'react';
@@ -264,7 +265,7 @@ export default function NoahAgentUploadForm({ engineeringMode, onRegistered }: U
     {!scope && <section className={styles.notice} aria-label="アカウントの確認">
       {accountChecking ? <output>アカウントを確認中…</output> : <>
         <p>{signedOut ? 'サインインすると、自分のAgentの登録と下書きの保存ができます。' : 'アカウントの確認後に登録できます。'}</p>
-        <Link className={styles.primary} href={`/noah/account?mode=login&returnTo=${encodeURIComponent(returnPath)}`}>サインインして登録を続ける</Link>
+        <a className={styles.primary} href={noahSignInHref(returnPath)}>サインインして登録を続ける</a>
         <button type="button" onClick={() => { setAccountChecking(true); setSignedOut(false); setError(''); setAttempt(n => n + 1); }}>アカウントを再確認</button>
       </>}
     </section>}

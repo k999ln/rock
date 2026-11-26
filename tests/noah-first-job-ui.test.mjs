@@ -57,7 +57,8 @@ void test('the public home has one collection and available task links inside th
     assert.equal(link.props.href,job.href); assert.ok(home.nodes(card).includes(link));
   }
   assert.equal(home.find('a',choices[0].title).length,0);
-  assert.equal(home.find('a','専用クラウドを開く')[0].props.href,'/api/noah/cloud-work');
+  assert.equal(home.find('a','eSIM専用クラウド（準備中）')[0].props.href,'/connect');
+  assert.equal(home.find('a','接続状況を確認')[0].props.href,'/api/noah/cloud-work');
   assert.equal(ui.calls.length,1); assert.equal(ui.calls[0].method,'GET');
 });
 

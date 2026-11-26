@@ -101,8 +101,8 @@ export function NoahStoreServices() {
       <Link href="/noah/marketplace"><ShoppingBag size={17} aria-hidden="true" />{t('Agentを買う')}</Link>
     </nav>
     <nav aria-label={t('eSIMでつなぐ専用クラウド')}>
-      <Link href="/connect"><Signal size={17} aria-hidden="true" />{t('eSIMでつなぐ専用クラウド')}</Link>
-      <a href="/api/noah/cloud-work" aria-label={t('専用eSIMで成果・料金を確認')}><Cloud size={17} aria-hidden="true" />{t('専用クラウドを開く')}</a>
+      <Link href="/connect"><Signal size={17} aria-hidden="true" />{t('eSIM専用クラウド（準備中）')}</Link>
+      <a href="/api/noah/cloud-work" aria-label={t('専用クラウドの接続状況を確認')}><Cloud size={17} aria-hidden="true" />{t('接続状況を確認')}</a>
     </nav>
   </aside>;
 }

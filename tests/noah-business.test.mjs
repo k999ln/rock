@@ -212,6 +212,7 @@ void test('the blueprint page (/noah/review/business) shows plans only to an aut
   const ts = (await import('typescript')).default;
   const { noahReviewerAccess } = await import('../lib/noah-reviewer.ts');
   const business = await import('../lib/noah-business.ts');
+  const navigation = await import('../lib/noah-navigation.ts');
   const jsx = (type, props) => ({ type, props });
   const source = ts.transpileModule(readFileSync(new URL('../app/noah/review/business/page.tsx', import.meta.url), 'utf8'), { compilerOptions: { jsx: ts.JsxEmit.ReactJSX, module: ts.ModuleKind.CommonJS, target: ts.ScriptTarget.ES2022 } }).outputText;
   const capabilities = JSON.parse(readFileSync(new URL('../data/noah-business-capabilities.json', import.meta.url), 'utf8'));
@@ -221,6 +222,7 @@ void test('the blueprint page (/noah/review/business) shows plans only to an aut
     const modules = {
       'react/jsx-runtime': { jsx, jsxs: jsx, Fragment: 'fragment' }, 'next/headers': { headers: async () => new Headers({ cookie: 'session-fixture' }) }, 'next/link': { default: 'a' },
       '@/data/noah-business-capabilities.json': { default: capabilities }, '@/components/noah-blueprint-levels': { default: 'levels' }, '@/lib/noah-business': business,
+      '@/lib/noah-navigation': navigation,
       '@/lib/noah-intake-server': { noahIntakeDependencies: () => deps }, '@/components/noah-service.module.css': { default: {} }, '@/components/noah-blueprint-levels.module.css': { default: {} },
     };
     const exports = {};

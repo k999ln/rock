@@ -230,7 +230,11 @@
 .storeSearchPanel:popover-open { display: block; }
 .gridTopbar[data-store-header] .gridSearchSlot { max-width: 340px; }
 @media (max-width: 600px) {
-  .gridTopbar[data-store-header] .gridBrand { margin-inline-end: auto; }
+  .gridTopbar[data-store-header] {
+    min-height: 56px; padding: 6px 12px; gap: 2px;
+  }
+  .gridTopbar[data-store-header] .gridBrand { margin-inline-end: auto; gap: 6px; }
+  .gridTopbar[data-store-header] .gridBrand strong { display: inline; }
   .gridTopbar[data-store-header] :is(.gridSearchSlot,.gridMenuButton span) { display: none; }
   .gridTopbar[data-store-header] :is(.mobileStoreSearch,.gridMenuButton,.gridAccount) {
     display: inline-grid; place-items: center; width: 44px; height: 44px; min-width: 44px; padding: 0; border: 0;

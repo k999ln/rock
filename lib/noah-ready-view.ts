@@ -6,6 +6,8 @@
  * 仕様: docs/noah/spec-74-one-click-connect.md の 5.2・6.3・11.4・11.5、spec-96-connect-plan.md の 6 章。
  */
 
+import { noahSignInHref } from './noah-navigation.ts';
+
 /** 一覧の 1 件（GET /api/noah/intake の items。lib/noah-intake-store.ts の item）。 */
 export type NoahReadyItem = {
   id: string; name: string; provider: string; summary: string; host: string | null;
@@ -79,7 +81,7 @@ export function noahReadyDetailHref(agentId: string, context: { tool?: string | 
 /** サインインの画面の場所。戻る先に渡すのは、/noah/ready で始まるパスだけ（それ以外は、一覧へ戻す）。 */
 export function noahReadyAccountHref(returnTo: string): string {
   const safe = /^\/noah\/ready(?:[/?#]|$)/.test(returnTo) && !/[\\\r\n]/.test(returnTo) && returnTo.length < 2000 ? returnTo : '/noah/ready';
-  return `/noah/account?${new URLSearchParams({ returnTo: safe }).toString()}`;
+  return noahSignInHref(safe);
 }
 
 // ---------------------------------------------------------------------------

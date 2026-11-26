@@ -4,6 +4,7 @@
  * 持ち主は、名前・公開の切り替え・消すができる。他の人の公開ボードは、フォローできる。
  * 仕様: docs/noah/spec-115-pin-grid.md の 3 章・5 章。
  */
+import { noahSignInHref } from '@/lib/noah-navigation';
 import { useEffect, useRef, useState } from 'react';
 import Link from 'next/link';
 import { NOAH_PIN_TEXT, noahPinInitials, type NoahPinTopic } from '@/lib/noah-pins';
@@ -36,7 +37,7 @@ export function NoahBoardsPage({embedded=false}:{embedded?:boolean}={}) {
     <Heading>{NOAH_PIN_TEXT.boards}</Heading>
     <p className={styles.boardsLead}>ホームの Agent の「保存」で、ボードを作って集めます。公開したボードは、他の人がフォローできます。</p>
     {state.status === 'loading' && <p className={styles.status}><output>{NOAH_PIN_TEXT.more}</output></p>}
-    {state.status === 'signin' && <p className={styles.status}><Link href="/noah/account?returnTo=%2Fnoah%2Fsaved">{NOAH_PIN_TEXT.signIn}</Link></p>}
+    {state.status === 'signin' && <p className={styles.status}><a href={noahSignInHref('/noah/saved?tab=boards')}>{NOAH_PIN_TEXT.signIn}</a></p>}
     {state.status === 'closed' && <p className={styles.status}>{NOAH_PIN_TEXT.closed}</p>}
     {state.status === 'error' && <p className={styles.status} role="alert">ボードを読めませんでした。少し後で開き直してください。</p>}
     {state.status === 'ready' && <>

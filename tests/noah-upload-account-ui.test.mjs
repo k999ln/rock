@@ -5,6 +5,7 @@ import test from 'node:test';
 import ts from 'typescript';
 import * as manifestApi from '../lib/noah-agent-upload.ts';
 import { noahUploadPath } from '../lib/noah-surface.ts';
+import { noahSignInHref } from '../lib/noah-navigation.ts';
 
 const code = ts.transpileModule(readFileSync(new URL('../components/noah-agent-upload-form.tsx', import.meta.url), 'utf8'), {
   compilerOptions: { target: ts.ScriptTarget.ES2022, jsx: ts.JsxEmit.ReactJSX, module: ts.ModuleKind.CommonJS },
@@ -32,6 +33,7 @@ function harness(fetcher, search = '?launch=1', props) {
       if (id === 'next/link') return { default: 'a' };
       if (id === 'next/navigation') return { useRouter: () => ({ push() {} }) };
       if (id === '@/lib/noah-surface') return { noahUploadPath };
+      if (id === '@/lib/noah-navigation') return { noahSignInHref };
       if (id === '@/lib/noah-agent-upload') return manifestApi;
       if (id === '@/lib/owner-intent') return { OWNER_SCOPE_HEADER: 'X-Rock-Owner-Scope' };
       if (['@/lib/noah-terminal-template', '@/lib/noah-upload-processing-client'].includes(id)) return {};
@@ -67,7 +69,7 @@ void test('signed-out registration offers usable sign-in and retry, then loads d
   t.after(() => h.unmount()); await h.flush();
   assert.match(h.text(), /サインインすると、自分のAgent/);
   assert.doesNotMatch(h.text(), /保存した下書きを確認中/);
-  assert.ok(h.nodes().some(n => n.type === 'a' && n.props.href === '/noah/account?mode=login&returnTo=%2Fnoah%2Fagents%2Fnew%3Flaunch%3D1'));
+  assert.ok(h.nodes().some(n => n.type === 'a' && n.props.href === '/signin-with-chatgpt?return_to=%2Fnoah%2Fagents%2Fnew%3Flaunch%3D1'));
   assert.equal(h.calls.some(c => c.url === '/api/noah/drafts'), false);
   assert.equal(h.nodes().find(n => n.type === 'fieldset').disabled, true);
   authenticated = true; h.click('アカウントを再確認'); await h.flush();
@@ -149,8 +151,8 @@ void test('engineering keeps the create/connect step across login and saves an e
   const draftId = '00000000-0000-4000-8000-000000000050';
   const login = harness(async () => reply(401, {}), '?step=create&draft=' + draftId, {engineeringMode:'create'});
   t.after(() => login.unmount()); await login.flush();
-  const signIn = login.nodes().find(n => n.type === 'a' && n.props.href.includes('returnTo'));
-  assert.equal(new URL(signIn.props.href,'https://noah.test').searchParams.get('returnTo'), '/noah/engineering?step=create&draft=' + draftId);
+  const signIn = login.nodes().find(n => n.type === 'a' && n.props.href.startsWith('/signin-with-chatgpt?'));
+  assert.equal(new URL(signIn.props.href,'https://noah.test').searchParams.get('return_to'), '/noah/engineering?step=create&draft=' + draftId);
   let saved, continued;
   const h = harness(async (url, options) => {
     if (url === '/api/noah/agents' && options?.method === 'POST') {

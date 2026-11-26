@@ -3,6 +3,7 @@
  * 一覧（並びの順）と、1 件の説明画面（?id=）。説明画面には、工程を「何を待つか」で段に並べた図を出す。
  * 本人の評価（2026-11-22）「エージェントのピン画像にはわかりにくすぎる、遷移先の説明画面ならいい」。設計図は会社が自分で回す物なので、公開のグリッドには出さない。
  */
+import { noahSignInHref } from '@/lib/noah-navigation';
 import { headers } from 'next/headers';
 import Link from 'next/link';
 import capabilities from '@/data/noah-business-capabilities.json';
@@ -28,7 +29,7 @@ async function reviewer(deps: ReturnType<typeof noahIntakeDependencies>): Promis
 export default async function Page({ searchParams }: { searchParams: Promise<{ id?: string | string[] }> }) {
   const deps = noahIntakeDependencies();
   if (!(await reviewer(deps))) {
-    return <main className={styles.page}><h1>稼ぎ方の設計図</h1><p>審査担当のアカウントで開いてください。<Link href={`/noah/account?returnTo=${encodeURIComponent(HREF)}`}>ログイン</Link></p></main>;
+    return <main className={styles.page}><h1>稼ぎ方の設計図</h1><p>審査担当のアカウントで開いてください。<a href={noahSignInHref(HREF)}>ログイン</a></p></main>;
   }
   const { id } = await searchParams;
   const plans = noahPlanBlueprints(capabilities.verified as NoahVerifiedCapabilities);

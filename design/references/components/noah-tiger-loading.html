@@ -4,13 +4,12 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=DotGothic16&display=swap">
 <style>
-/* Layout: one centred column. Loading status on top, the game strip below, a one-line hint at the bottom.
+/* Layout: one centred column. Brand name on top, the game strip below, a one-line hint at the bottom.
    The tiger is the only colour; everything else is the quiet grey of an offline page. */
 :root {
   --bg: #FFFFFF;
   --fg: #202024;
   --muted: #76727F;
-  --line: #E6E3EB;
   --tiger: #F7931E;
   --hole: #202024;      /* stripes, eyes and nose of the tiger */
   --thing: #8E8998;     /* cones, bench, pigeons, street */
@@ -19,13 +18,13 @@
 }
 @media (prefers-color-scheme: dark) {
   :root:not([data-theme="light"]) {
-    --bg: #141318; --fg: #ECEAF0; --muted: #8E8A98; --line: #2A2830;
+    --bg: #141318; --fg: #ECEAF0; --muted: #8E8A98;
     --tiger: #F7931E; --hole: #141318; --thing: #6F6B7A; --cloud: #24222B;
     color-scheme: dark;
   }
 }
 :root[data-theme="dark"] {
-  --bg: #141318; --fg: #ECEAF0; --muted: #8E8A98; --line: #2A2830;
+  --bg: #141318; --fg: #ECEAF0; --muted: #8E8A98;
   --tiger: #F7931E; --hole: #141318; --thing: #6F6B7A; --cloud: #24222B;
   color-scheme: dark;
 }
@@ -50,21 +49,7 @@ body {
   padding-block: 32px;
   box-sizing: border-box;
 }
-.status { display: flex; flex-direction: column; gap: 10px; }
-.status-row { display: flex; align-items: baseline; justify-content: space-between; gap: 16px; }
 .brand { font-size: 22px; letter-spacing: .02em; }
-.message { font-size: 15px; color: var(--muted); min-width: 0; }
-.message .dots::after { content: ""; animation: dots 1.2s steps(4, end) infinite; }
-@keyframes dots { 0% { content: ""; } 25% { content: "."; } 50% { content: ".."; } 75% { content: "..."; } }
-.percent { font-size: 15px; color: var(--muted); font-variant-numeric: tabular-nums; }
-.bar { height: 6px; background: var(--line); overflow: hidden; }
-.bar > span { display: block; height: 100%; width: 0; background: var(--tiger); transition: width .4s steps(6, end); }
-.again {
-  align-self: flex-start;
-  font: inherit; font-size: 14px; color: var(--fg);
-  background: transparent; border: 2px solid var(--fg); padding: 6px 12px; cursor: pointer;
-}
-.again:focus-visible { outline: 3px solid var(--tiger); outline-offset: 2px; }
 
 .stage {
   position: relative;
@@ -97,28 +82,13 @@ canvas { display: block; width: 100%; height: 100%; image-rendering: pixelated; 
 kbd { font: inherit; border: 1px solid var(--muted); padding: 0 5px; }
 @media (max-width: 480px) {
   .brand { font-size: 19px; }
-  .message, .percent { font-size: 13px; }
   .callout { font-size: 14px; top: 20%; }
   .score { font-size: 12px; gap: 12px; }
-}
-@media (prefers-reduced-motion: reduce) {
-  .message .dots::after { animation: none; content: "..."; }
-  .bar > span { transition: none; }
 }
 </style>
 
 <main class="screen">
-  <section class="status" aria-live="polite">
-    <div class="status-row">
-      <span class="brand">Noah</span>
-      <span class="percent" id="percent">0%</span>
-    </div>
-    <div class="bar" role="progressbar" aria-label="読み込みの進み具合" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0" id="bar"><span id="barFill"></span></div>
-    <div class="status-row">
-      <span class="message" id="message">Agent を探しています<span class="dots"></span></span>
-    </div>
-    <button class="again" id="again" type="button" hidden>もう一度読み込む</button>
-  </section>
+  <span class="brand">Noah</span>
 
   <div class="stage" id="stage" tabindex="0" role="application" aria-label="トラがスケボーでコーンやハトをよけるゲーム。スペースキーかタップでオーリー（ジャンプ）します。">
     <canvas id="game" width="480" height="160"></canvas>
@@ -131,49 +101,6 @@ kbd { font: inherit; border: 1px solid var(--muted); padding: 0 5px; }
 
 <script>
 (() => {
-  // ---------- loading (sample: the real app would report its own progress) ----------
-  const stages = [
-    [0, "Agent を探しています"],
-    [38, "道具をそろえています"],
-    [74, "仕事場を開いています"],
-    [96, "もうすぐです"],
-  ];
-  const percentEl = document.getElementById("percent");
-  const barEl = document.getElementById("bar");
-  const fillEl = document.getElementById("barFill");
-  const messageEl = document.getElementById("message");
-  const againEl = document.getElementById("again");
-  let progress = 0, loadTimer = null;
-
-  function setProgress(p) {
-    progress = Math.min(100, p);
-    percentEl.textContent = Math.floor(progress) + "%";
-    fillEl.style.width = progress + "%";
-    barEl.setAttribute("aria-valuenow", String(Math.floor(progress)));
-    if (progress >= 100) {
-      messageEl.textContent = "準備ができました";
-      againEl.hidden = false;
-      return;
-    }
-    let text = stages[0][1];
-    for (const [at, t] of stages) if (progress >= at) text = t;
-    messageEl.innerHTML = text + '<span class="dots"></span>';
-  }
-  function startLoading() {
-    clearTimeout(loadTimer);
-    againEl.hidden = true;
-    setProgress(0);
-    const step = () => {
-      // uneven steps, slower near the end, like a real load
-      const left = 100 - progress;
-      setProgress(progress + Math.max(0.6, Math.random() * left * 0.09));
-      if (progress < 100) loadTimer = setTimeout(step, 380 + Math.random() * 520);
-    };
-    loadTimer = setTimeout(step, 600);
-  }
-  againEl.addEventListener("click", startLoading);
-  startLoading();
-
   // ---------- sprites (one dot = D logical pixels) ----------
   const D = 3;
   // '#' = tiger orange, 'o' = hole (stripe, eye, nose), 'b' = skateboard, '.' = nothing

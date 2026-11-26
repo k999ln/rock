@@ -1,5 +1,5 @@
+import { noahSignInHref } from '@/lib/noah-navigation';
 import { headers } from 'next/headers';
-import Link from 'next/link';
 import NoahPinReview from '@/components/noah-pin-review';
 import styles from '@/components/noah-service.module.css';
 import { noahIntakeDependencies } from '@/lib/noah-intake-server';
@@ -19,6 +19,6 @@ export default async function Page() {
     <h1>図解ピンの審査</h1>
     {scope
       ? <NoahPinReview ownerScope={scope} />
-      : <p>審査担当のアカウントで開いてください。 <Link href="/noah/account?returnTo=%2Fnoah%2Freview%2Fpins">ログイン</Link></p>}
+      : <p>審査担当のアカウントで開いてください。 <a href={noahSignInHref('/noah/review/pins')}>ログイン</a></p>}
   </main>;
 }

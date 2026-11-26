@@ -48,7 +48,7 @@ void test('task detail hides a result without an authenticated item owner scope'
 
 void test('Noah posts use the same locale, logo loader and Noah account return path',()=>{
   const ui=screen({locale:'es',modules:{'./sky-social-timeline':{default:props=>({type:'section',props:{children:props.translate('ポストする'),'data-account':props.accountHref,'data-loader':Boolean(props.loadingIndicator)}})},'@/lib/noah-surface':{noahActionHref:()=>'/noah/library'}}});
-  const page=ui.mount('components/noah-social.tsx',{mode:'public'});const section=page.find('section')[0];assert.equal(page.text(section),'Publicar');assert.equal(section.props['data-account'],'/noah/account?returnTo=%2Fnoah%2Fsocial');assert.equal(section.props['data-loader'],true);
+  const page=ui.mount('components/noah-social.tsx',{mode:'public'});const section=page.find('section')[0];assert.equal(page.text(section),'Publicar');assert.equal(section.props['data-account'],'/signin-with-chatgpt?return_to=%2Fnoah');assert.equal(section.props['data-loader'],true);
 });
 
 void test('profile readiness opens external registration for both saved and missing information',async()=>{
