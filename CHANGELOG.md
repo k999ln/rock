@@ -1,6 +1,6 @@
 ## 2026-11-27
 
-- Eveの開発相談を端末保存のチャットへ変更し、入力例・追加相談・設計案の下書き保存と、本文を保存しないクラウド推論を追加（task130、PR番号は作成後に記録）。
+- Eveの開発相談を端末保存のチャットへ変更し、入力例・追加相談・設計案の下書き保存と、本文を保存しないクラウド推論を追加。同意による他利用者向け端末計算と月額契約は設計のみ（task130、[PR #119](https://github.com/iceiceice999/rock/pull/119)）。
 
 - 登録情報（/aries）上部の「← タイムライン」と余白を撤去（task140、[PR #116](https://github.com/iceiceice999/rock/pull/116)）。- PR #100 の設計監査補正として、Eve需要とファンド候補、容量・出典・canonical Receipt、PAPER/no-deposits、農家/受取人Receipt、catalog gate、候補額の表示境界を明文化。実装・実資金は未着手。
 
