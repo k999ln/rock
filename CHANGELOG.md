@@ -1,4 +1,6 @@
 ## 2026-11-26
+- NoahホームのToday・注目・目的別・タイムラインを一つのAgent一覧へ統合。利用できる仕事はカード内に表示し、スマホ上部メニューの重なりを解消（[PR #97](https://github.com/iceiceice999/rock/pull/97)）。
+
 - Noahの接続・登録・保存・審査から、既存のChatGPTサインインに移動して元の画面へ戻るようにした。選んだAgent・道具・依頼例を同じタブで引き継ぐ（[PR #91](https://github.com/iceiceice999/rock/pull/91)）。
 
 - NoahのAgent詳細でアイコン横に接続ボタンを置き、操作の流れと道具を折りたたんだ。Enzo’sの依頼例は送信先の確認とログインを経て、編集できる検索欄に引き継ぐ（task 128、[PR #91](https://github.com/iceiceice999/rock/pull/91)）。
@@ -11,8 +13,6 @@
 
 - Noah全画面の左ナビと常設下タブを撤去し、全項目を右上の「… メニュー」へ統合（task140、[PR #93](https://github.com/iceiceice999/rock/pull/93)）。
 - 接続対応Agent詳細の口コミ取得で系列IDをproject IDとして送っていた不具合を修正。掲載済み系列から正規評価IDを読み取り専用で解決（task129、[PR #94](https://github.com/iceiceice999/rock/pull/94)）。
-
-- Noah全画面の左ナビと常設下タブを撤去し、全項目を右上の「… メニュー」へ統合（task140、[PR #93](https://github.com/iceiceice999/rock/pull/93)）。
 
 - NoahトップのMemoryがツール実行前の文章や空の要約で終了する回帰を修正。公式ツールの実行と成果ファイルを確認する試験を追加（task125、[PR #95](https://github.com/iceiceice999/rock/pull/95)）。
 

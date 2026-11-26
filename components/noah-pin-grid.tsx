@@ -1,11 +1,14 @@
 'use client';
 import { noahSignInHref } from '@/lib/noah-navigation';
 import { useEffect, useRef, useState } from 'react';
+import Link from 'next/link';
 import { MoreHorizontal, Check, Plus, X } from 'lucide-react';
 import { NOAH_PIN_TEXT, noahCardOrigin } from '@/lib/noah-pins';
 import { noahCardHref, noahProjectHref } from '@/lib/noah-project-view';
 import { noahReadyDetailHref } from '@/lib/noah-ready-view';
 import styles from './noah-pins.module.css';
+import type { NoahFirstJob } from '@/lib/noah-first-jobs';
+import { useNoahLocale } from './noah-locale';
 import type { NoahAgentCard } from '@/lib/noah-agent-cards';
 import NoahAgentSourceRatings from './noah-agent-source-ratings';
 import { NoahAgentPin, NoahAgentPinGrid } from './noah-agent-pin';
@@ -15,13 +18,17 @@ import { NOAH_COLLECTION_RUN_LABELS } from '@/lib/noah-collection';
 export type NoahPinView = NoahAgentCard;
 type BoardView = { id: string; name: string; visibility: 'private' | 'public'; pins: number; revision: number };
 
-export default function NoahPinGrid({ items, signedIn, ownerScope, onChange, onHide }: {
+export default function NoahPinGrid({ items, signedIn, ownerScope, onChange, onHide, jobs }: {
+  jobs?: (NoahFirstJob & { href: string })[];
   items: NoahPinView[]; signedIn: boolean; ownerScope: string | null;
   onChange?: (id: string, savedIn: string[]) => void; onHide?: (id: string) => void;
 }) {
+  const { t } = useNoahLocale();
   const [saving, setSaving] = useState<NoahPinView | null>(null);
   return <>
     <NoahAgentPinGrid>{items.map((item, index) => {
+      const taskLinks = jobs?.filter(job => new URL(job.href, 'https://avoado.si').searchParams.get('id') === (item.feedbackId ?? item.id));
+      const tasks = taskLinks?.map(job => <Link key={job.id} className={styles.taskLink} href={job.href}>{t(job.title)}</Link>);
       const runStatus = item.external ? 'Noahで接続を確認'
         : item.run ? NOAH_COLLECTION_RUN_LABELS[item.run] : item.oneTap ? 'すぐ試せる' : '接続して使う';
       // ピンのカード（spec-115 の 9・10 章）: 題名だけ（本人の指示 2026-11-25「文章いらない、題名だけ」）。太い題に日本語の題。説明・提供元の行・評価は出さない。
@@ -33,6 +40,7 @@ export default function NoahPinGrid({ items, signedIn, ownerScope, onChange, onH
         diagram={pin ? { scene: pin.scene, tone: index } : undefined} video={item.pinVideo}
         meta={plain ? (item.notice ? <>{noahCardOrigin(item)}</> : undefined) : <>{noahCardOrigin(item)} · {runStatus}</>}
         actions={plain ? <>
+          {tasks}
           {/* PC: 保存はマウスを乗せた時だけ絵の上に。スマホ: 題名の右の「…」から保存と「表示しない」（本人の決定 2026-11-25「乗せた時だけ出す」）。 */}
           {!item.external && <button type="button" className={styles.save} data-saved={saved || undefined} onClick={() => setSaving(item)} aria-label={`${item.name}を${saved ? '保存済み' : '保存'}`}>
             {saved ? NOAH_PIN_TEXT.saved : NOAH_PIN_TEXT.save}
@@ -45,6 +53,7 @@ export default function NoahPinGrid({ items, signedIn, ownerScope, onChange, onH
             </div>
           </details>}
         </> : <>
+          {tasks}
           {!item.external && <button type="button" className={styles.save} data-saved={saved || undefined} onClick={() => setSaving(item)} aria-label={`${item.name}を${saved ? '保存済み' : '保存'}`}>
             {saved ? NOAH_PIN_TEXT.saved : NOAH_PIN_TEXT.save}
           </button>}

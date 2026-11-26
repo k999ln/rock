@@ -113,7 +113,7 @@
 .filters button { flex-shrink:0; min-width:44px; min-height:44px; border:1px solid var(--noah-theme-line, #e7e1ef); background:var(--noah-theme-panel, white); border-radius:24px; padding:8px 16px; font-size:14px; }
 .filters button[aria-pressed=true] { color:white; background:#a14206; border-color:#a14206; }
 .feedHeading { display:flex; align-items:center; justify-content:space-between; gap:12px; margin:8px 0; }
-.feedHeading h2 { font-size:22px; margin:0; }
+.feedHeading h1 { font-size:22px; margin:0; }
 .feedHeading span { color:var(--noah-theme-muted, #76717f); font-size:14px; }
 
 .recovery { min-height:44px; padding:8px 14px; margin-bottom:12px; border:1px solid var(--noah-theme-line, #e7e1ef); border-radius:22px; background:var(--noah-theme-panel, #fff); color:var(--noah-theme-link, #78411c); font:inherit; cursor:pointer; }
@@ -134,14 +134,14 @@
 .sourceFilter>a{display:inline-flex;min-height:44px;align-items:center;}
 
 .firstJobs { padding:26px 0 14px; }
-.firstJobs > h2,.feedHeading h2 { margin:0 0 12px; letter-spacing:-.045em; font-size:clamp(22px,2.4vw,29px); line-height:1.25; color:var(--noah-theme-text, #202026); }
+.firstJobs > h2,.feedHeading h1 { margin:0 0 12px; letter-spacing:-.045em; font-size:clamp(22px,2.4vw,29px); line-height:1.25; color:var(--noah-theme-text, #202026); }
 .purposeSection h3 { margin:0 0 6px; font-size:14px; color:var(--noah-theme-muted, #636371); }
 .purposeSection ul { gap:10px; }
 .purposeSection li > a { padding:13px 16px; background:var(--noah-theme-panel, #f7f7fa); border:1px solid var(--noah-theme-line, #efeff4); border-radius:14px; }
 .purposeSection li > a:hover { background:var(--noah-theme-raised, #f0eef9); }
 .firstJobLinks a { font-weight:600; color:var(--noah-theme-link, #913c04); }
 .feedHeading { justify-content:flex-start; align-items:baseline; gap:10px; }
-.feedHeading h2 { margin:0; }
+.feedHeading h1 { margin:0; }
 .feedHeading span { font-size:13px; }
 .catalogTools { display:flex; align-items:center; flex-wrap:wrap; gap:6px 18px; margin:10px 0 16px; }
 .catalogTools .filters { padding:0; max-width:100%; }
@@ -154,3 +154,5 @@
   .storeItem .sources a { min-height:44px; }
   .storeItem .more summary { width:44px; height:44px; }
 }
+
+.taskLink { display: flex; align-items: center; min-height: 44px; color: var(--noah-theme-link, #a74409); font-weight: 600; overflow-wrap: anywhere; }
