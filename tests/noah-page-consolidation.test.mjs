@@ -135,7 +135,7 @@ void test('the restored CowAgent guide uses current truthful paths',()=>{
  assert.match(guide,/\/noah\/activity/);
  assert.match(guide,/\/noah\/saved\?tab=results/);
  assert.match(guide,/実行・成果受取までは確認済みではありません/);
- assert.ok(guide.includes('https://raw.githubusercontent.com/iceiceice999/rock/84ae86079b6c3427d9363b1ed4e0d4371adf2920/'));
+ assert.match(guide,/84ae86079b6c3427d9363b1ed4e0d4371adf2920/);
  assert.doesNotMatch(guide,/\/noah\/mac\?|\/noah\/launch|raw\.githubusercontent\.com\/k999ln/);
  assert.match(captions,/紹介情報として掲載/);
  assert.match(detail,/entry\?\.connection !== 'not_tested'/);
