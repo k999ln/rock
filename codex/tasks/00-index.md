@@ -163,4 +163,4 @@
 | 131 | [131-noah-pin-scenes.md](131-noah-pin-scenes.md) | 約1.7万件のピンに日本語の題と資料の図解（バージョン TAKE。図解はしょうへいさんの Motion Prompt の図解パック（MIT）の書き写し。Luna Max が説明から 24 種類の図を選んで札を書く・確かめ・200件の目視で95%・本番 migration は本人の許可後。バージョン 1 の場面の絵は枝 `claude/noah-pins-version-1`） | 指示書 |
 | 137 | [137-noah-pin-videos.md](137-noah-pin-videos.md) | ピンの動画: 格好いい AI 動画（Higgsfield。本人は許可を取ってあると言った）を集め、5〜8 秒・縦 3:4・音なしのループ（GIF と同じ見た目の mp4）にして、Agent ごとに中身で割り当てる。カードは題名だけ。無作為の 200 件で 95% 以上が合うまで一般には出さない |
 
-| 139 | [139-main-public-pages.md](139-main-public-pages.md) | 現mainのNoah/Eveに必要な公開ページへ限定・旧URL転送・審査担当認証 | 実装・検証中 |
+| 139 | [139-main-public-pages.md](139-main-public-pages.md) | 現mainのNoah/Eveに必要な公開ページへ限定・旧URL転送・審査担当認証 | ✅ 実装・対象試験成功 [PR #81](https://github.com/iceiceice999/rock/pull/81)。全体検証・公開確認中 |
