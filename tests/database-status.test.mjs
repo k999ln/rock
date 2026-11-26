@@ -34,7 +34,7 @@ void test('database status inventories every boundary and keeps production readb
     'OWNER_ACCESS_BLOCKED',
   );
   assert.equal(report.webSchema.tableCount, 182);
-  assert.equal(report.webSchema.migrationCount, 41);
+  assert.equal(report.webSchema.migrationCount, 42);
   for (const name of ['cloud_usage_records', 'cloud_admission_probes', 'cloud_execution_timings']) {
     assert.ok(report.webSchema.tables.includes(name), name);
   }
@@ -70,7 +70,7 @@ void test('database status inventories every boundary and keeps production readb
   assert.ok(report.webSchema.tables.includes('jennifer_task_attempts'));
   assert.ok(report.webSchema.tables.includes('jennifer_passkey_credentials'));
   assert.ok(report.webSchema.tables.includes('jennifer_passkey_sessions'));
-  assert.equal(report.webSchema.latestMigration, '0060_noah_first_earning.sql');
+  assert.equal(report.webSchema.latestMigration, '0061_noah_intake_pins.sql');
   assert.equal(report.webSchema.accidentalDuplicateCount, 0);
   assert.equal(report.webSchema.publishedConvergenceDeclarations, 25);
   assert.equal(report.webSchema.marketplaceRelationGuardCount, 8);
