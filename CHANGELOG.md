@@ -1,5 +1,7 @@
 ## 2026-11-26
 
+- Noah詳細の待機画面を公開情報の先行表示へ変更し、全件を初期表示、トップの帯を撤去、登録の不足情報を詳細に表示（task140、PR準備中）。
+
 - Noahの戻る導線をロゴに統一し、詳細ヘッダーと表紙の境界を撤去（task140、[PR #102](https://github.com/iceiceice999/rock/pull/102)）。
 
 - Noahの単一一覧を既存推薦規則に接続し、スクロールによる連続読込へ変更（task140、[PR #99](https://github.com/iceiceice999/rock/pull/99)）。

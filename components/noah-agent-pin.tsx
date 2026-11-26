@@ -1,11 +1,13 @@
 'use client';
-import { useLayoutEffect, useRef, type ReactNode } from 'react';
+import { useContext, useLayoutEffect, useRef, type ReactNode } from 'react';
 import Link from 'next/link';
 import { noahPinShape, noahPinTopic, type NoahPinTopic } from '@/lib/noah-pins';
 import { NoahPinMotion, type NoahCoverView, type NoahPinDiagramView } from './noah-art-motion';
 import type { NoahPinVideo } from '@/lib/noah-pin-video';
 import pins from './noah-pins.module.css';
 import styles from './noah-agent-pin.module.css';
+import { NOAH_DETAIL_PREVIEW_KEY, noahDetailPreviewRecord, noahDetailTarget } from '@/lib/noah-detail-preview';
+import { NoahDetailNavigation } from './noah-detail-navigation';
 
 export function NoahAgentPinGrid({ children, compact = false }: { children: ReactNode; compact?: boolean }) {
   const list = useRef<HTMLUListElement>(null);
@@ -41,6 +43,7 @@ type PinFaceProps = {
 };
 
 export function NoahAgentPinFace({ id, name, href, prefetch, topic, shape, summary, cover, diagram, video, onSelect, disabled, pressed, plain }: PinFaceProps) {
+  const openDetail = useContext(NoahDetailNavigation);
   const category = topic ?? noahPinTopic(name, summary ?? '');
   const attributes = { className: `${styles.face} ${pins.tone}`, 'data-shape': shape ?? noahPinShape(id), 'data-topic': category };
   const contents = <>
@@ -50,7 +53,12 @@ export function NoahAgentPinFace({ id, name, href, prefetch, topic, shape, summa
     <strong className={styles.name}>{name}</strong>
     {summary && !plain && <span className={styles.summary}>{summary}</span>}
   </>;
-  if (href) return <Link {...attributes} href={href} prefetch={prefetch}>{contents}</Link>;
+  if (href) return <Link {...attributes} href={href} prefetch={noahDetailTarget(href) ? false : prefetch} onClick={event => {
+    const preview = { id, name, summary: summary ?? '' };
+    const record = noahDetailPreviewRecord(href, preview);
+    if (record) try { window.sessionStorage.setItem(NOAH_DETAIL_PREVIEW_KEY, record); } catch { /* Browsing still works without storage. */ }
+    if (record && !event.metaKey && !event.ctrlKey && !event.shiftKey && !event.altKey && event.button === 0) openDetail(href, preview);
+  }}>{contents}</Link>;
   if (onSelect) return <button {...attributes} type="button" onClick={onSelect} disabled={disabled} aria-pressed={pressed}>{contents}</button>;
   return <div {...attributes}>{contents}</div>;
 }

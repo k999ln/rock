@@ -266,3 +266,7 @@
 .shell:has([data-noah-fullscreen-detail]) > .gridTopbar .gridSearchSlot input::placeholder,
 .shell:has([data-noah-fullscreen-detail]) > .gridTopbar .gridSearchSlot svg { color: #e4e4e7; }
 @media(max-width:520px) { .shell:has([data-noah-fullscreen-detail]) { --noah-detail-header-height: 58px; } }
+
+/* The store header shares the page surface, with no horizontal divider. */
+.gridTopbar[data-store-header] { background: var(--os-bg, #fff); border-bottom: 0; backdrop-filter: none; }
+.shell:has(> .gridTopbar[data-store-header]) .gridBody { padding-top: 8px; }

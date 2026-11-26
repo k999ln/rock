@@ -4,6 +4,7 @@ import { noahSourceRepository } from './noah-source-import.ts';
 import { noahCloudProfile, type NoahCloudProfile } from './noah-cloud-contract.ts';
 import { noahProjectSources } from './noah-provider-resolve.ts';
 import { noahFirstJobs } from './noah-first-jobs.ts';
+import { noahRegistrationReport } from './noah-registration-report.ts';
 
 type Dependencies = { directory: () => Promise<DirectoryEntry[]>; fetcher?: typeof fetch; cloudEnabled?: boolean; cloudProfiles?: readonly NoahCloudProfile[]; publicAsk?: boolean };
 const json = (body: unknown, status = 200) => Response.json(body, { status, headers: { 'Cache-Control': 'no-store, private', 'X-Content-Type-Options': 'nosniff' } });
@@ -75,6 +76,7 @@ export function createNoahProjectApi(deps: Dependencies) {
     try {
       const entry = (await deps.directory()).find(row => family !== null ? row.families.includes(family) : row.card.feedbackId === id || row.card.id === id);
       if (!entry) return json({ error: 'このAgentは現在掲載されていません。' }, 404);
+      if (params.get('check') === 'registration' && open === null && family === null) return json(await noahRegistrationReport(entry, deps.fetcher));
       const detail = noahProjectDetail(entry, deps.cloudEnabled, deps.cloudProfiles);
       if (open === 'space') {
         if (detail.connection.kind !== 'space') return json({ error: 'このAgentの接続先は変更されています。詳細を読み直してください。' }, 409);
