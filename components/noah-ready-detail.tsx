@@ -158,7 +158,8 @@ export default function NoahReadyDetail({ id, tool = null, from = null, internal
       : detail.listed && !live && <button type="submit" form={connectForm} value="example" className={pageStyles.starterAction}>{t('この例を使う')}</button>}
   </section>;
 
-  return <NoahDetailTemplate id={detail.id} mediaId={mediaId} name={guide?.name || detail.name} provider={detail.provider || undefined}
+  return <NoahDetailTemplate id={detail.id} mediaId={mediaId} name={detail.pin?.title ?? guide?.name ?? detail.name} provider={detail.provider || undefined}
+    pin={detail.pin}
     summary={lead || t('（説明はありません）')} overviewTitle={pitch}
     feedbackId={detail.listed ? feedbackId ?? detail.id : undefined} expanded={Boolean(live)}
     detailsLabel={detail.explanation ? t('操作の流れと道具') : undefined}

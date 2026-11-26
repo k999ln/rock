@@ -466,3 +466,15 @@ void test('ready detail resolves family feedback through the real project API be
   assert.equal(ui.calls.length,2);assert.ok(ui.calls.every(call=>call.method==='GET'));
   assert.doesNotMatch(page.text(),/評価を読み込めませんでした/);assert.match(page.text(),/人が利用/);
 });
+
+void test('a reviewed pin leads the detail with Noah attribution and a grounded exchange', async () => {
+  const pin={title:'車を探す',give:'車の条件',get:'車の一覧',scene:{template:'funnel',labels:['車の条件','候補','車の一覧'],parts:[],variant:null}};
+  const ui=feedScreen({modules:sharedModules,fetch:async()=>({body:{}})});
+  const page=ui.mount('components/noah-detail-template.tsx',{id:'carfinity',name:pin.title,provider:'Carfinity',summary:'Search a car marketplace.',pin});
+  assert.match(page.text(),/車を探す/);
+  assert.match(page.text(),/Noah の説明/);
+  assert.match(page.text(),/車の条件→車の一覧/);
+  assert.match(page.text(),/Search a car marketplace\./);
+  assert.equal(page.find('span').filter(node=>node.props['data-noah-pin-diagram']!==undefined).length,1);
+  assert.equal(ui.calls.length,0);
+});
