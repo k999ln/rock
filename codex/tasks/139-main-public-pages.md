@@ -24,3 +24,7 @@
 ## 状態
 
 実装済み。[PR #81](https://github.com/iceiceice999/rock/pull/81)。対象40試験、typecheck、production build、9経路のHTTPセキュリティ実測が成功。390px/1280pxのホーム・メニュー、未認証の審査画面404を確認。ローカルDBは初期migrationの既存問題でカタログ未投入のため、表示確認は取得失敗状態を含む。初回の全体試験で新しいmoduleを含まない試験fixtureが4件失敗したため、fixtureを更新し実Workerで410/404/200・sitemapを検証。最新の全体verify結果・main SHA・Sites保存SHA・公開版・本番応答はPRの検証／公開記録へ残す。
+
+## Mac Runner接続の復旧（2026-11-26）
+
+本人の本番反映依頼で `/noah/mac/connect` の404を実測。11月24日に追加したRunnerの本人承認画面は現行CLIが案内するURLであり、許可一覧にこの1画面を追加する。旧Mac活動画面は復活させない。GET/HEADで一回限りのコードを変更せず既存画面へ渡し、未知の配下URLは404。認証・接続承認APIは変更しない。全体検証と公開結果は追補PRへ記録する。
