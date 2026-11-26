@@ -238,9 +238,14 @@ void test('unified source badges preserve additional collection metrics and zero
 });
 
 void test('changing discovery order keeps query and source but starts pagination again',async()=>{
-  const ui=screen({modules:{'./noah-pin-grid':{default:()=>null}},fetch:async()=>({body:{items:[],total:40,nextCursor:'20',ownerScope:null}})});
+  let enter;
+  const ui=screen({modules:{'./noah-pin-grid':{default:()=>null}},
+    hostElement:(_type,props)=>props['data-noah-feed-end']!==undefined?{}:null,
+    IntersectionObserver:class {constructor(callback){enter=()=>callback([{isIntersecting:true}]);}observe(){}disconnect(){}},
+    fetch:async({url})=>({body:{items:[],total:40,nextCursor:url.includes('cursor=0')?'20':null,ownerScope:null}})});
   const page=ui.mount('components/noah-pin-home.tsx',{searchQuery:'agent',initialSource:'npm'});await page.flush();
-  await page.click('もっと見る');await page.flush();
+  enter();await page.flush();
+  assert.equal(new URL(ui.calls.at(-1).url,'https://avoado.si').searchParams.get('cursor'),'20');
   await page.click('出た順');await page.flush();
   const params=new URL(ui.calls.at(-1).url,'https://avoado.si').searchParams;
   assert.equal(params.get('order'),'new');assert.equal(params.get('q'),'agent');assert.equal(params.get('source'),'npm');assert.equal(params.get('cursor'),'0');
