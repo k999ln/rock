@@ -9,6 +9,7 @@ import * as pins from '../../../lib/noah-pins.ts';
 import * as pinScene from '../../../lib/noah-pin-scene.ts';
 import * as shelfScenes from '../../../lib/noah-pin-scenes-shelf.ts';
 import * as readyView from '../../../lib/noah-ready-view.ts';
+import * as navigation from '../../../lib/noah-navigation.ts';
 import * as agentShare from '../../../lib/noah-agent-share.ts';
 import { existsSync, readFileSync } from 'node:fs';
 import * as theaterFilms from '../../../lib/noah-theater-films.ts';
@@ -158,6 +159,7 @@ export function screen(options = {}) {
       if (id === '@/lib/noah-intake-import-parts') return importParts;
       // 詳細の頁へのリンクを作るだけの式（集めたAgentのカードの「Noahで開く」。task 121）。
       if (id === '@/lib/noah-ready-view') return readyView;
+      if (id === '@/lib/noah-navigation') return navigation;
       if (id === '@/lib/noah-detail-guide') return load('lib/noah-detail-guide.ts');
       if (id === '@/lib/noah-detail-starter') return load('lib/noah-detail-starter.ts');
       if (id === '@/lib/noah-project-view') return load('lib/noah-project-view.ts');

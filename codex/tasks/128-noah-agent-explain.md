@@ -185,3 +185,4 @@ Carfinity を390pxの見本と照合する。公開切り替え前に本番掲�
 Enzo’sの例は、提供元が公開する `search_homes` の必須文字欄 `query` に渡す。ログインをまたぐ間は、例を選んだことと時刻だけを同じタブに保存する。接続後に欄を編集してから、利用者が依頼を送信する。[提供元の仕様](https://enzos.ai/for-agents)。
 
 実装と検証記録は [PR #91](https://github.com/iceiceice999/rock/pull/91)。
+サインインが必要なときは既存のChatGPTサインインへ進み、同じAgentの詳細に戻る。

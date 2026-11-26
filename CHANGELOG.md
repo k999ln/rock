@@ -1,4 +1,6 @@
 ## 2026-11-26
+- Noahの接続・登録・保存・審査から、既存のChatGPTサインインに移動して元の画面へ戻るようにした。選んだAgent・道具・依頼例を同じタブで引き継ぐ（[PR #91](https://github.com/iceiceice999/rock/pull/91)）。
+
 - NoahのAgent詳細でアイコン横に接続ボタンを置き、操作の流れと道具を折りたたんだ。Enzo’sの依頼例は送信先の確認とログインを経て、編集できる検索欄に引き継ぐ（task 128、[PR #91](https://github.com/iceiceice999/rock/pull/91)）。
 
 - Noahの全画面読み込みとスケボー試作から、進捗バー・百分率・バー下の読み込み文を削除（[PR #91](https://github.com/iceiceice999/rock/pull/91)）。

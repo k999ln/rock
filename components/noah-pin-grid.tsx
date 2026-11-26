@@ -1,6 +1,6 @@
 'use client';
+import { noahSignInHref } from '@/lib/noah-navigation';
 import { useEffect, useRef, useState } from 'react';
-import Link from 'next/link';
 import { MoreHorizontal, Check, Plus, X } from 'lucide-react';
 import { NOAH_PIN_TEXT, noahCardOrigin } from '@/lib/noah-pins';
 import { noahCardHref, noahProjectHref } from '@/lib/noah-project-view';
@@ -109,7 +109,7 @@ export function NoahSaveSheet({ pin, signedIn, ownerScope, onClose, onChange }: 
   return <dialog ref={dialog} className={styles.sheet} onClose={onClose} aria-labelledby="noah-save-title">
     <header><h2 id="noah-save-title">{NOAH_PIN_TEXT.saveTo}</h2><button type="button" onClick={() => dialog.current?.close()} aria-label="閉じる"><X size={20} /></button></header>
     <p className={styles.sheetPin}>{pin.name}</p>
-    {!signedIn ? <p><Link href={`/noah/account?returnTo=${encodeURIComponent(typeof window === 'undefined' ? '/noah' : window.location.pathname + window.location.search)}`}>{NOAH_PIN_TEXT.signIn}</Link></p> : <>
+    {!signedIn ? <p><a href={noahSignInHref(typeof window === 'undefined' ? '/noah' : window.location.pathname + window.location.search)}>{NOAH_PIN_TEXT.signIn}</a></p> : <>
       {error && <p role="alert" className={styles.error}>{error}</p>}
       {boards === null && !error && <p><output>{NOAH_PIN_TEXT.more}</output></p>}
       {boards && boards.length > 0 && <ul className={styles.boardList}>{boards.map((board) => <li key={board.id}>
