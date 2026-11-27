@@ -8,7 +8,7 @@
 .frame :global(.rock-topbar), .frame :global(.rock-bottom-note) { border-color: #30302c; color: #96968e; background: #111110; }
 .frame :global(.rock-home-link), .frame :global(.rock-breadcrumb strong) { color: #deded8; }
 .navigation.navigation { display: flex; align-items: center; flex-wrap: wrap; gap: 4px; min-width: 0; margin: 0; padding: 0; }
-.navigation.navigation a { display: inline-flex; align-items: center; justify-content: center; gap: 7px; min-height: 40px; padding: 8px 12px; border: 1px solid transparent; border-radius: 999px; color: #a6a69b; background: transparent; text-decoration: none; font-size: 12px; font-weight: 500; white-space: nowrap; }
+.navigation.navigation a { display: inline-flex; align-items: center; justify-content: center; gap: 7px; min-height: 44px; padding: 8px 12px; border: 1px solid transparent; border-radius: 999px; color: #a6a69b; background: transparent; text-decoration: none; font-size: 12px; font-weight: 500; white-space: nowrap; }
 .navigation.navigation a:hover { color: #f1f1eb; background: #20201e; }
 .navigation.navigation a[aria-current='page'] { color: #edede8; border-color: #42423c; background: #2b2b27; }
 .navigation.navigation a:focus-visible { outline: 2px solid #edede8; outline-offset: 2px; }
@@ -56,7 +56,7 @@
   .chat.chat :global(.sky-chat-commandbar) { padding: 12px 16px; gap: 9px; }
   .chat.chat :global(.zema-auto-label) { max-width: 60%; font-size: 10px; }
   .navigation.navigation { gap: 2px; }
-  .navigation.navigation a { min-height: 40px; gap: 5px; padding: 7px 6px; font-size: 11px; }
+  .navigation.navigation a { min-height: 44px; gap: 5px; padding: 7px 6px; font-size: 11px; }
   .chat.chat :global(.zema-empty h2) { font-size: clamp(25px, 7vw, 34px); }
 }
 

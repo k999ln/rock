@@ -88,7 +88,7 @@
   align-items: center;
   justify-content: center;
   gap: 8px;
-  min-height: 40px;
+  min-height: 44px;
   padding: 0 15px;
   border-radius:0;
   color: #10202b;
@@ -669,7 +669,7 @@
   }
 
   .manageButton {
-    width: 40px;
+    width: 44px;
     padding: 0;
     font-size: 0;
   }

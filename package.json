@@ -34,6 +34,7 @@
     "project:check": "node scripts/project-status.mjs --check",
     "noah:collect": "node --experimental-strip-types scripts/noah-agent-collector.mjs",
     "noah:screenless:check": "node scripts/check-noah-screenless.mjs",
+    "noah:prod:check": "node --experimental-strip-types scripts/noah-prod-check.mjs all",
     "repository:check": "node scripts/check-repository-map.mjs && node scripts/check-repository-hygiene.mjs",
     "version:check": "node scripts/check-version-boundaries.mjs",
     "schema:check": "node scripts/check-web-schema.mjs",

@@ -24,6 +24,6 @@
 
 .save { padding: 18px; border: 1px solid #343431; border-radius: 16px; background: #191918; color: #edede8; }
 .save p { color: #b9b9af; font-size: 13px; line-height: 1.7; }
-.save button { min-height: 42px; margin: 12px 14px 0 0; padding: 8px 15px; border: 1px solid #42423c; border-radius: 999px; color: #edede8; background: #2b2b27; cursor: pointer; }
+.save button { min-height: 44px; margin: 12px 14px 0 0; padding: 8px 15px; border: 1px solid #42423c; border-radius: 999px; color: #edede8; background: #2b2b27; cursor: pointer; }
 .save button:disabled { opacity: .5; cursor: default; }
 .save a { color: #edede8; font-size: 13px; }

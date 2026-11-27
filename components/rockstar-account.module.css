@@ -15,6 +15,8 @@
 .top a {
   display: inline-flex;
   align-items: center;
+  min-height: 44px;
+  min-width: 44px;
   gap: 10px;
   color: inherit;
   text-decoration: none;
@@ -121,6 +123,7 @@
   color: var(--noah-theme-muted, #4e6e5b);
   background: transparent;
   border: 0;
+  min-height: 44px;
   padding: 5px 0;
   cursor: pointer;
 }
@@ -196,9 +199,14 @@
   line-height: 1.8;
 }
 .credentials summary {
+  min-height: 44px;
+  align-content: center;
   cursor: pointer;
 }
 .credentials a {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
   color: var(--noah-theme-success, #285541);
   text-underline-offset: 4px;
 }

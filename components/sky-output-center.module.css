@@ -4,7 +4,7 @@
 .header h1 { margin: 0; font-size: clamp(30px, 4vw, 46px); letter-spacing: -.045em; }
 .header p:last-child { margin: 8px 0 0; color: var(--os-muted); font-size: 13px; line-height: 1.6; }
 .eyebrow, .sectionHead small, .outputHead small { display: block; margin: 0 0 5px; color: var(--os-muted); font: 650 10px/1.5 ui-monospace, monospace; letter-spacing: .12em; }
-.header button, .outputHead button, .actions button { display: inline-flex; align-items: center; gap: 7px; min-height: 38px; padding: 8px 11px; border: 1px solid var(--os-line); border-radius: 9px; color: var(--os-text); background: var(--os-bg); font: inherit; font-size: 12px; white-space: nowrap; cursor: pointer; }
+.header button, .outputHead button, .actions button { display: inline-flex; align-items: center; gap: 7px; min-height: 44px; padding: 8px 11px; border: 1px solid var(--os-line); border-radius: 9px; color: var(--os-text); background: var(--os-bg); font: inherit; font-size: 12px; white-space: nowrap; cursor: pointer; }
 .header button:disabled, .outputHead button:disabled, .actions button:disabled { cursor: wait; opacity: .55; }
 .nav { display: flex; flex-wrap: wrap; gap: 9px; margin: 24px 0; }
 .nav a, .sectionHead a, .empty a { display: inline-flex; align-items: center; gap: 7px; min-height: 37px; padding: 8px 11px; border: 1px solid var(--os-line); border-radius: 9px; color: var(--os-text); background: var(--os-bg); font-size: 12px; text-decoration: none; }
@@ -31,7 +31,7 @@
 .document h4 { margin: 0 0 6px; font-size: 13px; }
 .document pre { max-height: 480px; overflow: auto; margin: 8px 0; padding: 13px; border: 1px solid var(--os-line); border-radius: 9px; color: var(--os-text); background: var(--os-panel); font: 12px/1.7 ui-monospace, monospace; white-space: pre-wrap; overflow-wrap: anywhere; }
 .actions { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 12px; }
-.actions a { display: inline-flex; align-items: center; gap: 7px; min-height: 38px; padding: 8px 11px; border: 1px solid var(--os-line); border-radius: 9px; color: var(--os-text); background: var(--os-panel); font-size: 12px; text-decoration: none; }
+.actions a { display: inline-flex; align-items: center; gap: 7px; min-height: 44px; padding: 8px 11px; border: 1px solid var(--os-line); border-radius: 9px; color: var(--os-text); background: var(--os-panel); font-size: 12px; text-decoration: none; }
 .footnote { margin: 18px 0 0; }
 .exportPanel { margin: 0 0 18px; padding: 14px; border: 1px solid var(--os-line); border-radius: 10px; background: var(--os-bg); }
 .exportPanel .actions { margin-top: 0; }

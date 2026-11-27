@@ -192,6 +192,30 @@
 .content :global([data-noah-embedded] .rock-main) { padding: 24px; width: 100%; max-width: none; }
 .content :global(.noah-workspace-heading) { padding: 24px; border-bottom: 1px solid var(--noah-theme-line, #e8e5ee); }
 .content :global([data-noah-embedded] .sky-feed-layout) { grid-template-columns: minmax(0, 1fr); }
+/*
+ * 押す所は 44px 以上（task 129 の D7。spec-90 の 5 章の 1。数え方は scripts/noah-page-measure.mjs）。全部の画面の中身に、同じ下限を掛ける。
+ * :where で詳しさを 0 にするので、各画面の CSS が書いた表示・幅・余白は、そのまま勝つ。各画面が 44px より小さい下限を書いた所は、その画面の CSS で直す。
+ * 文の中のリンク（p・li の中の、class の無い a）は、文の行の高さのまま。hidden の付いた物は、表示を変えない（変えると、隠した物が出てしまう）。
+ */
+:where(.content, .gridBody) :where(button, select, summary, [role="button"], [role="tab"]) { min-height: 44px; }
+:where(.content, .gridBody) :where(button, [role="button"], [role="tab"]) { min-width: 44px; }
+:where(.content, .gridBody) :where(summary) { align-content: center; }
+:where(.content, .gridBody) :where(a[href]:not([hidden]):not(:is(p, li) a), :is(p, li) a[href][class]:not([hidden])) { display: inline-flex; align-items: center; min-height: 44px; min-width: 44px; }
+:where(.content, .gridBody) :where(label:not([hidden]):has(input[type="checkbox"], input[type="radio"])) { display: flex; align-items: center; gap: 8px; min-height: 44px; }
+/* 全体の CSS（app/workspace.css・app/app.css）の部品で、44px より小さく書いた物。Noah の画面の中だけ 44px にする（ほかのサイトの画面は変えない）。 */
+:is(.content, .gridBody):is(.content, .gridBody) :global(.rock-button),
+:is(.content, .gridBody):is(.content, .gridBody) :global(.studio-key-button),
+:is(.content, .gridBody):is(.content, .gridBody) :global(.studio-setup-card > a),
+:is(.content, .gridBody):is(.content, .gridBody) :global(.studio-install-row button),
+:is(.content, .gridBody):is(.content, .gridBody) :global(.studio-primary-code-head button),
+:is(.content, .gridBody):is(.content, .gridBody) :global(.sky-feed-scopes button),
+:is(.content, .gridBody):is(.content, .gridBody) :global(.sky-role-list button),
+:is(.content, .gridBody):is(.content, .gridBody) :global(.sky-post-primary),
+:is(.content, .gridBody):is(.content, .gridBody) :global(.sky-post-save),
+:is(.content, .gridBody):is(.content, .gridBody) :global(.sky-post-detail) { min-height: 44px; }
+:is(.content, .gridBody):is(.content, .gridBody) :global(.sky-header-action),
+:is(.content, .gridBody):is(.content, .gridBody) :global(.sky-assistant-composer button),
+:is(.content, .gridBody):is(.content, .gridBody) :global(.sky-post-save) { min-width: 44px; min-height: 44px; }
 @media (max-width: 600px) {
   .content :global([data-noah-embedded] .rock-main) { padding: 16px; }
   .gridTopbar[data-detail-header] .gridSearchSlot { display: none; }

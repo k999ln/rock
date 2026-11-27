@@ -27,6 +27,7 @@ import { noahAllowed } from './noah-flags.ts';
 import { checkNoahToolArgs, noahAskGate, noahFormArgs, noahFormRequestSha256, noahFormSummary, noahResultText, noahToolForm, noahToolSha256, NOAH_HOST_BUSY, type NoahConfirmedTool } from './noah-form.ts';
 import { intakeStatement } from './noah-intake-db.ts';
 import { NOAH_LISTING_SQL } from './noah-intake-listing.ts';
+import { noahAskOwnerHostLimit } from './noah-limits.ts';
 import { NOAH_CHECK_COLUMNS, NOAH_PROBE_FAMILY, noahCheckState, noahFamilyWrites, type NoahCheckRow, type NoahProbeFamily } from './noah-intake-probe.ts';
 import { NoahMouthError, noahMcpCall, type NoahHandshake, type NoahToolDef } from './noah-mouth-mcp-remote.ts';
 import { createNoahRemoteWork, startNoahRemoteWork, type NoahRemoteOutcome } from './noah-remote-work.ts';
@@ -129,7 +130,11 @@ export function createNoahAskService(deps: NoahAskDependencies) {
     const at = now();
     const counts = await intakeStatement(db, NOAH_LISTING_SQL.gate, { owner, host: target.host, minute_ago: at - 60_000, day_ago: at - 86_400_000 })
       .first<{ open: number; last_minute: number; last_day: number; host_last_minute: number }>();
-    const gate = noahAskGate({ open: counts?.open ?? 0, lastMinute: counts?.last_minute ?? 0, lastDay: counts?.last_day ?? 0, hostLastMinute: counts?.host_last_minute ?? 0 }, flags.askLimits);
+    // 本人がこの接続先へ頼んだ直近 60 秒（task 129 の D2）。本人の 1 分の上限の方が、自分の分より小さいか同じ時は、そちらが先に止めるので数えない。
+    const ownerHost = noahAskOwnerHostLimit(flags.askLimits.hostPerMinute) < flags.askLimits.perMinute
+      ? (await prepare('SELECT COUNT(*) AS n FROM noah_asks WHERE owner_id=? AND host=? AND created_at>?', owner, target.host, at - 60_000).first<{ n: number }>())?.n ?? 0
+      : 0;
+    const gate = noahAskGate({ open: counts?.open ?? 0, lastMinute: counts?.last_minute ?? 0, lastDay: counts?.last_day ?? 0, hostLastMinute: counts?.host_last_minute ?? 0, ownerHostLastMinute: ownerHost }, flags.askLimits);
     if (!gate.ok) return failed(gate.status, gate.message);
     if (!(await browserQuota.take(owner, 'asks'))) return failed(429, NOAH_BROWSER_QUOTA_MESSAGE);
     // この依頼の握手の分の、接続先の枠（接続・道具の一覧と同じ枠）。

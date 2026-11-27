@@ -1,7 +1,7 @@
 'use client';
 import Link from 'next/link';
 import { useEffect, useMemo, useRef, useState, type ReactNode } from 'react';
-import { noahAccountHref } from '@/lib/noah-navigation';
+import { noahSignInHref } from '@/lib/noah-navigation';
 import { OWNER_SCOPE_HEADER, readOwnerScope } from '@/lib/owner-intent';
 import { encodePublicTopicTerms, readPublicTopicTerms } from '@/lib/noah-shared-workload';
 import { EVE_WORKLOAD } from '@/lib/noah-eve-participant';
@@ -200,7 +200,7 @@ export default function NoahSharedCompute() {
   return <main className={common.page}>
     <header className={common.heading}><h1>参加型計算</h1></header>
     {login ? <section className={styles.section}><p>月額契約や参加端末を管理するには、Noahのアカウントにログインしてください。</p>
-      <Link className={common.secondary} href={noahAccountHref('/noah/shared-compute')}>ログインする</Link></section> :
+      <Link className={common.secondary} href={noahSignInHref('/noah/shared-compute')}>ログインする</Link></section> :
     <div className={styles.groups}>
       <section className={styles.section} aria-labelledby="compute-plan">
         <h2 id="compute-plan">月額プラン</h2>

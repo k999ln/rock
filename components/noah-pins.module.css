@@ -20,11 +20,11 @@
 .panel { position:relative; display:flex; flex-direction:column; align-items:center; justify-content:center; width:100%; aspect-ratio:4 / 3; padding:14px; border-radius:16px; overflow:hidden; background:var(--pin-bg); color:var(--pin-ink); transition:filter .15s; }
 .initials { position:relative; z-index:1; font-size:clamp(30px, 7vw, 52px); font-weight:800; letter-spacing:-1.5px; line-height:1; }
 .topicLabel { position:absolute; z-index:1; inset-inline-start:12px; bottom:12px; padding:3px 10px; border-radius:12px; background:var(--noah-theme-panel, #ffffffb8); color:var(--noah-theme-text, #202024); font-size:11px; font-weight:600; }
-.save { position:absolute; z-index:2; top:8px; inset-inline-end:8px; min-height:36px; padding:0 14px; border:0; border-radius:20px; background:#a14206; color:#fff; font-size:13px; font-weight:700; cursor:pointer; opacity:1; }
+.save { position:absolute; z-index:2; top:8px; inset-inline-end:8px; min-height:44px; padding:0 14px; border:0; border-radius:20px; background:#a14206; color:#fff; font-size:13px; font-weight:700; cursor:pointer; opacity:1; }
 .save[data-saved] { background:#202024; }
 @media (hover:none) { .save { opacity:1; min-height:44px; padding:0 11px; font-size:12px; top:8px; right:8px; } }
 .more { position:absolute; z-index:2; top:8px; inset-inline-start:8px; }
-.more summary { display:grid; place-items:center; width:32px; height:32px; border-radius:50%; background:var(--noah-theme-panel, #ffffffd9); color:var(--noah-theme-text, #202024); cursor:pointer; list-style:none; opacity:1; }
+.more summary { display:grid; place-items:center; width:44px; height:44px; border-radius:50%; background:var(--noah-theme-panel, #ffffffd9); color:var(--noah-theme-text, #202024); cursor:pointer; list-style:none; opacity:1; }
 .more summary::-webkit-details-marker { display:none; }
 @media (hover:none) { .more summary { opacity:1; width:44px; height:44px; } }
 .more > button { min-height:44px; position:absolute; top:48px; inset-inline-start:0; z-index:2; white-space:nowrap; padding:10px 14px; border:1px solid var(--noah-theme-line, #ececef); border-radius:12px; background:var(--noah-theme-panel, #fff); box-shadow:0 8px 24px #19141f1f; font-size:13px; cursor:pointer; }
