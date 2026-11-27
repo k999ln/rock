@@ -295,6 +295,20 @@
       "when": 4102444800033,
       "tag": "0061_noah_intake_pins",
       "breakpoints": true
+    },
+    {
+      "idx": 42,
+      "version": "6",
+      "when": 4102444800034,
+      "tag": "0062_noah_shared_compute",
+      "breakpoints": true
+    },
+    {
+      "idx": 43,
+      "version": "6",
+      "when": 4102444800035,
+      "tag": "0063_noah_compute_subscriptions",
+      "breakpoints": true
     }
   ]
 }

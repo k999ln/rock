@@ -1,0 +1,28 @@
+.groups { display: grid; gap: 28px; color: var(--noah-theme-text); }
+.section { display: grid; gap: 12px; min-width: 0; justify-items: start; padding-block: 0 24px; border-bottom: 1px solid var(--noah-theme-line); }
+.section h2, .section h3, .section p { margin: 0; }
+.section h2 { font-size: 1.25rem; font-weight: 700; }
+.field textarea { width: 100%; min-width: 0; box-sizing: border-box; resize: vertical; line-height: 1.5; font-weight: 400; }
+.dictionary, .preview { width: min(100%, 28rem); }
+.dictionary summary { cursor: pointer; padding-block: 6px; }
+.dictionary dl, .preview dl { display: grid; gap: 8px; margin: 8px 0 0; }
+.dictionary dl > div { display: grid; grid-template-columns: 5.5em 1fr; gap: 8px; }
+.dictionary dd, .preview dd { margin: 0; }
+.dictionary dd, .preview dt, .preview small { color: var(--noah-theme-muted); }
+.preview dl { grid-template-columns: repeat(4, minmax(0, 1fr)); border-block: 1px solid var(--noah-theme-line); padding-block: 8px; }
+.preview dt { font-size: .8rem; }
+.preview dd { font-weight: 650; font-variant-numeric: tabular-nums; }
+.section p, .consent { line-height: 1.6; overflow-wrap: anywhere; }
+.price { font-size: 1.5rem; }
+.note, .list span, .list small { color: var(--noah-theme-muted); }
+.field { display: grid; gap: 6px; width: min(100%, 28rem); font-weight: 600; }
+.field select, .field textarea { min-height: 44px; font: inherit; padding: 8px 12px; border-radius: 9px; border: 1px solid var(--noah-theme-line); background: var(--noah-theme-panel); color: inherit; }
+.consent { display: flex; align-items: center; gap: 10px; cursor: pointer; min-height: 44px; }
+.consent input { flex: none; width: 18px; height: 18px; accent-color: var(--noah-theme-link); }
+.setup { width: 100%; min-width: 0; box-sizing: border-box; display: grid; gap: 12px; padding: 16px; border-radius: 12px; background: var(--noah-theme-panel); }
+.setup code { user-select: all; overflow-wrap: anywhere; }
+.setup a { text-decoration: underline; color: var(--noah-theme-link); }
+.list { display: grid; width: 100%; gap: 12px; padding: 0; margin: 0; list-style: none; }
+.list li { display: grid; justify-items: start; gap: 5px; padding-top: 12px; border-top: 1px solid var(--noah-theme-line); overflow-wrap: anywhere; }
+.feedback { position: sticky; top: 75px; z-index: 1; padding: 10px 14px; border: 1px solid var(--noah-theme-line); border-radius: 10px; background: var(--noah-theme-panel); }
+.feedback p { margin: 0; }

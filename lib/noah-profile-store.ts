@@ -37,7 +37,7 @@ export function validateGrant(value: unknown): NoahDelegation {
   return { target:v.target, name:v.name, action:v.action, label:v.label, digest:v.digest, mode:v.mode };
 }
 
-export function createNoahProfileStore(bucket: ProfileBucket | undefined, keys: ProfileKeys | null, now = Date.now) {
+export function createNoahProfileStore(bucket: ProfileBucket | undefined, keys: ProfileKeys | null, now = Date.now, beforeProfileSave?: (owner: string, previous: NoahProfile, next: NoahProfile, now: number) => Promise<void>) {
   const available = Boolean(bucket && keys);
   const requireStore = () => { if (!bucket || !keys) bad('登録情報の保存は準備中です。時間をおいてお試しください。', 503); };
   const path = async (owner: string, suffix = 'profile') => `noah-private/v1/${await sha256Hex(owner)}/${suffix}`;
@@ -69,7 +69,9 @@ export function createNoahProfileStore(bucket: ProfileBucket | undefined, keys: 
     const encoded = encoder.encode(JSON.stringify(next));
     const revoking=(!next.reuseEnabled&&loaded.profile.reuseEnabled)||(next.paused&&!loaded.profile.paused);
     if (encoded.byteLength > (revoking?80_000:76_000)) bad('保存できる情報の上限です。不要な設定を整理してください。',413);
-    const result = await bucket!.put(await path(owner), await seal(owner,'profile',encoded), { onlyIf: loaded.etag ? {etagMatches:loaded.etag} : {etagDoesNotMatch:'*'}, httpMetadata:{contentType:'application/octet-stream',cacheControl:'private, no-store'} });
+    const envelope = await seal(owner,'profile',encoded);
+    if (beforeProfileSave) await beforeProfileSave(owner,loaded.profile,next,now());
+    const result = await bucket!.put(await path(owner), envelope, { onlyIf: loaded.etag ? {etagMatches:loaded.etag} : {etagDoesNotMatch:'*'}, httpMetadata:{contentType:'application/octet-stream',cacheControl:'private, no-store'} });
     if (!result) bad('別の画面で情報が更新されました。読み直してから保存してください。',409);
     return next;
   }
@@ -108,7 +110,7 @@ export function createNoahProfileStore(bucket: ProfileBucket | undefined, keys: 
     if(p.consents.length>=128&&action!=='reuse-stop') bad('保存の記録が上限に達しました。サポートへご連絡ください。',409);
     return {...p,reuseEnabled:reuse,consents:[...p.consents,{version:PROFILE_CONSENT_VERSION,at:now(),action,fields,documents}]};
   }
-  async function authorize(owner:string,target:string,action:string,digest:string,confirmed:boolean) {
+  async function authorizeRevision(owner:string,target:string,action:string,digest:string,confirmed:boolean) {
     requireStore(); // Loss of a key must never bypass saved stops or denials.
     const {profile}=await load(owner);
     if (profile.paused) bad('すべての委任を停止しています。「登録情報と任せる範囲」で再開できます。',403);
@@ -116,7 +118,11 @@ export function createNoahProfileStore(bucket: ProfileBucket | undefined, keys: 
     if (grants.some(g=>g.mode==='deny')) bad('この操作は「任せない」に設定されています。',403);
     const grant=grants.find(g=>g.digest===digest);
     if ((grant?.mode==='confirm' || (grants.length && !grant)) && !confirmed) bad('この操作は毎回の確認が必要です。内容を確認して実行してください。',409);
+    return profile.revision;
   }
-  return {available,load,change,document,addDocument,removeDocument,authorize,consent};
+  async function authorize(owner:string,target:string,action:string,digest:string,confirmed:boolean) {
+    await authorizeRevision(owner,target,action,digest,confirmed);
+  }
+  return {available,load,change,document,addDocument,removeDocument,authorize,authorizeRevision,consent};
 }
 export type NoahProfileStore = ReturnType<typeof createNoahProfileStore>;
