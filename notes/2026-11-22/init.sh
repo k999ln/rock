@@ -67,3 +67,15 @@ git worktree add -q -b ice2/noah-cloud-neurons ../cloudwt origin/claude/ice2/noa
   (cd services/noah-cloud-agents && node build-free.mjs) )
 # Production checks after a publish (writes only synthetic data; scripts live in the scratchpad):
 #   node prod/published.mjs; node prod/accept.mjs https://avoado.si; node prod/walk90.cjs https://avoado.si; node prod/screens.cjs https://avoado.si
+
+# ---- 2026-11-27 final release (Noelle 15:58; plan in HANDOFF.md) ----
+git fetch -q ice main
+git fetch -q origin claude/ice2/noah-final-fixes
+# D2 (per-person share of a host), D7 (/noah/help 44px), D8 (sign-in destination). Branch d2b2eb55 on ice/main 7337b003.
+git worktree add -q --detach ../finalwt origin/claude/ice2/noah-final-fixes 2>/dev/null || true
+( cd ../finalwt && npm ci --ignore-scripts --no-audit --no-fund >/dev/null && \
+  node --experimental-strip-types --test tests/noah-ask-host-share.test.mjs tests/noah-help-tap.test.mjs tests/noah-signin-destination.test.mjs \
+    tests/noah-form.test.mjs tests/noah-ask.test.mjs tests/noah-launch-ops.test.mjs tests/noah-probe.test.mjs tests/noah-first-earning.test.mjs && \
+  npm run -s typecheck && npm run -s lint:product )
+# Full suite: compare failure names with untouched main (locally Node 22 fails the same 34 on both; CI uses Node 26.12.1).
+# Production checks, from the repository once merged: node scripts/noah-prod-check.mjs all https://avoado.si [--write] [--out=<dir outside git>]

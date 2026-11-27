@@ -260,6 +260,26 @@
    "branch": "main e32c86c4 (PR #60 merged)",
    "command": "git show ice/main: docs/noah/business-blueprints-average.md, docs/noah-oss-agents-20261124.md (Open Interpreter fix present), CHANGELOG pull/60, 07 top lines, spec-110 goal-type line; Markdown table cell counts; relative links",
    "result": "all present; tables 0 bad rows; all relative links resolve."
+  },
+  {
+   "branch": "claude/ice2/noah-final-fixes d2b2eb55 (on ice/main 7337b003)",
+   "command": "node --test tests/noah-help-tap.test.mjs tests/noah-signin-destination.test.mjs tests/noah-ask-host-share.test.mjs, each before and after the fix",
+   "result": "before the fix: 1 fail each (help rule missing; first-earning sign-in goes to /noah/account; second person passes only with the per-person count). After: 5/5 pass."
+  },
+  {
+   "branch": "claude/ice2/noah-final-fixes d2b2eb55",
+   "command": "node --experimental-strip-types --test (22 related files: noah-form, noah-ask, noah-launch-ops, noah-probe, noah-connect, noah-first-earning, noah-ready-ui, noah-standalone, noah-shared-compute-queue, ...)",
+   "result": "208/208 pass."
+  },
+  {
+   "branch": "claude/ice2/noah-final-fixes d2b2eb55",
+   "command": "npm run typecheck; npm run lint:product; npm run private:check project:check repository:check noah:screenless:check version:check design:check release:check baseline:check",
+   "result": "all exit 0."
+  },
+  {
+   "branch": "claude/ice2/noah-final-fixes d2b2eb55 vs ice/main 7337b003",
+   "command": "npm test (full, Node 22.23.5, root, 2 CPUs); then the 7 failing files on an untouched main worktree",
+   "result": "branch: 5,689 tests, 5,651 pass, 4 skipped, 34 fail. main: the same 7 files give the same 34 fails (migration-aliases 24: node:sqlite secure authorizer/serialize APIs missing in Node 22; mcp-connector 3; mcp 2; noah-operation-packs 2; mr-pc-adapter 1; noah-mac-runner 1; undici-dependency-security 1). CI uses Node 26.12.1."
   }
  ]
 }
