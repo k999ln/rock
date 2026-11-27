@@ -1,0 +1,39 @@
+Agent の詳細を、見ただけでやる事がわかる並び（大手のストアの形）にする。本人指示（2026-11-28 04:34）「これ全然何をどうするかわかんないからちゃんとした大手のサイトみたいに見ただけで特に説明なくともやることがわかるようなUIUXにして」「そういうレポジトリない？探してきて」。commit は 2 つ: `a0a2f90f`（「操作の流れと道具」を最初から開く・体調ノートの知らせ・本番の確かめの道具。本文は pr/detail-open.md）と `b4667e5e`（この並び）。main `1bf5d961` の上。
+
+## わかった事
+
+- 本人がスマホで見た詳細（Find and book a local service pro）: 名前の横に「接続」があるが、押すと何が起きるかが書いていない。料金・道具の数などの札は、閉じた「Agentの詳細」の中か、ページの下の方にあった。開いた「操作の流れと道具」は、工程の段・種類・待つ物・受け取る項目の型など、作る人向けの言葉だった。
+- 大手の形を調べた（task 128 の 9.7 に表）: Flathub のサイト（`flathub-infra/website`、Apache-2.0）は「アイコン・名前・作った人 → 大きい操作 1 つ → 大事な数字の札 → 中身」。Docker MCP Hub は道具を「〜する」の文で並べる（Use cases）。Chrome ウェブストアは大きい「追加」1 つと、プライバシーの欄。mcp.so はライセンスの記載が無く、LobeHub は改変して配るのに有料のライセンスが要るので使わない。
+- ダークモードで「出どころ」の欄が白い箱に薄い字だった。サイト全体の `footer` の決まり（白い背景・横の余白・横並び）を受けていた。
+- 下へ読み進めると、透けた頭（ロゴ・探す・メニュー）と本文の字が重なっていた。
+
+## やった事
+
+- 雛形（`components/noah-detail-template.tsx`）に 3 つ足した: 主な操作を押すと何が起きるかの 1 行（`actionNote`）、札（`facts`）、見ただけでわかる節（`explain`。依頼の欄の下、技術の詳しい情報の上）。
+- 「つなぎ方」の札（例: ログインまたは新規登録が必要・相手のサーバー・無料・1 人が利用・道具 3 個）を、「Agentの詳細」の中から「接続」のすぐ下へ移した（同じ物・同じ順）。
+- 押すと何が起きるか（`lib/noah-detail-plain.ts` の `noahDetailActionNote`）: サインインしていない時「押すと、利用開始の画面に進みます。パスキーで始められます。」、サインインしている時「押すと、すぐにつながります。」、入力が要る時・相手の許可が要る時・つないだ後も、それぞれの文。
+- `components/noah-detail-plain.tsx`:
+  - 「こんな事を頼めます」: 道具ごとに、名前（find_pros → find pros。日本語の札がある時はそれ）・説明（提供者の文のまま）・要る情報（型を外し、任意の物だけ「（任意）」）。4 つまで出し、残りは「ほかに N 個（下の「操作の流れと道具」）」。道具の工程が無い Agent には出さない（説明は上の「詳細」にある）。
+  - 「使い方」: 「接続」を押す → やる事を選んで、要る情報を入れる → 結果がこの画面に出る。つないだ後は出さない。
+  - 「安全のために」: 入力の送り先（今までの文 `noahSendsToText` と同じ）・Noah が作った物ではない事（提供者）・つないだ後もいつでもやめられる事。
+  - 新しい文は 5 つの言語に訳した（`lib/noah-i18n-extra.ts`）。
+- 詳細の頭の後ろ（`components/noah-service-shell.module.css`）をぼかした（表紙の上では継ぎ目は出ない）。
+- 「出どころ」の欄（`components/noah-ready.module.css` の `.source`）が、サイト全体の `footer` の決まりを受けないようにした。
+- 技術の詳しい情報（「操作の流れと道具」）は、今までどおり開いたまま、その下に残す。
+- docs: CHANGELOG（印 `FINALPLAIN`。`FINALOPEN` も同じ PR）、07、task 128 の 9.7（調べた物の表と作った物）。
+
+## 確かめた事
+
+- 新しい試験 `tests/noah-detail-plain.test.mjs`（6 本）: 式（要る情報・道具の名前・並べる物・押した後の 1 行）と、画面（接続 → 押した後の事 → 札 → 詳細 → こんな事を頼めます → 使い方 → 安全 → この Agent でできる事 → Agentの詳細 の順。サインインしていない人への文。道具の工程が無い時。英語）。画面の 3 本は、直す前は落ちる。画面の試験の台（`tests/fixtures/noah/screen.mjs`）に `@/lib/noah-detail-plain` を足した。既存の試験は変えていない（「接続の前に『切る』の文を出さない」試験に合わせて、安全の文は「つないだ後も、いつでもやめられます」にした）。
+- 関係する試験（noah-*・sky-*・main-page-policy・web-*、2,466 件）: 2,462 件が通り、1 件は今までどおり飛ばし、3 件が落ちた（手元の Node 22 で main でも落ちる `noah-mac-runner` と `noah-operation-packs`）。
+- `npm run build`・`typecheck`・`lint:product`・release（release:check・web-bundle・web-assets）・private・project・repository・noah:screenless・version・design・baseline: 通る。
+- 手元の本番の build に、本番の API の答え（記録した JSON）を返して、3 つの Agent（道具 3 個・6 個・道具の工程なし）を iPhone 15 Pro と 1280px（ダークモード）で開いた: はみ出し 0・小さい押す所 0・画面の誤り 0。
+
+## 次の事
+
+- マージした後、main から avoado.si を 1 回出す（D1 の migration は無し）。本番で同じ Agent を開いて、スマホと PC の幅で確かめる（Claude）。
+- 道具の説明は、提供者が書いた英語のままの物が多い。日本語の道具名は、道具の札（0060）を本番 D1 に当てると、工程の名前として届く（本人の Cloudflare のログインが要る）。
+
+🤖 Generated with [Claude Code](https://claude.com/claude-code)
+
+https://claude.ai/code/session_01JzDjJ2sHXBQS8oDJ7NBhAu

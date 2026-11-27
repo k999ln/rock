@@ -365,6 +365,11 @@
    "branch": "claude/ice2/noah-detail-open a0a2f90f",
    "command": "node --test (noah-*, sky-*, main-page-policy, web-*: 2,460 tests); build; typecheck; lint; 11 checks; production agent pages with the section opened at 390/1280; local build iPhone 15 Pro for the notice",
    "result": "2,456 pass, 1 skipped, 3 fail (known Node-22 noah-mac-runner/noah-operation-packs). New tests fail before and pass after. All checks exit 0. Opened detail: overflow 0, small 0 on 5 agents × 2 widths. Notice shows right under the save button inside the viewport."
+  },
+  {
+   "branch": "claude/ice2/noah-detail-plain b4667e5e",
+   "command": "node --test (noah-*, sky-*, main-page-policy, web-*: 2,466 tests) + tests/noah-detail-plain.test.mjs; build; typecheck; lint; 11 checks; local production build with recorded production API answers for 3 agents at iPhone 15 Pro and 1280px (dark)",
+   "result": "2,462 pass, 1 skipped, 3 fail (known Node-22 noah-mac-runner/noah-operation-packs). New screen tests fail before and pass after. All checks exit 0. overflow 0, small 0, page errors 0 on all 6 renders."
   }
  ]
 }
