@@ -7,21 +7,35 @@
 // - 頼んで成果が返った物は、Noah の決まりどおり「動いた」（L2）になる（lib/noah-ask.ts の markRan）。
 import { randomUUID } from 'node:crypto';
 
-const AUTH = /許可が要る|unauthori[sz]ed|api[ _-]?key|apikey|\b401\b|\b403\b|forbidden|token|sign ?in|login|subscription|credits?|quota/i;
+const AUTH = /許可が要る|unauthori[sz]ed|authenticat|connect your .{0,40}account|api[ _-]?key|apikey|\b401\b|\b403\b|forbidden|token|sign ?in|login|subscription|credits?|quota/i;
+// 入力は要らないと宣言しているのに、相手のサーバーが入力を求めた（宣言と違う）。
+const INPUT = /required|validation|invalid (?:arg|input)|not valid|provide at least|say where|受け付けませんでした|give |da la/i;
+const TRANSIENT = /rate limit|retry in|temporar|timed? ?out|try again later/i;
 
 /** 1 件の記録を、表の分け方にする。 */
 export function noahUnverifiedKind(row) {
+  const error = String(row.error ?? '');
+  const failed = ['tool-failed', 'ask-failed', 'ask-needs_user'].includes(row.result);
   if (row.result === 'works') return 'works';
   if (row.result === 'needs-key') return 'needs-key';
-  if (['tool-failed', 'ask-failed', 'ask-needs_user'].includes(row.result) && AUTH.test(String(row.error ?? ''))) return 'needs-key';
+  if (failed && AUTH.test(error)) return 'needs-key';
+  if (failed && TRANSIENT.test(error)) return 'transient';
+  if (failed && INPUT.test(error)) return 'input-undeclared';
   if (row.result === 'needs-input') return 'needs-input';
   if (row.result === 'no-read-only-tool') return 'no-read-only-tool';
   if (['connect-failed', 'tools-error', 'plan-error'].includes(row.result)) return 'broken-connect';
-  if (['tool-failed', 'ask-failed'].includes(row.result)) return 'broken-tool';
+  if (failed) return 'broken-tool';
   return 'other';
 }
 
-export async function noahProdUnverified({ origin, limit = Infinity, log = () => undefined }) {
+/** 一覧から、確かめる物を選ぶ。ids を渡した時は、札にかかわらずその物だけ（前の回で落ちた物の確かめ直し）。 */
+export function noahUnverifiedTargets(families, { ids = [], limit = Infinity } = {}) {
+  const wanted = new Set(ids);
+  const picked = wanted.size ? families.filter((family) => wanted.has(family.id)) : families.filter((family) => family.connect?.badge === 'unverified');
+  return picked.slice(0, limit);
+}
+
+export async function noahProdUnverified({ origin, limit = Infinity, ids = [], log = () => undefined }) {
   const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
   const person = () => {
     const p = { cookie: '', scope: null, connects: 0 };
@@ -51,7 +65,7 @@ export async function noahProdUnverified({ origin, limit = Infinity, log = () =>
     if (!cursor) break;
     await sleep(300);
   }
-  const targets = families.filter((family) => family.connect?.badge === 'unverified').slice(0, limit);
+  const targets = noahUnverifiedTargets(families, { ids, limit });
   let current = await person().start();
   let people = 1, lastConnect = 0;
   const rows = [];
@@ -107,5 +121,7 @@ export async function noahProdUnverified({ origin, limit = Infinity, log = () =>
   }
   const counts = {};
   for (const row of rows) counts[row.kind] = (counts[row.kind] ?? 0) + 1;
-  return { ok: rows.every((row) => row.kind !== 'other'), listed: families.length, unverified: targets.length, people, counts, rows };
+  // ids で頼んだのに一覧に無い物（もう一覧から外れた物）。
+  const missing = ids.filter((id) => !families.some((family) => family.id === id));
+  return { ok: rows.every((row) => row.kind !== 'other'), listed: families.length, unverified: targets.length, people, counts, missing, rows };
 }

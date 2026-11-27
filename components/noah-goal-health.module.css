@@ -1,0 +1,26 @@
+/* 目的型の Agent「体調ノート」。共通の形は noah-unified.module.css（page・heading・groups・task・primary・secondary）を使い、ここは 5 段の目盛りと数の並びだけ。 */
+.lead { margin: 0 0 8px; color: var(--noah-theme-muted, #82748f); line-height: 1.8; }
+.notice { margin: 0; padding: 12px 14px; border-radius: 12px; background: var(--noah-theme-raised, #f6f1fb); color: var(--noah-theme-text, #493756); font-size: 13px; line-height: 1.8; }
+.question { display: grid; gap: 8px; margin: 0 0 16px; padding: 0; border: 0; }
+.question legend { padding: 0; margin-bottom: 8px; font-weight: 650; }
+.scale { display: grid; grid-template-columns: repeat(5, minmax(44px, 1fr)); gap: 6px; }
+.scale button { min-height: 44px; border: 1px solid var(--noah-theme-line, #d9d0e4); border-radius: 10px; background: var(--noah-theme-panel, #fff); color: var(--noah-theme-text, #493756); font-size: 16px; font-weight: 650; cursor: pointer; }
+.scale button[aria-pressed='true'] { border-color: #7628df; background: #7628df; color: #fff; }
+.scale button:focus-visible { outline: 2px solid #7628df; outline-offset: 2px; }
+.ends { display: flex; justify-content: space-between; gap: 8px; color: var(--noah-theme-muted, #82748f); font-size: 12px; }
+.note { display: grid; gap: 6px; margin-bottom: 16px; }
+.note textarea { min-height: 72px; padding: 10px 12px; border: 1px solid var(--noah-theme-line, #d9d0e4); border-radius: 10px; background: var(--noah-theme-panel, #fff); color: var(--noah-theme-text, #493756); font: inherit; resize: vertical; }
+.progress { display: grid; gap: 6px; }
+.bar { width: 100%; height: 10px; border: 0; border-radius: 999px; background: var(--noah-theme-raised, #eee9f4); overflow: hidden; appearance: none; }
+.bar::-webkit-progress-bar { background: var(--noah-theme-raised, #eee9f4); border-radius: 999px; }
+.bar::-webkit-progress-value { background: #7628df; border-radius: 999px; }
+.bar::-moz-progress-bar { background: #7628df; border-radius: 999px; }
+.numbers { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px; margin: 12px 0 0; }
+.numbers div { padding: 10px; border-radius: 10px; background: var(--noah-theme-raised, #f6f1fb); }
+.numbers dt { color: var(--noah-theme-muted, #82748f); font-size: 12px; }
+.numbers dd { margin: 4px 0 0; font-size: 20px; font-weight: 700; }
+.change { display: block; margin-top: 4px; color: var(--noah-theme-muted, #82748f); font-size: 12px; font-weight: 500; }
+.history { list-style: none; margin: 0; padding: 0; display: grid; gap: 8px; }
+.history li { display: flex; flex-wrap: wrap; gap: 6px 14px; padding: 10px 0; border-top: 1px solid var(--noah-theme-line, #ece6f2); font-size: 14px; }
+.history li:first-child { border-top: 0; }
+.done { margin: 0; padding: 12px 14px; border-radius: 12px; background: #eaf7ee; color: #1f5131; font-weight: 650; }
