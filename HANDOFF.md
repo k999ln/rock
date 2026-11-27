@@ -1,5 +1,9 @@
 # 引き継ぎ 2: 9 本の枝を iceiceice999/rock に入れて、avoado.si を公開し直す（2026-11-23）
 
+## 2026-11-28｜Codex の引き継ぎ
+
+2026-11-28 JST（Codex）。署名付きの実装差分を転送し、https://github.com/iceiceice999/rock/pull/127 と https://github.com/iceiceice999/rock/pull/126 を作成。CodeQL が見つけた新規サインイン試験のタグ除去を JSX 構文木方式に修正。関連試験12件とD6・体調ノートの19件が合格。CI・マージ・公開の確認中。Tool札用0060は合成SQLiteで1表・19列・索引1つを確認。本番SQLは未実行。
+
 本人（ノエル）の言葉:
 
 - 2026-11-22 22:55 ごろ「push・PR・マージまで」（iceiceice999/rock への push・PR・マージを許可）。
