@@ -79,3 +79,15 @@ git worktree add -q --detach ../finalwt origin/claude/ice2/noah-final-fixes 2>/d
   npm run -s typecheck && npm run -s lint:product )
 # Full suite: compare failure names with untouched main (locally Node 22 fails the same 34 on both; CI uses Node 26.12.1).
 # Production checks, from the repository once merged: node scripts/noah-prod-check.mjs all https://avoado.si [--write] [--out=<dir outside git>]
+# Part 2 (D6 results + 体調ノート): branch claude/ice2/noah-final-d6 3121b434 on 0572070e.
+git fetch -q origin claude/ice2/noah-final-d6
+git worktree add -q --detach ../d6wt origin/claude/ice2/noah-final-d6 2>/dev/null || true
+( cd ../d6wt && npm ci --ignore-scripts --no-audit --no-fund >/dev/null && \
+  node --experimental-strip-types --test tests/noah-goal-health.test.mjs tests/noah-goal-health-ui.test.mjs tests/noah-goal-health-store.test.mjs \
+    tests/noah-menu-served.test.mjs tests/main-page-policy.test.mjs tests/noah-prod-unverified.test.mjs tests/noah-prod-check.test.mjs tests/noah-tap-floor.test.mjs && \
+  npm run -s typecheck && npm run -s lint:product && npm run -s build && npm run -s release:check )
+# Local production build with the repo's production Wrangler (4.147, supports the 2026-10-01 compatibility date; no D1 migrations needed for these routes):
+#   node scripts/local-wrangler.mjs --config dist/server/wrangler.json --port 8811 --ip 127.0.0.1 --persist-to <dir outside git>
+#   curl -H 'Host: avoado.si' http://127.0.0.1:8811/noah/goals/health   # 200 (public page list)
+#   node scripts/check-web-security-response.mjs http://127.0.0.1:8811 --record-local-production   # only when noah-shell.tsx / main-page-policy.mjs etc. changed
+# D6 re-check of the 9 handshake failures (6 h after the first run): node scripts/noah-prod-check.mjs unverified https://avoado.si --write --ids=<ids from the D6 doc section 3>

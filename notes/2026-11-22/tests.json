@@ -295,6 +295,21 @@
    "branch": "claude/ice2/noah-final-fixes 0572070e",
    "command": "node --test (144 related files: noah-*, sky-*, rockstar-account*, common-os-entry*); npm run build; typecheck; lint:product; release:web-bundle/web-assets/private/project/repository/noah:screenless/version/design/release/baseline checks",
    "result": "1,196 tests: 1,195 pass, 1 skipped, 0 fail. build ok and the compiled CSS has the floor rules; typecheck, lint and all 10 checks exit 0."
+  },
+  {
+   "branch": "production avoado.si (no branch)",
+   "command": "node scripts/noah-prod-check.mjs unverified https://avoado.si --write (D6; 167 agents, read-only no-input tools only, 1 call each)",
+   "result": "works 73, needs-key 23, input-undeclared 7, needs-input 17, no-read-only-tool 37, transient 1, broken-connect 9 (6 on ai.agentlookups), broken-tool 0. All connections disconnected. 2 browser persons."
+  },
+  {
+   "branch": "claude/ice2/noah-final-d6 3121b434",
+   "command": "node --test (355 related files: noah-*, sky-*, rockstar-account*, web-*, main-page-policy, os-*, release*); npm run build; typecheck; lint:product; release:check (after re-recording web security evidence) and web-bundle/web-assets/private/project/repository/noah:screenless/version/design/baseline checks",
+   "result": "2,526 tests: 2,522 pass, 1 skipped, 3 fail (known on main with Node 22: noah-mac-runner needs Node 24+, noah-operation-packs). build ok; typecheck, lint and all 11 checks exit 0."
+  },
+  {
+   "branch": "claude/ice2/noah-final-d6 3121b434",
+   "command": "local production build via node scripts/local-wrangler.mjs (Wrangler 4.147): Playwright on /noah/goals/health in the Noah shell at 390/1280 + Host: avoado.si routing",
+   "result": "200, overflow 0, small 0, page errors 0 at both widths; menu shows 体調ノート (44px); Host avoado.si: /noah/goals/health 200, /noah/goals 404, /noah/zzz 404."
   }
  ]
 }
