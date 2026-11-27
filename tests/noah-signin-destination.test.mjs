@@ -3,6 +3,7 @@ import assert from 'node:assert/strict';
 import { readdirSync, readFileSync, statSync } from 'node:fs';
 import { join, relative } from 'node:path';
 import { fileURLToPath } from 'node:url';
+import ts from 'typescript';
 import { noahSignInHref } from '../lib/noah-navigation.ts';
 
 // task 129 の D8（サインインの行き先）の合格: Noah の画面に、/noah/account へ行く「サインイン」が無い。
@@ -20,24 +21,32 @@ const screens = [
   ...files('app/noah', (name) => name.endsWith('.tsx')),
 ];
 
-/** リンク（Link・a）の開始の印・中の文。属性の中の `>`（矢印の関数）は、波かっこの中なので飛ばす。 */
-function links(source) {
+/** リンク（Link・a）の属性と、子要素の表示文を JSX の構文木から読む。 */
+function links(path, source) {
+  const parsed = ts.createSourceFile(path, source, ts.ScriptTarget.Latest, true, ts.ScriptKind.TSX);
   const found = [];
-  const open = /<(Link|a)\b/g;
-  for (let match; (match = open.exec(source));) {
-    let depth = 0, at = match.index + match[0].length;
-    for (; at < source.length; at++) {
-      const char = source[at];
-      if (char === '{') depth++;
-      else if (char === '}') depth--;
-      else if (char === '>' && depth === 0) break;
+
+  function childText(child) {
+    if (ts.isJsxText(child)) return child.text;
+    if (ts.isJsxElement(child) || ts.isJsxFragment(child)) {
+      return child.children.map(childText).join('');
     }
-    const attributes = source.slice(match.index, at);
-    const close = source.indexOf(`</${match[1]}>`, at);
-    if (close < 0) continue;
-    const text = source.slice(at + 1, close).replace(/<[^>]*>/g, '');
-    found.push({ attributes, text, line: source.slice(0, match.index).split('\n').length });
+    if (ts.isJsxExpression(child)) return child.expression?.getText(parsed) ?? '';
+    return '';
   }
+
+  function visit(node) {
+    if (ts.isJsxElement(node) && ['Link', 'a'].includes(node.openingElement.tagName.getText(parsed))) {
+      found.push({
+        attributes: node.openingElement.attributes.getText(parsed),
+        text: node.children.map(childText).join(''),
+        line: parsed.getLineAndCharacterOfPosition(node.getStart(parsed)).line + 1,
+      });
+    }
+    ts.forEachChild(node, visit);
+  }
+
+  visit(parsed);
   return found;
 }
 
@@ -45,7 +54,7 @@ await test('Noah の画面の「サインイン」「ログイン」は、/noah/
   assert.ok(screens.length > 50, `Noah の画面のファイルを読んだ（${screens.length}）`);
   const signIns = [];
   for (const path of screens) {
-    for (const link of links(readFileSync(join(root, path), 'utf8'))) {
+    for (const link of links(path, readFileSync(join(root, path), 'utf8'))) {
       if (!/サインイン|ログイン/.test(link.text)) continue;
       signIns.push(`${relative(root, join(root, path))}:${link.line}`);
       assert.doesNotMatch(link.attributes, /\/noah\/account|noahAccountHref|noahReadyAccountHref/, `${path}:${link.line}「${link.text.trim()}」が /noah/account へ行く`);
