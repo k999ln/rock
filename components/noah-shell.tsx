@@ -4,7 +4,7 @@ import { useEffect, useId, useRef, useState, type ReactNode } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import { usePathname, useSearchParams } from 'next/navigation';
-import { Bot, Home, UserRound, RefreshCw, Globe, Bookmark, MoreHorizontal, Search, SquareTerminal } from 'lucide-react';
+import { Bot, Home, UserRound, RefreshCw, Globe, Bookmark, MoreHorizontal, Search, SquareTerminal, HeartPulse } from 'lucide-react';
 import { noahLegacyHref, type NoahSurfaceMode } from '@/lib/noah-surface';
 import { NOAH_PROFILE_PATH, noahShortPageDestination } from '../services/sky-web/noah-page-routes.mjs';
 import { useNoahLocale } from './noah-locale';
@@ -66,6 +66,8 @@ export default function NoahShell({ children, mode = 'local' }: { children: Reac
       { href: `${base}/my?view=agents`, label: '自分のAgent', Icon: Bot },
       { href: `${base}/activity`, label: '実行中', Icon: RefreshCw },
       { href: `${base}/saved?tab=results`, label: '保存した成果を見る', Icon: Bookmark },
+      // 目的型の Agent（無料。docs/noah/spec-goal-health.md）。
+      { href: '/noah/goals/health', label: '体調ノート', Icon: HeartPulse },
     ] : []),
     { href: `${base}/preferences`, label: '操作の設定', Icon: Globe },
   ];

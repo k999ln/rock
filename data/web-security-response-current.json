@@ -1,17 +1,17 @@
 {
   "schema": "rockstaros-web-security-response-evidence/1",
-  "observedAt": "2026-11-26T17:52:40Z",
+  "observedAt": "2026-11-27T14:44:47Z",
   "scope": "LOCAL_PRODUCTION_BUILD_NOT_SITES_DEPLOYMENT",
   "server": {
     "runtime": "wrangler-local",
-    "origin": "http://127.0.0.1:4963",
+    "origin": "http://127.0.0.1:8811",
     "productionBuild": true
   },
   "inputs": {
     "services/sky-web/asset-responses.mjs": "010e3f384eb12e4c4d59c9fc265d80571a381d75472b902c2fe6dd79ca3153b0",
     "scripts/stage-secure-assets.mjs": "3f4c24209a138464b4eef84da1f41e427a343fd5373a180c7285ca4bbf3455bd",
     "services/sky-web/noah-page-routes.mjs": "d647424ff1f4fadc97af3e453934130de74b3a64fe894af14a834309d7f57120",
-    "services/sky-web/main-page-policy.mjs": "b3db3b8f0b63cfd5071991fef62cba0dec19af4af296ae9e596f65f4414a020e",
+    "services/sky-web/main-page-policy.mjs": "87716891bc4bce7d1737cd259b6c5f2350ddb0aacd96d619802903833f1f5417",
     "services/sky-web/domain-router.mjs": "a50d458a7c268469b3c0aeaf900fdbb7e6f024f100c70a8ce61c9059f1e54532",
     "scripts/stage-sky-domain-router.mjs": "4b8df1f548831d9c80a97846c96144a4d1facfa4b52799f79fd3b91686c384b0",
     "data/web-security-policy.json": "919c45822d2a6c7421a4423f918545f24d406d6acb8579d597472756c66daec5",
@@ -29,7 +29,7 @@
     "app/page.tsx": "d86a547f5575e2692da7b9abf6ca3b5e4abcb9da64a0f42d08b1e3f9eaa0759f",
     "lib/os-entry.ts": "57343aecfc336ea43f259e7ecfe38aceaf75e07d1da6f8c1e9c9cf0b5b570143",
     "app/noah/page.tsx": "386484bdcb99def467663ee5d5cea5d720749a774a30afa34f0e2174a1782b2f",
-    "components/noah-shell.tsx": "859cb8dbb5c9d0be0146a311b17c66d3c960212478d2e90dc88c01c915ad99f9",
+    "components/noah-shell.tsx": "1e6c2006a3090dee5f6b3fa153e7136ed825305024ab62a4a276baaf36ec3ef9",
     "components/noah-timeline.tsx": "7faebf0c285d0cedf789a7c0b443f7573e57d592b98561f19b9c9ce1e1c36589",
     "public/brand/noah-icon-v2.png": "e1ccbc03fd9a6ba369a439b36d16d2d28c1c57c0efd30ba643d32b7c3d497fda",
     "public/rock-icon-192.png": "3a8f750e40b79713f055a5ec5485ab7db04878744f3301bff34aa4b579abd8c0",
@@ -39,7 +39,7 @@
   "result": {
     "schema": "rockstaros-web-security-response-check/1",
     "status": "PASS",
-    "baseOrigin": "http://127.0.0.1:4963",
+    "baseOrigin": "http://127.0.0.1:8811",
     "universalHeaders": 8,
     "routes": [
       "/",
@@ -50,7 +50,7 @@
       "/rock-icon-192.png",
       "/rock-icon-512.png",
       "/rock-icon-maskable.svg",
-      "/_next/static/chunks/index-CJEzWPYW.js"
+      "/_next/static/chunks/index-BEJ1bZfH.js"
     ],
     "evePwa": {
       "manifest": "/connect/eve.webmanifest",

@@ -12,7 +12,11 @@
 //     受入（書き込みあり）: ブラウザだけの本人で、つなぐ → 読むだけの道具を 1 回頼む → 切る、ボードを作って消す、
 //     登録情報に試験の名前を入れて消す。作った物は、途中で落ちても最後に消す。
 //   node scripts/noah-prod-check.mjs loop [origin] --write
-//     一周（書き込みあり。spec-90 の 5 章の 1〜4・6・7・10）: スマホ幅で、つなぐ → 道具で頼む → 閉じて 1 分後に開く → 別の Agent へ移る → 切る。
+//     一周（書き込みあり。spec-90 の 5 章のうちアカウントの要らない 1 と 8 の前半。scripts/noah-prod-loop.mjs）。
+//   node scripts/noah-prod-check.mjs unverified [origin] --write [--limit=N] [--ids=<id>,<id>]
+//     「まだ誰も動かしていない」Agent を 1 つずつ動かす（task 129 の D6。外の道具を呼ぶ。scripts/noah-prod-unverified.mjs）。
+//     読み取りだけと宣言され、入力の要らない道具だけを 1 回。成果が返った物は「動いた」になる。all には入れない。
+//     --ids は、前の回で落ちた物だけを、間をあけてもう一度確かめる時に使う（札が unverified でなくても行う）。
 //   node scripts/noah-prod-check.mjs all [origin] [--write]
 //     pages・devices と、API の probe（scripts/noah-public-probe.mjs）。--write の時は accept と loop も。
 //
@@ -264,11 +268,11 @@ async function accept() {
 async function cli() {
   const report = { origin, at: new Date().toISOString() };
   const want = (name) => command === name || command === 'all';
-  if (!['pages', 'devices', 'accept', 'loop', 'all'].includes(command)) {
-    console.error(`知らない命令: ${command}（pages・devices・accept・loop・all）`);
+  if (!['pages', 'devices', 'accept', 'loop', 'unverified', 'all'].includes(command)) {
+    console.error(`知らない命令: ${command}（pages・devices・accept・loop・unverified・all）`);
     process.exit(2);
   }
-  if ((command === 'accept' || command === 'loop') && !write) {
+  if ((command === 'accept' || command === 'loop' || command === 'unverified') && !write) {
     console.error(`${command} は本番に書き込みます。--write を付けて動かしてください。`);
     process.exit(2);
   }
@@ -278,6 +282,11 @@ async function cli() {
   if (command === 'all') report.probe = probe();
   if ((command === 'accept' || command === 'all') && write) report.accept = await accept();
   if ((command === 'loop' || command === 'all') && write) report.loop = await (await import('./noah-prod-loop.mjs')).noahProdLoop({ origin, outDir, playwright: playwright(), measure: measureNoahPage });
+  if (command === 'unverified' && write) {
+    const limit = Number(flag('limit') ?? Infinity);
+    const ids = String(flag('ids') ?? '').split(',').map((id) => id.trim()).filter(Boolean);
+    report.unverified = await (await import('./noah-prod-unverified.mjs')).noahProdUnverified({ origin, limit: Number.isFinite(limit) && limit > 0 ? limit : Infinity, ids, log: (line) => console.error(line) });
+  }
   report.ok = Object.values(report).every((part) => typeof part !== 'object' || part.ok !== false);
   if (outDir) writeFileSync(join(outDir, `result-${command}.json`), JSON.stringify(report, null, 1) + '\n');
   console.log(JSON.stringify(report, null, 1));

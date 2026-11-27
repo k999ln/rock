@@ -5,6 +5,8 @@ export const NOAH_EXTRA_MESSAGES: Record<
 > = {
   '提供元の接続先を確認し、この画面で入力して実行できます。届いた成果はNoahに残ります。': ['Check the provider connection, enter your request here, and run it. Results stay in Noah.', '确认提供方连接后，即可在此输入并运行。结果会保存在Noah中。', '제공자의 연결을 확인하고 이 화면에서 입력하여 실행합니다. 결과는 Noah에 저장됩니다.', 'Comprueba la conexión del proveedor, introduce tu solicitud aquí y ejecútala. Los resultados se guardan en Noah.', 'تحقّق من اتصال المزوّد، ثم أدخل طلبك هنا وشغّله. تُحفظ النتائج في Noah.'],
   '（1行に1件）': [' (one item per line)', '（每行一项）', ' (한 줄에 하나)', ' (un elemento por línea)', ' (عنصر واحد لكل سطر)'],
+  // 目的型の Agent（docs/noah/spec-goal-health.md）。メニューの名前。
+  '体調ノート': ['Health notes', '身体状况笔记', '컨디션 노트', 'Notas de salud', 'مفكرة الصحة'],
 
   "Noahで使う": ["Use in Noah", "在 Noah 中使用", "Noah에서 사용", "Usar en Noah", "استخدام في Noah"],
   "入力して頼む。成果はNoahに残ります。": ["Enter your request. Results stay in Noah.", "输入请求，结果将保存在 Noah 中。", "요청을 입력하세요. 결과는 Noah에 저장됩니다.", "Escribe tu solicitud. Los resultados se guardan en Noah.", "أدخل طلبك. تُحفظ النتائج في Noah."],
