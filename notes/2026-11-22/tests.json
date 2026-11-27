@@ -330,6 +330,21 @@
       "branch": "main 7337b003",
       "command": "0060 labels synthetic SQLite",
       "result": "pass; production unchanged"
+    },
+    {
+      "branch": "https://github.com/iceiceice999/rock/pull/127",
+      "command": "GitHub Actions final",
+      "result": "8 checks passed; merged"
+    },
+    {
+      "branch": "https://github.com/iceiceice999/rock/pull/126",
+      "command": "GitHub Actions final",
+      "result": "7 checks passed; merged"
+    },
+    {
+      "branch": "main 1bf5d961, Sites v268",
+      "command": "Live health notes, 390px and 1280px",
+      "result": "HTTP 200, save/reload/weekly review/export/delete pass; no overflow"
     }
   ]
 }

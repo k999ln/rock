@@ -1,5 +1,9 @@
 # 引き継ぎ 2: 9 本の枝を iceiceice999/rock に入れて、avoado.si を公開し直す（2026-11-23）
 
+## 2026-11-28｜Sites v268 の公開
+
+2026-11-28 JST（Codex）。https://github.com/iceiceice999/rock/pull/127 の8チェック、https://github.com/iceiceice999/rock/pull/126 の7チェックが合格。main 1bf5d961bf9d35a67d7d4c7718f090056855580c から Sites v268 を avoado.si に公開。Sites ソース 248c1ccf68ce6670f1c11bab75ee19b1337447e1 と main の tree 96237972bc64a66953a4640071645fe5d44f4503 は一致。復旧先は v267。体調ノートは390px・1280pxで保存、再読込、週次表示、JSON書き出し、削除に成功。Cloudflare OAuth、本番の書き込み受入の明示許可、実サインインと物理スマホ受入が残る。
+
 ## 2026-11-28｜Codex の引き継ぎ
 
 2026-11-28 JST（Codex）。署名付きの実装差分を転送し、https://github.com/iceiceice999/rock/pull/127 と https://github.com/iceiceice999/rock/pull/126 を作成。CodeQL が見つけた新規サインイン試験のタグ除去を JSX 構文木方式に修正。関連試験12件とD6・体調ノートの19件が合格。CI・マージ・公開の確認中。Tool札用0060は合成SQLiteで1表・19列・索引1つを確認。本番SQLは未実行。
