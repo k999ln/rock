@@ -284,6 +284,11 @@
   z-index: -1;
   pointer-events: none;
   background: linear-gradient(#000b, #0007 55%, transparent);
+  /* 下へ読み進めた時に、頭の文字と本文が重ならないように、後ろをぼかす（表紙の上では継ぎ目は出ない。2026-11-28）。 */
+  -webkit-backdrop-filter: blur(14px);
+  backdrop-filter: blur(14px);
+  -webkit-mask-image: linear-gradient(#000 0 64%, transparent);
+  mask-image: linear-gradient(#000 0 64%, transparent);
 }
 .shell:has([data-noah-fullscreen-detail]) > .gridTopbar :is(.gridBrand, .gridMenuButton, .gridAccount):hover { background: #ffffff24; }
 .shell:has([data-noah-fullscreen-detail]) > .gridTopbar .gridSearchSlot .gridSearch { background: #171719a6; color: #fff; }

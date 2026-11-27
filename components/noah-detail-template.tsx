@@ -34,12 +34,18 @@ function DetailFeedback({ id }: { id: string }) {
  * （本人 2026-11-28「最初からトグル開いてるようにして」）。閉じるのは本人の自由。
  */
 export default function NoahDetailTemplate({ id, name, provider, summary, action, children, meta, feedbackId,
-  icon, overviewTitle, intro, requestForm, detailsLabel,
+  icon, overviewTitle, intro, requestForm, detailsLabel, actionNote, facts, explain,
   cover, pin, mediaId = id, category, privateAgent = false,
 }: { id: string; name: string; provider?: string; summary?: string; action?: ReactNode; children?: ReactNode;
   meta?: ReactNode; feedbackId?: string; cover?: NoahCoverView; pin?: NoahPin; mediaId?: string;
   category?: string; privateAgent?: boolean;
   icon?: ReactNode; overviewTitle?: string; intro?: ReactNode; requestForm?: ReactNode; detailsLabel?: string;
+  /** 「接続」などの主な操作を押すと何が起きるかの 1 行。名前の行のすぐ下に出す（2026-11-28）。 */
+  actionNote?: ReactNode;
+  /** 料金・道具の数・利用の数などの札。操作のすぐ下に出す（大手のストアの並び。2026-11-28）。 */
+  facts?: ReactNode;
+  /** 見ただけでやる事がわかる節（こんな事を頼めます・使い方・安全のために）。依頼の欄の下、詳しい情報の上に出す。 */
+  explain?: ReactNode;
 }) {
   const theme = useNoahAppearance(), { t } = useNoahLocale();
   const more = useRef<HTMLDetailsElement>(null);
@@ -58,6 +64,8 @@ export default function NoahDetailTemplate({ id, name, provider, summary, action
           if (more.current) { more.current.open = true; more.current.scrollIntoView({ block: 'start', behavior: 'smooth' }); }
         }}>{t('利用条件を見る')}</button>}</div>
       </header>
+      {actionNote && <p className={styles.actionNote}>{actionNote}</p>}
+      {facts && <div className={styles.templateFacts}>{facts}</div>}
       <section className={styles.overview} aria-label={t('詳細')}><h2>{overviewTitle ?? t('詳細')}</h2>
         {category && <p className={styles.category}>{category}</p>}
         {pin && <p className={styles.pinExchange}><span>{pin.give}</span><span aria-hidden="true">→</span><span>{pin.get}</span></p>}
@@ -65,6 +73,7 @@ export default function NoahDetailTemplate({ id, name, provider, summary, action
       </section>
       {intro}
       {requestForm}
+      {explain}
       {children && <details ref={more} className={styles.templateMore} id="noah-detail-more" open>
         <summary>{detailsLabel ?? t('使い方を読む')}</summary><div>{children}</div>
       </details>}

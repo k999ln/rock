@@ -172,6 +172,7 @@ export function screen(options = {}) {
       if (id === '@/lib/noah-eve-participant') return eveParticipant;
       if (id === '@/lib/owner-intent') return load('lib/owner-intent.ts');
       if (id === '@/lib/noah-detail-preview') return load('lib/noah-detail-preview.ts');
+      if (id === '@/lib/noah-detail-plain') return load('lib/noah-detail-plain.ts');
       if (id === '@/lib/noah-project-view') return load('lib/noah-project-view.ts');
       // 読み込み中に遊ぶ点のトラのゲーム。通信も保存もしない計算だけなので、本物をそのまま渡す。
       if (id === '@/lib/noah-tiger-game') return load('lib/noah-tiger-game.ts');
