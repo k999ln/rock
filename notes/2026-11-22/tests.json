@@ -1,360 +1,370 @@
 {
-  "date": "2026-11-22",
-  "runs": [
-    {
-      "branch": "claude/noah-partial-list",
-      "command": "node --experimental-strip-types --test tests/noah-result-presentation.test.mjs",
-      "result": "12 pass, 0 fail"
-    },
-    {
-      "branch": "claude/noah-partial-list",
-      "command": "npx tsc --noEmit",
-      "result": "0 errors"
-    },
-    {
-      "branch": "claude/noah-partial-list",
-      "command": "npx oxlint <changed files>",
-      "result": "0 findings on changed files"
-    },
-    {
-      "branch": "claude/noah-teikibin",
-      "command": "node --experimental-strip-types --test <15 files touching esim/operator/noah-cloud/sky-marketplace/start-local-web>",
-      "result": "134 pass, 1 skip, 0 fail"
-    },
-    {
-      "branch": "both",
-      "command": "GitHub Actions: SPIDER repair regressions, SPIDER CodeQL security, SPIDER repository security",
-      "result": "success"
-    },
-    {
-      "branch": "claude/noah-partial-list",
-      "command": "GitHub Actions: all checks on 7c7450d (verify, CodeQL, SPIDER x4)",
-      "result": "success; merged as f4c3dac"
-    },
-    {
-      "branch": "claude/noah-teikibin",
-      "command": "node --experimental-strip-types --test tests/noah-shelf*.test.mjs",
-      "result": "37 pass, 0 fail"
-    },
-    {
-      "branch": "claude/noah-teikibin",
-      "command": "GitHub Actions: all checks on 5e55094",
-      "result": "in progress"
-    },
-    {
-      "branch": "claude/noah-teikibin-ledger-124 (#410)",
-      "command": "node --test tests/noah-teikibin.test.mjs + 13 related files + database-status, migration-union, sites-owner-workspace-recovery",
-      "result": "all pass; CI all green; merged 29b986a"
-    },
-    {
-      "branch": "claude/integrate-102-sim-proof (#411)",
-      "command": "esim-sim-proof 18, auth tests (esim-cloud-*, eve-* 12 files), release:check, lint, tsc",
-      "result": "all pass (2 eve browser tests need generated private modules first)"
-    },
-    {
-      "branch": "claude/integrate-13-ios (#412)",
-      "command": "esim-ios-install, esim-purchase-recovery, pwa-installability, release-readiness 40, build + wrangler local web security record",
-      "result": "all pass; CI green; merged c4eb453 with #411 inside"
-    },
-    {
-      "branch": "claude/integrate-105-cloud-ops (#413) + claude/integrate-101-compute (#414)",
-      "command": "cloud-operations, 47 related tests, noah-cloud-usage, noah-compute-placement-recovery, launch tests",
-      "result": "all pass except noah-mac-runner test 4 (needs Apple Silicon; fails on main too); CI green; merged 4e3d00c"
-    },
-    {
-      "branch": "claude/noah-retention-103 (#415)",
-      "command": "noah-retention 5, churn-cohort 10, noah-unified-ui, noah-trial, noah-reviewer",
-      "result": "all pass; CI green; merged 4f3ecdc"
-    },
-    {
-      "branch": "claude/noah-collector-steady (#416)",
-      "command": "noah-cloud-collector 10, noah-agent-collector 10",
-      "result": "all pass; CI green before main moved"
-    },
-    {
-      "branch": "claude/security-rsc-19-2-9 (#417)",
-      "command": "npm run build; wrangler local: / /noah /noah/explore /noah/teikibin = 200; web security check PASS; release:check, lint, tsc, UI tests",
-      "result": "all pass; CI verify green; SPIDER secrets SCANNER_FAILED (timeout, not a finding)"
-    },
-    {
-      "branch": "claude/noah-board-picks (#418)",
-      "command": "noah-pins 11, 23 screen-harness tests, lint, tsc",
-      "result": "all pass; verify green; SPIDER secrets timeout"
-    },
-    {
-      "branch": "claude/spider-scan-time (#419)",
-      "command": "python unittest test_spider_repository_scan (6), test_spider_gitleaks_policy; local full-history gitleaks on main",
-      "result": "pass; full history 245 s, 0 findings"
-    },
-    {
-      "branch": "claude/design-references (#422)",
-      "command": "repository:check, project:check, design:check, gitleaks",
-      "result": "pass"
-    },
-    {
-      "branch": "iceiceice999/rock ice/main 94d2c762 (untouched)",
-      "command": "node --test on the 6 files that fail locally (mcp-connector, mcp, migration-aliases, mr-pc-adapter, noah-mac-runner, noah-operation-packs); npm audit --package-lock-only",
-      "result": "74 tests, 33 fail (root user / Node 22 lacks SQLite APIs; CI uses Node 26.12.1). audit 18 (critical 1, high 3)"
-    },
-    {
-      "branch": "iceiceice999/rock tmp/all-four (security + collector + board picks + design references on 94d2c762)",
-      "command": "npm test; tsc --noEmit; lint:product; repository/project/design/release/schema/database checks; gitleaks per commit",
-      "result": "5,137 tests, 5,099 pass, 34 fail: 33 identical to untouched main, 1 (undici-dependency-security) passes after npm ci --prefix sites/avocado-mini (4/4). All checks pass. gitleaks 0"
-    },
-    {
-      "branch": "iceiceice999/rock ice/security-rsc-19-2-9 4f26ac89",
-      "command": "npm run build; dist scan; wrangler local / /noah /noah/explore /noah/teikibin /noah/boards; check-web-security-response; release:web-bundle:check; release:web-assets:check; npm audit --package-lock-only",
-      "result": "build OK, no 19.2.8 in dist, 200 x4 + 307, web security PASS, bundle/assets OK, audit 10 (critical 0, high 1)"
-    },
-    {
-      "branch": "iceiceice999/rock ice/collector-steady ca5a6f66",
-      "command": "node --test noah-cloud-collector + noah-agent-collector",
-      "result": "20/20 pass"
-    },
-    {
-      "branch": "iceiceice999/rock ice/board-picks d14f1bdc",
-      "command": "node --test noah-pins + 23 screen-harness test files",
-      "result": "204/204 pass"
-    },
-    {
-      "branch": "iceiceice999/rock ice/design-references 0b94dead",
-      "command": "repository:check, project:check, design:check",
-      "result": "pass"
-    },
-    {
-      "branch": "production avoado.si (read-only, anonymous)",
-      "command": "Playwright walk of 27 pages at phone and PC width; GET probe of 145 API routes (anon and browser cookie); forged identity headers on read-only APIs; tap-target and overflow check at 390px; CORS and security headers",
-      "result": "no overflow; 60 x 200, 178 x 401, 41 x 404, 5 x 400, 4 x 503 (unconfigured); forged headers not honored; CORS closed; header tap targets 36px/32px (fixed); Japanese searches 0 results (fixed); details in docs/noah/ux-audit-2026-11-22.md"
-    },
-    {
-      "branch": "iceiceice999 main b310b319 + ux/audit fixes (local wrangler build)",
-      "command": "Playwright: add-agent Node template save; saved -> Agent tab; walk script on /noah, /noah/profile, /noah/saved?tab=agents, /noah/usage",
-      "result": "before fix: save failed with no test runner; after fix: POST /api/noah/agents 201 and the agent appears; Mac/sign-in sections hidden; header small targets 0"
-    },
-    {
-      "branch": "ux/audit",
-      "command": "node --test noah-search-terms, noah-upload-account-ui, noah-library-public-sections, noah-usage-operator-tab, noah-revenue-catalog-cache, noah-agent-directory, noah-revenue-directory, noah-revenue-matching",
-      "result": "all pass; each new test fails on the old file and passes on the fixed one"
-    },
-    {
-      "branch": "ux/audit search check",
-      "command": "old vs new search on the 1,957-entry production catalog snapshot",
-      "result": "画像 0->105, 画像生成 0->27, 翻訳 0->9, 要約 0->12, 動画 0->83, 音楽 0->40, 天気 0->18, 税金 0->4; image 97->97, translate 4->9, ai 916->666 (whole-word)"
-    },
-    {
-      "branch": "ice2 stack (ux-audit, collector, board-picks, design-references on main 9cb7f5d1)",
-      "command": "npm test",
-      "result": "5,222 tests, 5,182 pass, 4 skipped, 36 fail (35 names); all 35 names also fail on untouched main 9cb7f5d1 (3 new main tests verified separately: dependency-security micromatch, noah-free-cloud, noah-free-python). tsc, lint:product, project/repository/design/release/schema/database checks pass; gitleaks 0."
-    },
-    {
-      "branch": "ice2/noah-launch 3f40a816 (+ stack)",
-      "command": "npm test",
-      "result": "5,237 tests, 5,196 pass, 37 fail; 1 new failure: tests/noah-route-unification 'Noah pages reuse the original features' caused by /noah/billing notFound -> reverted in 43f45e48 (test passes)."
-    },
-    {
-      "branch": "ice2/noah-launch",
-      "command": "new tests fail-before/pass-after",
-      "result": "noah-card-origin 3, noah-mac-menu 2, noah-upload-runs-on 1, noah-profile-signed-in-only 6, rockstar-entitlement-delivery-unconfigured 2: all fail on old files, pass on new."
-    },
-    {
-      "branch": "ice2/noah-launch",
-      "command": "local production build + check-web-security-response --record-local-production; release:check; Playwright",
-      "result": "PASS; release:check passes; upload note shown; phone/Linux menu has no Coconala, Mac (userAgentData macOS) has it; profile payout/ID groups show 'Signed-in accounts only'."
-    },
-    {
-      "branch": "ice2/noah-quota c5129571",
-      "command": "noah-browser-quota (6) + noah-browser-quota-flows (2) + 27 related files",
-      "result": "all pass (252 related tests); flow tests fail without hooks; tsc and lint pass; gitleaks 0."
-    },
-    {
-      "branch": "main f285200f (PR #37) + collector + board-picks + design-references + noah-taps (incl. ux-audit, launch, quota)",
-      "command": "npm test (fresh npm ci, React 19.2.9)",
-      "result": "5,279 tests, 5,242 pass, 4 skipped, 33 fail (32 names); every name is in the earlier environmental set; 0 new failures."
-    },
-    {
-      "branch": "ice2/noah-launch 2ce2d5b1 (merge of f285200f)",
-      "command": "33 screen-related test files; security evidence re-record; release:check; walk",
-      "result": "256/256 pass; PASS; release:check passes; walk: remaining small targets only those fixed by noah-taps."
-    },
-    {
-      "branch": "ice2/noah-taps",
-      "command": "walk on local production build",
-      "result": "saved?tab=agents, agents/new, usage, registration: small 0."
-    },
-    {
-      "branch": "ice2/noah-search-words 183c31fb",
-      "command": "70 common Japanese task words on the 1,957-entry catalog",
-      "result": "before: 15 words with 0 hits; after: all 70 words >= 1 hit; tests/noah-search-words (2) fail before, pass after."
-    },
-    {
-      "branch": "ice2/noah-all f2aef440 (9cbabc6c + #BOARDPICK->40, #REFLIB->42 + merge of PR #42 head c060ad57 / main cab0dc49)",
-      "command": "npm run project:check / repository:check / release:check / design:check / version:check",
-      "result": "all PASS. Tree differs from the verified 9cbabc6c only in CHANGELOG.md (two lines in main's order, numbers filled), so the full suite was not re-run."
-    },
-    {
-      "branch": "ice2/noah-cloud-neurons cadd58b1 (62f5ace0 + main 5631fa7c)",
-      "command": "node --test tests/noah-free-cloud-neurons.test.mjs + cloud/usage/UI tests (11 files); npm test",
-      "result": "new 6/6 pass (fail on main: missing exports); 84/84 related pass; full 5,319 tests, 5,281 pass, 34 fail (33 names): 32 untouched-main baseline + Mini unifont (sites/avocado-mini deps not installed in the fresh worktree). typecheck, oxlint, project/repository/release/design/version checks PASS; build-free.mjs bundles (263,722 gzip bytes)."
-    },
-    {
-      "branch": "claude/ice2/pr41-on-main a6195ddd (PR #41 5e16872e merged onto 3f0b7341)",
-      "command": "21 conflict-area test files; release:check after re-recording web security evidence on a 19.2.9 build; noah-public-walk on local build; npm test",
-      "result": "141/141 targeted pass; release:check PASS; walk small 0 on /noah,/noah/ready,/noah/explore,/noah/profile (empty local DB); full 5,277 tests, 5,234 pass, 39 fail (incl. env-only dependency/package gaps)."
-    },
-    {
-      "branch": "claude/ice2/pr41-on-main-2 b378f5bf (PR #41 1cca7753 merged onto main 5631fa7c)",
-      "command": "13 shell/pin/store test files + tests/noah-card-origin; npm run typecheck; release/project/repository/design/version checks; web security evidence re-recorded on a local wrangler build",
-      "result": "115/115 pass; typecheck 0; all checks exit 0; evidence PASS (8 universal headers)."
-    },
-    {
-      "branch": "claude/ice2/pr41-on-main-2 e4762277 (「すべて見る」 44px)",
-      "command": "node --test tests/noah-store-heading-tap.test.mjs before and after the CSS change",
-      "result": "before: 0 pass / 1 fail (min-height 40px); after: 1 pass / 0 fail."
-    },
-    {
-      "branch": "claude/ice2/pr41-on-main-2 8c5be853 (e4762277 + main 6283f6a6)",
-      "command": "npm run typecheck; release/project/repository/design/version checks; shell/pin/store/card-origin/heading-tap/i18n/cloud-api/free-cloud-neurons tests",
-      "result": "typecheck 0; checks 0; 129/130 pass; 1 env-only failure (free-cloud-neurons bundling needs @modelcontextprotocol/server-* not installed in the shared node_modules; same files pass in cloudwt)."
-    },
-    {
-      "branch": "Sheets artifact Noah 300人の利益試算 (rev 11)",
-      "command": "cross-check sheet formulas against scratchpad/fermi/model2.py and a hand calculation (S3 month 1: users 30)",
-      "result": "S1-S3 steady state match the Python model exactly (S4 differs only because Python applied a referral fee to S4); S3 month 1 hand calc 101,827.44 = sheet."
-    },
-    {
-      "branch": "claude/ice2/noah-trial-money 0ba447ad (docs only)",
-      "command": "project/repository/release/design/version checks; 8 test files that read trial-300/spec-124/spec-110/07/CHANGELOG",
-      "result": "all checks exit 0; 71/71 pass."
-    },
-    {
-      "branch": "claude/ice2/pr41-on-main-2 9ee7658a (8c5be853 + main 89fee198)",
-      "command": "npm run typecheck; release/project/repository/design/version checks; shell/pin/store/card-origin/heading-tap/cloud-api/i18n/agent-explanation tests",
-      "result": "typecheck 0; checks 0; 139/139 pass."
-    },
-    {
-      "branch": "production avoado.si (main, published ~05:18 by another thread)",
-      "command": "prod/accept.mjs; prod/screens.cjs; prod/mac-menu.cjs; prod/walk90.cjs; scripts/noah-public-walk.mjs",
-      "result": "accept 16/16; screens: 画像 3 cards, ad notice, phone Coconala 0, profile locked 2; Mac menu Mac 1 / Linux 0; walk rows 1,2,3,4,6,7,10 pass (5 skipped by design); public walk overflow 0 on 6 pages, small targets 1 (/noah すべて見る 73x40). trial?me=1 404 is by design (trial closed)."
-    },
-    {
-      "branch": "claude/ice2/noah-store-heading-tap 682fceab (on main ca38ad01)",
-      "command": "node tests/noah-store-heading-tap.test.mjs on main CSS and on the branch; store tests; release/project/repository/design/version checks",
-      "result": "new test fails on main (40px) and passes on the branch (44px); 11/11 store tests pass; 5 checks exit 0."
-    },
-    {
-      "branch": "claude/ice2/noah-trial-profit 67421771 (docs only, on main 71014dfd)",
-      "command": "python3 scratchpad/profit/model.py (rebuild of the Sheets model vs the 12か月 sheet + まとめ + 分かれ目); release/project/repository/design/version checks; node --test noah-page-consolidation, noah-shelf, noah-trial",
-      "result": "504 values checked, 0 mismatches; checks exit 0; tests 17/19 (the 2 failures also fail on main: Cannot find package 'typescript' in tests/fixtures/noah/screen.mjs, environmental)."
-    },
-    {
-      "branch": "production avoado.si (13:40, after PR #54)",
-      "command": "scripts/noah-public-walk.mjs https://avoado.si; curl internal entitlement-deliveries",
-      "result": "/noah small 0 (44px live); 10 pages overflow 0; new small: /noah/registration 2, /noah/help 2; entitlement 401."
-    },
-    {
-      "branch": "claude/ice2/noah-earning-average 4b928374 (docs only, on main d5e925f4)",
-      "command": "scratchpad/profit/earn.py vs sheet 稼ぐ設計図 (revision 16); release/project/repository/design/version checks; node --test 13 files reading CHANGELOG/spec-110/spec-122/07/README/business",
-      "result": "sheet summary cells equal Python (477/857/-380/259; 224,155/402,960/102,360; 260/398; 147,547/201,747; 142,137/165,337; 319/377; 466/613); checks 0; 102/102 pass."
-    },
-    {
-      "branch": "main e32c86c4 (PR #60 merged)",
-      "command": "git show ice/main: docs/noah/business-blueprints-average.md, docs/noah-oss-agents-20261124.md (Open Interpreter fix present), CHANGELOG pull/60, 07 top lines, spec-110 goal-type line; Markdown table cell counts; relative links",
-      "result": "all present; tables 0 bad rows; all relative links resolve."
-    },
-    {
-      "branch": "claude/ice2/noah-final-fixes d2b2eb55 (on ice/main 7337b003)",
-      "command": "node --test tests/noah-help-tap.test.mjs tests/noah-signin-destination.test.mjs tests/noah-ask-host-share.test.mjs, each before and after the fix",
-      "result": "before the fix: 1 fail each (help rule missing; first-earning sign-in goes to /noah/account; second person passes only with the per-person count). After: 5/5 pass."
-    },
-    {
-      "branch": "claude/ice2/noah-final-fixes d2b2eb55",
-      "command": "node --experimental-strip-types --test (22 related files: noah-form, noah-ask, noah-launch-ops, noah-probe, noah-connect, noah-first-earning, noah-ready-ui, noah-standalone, noah-shared-compute-queue, ...)",
-      "result": "208/208 pass."
-    },
-    {
-      "branch": "claude/ice2/noah-final-fixes d2b2eb55",
-      "command": "npm run typecheck; npm run lint:product; npm run private:check project:check repository:check noah:screenless:check version:check design:check release:check baseline:check",
-      "result": "all exit 0."
-    },
-    {
-      "branch": "claude/ice2/noah-final-fixes d2b2eb55 vs ice/main 7337b003",
-      "command": "npm test (full, Node 22.23.5, root, 2 CPUs); then the 7 failing files on an untouched main worktree",
-      "result": "branch: 5,689 tests, 5,651 pass, 4 skipped, 34 fail. main: the same 7 files give the same 34 fails (migration-aliases 24: node:sqlite secure authorizer/serialize APIs missing in Node 22; mcp-connector 3; mcp 2; noah-operation-packs 2; mr-pc-adapter 1; noah-mac-runner 1; undici-dependency-security 1). CI uses Node 26.12.1."
-    },
-    {
-      "branch": "production avoado.si (before this PR) with scripts/noah-page-measure.mjs",
-      "command": "measure 74 Noah pages (app/noah + zodiac URLs + /noah/account) at 390 and 1280 as a browser person; then again with the PR's CSS injected",
-      "result": "before: overflow 0; small targets 390px 37 pages / 219, 1280px 47 pages / 196. with the PR's CSS injected: small 0 and overflow 0 on all 74 pages at both widths (account page also in its login and password-signup states)."
-    },
-    {
-      "branch": "production avoado.si (before this PR)",
-      "command": "node scripts/noah-prod-check.mjs accept https://avoado.si --write; ... loop --write; ... devices",
-      "result": "accept: 20 steps pass (search x3, connect -> tools -> ask -> result 791 chars -> disconnect, board create/remove, profile save/clear); one provider tool (dotsy get_plan) failed on their side. loop: row 1 pass; row 8 first half reaches the account page with passkey and login, but 3 small targets there (fixed in this PR). devices: Mac and Linux menus identical (10 links)."
-    },
-    {
-      "branch": "claude/ice2/noah-final-fixes 0572070e",
-      "command": "node --test (144 related files: noah-*, sky-*, rockstar-account*, common-os-entry*); npm run build; typecheck; lint:product; release:web-bundle/web-assets/private/project/repository/noah:screenless/version/design/release/baseline checks",
-      "result": "1,196 tests: 1,195 pass, 1 skipped, 0 fail. build ok and the compiled CSS has the floor rules; typecheck, lint and all 10 checks exit 0."
-    },
-    {
-      "branch": "production avoado.si (no branch)",
-      "command": "node scripts/noah-prod-check.mjs unverified https://avoado.si --write (D6; 167 agents, read-only no-input tools only, 1 call each)",
-      "result": "works 73, needs-key 23, input-undeclared 7, needs-input 17, no-read-only-tool 37, transient 1, broken-connect 9 (6 on ai.agentlookups), broken-tool 0. All connections disconnected. 2 browser persons."
-    },
-    {
-      "branch": "claude/ice2/noah-final-d6 3121b434",
-      "command": "node --test (355 related files: noah-*, sky-*, rockstar-account*, web-*, main-page-policy, os-*, release*); npm run build; typecheck; lint:product; release:check (after re-recording web security evidence) and web-bundle/web-assets/private/project/repository/noah:screenless/version/design/baseline checks",
-      "result": "2,526 tests: 2,522 pass, 1 skipped, 3 fail (known on main with Node 22: noah-mac-runner needs Node 24+, noah-operation-packs). build ok; typecheck, lint and all 11 checks exit 0."
-    },
-    {
-      "branch": "claude/ice2/noah-final-d6 3121b434",
-      "command": "local production build via node scripts/local-wrangler.mjs (Wrangler 4.147): Playwright on /noah/goals/health in the Noah shell at 390/1280 + Host: avoado.si routing",
-      "result": "200, overflow 0, small 0, page errors 0 at both widths; menu shows 体調ノート (44px); Host avoado.si: /noah/goals/health 200, /noah/goals 404, /noah/zzz 404."
-    },
-    {
-      "branch": "claude/ice2/noah-final-d6 3121b434",
-      "command": "npm test (full suite, Node 22.23 locally)",
-      "result": "5,715 tests: 5,677 pass, 4 skipped, 34 fail — the same 7 files that fail on untouched main here (migration-aliases 24, mcp-connector 3, mcp 2, noah-operation-packs 2, mr-pc-adapter 1, noah-mac-runner 1, undici-dependency-security 1); none touched by this branch. 7m14s."
-    },
-    {
-      "branch": "https://github.com/iceiceice999/rock/pull/127",
-      "command": "Node targeted: D2/D7/D8 and production check",
-      "result": "12 pass, 0 fail"
-    },
-    {
-      "branch": "https://github.com/iceiceice999/rock/pull/126",
-      "command": "Node targeted: D6, health and route policy",
-      "result": "19 pass, 0 fail"
-    },
-    {
-      "branch": "main 7337b003",
-      "command": "0060 labels synthetic SQLite",
-      "result": "pass; production unchanged"
-    },
-    {
-      "branch": "https://github.com/iceiceice999/rock/pull/127",
-      "command": "GitHub Actions final",
-      "result": "8 checks passed; merged"
-    },
-    {
-      "branch": "https://github.com/iceiceice999/rock/pull/126",
-      "command": "GitHub Actions final",
-      "result": "7 checks passed; merged"
-    },
-    {
-      "branch": "main 1bf5d961, Sites v268",
-      "command": "Live health notes, 390px and 1280px",
-      "result": "HTTP 200, save/reload/weekly review/export/delete pass; no overflow"
-    },
-    {
-      "branch": "main 1bf5d961, Sites v268",
-      "command": "Live signed-out pages, 390px and 1280px",
-      "result": "75 per width, zero small targets/overflow/page exceptions, 67 HTTP 200 and 8 retired HTTP 410"
-    },
-    {
-      "branch": "main 1bf5d961, Sites v268",
-      "command": "Live desktop menus",
-      "result": "11 links each on Mac and Linux, zero differences"
-    }
-  ]
+ "date": "2026-11-22",
+ "runs": [
+  {
+   "branch": "claude/noah-partial-list",
+   "command": "node --experimental-strip-types --test tests/noah-result-presentation.test.mjs",
+   "result": "12 pass, 0 fail"
+  },
+  {
+   "branch": "claude/noah-partial-list",
+   "command": "npx tsc --noEmit",
+   "result": "0 errors"
+  },
+  {
+   "branch": "claude/noah-partial-list",
+   "command": "npx oxlint <changed files>",
+   "result": "0 findings on changed files"
+  },
+  {
+   "branch": "claude/noah-teikibin",
+   "command": "node --experimental-strip-types --test <15 files touching esim/operator/noah-cloud/sky-marketplace/start-local-web>",
+   "result": "134 pass, 1 skip, 0 fail"
+  },
+  {
+   "branch": "both",
+   "command": "GitHub Actions: SPIDER repair regressions, SPIDER CodeQL security, SPIDER repository security",
+   "result": "success"
+  },
+  {
+   "branch": "claude/noah-partial-list",
+   "command": "GitHub Actions: all checks on 7c7450d (verify, CodeQL, SPIDER x4)",
+   "result": "success; merged as f4c3dac"
+  },
+  {
+   "branch": "claude/noah-teikibin",
+   "command": "node --experimental-strip-types --test tests/noah-shelf*.test.mjs",
+   "result": "37 pass, 0 fail"
+  },
+  {
+   "branch": "claude/noah-teikibin",
+   "command": "GitHub Actions: all checks on 5e55094",
+   "result": "in progress"
+  },
+  {
+   "branch": "claude/noah-teikibin-ledger-124 (#410)",
+   "command": "node --test tests/noah-teikibin.test.mjs + 13 related files + database-status, migration-union, sites-owner-workspace-recovery",
+   "result": "all pass; CI all green; merged 29b986a"
+  },
+  {
+   "branch": "claude/integrate-102-sim-proof (#411)",
+   "command": "esim-sim-proof 18, auth tests (esim-cloud-*, eve-* 12 files), release:check, lint, tsc",
+   "result": "all pass (2 eve browser tests need generated private modules first)"
+  },
+  {
+   "branch": "claude/integrate-13-ios (#412)",
+   "command": "esim-ios-install, esim-purchase-recovery, pwa-installability, release-readiness 40, build + wrangler local web security record",
+   "result": "all pass; CI green; merged c4eb453 with #411 inside"
+  },
+  {
+   "branch": "claude/integrate-105-cloud-ops (#413) + claude/integrate-101-compute (#414)",
+   "command": "cloud-operations, 47 related tests, noah-cloud-usage, noah-compute-placement-recovery, launch tests",
+   "result": "all pass except noah-mac-runner test 4 (needs Apple Silicon; fails on main too); CI green; merged 4e3d00c"
+  },
+  {
+   "branch": "claude/noah-retention-103 (#415)",
+   "command": "noah-retention 5, churn-cohort 10, noah-unified-ui, noah-trial, noah-reviewer",
+   "result": "all pass; CI green; merged 4f3ecdc"
+  },
+  {
+   "branch": "claude/noah-collector-steady (#416)",
+   "command": "noah-cloud-collector 10, noah-agent-collector 10",
+   "result": "all pass; CI green before main moved"
+  },
+  {
+   "branch": "claude/security-rsc-19-2-9 (#417)",
+   "command": "npm run build; wrangler local: / /noah /noah/explore /noah/teikibin = 200; web security check PASS; release:check, lint, tsc, UI tests",
+   "result": "all pass; CI verify green; SPIDER secrets SCANNER_FAILED (timeout, not a finding)"
+  },
+  {
+   "branch": "claude/noah-board-picks (#418)",
+   "command": "noah-pins 11, 23 screen-harness tests, lint, tsc",
+   "result": "all pass; verify green; SPIDER secrets timeout"
+  },
+  {
+   "branch": "claude/spider-scan-time (#419)",
+   "command": "python unittest test_spider_repository_scan (6), test_spider_gitleaks_policy; local full-history gitleaks on main",
+   "result": "pass; full history 245 s, 0 findings"
+  },
+  {
+   "branch": "claude/design-references (#422)",
+   "command": "repository:check, project:check, design:check, gitleaks",
+   "result": "pass"
+  },
+  {
+   "branch": "iceiceice999/rock ice/main 94d2c762 (untouched)",
+   "command": "node --test on the 6 files that fail locally (mcp-connector, mcp, migration-aliases, mr-pc-adapter, noah-mac-runner, noah-operation-packs); npm audit --package-lock-only",
+   "result": "74 tests, 33 fail (root user / Node 22 lacks SQLite APIs; CI uses Node 26.12.1). audit 18 (critical 1, high 3)"
+  },
+  {
+   "branch": "iceiceice999/rock tmp/all-four (security + collector + board picks + design references on 94d2c762)",
+   "command": "npm test; tsc --noEmit; lint:product; repository/project/design/release/schema/database checks; gitleaks per commit",
+   "result": "5,137 tests, 5,099 pass, 34 fail: 33 identical to untouched main, 1 (undici-dependency-security) passes after npm ci --prefix sites/avocado-mini (4/4). All checks pass. gitleaks 0"
+  },
+  {
+   "branch": "iceiceice999/rock ice/security-rsc-19-2-9 4f26ac89",
+   "command": "npm run build; dist scan; wrangler local / /noah /noah/explore /noah/teikibin /noah/boards; check-web-security-response; release:web-bundle:check; release:web-assets:check; npm audit --package-lock-only",
+   "result": "build OK, no 19.2.8 in dist, 200 x4 + 307, web security PASS, bundle/assets OK, audit 10 (critical 0, high 1)"
+  },
+  {
+   "branch": "iceiceice999/rock ice/collector-steady ca5a6f66",
+   "command": "node --test noah-cloud-collector + noah-agent-collector",
+   "result": "20/20 pass"
+  },
+  {
+   "branch": "iceiceice999/rock ice/board-picks d14f1bdc",
+   "command": "node --test noah-pins + 23 screen-harness test files",
+   "result": "204/204 pass"
+  },
+  {
+   "branch": "iceiceice999/rock ice/design-references 0b94dead",
+   "command": "repository:check, project:check, design:check",
+   "result": "pass"
+  },
+  {
+   "branch": "production avoado.si (read-only, anonymous)",
+   "command": "Playwright walk of 27 pages at phone and PC width; GET probe of 145 API routes (anon and browser cookie); forged identity headers on read-only APIs; tap-target and overflow check at 390px; CORS and security headers",
+   "result": "no overflow; 60 x 200, 178 x 401, 41 x 404, 5 x 400, 4 x 503 (unconfigured); forged headers not honored; CORS closed; header tap targets 36px/32px (fixed); Japanese searches 0 results (fixed); details in docs/noah/ux-audit-2026-11-22.md"
+  },
+  {
+   "branch": "iceiceice999 main b310b319 + ux/audit fixes (local wrangler build)",
+   "command": "Playwright: add-agent Node template save; saved -> Agent tab; walk script on /noah, /noah/profile, /noah/saved?tab=agents, /noah/usage",
+   "result": "before fix: save failed with no test runner; after fix: POST /api/noah/agents 201 and the agent appears; Mac/sign-in sections hidden; header small targets 0"
+  },
+  {
+   "branch": "ux/audit",
+   "command": "node --test noah-search-terms, noah-upload-account-ui, noah-library-public-sections, noah-usage-operator-tab, noah-revenue-catalog-cache, noah-agent-directory, noah-revenue-directory, noah-revenue-matching",
+   "result": "all pass; each new test fails on the old file and passes on the fixed one"
+  },
+  {
+   "branch": "ux/audit search check",
+   "command": "old vs new search on the 1,957-entry production catalog snapshot",
+   "result": "画像 0->105, 画像生成 0->27, 翻訳 0->9, 要約 0->12, 動画 0->83, 音楽 0->40, 天気 0->18, 税金 0->4; image 97->97, translate 4->9, ai 916->666 (whole-word)"
+  },
+  {
+   "branch": "ice2 stack (ux-audit, collector, board-picks, design-references on main 9cb7f5d1)",
+   "command": "npm test",
+   "result": "5,222 tests, 5,182 pass, 4 skipped, 36 fail (35 names); all 35 names also fail on untouched main 9cb7f5d1 (3 new main tests verified separately: dependency-security micromatch, noah-free-cloud, noah-free-python). tsc, lint:product, project/repository/design/release/schema/database checks pass; gitleaks 0."
+  },
+  {
+   "branch": "ice2/noah-launch 3f40a816 (+ stack)",
+   "command": "npm test",
+   "result": "5,237 tests, 5,196 pass, 37 fail; 1 new failure: tests/noah-route-unification 'Noah pages reuse the original features' caused by /noah/billing notFound -> reverted in 43f45e48 (test passes)."
+  },
+  {
+   "branch": "ice2/noah-launch",
+   "command": "new tests fail-before/pass-after",
+   "result": "noah-card-origin 3, noah-mac-menu 2, noah-upload-runs-on 1, noah-profile-signed-in-only 6, rockstar-entitlement-delivery-unconfigured 2: all fail on old files, pass on new."
+  },
+  {
+   "branch": "ice2/noah-launch",
+   "command": "local production build + check-web-security-response --record-local-production; release:check; Playwright",
+   "result": "PASS; release:check passes; upload note shown; phone/Linux menu has no Coconala, Mac (userAgentData macOS) has it; profile payout/ID groups show 'Signed-in accounts only'."
+  },
+  {
+   "branch": "ice2/noah-quota c5129571",
+   "command": "noah-browser-quota (6) + noah-browser-quota-flows (2) + 27 related files",
+   "result": "all pass (252 related tests); flow tests fail without hooks; tsc and lint pass; gitleaks 0."
+  },
+  {
+   "branch": "main f285200f (PR #37) + collector + board-picks + design-references + noah-taps (incl. ux-audit, launch, quota)",
+   "command": "npm test (fresh npm ci, React 19.2.9)",
+   "result": "5,279 tests, 5,242 pass, 4 skipped, 33 fail (32 names); every name is in the earlier environmental set; 0 new failures."
+  },
+  {
+   "branch": "ice2/noah-launch 2ce2d5b1 (merge of f285200f)",
+   "command": "33 screen-related test files; security evidence re-record; release:check; walk",
+   "result": "256/256 pass; PASS; release:check passes; walk: remaining small targets only those fixed by noah-taps."
+  },
+  {
+   "branch": "ice2/noah-taps",
+   "command": "walk on local production build",
+   "result": "saved?tab=agents, agents/new, usage, registration: small 0."
+  },
+  {
+   "branch": "ice2/noah-search-words 183c31fb",
+   "command": "70 common Japanese task words on the 1,957-entry catalog",
+   "result": "before: 15 words with 0 hits; after: all 70 words >= 1 hit; tests/noah-search-words (2) fail before, pass after."
+  },
+  {
+   "branch": "ice2/noah-all f2aef440 (9cbabc6c + #BOARDPICK->40, #REFLIB->42 + merge of PR #42 head c060ad57 / main cab0dc49)",
+   "command": "npm run project:check / repository:check / release:check / design:check / version:check",
+   "result": "all PASS. Tree differs from the verified 9cbabc6c only in CHANGELOG.md (two lines in main's order, numbers filled), so the full suite was not re-run."
+  },
+  {
+   "branch": "ice2/noah-cloud-neurons cadd58b1 (62f5ace0 + main 5631fa7c)",
+   "command": "node --test tests/noah-free-cloud-neurons.test.mjs + cloud/usage/UI tests (11 files); npm test",
+   "result": "new 6/6 pass (fail on main: missing exports); 84/84 related pass; full 5,319 tests, 5,281 pass, 34 fail (33 names): 32 untouched-main baseline + Mini unifont (sites/avocado-mini deps not installed in the fresh worktree). typecheck, oxlint, project/repository/release/design/version checks PASS; build-free.mjs bundles (263,722 gzip bytes)."
+  },
+  {
+   "branch": "claude/ice2/pr41-on-main a6195ddd (PR #41 5e16872e merged onto 3f0b7341)",
+   "command": "21 conflict-area test files; release:check after re-recording web security evidence on a 19.2.9 build; noah-public-walk on local build; npm test",
+   "result": "141/141 targeted pass; release:check PASS; walk small 0 on /noah,/noah/ready,/noah/explore,/noah/profile (empty local DB); full 5,277 tests, 5,234 pass, 39 fail (incl. env-only dependency/package gaps)."
+  },
+  {
+   "branch": "claude/ice2/pr41-on-main-2 b378f5bf (PR #41 1cca7753 merged onto main 5631fa7c)",
+   "command": "13 shell/pin/store test files + tests/noah-card-origin; npm run typecheck; release/project/repository/design/version checks; web security evidence re-recorded on a local wrangler build",
+   "result": "115/115 pass; typecheck 0; all checks exit 0; evidence PASS (8 universal headers)."
+  },
+  {
+   "branch": "claude/ice2/pr41-on-main-2 e4762277 (「すべて見る」 44px)",
+   "command": "node --test tests/noah-store-heading-tap.test.mjs before and after the CSS change",
+   "result": "before: 0 pass / 1 fail (min-height 40px); after: 1 pass / 0 fail."
+  },
+  {
+   "branch": "claude/ice2/pr41-on-main-2 8c5be853 (e4762277 + main 6283f6a6)",
+   "command": "npm run typecheck; release/project/repository/design/version checks; shell/pin/store/card-origin/heading-tap/i18n/cloud-api/free-cloud-neurons tests",
+   "result": "typecheck 0; checks 0; 129/130 pass; 1 env-only failure (free-cloud-neurons bundling needs @modelcontextprotocol/server-* not installed in the shared node_modules; same files pass in cloudwt)."
+  },
+  {
+   "branch": "Sheets artifact Noah 300人の利益試算 (rev 11)",
+   "command": "cross-check sheet formulas against scratchpad/fermi/model2.py and a hand calculation (S3 month 1: users 30)",
+   "result": "S1-S3 steady state match the Python model exactly (S4 differs only because Python applied a referral fee to S4); S3 month 1 hand calc 101,827.44 = sheet."
+  },
+  {
+   "branch": "claude/ice2/noah-trial-money 0ba447ad (docs only)",
+   "command": "project/repository/release/design/version checks; 8 test files that read trial-300/spec-124/spec-110/07/CHANGELOG",
+   "result": "all checks exit 0; 71/71 pass."
+  },
+  {
+   "branch": "claude/ice2/pr41-on-main-2 9ee7658a (8c5be853 + main 89fee198)",
+   "command": "npm run typecheck; release/project/repository/design/version checks; shell/pin/store/card-origin/heading-tap/cloud-api/i18n/agent-explanation tests",
+   "result": "typecheck 0; checks 0; 139/139 pass."
+  },
+  {
+   "branch": "production avoado.si (main, published ~05:18 by another thread)",
+   "command": "prod/accept.mjs; prod/screens.cjs; prod/mac-menu.cjs; prod/walk90.cjs; scripts/noah-public-walk.mjs",
+   "result": "accept 16/16; screens: 画像 3 cards, ad notice, phone Coconala 0, profile locked 2; Mac menu Mac 1 / Linux 0; walk rows 1,2,3,4,6,7,10 pass (5 skipped by design); public walk overflow 0 on 6 pages, small targets 1 (/noah すべて見る 73x40). trial?me=1 404 is by design (trial closed)."
+  },
+  {
+   "branch": "claude/ice2/noah-store-heading-tap 682fceab (on main ca38ad01)",
+   "command": "node tests/noah-store-heading-tap.test.mjs on main CSS and on the branch; store tests; release/project/repository/design/version checks",
+   "result": "new test fails on main (40px) and passes on the branch (44px); 11/11 store tests pass; 5 checks exit 0."
+  },
+  {
+   "branch": "claude/ice2/noah-trial-profit 67421771 (docs only, on main 71014dfd)",
+   "command": "python3 scratchpad/profit/model.py (rebuild of the Sheets model vs the 12か月 sheet + まとめ + 分かれ目); release/project/repository/design/version checks; node --test noah-page-consolidation, noah-shelf, noah-trial",
+   "result": "504 values checked, 0 mismatches; checks exit 0; tests 17/19 (the 2 failures also fail on main: Cannot find package 'typescript' in tests/fixtures/noah/screen.mjs, environmental)."
+  },
+  {
+   "branch": "production avoado.si (13:40, after PR #54)",
+   "command": "scripts/noah-public-walk.mjs https://avoado.si; curl internal entitlement-deliveries",
+   "result": "/noah small 0 (44px live); 10 pages overflow 0; new small: /noah/registration 2, /noah/help 2; entitlement 401."
+  },
+  {
+   "branch": "claude/ice2/noah-earning-average 4b928374 (docs only, on main d5e925f4)",
+   "command": "scratchpad/profit/earn.py vs sheet 稼ぐ設計図 (revision 16); release/project/repository/design/version checks; node --test 13 files reading CHANGELOG/spec-110/spec-122/07/README/business",
+   "result": "sheet summary cells equal Python (477/857/-380/259; 224,155/402,960/102,360; 260/398; 147,547/201,747; 142,137/165,337; 319/377; 466/613); checks 0; 102/102 pass."
+  },
+  {
+   "branch": "main e32c86c4 (PR #60 merged)",
+   "command": "git show ice/main: docs/noah/business-blueprints-average.md, docs/noah-oss-agents-20261124.md (Open Interpreter fix present), CHANGELOG pull/60, 07 top lines, spec-110 goal-type line; Markdown table cell counts; relative links",
+   "result": "all present; tables 0 bad rows; all relative links resolve."
+  },
+  {
+   "branch": "claude/ice2/noah-final-fixes d2b2eb55 (on ice/main 7337b003)",
+   "command": "node --test tests/noah-help-tap.test.mjs tests/noah-signin-destination.test.mjs tests/noah-ask-host-share.test.mjs, each before and after the fix",
+   "result": "before the fix: 1 fail each (help rule missing; first-earning sign-in goes to /noah/account; second person passes only with the per-person count). After: 5/5 pass."
+  },
+  {
+   "branch": "claude/ice2/noah-final-fixes d2b2eb55",
+   "command": "node --experimental-strip-types --test (22 related files: noah-form, noah-ask, noah-launch-ops, noah-probe, noah-connect, noah-first-earning, noah-ready-ui, noah-standalone, noah-shared-compute-queue, ...)",
+   "result": "208/208 pass."
+  },
+  {
+   "branch": "claude/ice2/noah-final-fixes d2b2eb55",
+   "command": "npm run typecheck; npm run lint:product; npm run private:check project:check repository:check noah:screenless:check version:check design:check release:check baseline:check",
+   "result": "all exit 0."
+  },
+  {
+   "branch": "claude/ice2/noah-final-fixes d2b2eb55 vs ice/main 7337b003",
+   "command": "npm test (full, Node 22.23.5, root, 2 CPUs); then the 7 failing files on an untouched main worktree",
+   "result": "branch: 5,689 tests, 5,651 pass, 4 skipped, 34 fail. main: the same 7 files give the same 34 fails (migration-aliases 24: node:sqlite secure authorizer/serialize APIs missing in Node 22; mcp-connector 3; mcp 2; noah-operation-packs 2; mr-pc-adapter 1; noah-mac-runner 1; undici-dependency-security 1). CI uses Node 26.12.1."
+  },
+  {
+   "branch": "production avoado.si (before this PR) with scripts/noah-page-measure.mjs",
+   "command": "measure 74 Noah pages (app/noah + zodiac URLs + /noah/account) at 390 and 1280 as a browser person; then again with the PR's CSS injected",
+   "result": "before: overflow 0; small targets 390px 37 pages / 219, 1280px 47 pages / 196. with the PR's CSS injected: small 0 and overflow 0 on all 74 pages at both widths (account page also in its login and password-signup states)."
+  },
+  {
+   "branch": "production avoado.si (before this PR)",
+   "command": "node scripts/noah-prod-check.mjs accept https://avoado.si --write; ... loop --write; ... devices",
+   "result": "accept: 20 steps pass (search x3, connect -> tools -> ask -> result 791 chars -> disconnect, board create/remove, profile save/clear); one provider tool (dotsy get_plan) failed on their side. loop: row 1 pass; row 8 first half reaches the account page with passkey and login, but 3 small targets there (fixed in this PR). devices: Mac and Linux menus identical (10 links)."
+  },
+  {
+   "branch": "claude/ice2/noah-final-fixes 0572070e",
+   "command": "node --test (144 related files: noah-*, sky-*, rockstar-account*, common-os-entry*); npm run build; typecheck; lint:product; release:web-bundle/web-assets/private/project/repository/noah:screenless/version/design/release/baseline checks",
+   "result": "1,196 tests: 1,195 pass, 1 skipped, 0 fail. build ok and the compiled CSS has the floor rules; typecheck, lint and all 10 checks exit 0."
+  },
+  {
+   "branch": "production avoado.si (no branch)",
+   "command": "node scripts/noah-prod-check.mjs unverified https://avoado.si --write (D6; 167 agents, read-only no-input tools only, 1 call each)",
+   "result": "works 73, needs-key 23, input-undeclared 7, needs-input 17, no-read-only-tool 37, transient 1, broken-connect 9 (6 on ai.agentlookups), broken-tool 0. All connections disconnected. 2 browser persons."
+  },
+  {
+   "branch": "claude/ice2/noah-final-d6 3121b434",
+   "command": "node --test (355 related files: noah-*, sky-*, rockstar-account*, web-*, main-page-policy, os-*, release*); npm run build; typecheck; lint:product; release:check (after re-recording web security evidence) and web-bundle/web-assets/private/project/repository/noah:screenless/version/design/baseline checks",
+   "result": "2,526 tests: 2,522 pass, 1 skipped, 3 fail (known on main with Node 22: noah-mac-runner needs Node 24+, noah-operation-packs). build ok; typecheck, lint and all 11 checks exit 0."
+  },
+  {
+   "branch": "claude/ice2/noah-final-d6 3121b434",
+   "command": "local production build via node scripts/local-wrangler.mjs (Wrangler 4.147): Playwright on /noah/goals/health in the Noah shell at 390/1280 + Host: avoado.si routing",
+   "result": "200, overflow 0, small 0, page errors 0 at both widths; menu shows 体調ノート (44px); Host avoado.si: /noah/goals/health 200, /noah/goals 404, /noah/zzz 404."
+  },
+  {
+   "branch": "claude/ice2/noah-final-d6 3121b434",
+   "command": "npm test (full suite, Node 22.23 locally)",
+   "result": "5,715 tests: 5,677 pass, 4 skipped, 34 fail — the same 7 files that fail on untouched main here (migration-aliases 24, mcp-connector 3, mcp 2, noah-operation-packs 2, mr-pc-adapter 1, noah-mac-runner 1, undici-dependency-security 1); none touched by this branch. 7m14s."
+  },
+  {
+   "branch": "https://github.com/iceiceice999/rock/pull/127",
+   "command": "Node targeted: D2/D7/D8 and production check",
+   "result": "12 pass, 0 fail"
+  },
+  {
+   "branch": "https://github.com/iceiceice999/rock/pull/126",
+   "command": "Node targeted: D6, health and route policy",
+   "result": "19 pass, 0 fail"
+  },
+  {
+   "branch": "main 7337b003",
+   "command": "0060 labels synthetic SQLite",
+   "result": "pass; production unchanged"
+  },
+  {
+   "branch": "https://github.com/iceiceice999/rock/pull/127",
+   "command": "GitHub Actions final",
+   "result": "8 checks passed; merged"
+  },
+  {
+   "branch": "https://github.com/iceiceice999/rock/pull/126",
+   "command": "GitHub Actions final",
+   "result": "7 checks passed; merged"
+  },
+  {
+   "branch": "main 1bf5d961, Sites v268",
+   "command": "Live health notes, 390px and 1280px",
+   "result": "HTTP 200, save/reload/weekly review/export/delete pass; no overflow"
+  },
+  {
+   "branch": "main 1bf5d961, Sites v268",
+   "command": "Live signed-out pages, 390px and 1280px",
+   "result": "75 per width, zero small targets/overflow/page exceptions, 67 HTTP 200 and 8 retired HTTP 410"
+  },
+  {
+   "branch": "main 1bf5d961, Sites v268",
+   "command": "Live desktop menus",
+   "result": "11 links each on Mac and Linux, zero differences"
+  },
+  {
+   "branch": "production avoado.si after PR #127/#126 (main 1bf5d961)",
+   "command": "node scripts/noah-prod-check.mjs all https://avoado.si --write",
+   "result": "pages: 75 × 390/1280 × signed-out/browser person: overflow 0, small 0, errors 0, 404 0. devices ok (11 menu links, same on Mac/Linux). accept 16/16. loop rows 1 and 8a ok. probe: only /api/sky/commerce/[action] 503 「決済の接続設定が完了していません」 (Stripe not configured in production by design)."
+  },
+  {
+   "branch": "claude/ice2/noah-detail-open a0a2f90f",
+   "command": "node --test (noah-*, sky-*, main-page-policy, web-*: 2,460 tests); build; typecheck; lint; 11 checks; production agent pages with the section opened at 390/1280; local build iPhone 15 Pro for the notice",
+   "result": "2,456 pass, 1 skipped, 3 fail (known Node-22 noah-mac-runner/noah-operation-packs). New tests fail before and pass after. All checks exit 0. Opened detail: overflow 0, small 0 on 5 agents × 2 widths. Notice shows right under the save button inside the viewport."
+  }
+ ]
 }
