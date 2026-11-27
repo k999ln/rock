@@ -15,8 +15,10 @@ export default {fetch(request, env, ctx) {
 const bundle = await buildFree({ entryPoints: undefined, stdin: { contents: source, resolveDir: new URL('../services/noah-cloud-agents/', import.meta.url).pathname }, write: false });
 void test('stateless chat uses shared quota and deduplicates requests without persisting transcript or model output', async t => {
   let calls = 0, release;
+  const tool = { id: 'market:tool:mr-citations', name: '出典整理ツール', summary: '原稿の出典を整理する' };
+  const design = { name: '出典整理', summary: '出典の一覧を作る', input: '公開原稿', outcome: '整理した原稿', acceptance: '出典一覧がある', steps: [{ agentId: tool.id, role: '出典整理', output: '原稿' }] };
   const mf = new Miniflare(convertV4MiniflareOptions({ modules: true, script: bundle.outputFiles[0].text, compatibilityDate: '2026-10-01', compatibilityFlags: ['nodejs_compat'], bindings: { NOAH_CLOUD_KEY: key, NOAH_CLOUD_MODE: 'free' }, durableObjects: { BUDGET: { className: 'TestBudget', useSQLite: true } },
-    serviceBindings: { MODEL: async request => { const value = await request.json(); calls++; assert.equal(value.input.tools, undefined); if (calls === 1) await new Promise(r => { release = r; }); return Response.json({ usage: { prompt_tokens: 100, completion_tokens: 100 }, choices: [{ finish_reason: 'stop', message: { content: JSON.stringify({ reply: 'private-model-answer', plan: null }) } }] }); } },
+    serviceBindings: { MODEL: async request => { const value = await request.json(); calls++; assert.equal(value.input.tools, undefined); if (calls === 1) await new Promise(r => { release = r; }); return Response.json({ usage: { prompt_tokens: 100, completion_tokens: 100 }, choices: [{ finish_reason: 'stop', message: { content: JSON.stringify({ reply: 'private-model-answer', plan: value.input.messages[0].content.includes(tool.id) ? design : null }) } }] }); } },
   }));
   t.after(() => mf.dispose());
   const id = n => `00000000-0000-4000-8000-${String(n).padStart(12,'0')}`;
@@ -34,6 +36,10 @@ void test('stateless chat uses shared quota and deduplicates requests without pe
   const state = await (await mf.dispatchFetch('https://runtime/inspect')).json();
   assert.equal(state.jobs, 1); assert.ok(state.neurons > 0); assert.equal(Object.keys(state.leases).length, 0);
   assert.doesNotMatch(JSON.stringify(state), /private-user-question|private-model-answer|messages|content/);
-  for (let n = 2; n <= 12; n++) assert.equal((await rpc(n)).status, 200);
+  assert.equal((await rpc(2, { candidates: [{ ...tool, id: 'market:tool:unregistered' }] })).status, 400);
+  const selection = await rpc(2, { candidates: [tool] });
+  assert.equal(selection.status, 200);
+  assert.deepEqual((await selection.json()).plan, design);
+  for (let n = 3; n <= 12; n++) assert.equal((await rpc(n)).status, 200);
   assert.equal((await rpc(13)).status, 429); assert.equal(calls, 12);
 });

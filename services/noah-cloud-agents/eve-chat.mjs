@@ -1,10 +1,11 @@
+import { isEveParticipantAgent } from '../../lib/noah-eve-participant.ts';
 import { validEveMessages, eveChatModelMessages, parseEveChatReply, eveChatBytes } from '../../lib/eve-chat.ts';
 import { NOAH_CLOUD_MODEL, noahCloudId, noahCloudCallNeuronsCap, NOAH_FREE_CLOUD_LIMITS } from '../../lib/noah-cloud-contract.ts';
 const json = (body, status = 200) => Response.json(body, { status, headers: { 'Cache-Control': 'private, no-store' } });
 /** Never dispatch through a connection/job DO: model content exists only for this request. */
 export async function eveChat(body, env, ctx) {
   if (env.NOAH_CLOUD_MODE !== 'free' || !env.AI || !/^[a-f0-9]{64}$/.test(body.owner ?? '') || !noahCloudId(body.id) || !validEveMessages(body.messages)
-    || !Array.isArray(body.candidates) || body.candidates.length > 6 || !body.candidates.every(c => c && /^project-[a-f0-9]{64}$/.test(c.id) && typeof c.name === 'string' && c.name.length <= 100 && typeof c.summary === 'string' && c.summary.length <= 300)) return json({ error: 'invalid_chat' }, 400);
+    || !Array.isArray(body.candidates) || body.candidates.length > 6 || !body.candidates.every(c => c && typeof c.id === 'string' && (/^project-[a-f0-9]{64}$/.test(c.id) || isEveParticipantAgent(c.id)) && typeof c.name === 'string' && c.name.length <= 100 && typeof c.summary === 'string' && c.summary.length <= 300)) return json({ error: 'invalid_chat' }, 400);
   const input = { messages: eveChatModelMessages(body.messages, body.candidates), max_tokens: 1024, reasoning_effort: 'low', response_format: { type: 'json_object' } };
   const inputBytes = eveChatBytes(input), cap = noahCloudCallNeuronsCap(inputBytes, input.max_tokens);
   if (inputBytes > NOAH_FREE_CLOUD_LIMITS.modelInputBytes || cap > NOAH_FREE_CLOUD_LIMITS.jobNeurons) return json({ error: 'chat_too_large' }, 400);

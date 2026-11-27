@@ -14,7 +14,7 @@ public final class ParticipantActivity extends Activity {
     private final Handler main = new Handler(Looper.getMainLooper());
     private ParticipantSession active;
     private DeviceConditions conditions;
-    private CheckBox consent;
+    private CheckBox consent, eve;
     private EditText device, token;
     private Button start, stop;
     private TextView message;
@@ -50,6 +50,9 @@ public final class ParticipantActivity extends Activity {
         consent = new CheckBox(this);
         consent.setText("この端末で他の利用者の計算を行うことに同意する");
         form.addView(consent);
+        eve = new CheckBox(this);
+        eve.setText("Eveで組み合わせたAgentにも参加する。他の利用者が送った公開原稿と記事の設定を受け取り、出典の整形、無料記事の作成、CSVの整理をこの端末で行います。");
+        form.addView(eve);
         start = new Button(this); start.setText("端末参加を開始"); form.addView(start);
         stop = new Button(this); stop.setText("今すぐ停止"); form.addView(stop);
         stop.setEnabled(false);
@@ -90,10 +93,10 @@ public final class ParticipantActivity extends Activity {
         // The token lives only for this visible session. No cache, background task or boot receiver.
         token.setText("");
         final ParticipantSession[] own = new ParticipantSession[1];
-        own[0] = new ParticipantSession(this, conditions, id, secret, minutes,
+        own[0] = new ParticipantSession(this, conditions, id, secret, minutes, eve.isChecked(),
                 reason -> main.post(() -> { if (active == own[0]) end(reason); }));
         active = own[0];
-        start.setEnabled(false); stop.setEnabled(true); consent.setEnabled(false); duration.setEnabled(false);
+        start.setEnabled(false); stop.setEnabled(true); consent.setEnabled(false); eve.setEnabled(false); duration.setEnabled(false);
         active.start();
         message.setText("参加中です。画面を離れるか「今すぐ停止」で終了します。");
         main.postDelayed(watch, 1000);
@@ -113,13 +116,13 @@ public final class ParticipantActivity extends Activity {
         active = null;
         if (previous != null) previous.stop();
         main.removeCallbacks(watch);
-        start.setEnabled(true); stop.setEnabled(false); consent.setEnabled(true); consent.setChecked(false);
+        start.setEnabled(true); stop.setEnabled(false); consent.setEnabled(true); consent.setChecked(false); eve.setEnabled(true); eve.setChecked(false);
         duration.setEnabled(true); token.setText("");
         message.setText(reason);
     }
     @Override protected void onPause() {
         if (active != null) end("画面を離れたため、端末参加を停止しました。");
-        token.setText("");
+        consent.setChecked(false); eve.setChecked(false); token.setText("");
         super.onPause();
     }
     @Override public void onTrimMemory(int level) {
