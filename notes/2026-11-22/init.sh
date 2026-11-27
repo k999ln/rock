@@ -94,3 +94,4 @@ git worktree add -q --detach ../d6wt origin/claude/ice2/noah-final-d6 2>/dev/nul
 
 # Codex 2026-11-28: https://github.com/iceiceice999/rock/pull/127 https://github.com/iceiceice999/rock/pull/126
 # Sites v268; main 1bf5d961; restore point v267.
+# Sites v268: 75 routes checked at 390px and 1280px, signed out.

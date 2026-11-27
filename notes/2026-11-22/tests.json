@@ -345,6 +345,16 @@
       "branch": "main 1bf5d961, Sites v268",
       "command": "Live health notes, 390px and 1280px",
       "result": "HTTP 200, save/reload/weekly review/export/delete pass; no overflow"
+    },
+    {
+      "branch": "main 1bf5d961, Sites v268",
+      "command": "Live signed-out pages, 390px and 1280px",
+      "result": "75 per width, zero small targets/overflow/page exceptions, 67 HTTP 200 and 8 retired HTTP 410"
+    },
+    {
+      "branch": "main 1bf5d961, Sites v268",
+      "command": "Live desktop menus",
+      "result": "11 links each on Mac and Linux, zero differences"
     }
   ]
 }
