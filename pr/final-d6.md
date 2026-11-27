@@ -20,7 +20,7 @@ task 129 の D6（「まだ誰も動かしていない」Agent を本番で全�
 ## 確かめた事
 
 - 新しい試験 4 本と、足した試験: `tests/noah-goal-health.test.mjs`（式。日付と週・記録の形・壊れた保存の読み直し・振り返りの数・28 日で完成・注意の文・通信しない）、`tests/noah-goal-health-ui.test.mjs`（画面。記録 → 振り返り → 書き直し → 全部消すは 2 回押す・保存できない時の文）、`tests/noah-goal-health-store.test.mjs`（端末の保存先。読めない・書けない時）、`tests/noah-menu-served.test.mjs`（メニューの行き先が公開で 200。体調ノートを一覧に入れる前は落ちる）、`tests/noah-prod-unverified.test.mjs`（分け方・選び方・`--write` 無しでは動かない）。
-- 既存の試験は変えていない。関係する 355 file（2,526 件）: 2,522 件が通り、1 件は今までどおり飛ばし、3 件が落ちた。3 件は、手元の Node 22 で main でも落ちる物（`noah-mac-runner` の「Apple Silicon Mac と Node.js 24 以上が必要」と `noah-operation-packs`。PR #FINALFIX に書いた 34 件の中）。`npm test` の全部: FULLTEST。
+- 既存の試験は変えていない。関係する 355 file（2,526 件）: 2,522 件が通り、1 件は今までどおり飛ばし、3 件が落ちた。3 件は、手元の Node 22 で main でも落ちる物（`noah-mac-runner` の「Apple Silicon Mac と Node.js 24 以上が必要」と `noah-operation-packs`。PR #FINALFIX に書いた 34 件の中）。`npm test` の全部（`3121b434`、5,715 件）: 手元（Node 22.23）では 5,677 件が通り、4 件は今までどおり飛ばし、34 件が落ちた。34 件は、PR #FINALFIX に書いた物と同じ 7 file（migration-aliases 24・mcp-connector 3・mcp 2・noah-operation-packs 2・mr-pc-adapter 1・noah-mac-runner 1・undici-dependency-security 1）で、触っていない main でも手元で落ちる。この PR はそのどれも変えていない。CI（Node 26.12.1）で確かめる。
 - `npm run build`・`typecheck`・`lint:product`・release（release:check・web-bundle・web-assets）・private・project・repository・noah:screenless・version・design・baseline の check: 通る。
 - 手元の本番の build を、リポジトリの決まりの Wrangler で動かして:
   - `/noah/goals/health` は、Noah の殻の中で 390px と 1280px とも、はみ出し 0・小さい押す所 0・画面の誤り 0。メニューに「体調ノート」（英語のブラウザでは Health notes）があり、44px。
