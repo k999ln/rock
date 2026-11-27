@@ -36,14 +36,19 @@ const results = [];
 for (const route of routes(join(root, 'app/api')).sort()) {
   if (skip.test(route)) { results.push({ route, skipped: true }); continue; }
   for (const [who, headers] of [['anon', {}], ['browser', cookie ? { cookie } : {}]]) {
-    let status = -1, size = 0, keys = '';
+    let status = -1, size = 0, keys = '', error = null;
     try {
       const response = await fetch(base + fill(route), { headers, redirect: 'manual', signal: AbortSignal.timeout(20_000) });
       status = response.status;
       const body = await response.text(); size = body.length;
-      try { const json = JSON.parse(body); keys = Array.isArray(json) ? `array(${json.length})` : Object.keys(json).slice(0, 10).join(','); } catch { keys = body.slice(0, 60).replace(/\s+/g, ' '); }
-    } catch (error) { keys = String(error).slice(0, 80); }
-    results.push({ route, who, status, size, keys });
+      try {
+        const json = JSON.parse(body);
+        keys = Array.isArray(json) ? `array(${json.length})` : Object.keys(json).slice(0, 10).join(',');
+        // 誤りの文（例: 「決済の接続設定が完了していません。」）。設定していないだけの 503 と、壊れた 503 を分けるのに使う。
+        if (!Array.isArray(json) && typeof json?.error === 'string') error = json.error.slice(0, 120);
+      } catch { keys = body.slice(0, 60).replace(/\s+/g, ' '); }
+    } catch (failure) { keys = String(failure).slice(0, 80); }
+    results.push({ route, who, status, size, keys, error });
     await new Promise((resolve) => setTimeout(resolve, 120));
   }
 }

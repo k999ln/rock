@@ -26,8 +26,8 @@ export default function NoahGoalHealth() {
   const saved = log && today ? log.entries[today] : undefined;
   const [edits, setEdits] = useState<Partial<Record<NoahGoalHealthItem, number>>>({});
   const [noteEdit, setNoteEdit] = useState<string | null>(null);
-  const [message, setMessage] = useState('');
-  const [error, setError] = useState('');
+  // 知らせは、押したボタンのすぐ下に出す（スマホでは、ページの上に出すと画面の外になって見えない。2026-11-28）。
+  const [notice, setNotice] = useState<{ where: 'save' | 'data'; text: string; error: boolean } | null>(null);
   const [confirmingDelete, setConfirmingDelete] = useState(false);
   const value = (key: NoahGoalHealthItem) => edits[key] ?? saved?.[key] ?? null;
   const note = noteEdit ?? saved?.note ?? '';
@@ -38,13 +38,13 @@ export default function NoahGoalHealth() {
 
   function save() {
     if (!log || !ready) return;
-    setError(''); setMessage('');
     try {
       const next = noahGoalHealthRecord(log, today, { sleep: value('sleep')!, body: value('body')!, mood: value('mood')!, note });
-      if (write(JSON.stringify(next))) setMessage(`${dayLabel(today)}の記録を、この端末に保存しました。`); else setError(unstored);
+      const stored = write(JSON.stringify(next));
+      setNotice({ where: 'save', text: stored ? `${dayLabel(today)}の記録を、この端末に保存しました。` : unstored, error: !stored });
       setEdits({}); setNoteEdit(null);
     } catch (failure) {
-      setError(failure instanceof Error ? failure.message : '保存できませんでした。');
+      setNotice({ where: 'save', text: failure instanceof Error ? failure.message : '保存できませんでした。', error: true });
     }
   }
   function download() {
@@ -57,19 +57,20 @@ export default function NoahGoalHealth() {
   }
   function erase() {
     if (!confirmingDelete) { setConfirmingDelete(true); return; }
-    setConfirmingDelete(false); setEdits({}); setNoteEdit(null); setError('');
-    if (write(null)) setMessage('この端末の記録を、全部消しました。'); else setError(unstored);
+    setConfirmingDelete(false); setEdits({}); setNoteEdit(null);
+    const stored = write(null);
+    setNotice({ where: 'data', text: stored ? 'この端末の記録を、全部消しました。' : unstored, error: !stored });
   }
 
   const history = log ? Object.keys(log.entries).sort((a, b) => b.localeCompare(a)).slice(0, 14) : [];
+  const shown = (where: 'save' | 'data') => notice?.where !== where ? null
+    : notice.error ? <p role="alert" className={styles.error}>{notice.text}</p> : <output className={own.saved}>{notice.text}</output>;
   return <main className={styles.page}>
     <Link className={styles.back} href="/noah">Noahに戻る</Link>
     <header className={styles.heading}><h1>体調ノート</h1></header>
     <p className={own.lead}>目的型のAgent（無料）。毎朝の体調を3つ記録して、週ごとに振り返ります。4週間（28日分）そろったら完成です。</p>
     <div className={styles.groups}>
       <p className={own.notice}>{NOAH_GOAL_HEALTH_NOTICE}</p>
-      {error && <p role="alert" className={styles.error}>{error}</p>}
-      {message && <output>{message}</output>}
       {!log && <output>記録を読んでいます…</output>}
       {log && progress && <>
         <section className={styles.task} aria-labelledby="health-today">
@@ -84,6 +85,7 @@ export default function NoahGoalHealth() {
             <textarea value={note} maxLength={NOAH_GOAL_HEALTH_NOTE_MAX} onChange={(event) => setNoteEdit(event.target.value)} />
           </label>
           <div className={styles.actions}><button type="button" className={styles.primary} disabled={!ready} onClick={save}>この端末に保存する</button></div>
+          {shown('save')}
         </section>
 
         <section className={styles.task} aria-labelledby="health-goal">
@@ -124,6 +126,7 @@ export default function NoahGoalHealth() {
             <button type="button" className={styles.secondary} disabled={!history.length} onClick={download}>記録を書き出す（JSON）</button>
             <button type="button" className={styles.secondary} disabled={!history.length} onClick={erase}>{confirmingDelete ? 'もう一度押すと、全部消します' : 'この端末の記録を全部消す'}</button>
           </div>
+          {shown('data')}
         </section>
       </>}
     </div>

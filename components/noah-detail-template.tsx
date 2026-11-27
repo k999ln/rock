@@ -28,12 +28,16 @@ function DetailFeedback({ id }: { id: string }) {
   </section>;
 }
 
-/** One presentation for catalog, connected and private Agents. Actions stay owned by each caller. */
+/**
+ * One presentation for catalog, connected and private Agents. Actions stay owned by each caller.
+ * 「操作の流れと道具」（「使い方を読む」）は、最初から開いておく。開かないと、この Agent でできる事と使い方の流れが見えないため
+ * （本人 2026-11-28「最初からトグル開いてるようにして」）。閉じるのは本人の自由。
+ */
 export default function NoahDetailTemplate({ id, name, provider, summary, action, children, meta, feedbackId,
   icon, overviewTitle, intro, requestForm, detailsLabel,
-  cover, pin, mediaId = id, expanded = false, category, privateAgent = false,
+  cover, pin, mediaId = id, category, privateAgent = false,
 }: { id: string; name: string; provider?: string; summary?: string; action?: ReactNode; children?: ReactNode;
-  meta?: ReactNode; feedbackId?: string; cover?: NoahCoverView; pin?: NoahPin; mediaId?: string; expanded?: boolean;
+  meta?: ReactNode; feedbackId?: string; cover?: NoahCoverView; pin?: NoahPin; mediaId?: string;
   category?: string; privateAgent?: boolean;
   icon?: ReactNode; overviewTitle?: string; intro?: ReactNode; requestForm?: ReactNode; detailsLabel?: string;
 }) {
@@ -61,7 +65,7 @@ export default function NoahDetailTemplate({ id, name, provider, summary, action
       </section>
       {intro}
       {requestForm}
-      {children && <details ref={more} className={styles.templateMore} id="noah-detail-more" open={expanded || undefined}>
+      {children && <details ref={more} className={styles.templateMore} id="noah-detail-more" open>
         <summary>{detailsLabel ?? t('使い方を読む')}</summary><div>{children}</div>
       </details>}
       {feedbackId ? <DetailFeedback key={feedbackId} id={feedbackId} />

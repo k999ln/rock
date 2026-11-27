@@ -162,7 +162,7 @@ export default function NoahReadyDetail({ id, tool = null, from = null, internal
   return <NoahDetailTemplate id={detail.id} mediaId={mediaId} name={detail.pin?.title ?? guide?.name ?? detail.name} provider={detail.provider || undefined}
     pin={detail.pin}
     summary={lead || t('（説明はありません）')} overviewTitle={pitch}
-    feedbackId={detail.listed ? feedbackId ?? detail.id : undefined} expanded={Boolean(live)}
+    feedbackId={detail.listed ? feedbackId ?? detail.id : undefined}
     detailsLabel={detail.explanation ? t('操作の流れと道具') : undefined}
     icon={guide ? <span className={pageStyles.phoneMark} aria-hidden="true"><PhoneCall size={26} strokeWidth={1.8} /></span>
       : <NoahAppIcon name={detail.name} topic={noahPinTopic(detail.name, detail.summary)} className={pageStyles.appMark} />}

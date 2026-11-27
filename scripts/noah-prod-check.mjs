@@ -163,15 +163,26 @@ async function devices() {
   return { ok: links.mac.length > 0 && !onlyLinux.length, menu: links.mac.length, onlyMac, onlyLinux };
 }
 
-/** API の probe（読むだけ）。500 番台と、応答の無い物を落ちとする。 */
+// 本人がまだ設定していないだけの機能（例: 本番の決済。本番の Stripe の鍵は本人の許可が要る。AGENTS.md の 6）が返す 503 の文。
+const NOT_CONFIGURED = /設定が完了していません|not configured/i;
+/**
+ * probe の結果の判定。500 番台と、応答の無い物を落ちとする。ただし 503 で「設定が完了していません」と答えた物は、
+ * 落ちではなく「設定していない」として別に出す（壊れてはいない。設定したら 200 になる）。
+ */
+export function noahProbeVerdict(rows) {
+  const counts = {};
+  for (const row of rows) counts[row.status] = (counts[row.status] ?? 0) + 1;
+  const label = (row) => `${row.who} ${row.status} ${row.route}`;
+  const unconfigured = rows.filter((row) => row.status === 503 && NOT_CONFIGURED.test(row.error ?? '')).map(label);
+  const broken = rows.filter((row) => (row.status >= 500 || row.status === -1) && !(row.status === 503 && NOT_CONFIGURED.test(row.error ?? ''))).map(label);
+  return { ok: !broken.length, counts, broken, unconfigured };
+}
+
+/** API の probe（読むだけ）。 */
 function probe() {
   const result = spawnSync(process.execPath, [join(root, 'scripts/noah-public-probe.mjs'), origin, '--json'], { encoding: 'utf8', maxBuffer: 64 * 1024 * 1024 });
   if (result.status !== 0) return { ok: false, error: (result.stderr || '').slice(0, 400) };
-  const rows = JSON.parse(result.stdout).filter((row) => !row.skipped);
-  const counts = {};
-  for (const row of rows) counts[row.status] = (counts[row.status] ?? 0) + 1;
-  const broken = rows.filter((row) => row.status >= 500 || row.status === -1).map((row) => `${row.who} ${row.status} ${row.route}`);
-  return { ok: !broken.length, counts, broken };
+  return noahProbeVerdict(JSON.parse(result.stdout).filter((row) => !row.skipped));
 }
 
 /** 受入（書き込みあり）。知らない人のブラウザ 1 つ。作った物は finally で消す。 */
