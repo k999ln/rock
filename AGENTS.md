@@ -58,6 +58,7 @@
 
 - 追記型文書（CHANGELOG, docs/structure/07, 各設計書の日付節）は両側を保全。README.md と data/*.json は新しい側を土台に古い側の差分だけ足す。片側で丸ごと解決しない。
 - avoado.si のリリースは GitHub `iceiceice999/rock` の `origin/main` を正本とする。新しい変更と PR はこのリポジトリに集約する。公開済みソースに独自の変更があれば先に PR で main に取り込む。Sites の版を有効にする前に、最新 main と保存する Sites ソースの両方で `git rev-parse 'HEAD^{tree}'` を照合する。照合には追跡ファイルの内容、パス、実行属性が含まれる。検証した main の SHA と公開版を記録する。
+- 公開した後は `npm run noah:prod:check -- https://avoado.si --out=<Git の外の dir>` で本番を確かめ、結果を PR か記録に書く（Noah の全部の画面を 390px・1280px、本人の有無で測る。はみ出し・44px より小さい押す所・画面の誤りは 0。API の probe と端末の違い）。接続・依頼の流れを変えた時は `--write` も付ける（受入と一周。作った物は最後に消す）。Playwright（Chromium）が要る。無い所では、ある所で動かす。
 
 ## 9. 画面を作る時（デザイン参照ライブラリ）
 

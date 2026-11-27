@@ -21,7 +21,7 @@
 .back,
 .skyLink {
   display: inline-flex;
-  min-height: 36px;
+  min-height: 44px;
   align-items: center;
   gap: 8px;
   color: var(--sky-muted);

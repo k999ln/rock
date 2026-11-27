@@ -15,7 +15,7 @@
 ## やり方（全部の小項目で同じ）
 
 - 1 つの小項目を 1 つの PR にする。PR 本文に「わかった事・やった事・確かめた事・次の事」を書く。
-- 確かめの道具: `node scripts/noah-public-walk.mjs <origin> [画面の一覧]`（スマホ幅で開く。はみ出し・44px より小さい押す所・失敗した API）と、`node scripts/noah-public-probe.mjs <origin> [--json]`（GET を返す API を、知らない人とブラウザの本人の 2 通りで呼ぶ。`--json` は全部の結果を標準出力に出す。ファイルには書かない）。どちらも読むだけ。
+- 確かめの道具: `node scripts/noah-public-walk.mjs <origin> [画面の一覧]`（スマホ幅で開く。はみ出し・44px より小さい押す所・失敗した API）と、`node scripts/noah-public-probe.mjs <origin> [--json]`（GET を返す API を、知らない人とブラウザの本人の 2 通りで呼ぶ。`--json` は全部の結果を標準出力に出す。ファイルには書かない）。どちらも読むだけ。2026-11-27 から、まとめて `npm run noah:prod:check -- <origin>`（`scripts/noah-prod-check.mjs`。`app/noah` の全部の画面と星座名の URL を、390px・1280px、本人の有無で測る。API の probe と端末の違いも。`--write` で受入と一周（D5 の 1〜4・6・7・10）も。画面を測る規則は `scripts/noah-page-measure.mjs` で、本人の端末のブラウザでも同じ関数を実行できる）。
 - 本番で書き込む確かめ（接続・依頼・保存・登録情報）は、本人の許可がある時だけ。許可が無い時は、手元で本番と同じ形に build して確かめる（`npm run build` の後、`dist/server/.dev.vars` に試験用の `NOAH_PROFILE_KEYS` と `ROCKSTAR_LOCAL_DEVELOPMENT_USER_ID=""` を入れて wrangler で動かす。値は試験用だけ。本物の鍵を入れない）。
 - してはいけない事は AGENTS.md の 6 のとおり。特に: 本番 D1 への migration の適用、外部への登録・申込の送信、試験の削除と書き換え。
 - 判断が要る所（下の「本人の判断」）は、作らずに本人に聞く。
@@ -64,7 +64,10 @@
 
 ### D7 押す所を 44px 以上に（全部の画面）
 
-- **2026-11-27 本番で測って直した**（枝 `claude/ice2/noah-final-fixes`）: スマホ幅で歩いた 10 画面のうち、小さい押す所は `/noah/help` の文の外のリンク 2 つ（「マーケットへ戻る」120×19px・「Mac用Noahと導入手順を見る」203×19px）だけ。44px にした（`tests/noah-help-tap.test.mjs`）。両方の幅・サインインの有無・全部の画面は、公開の後に本番の確かめの道具で測る。
+- **2026-11-27 本番で全部の画面を測って直した**（枝 `claude/ice2/noah-final-fixes`）: 本番の確かめの道具（`scripts/noah-prod-check.mjs pages`）で、`app/noah` の全部の画面と星座名の URL（74 画面。利用開始の /noah/account を含む）を 390px・1280px、本人の有無で測った。はみ出しは 0。小さい押す所は 390px で 37 画面・219 個、1280px で 47 画面・196 個（チェックボックスの行・開く印・選ぶ欄・アイコンのボタンも数えた。前の 10 画面の歩きは、これらを数えていなかった）。
+  - 直し方: Noah の殻の中身の箱（`components/noah-service-shell.module.css` の `.content`・`.gridBody`）に、全部の画面で同じ下限を掛けた（ボタン・選ぶ欄・開く印・タブ・リンク・チェックボックスの行を 44px 以上。詳しさ 0 の `:where` なので、各画面の CSS が書いた表示・幅はそのまま）。各画面の CSS が 44px より小さく書いていた所（30〜43px）は、その CSS を 44px にした（`noah-pins`・`noah-mac-handoff`・`sky-tool-workspace`・`sky-mcp-center`・`sky-library`・`sky-commerce`・`sky-application`・`sky-output-center`・`rockstar-account`）。全体の CSS の部品（`.rock-button`・`.studio-*`・`.sky-*`）は、Noah の画面の中だけ 44px にした（ほかのサイトの画面は変えない）。
+  - 確かめ: 直した CSS を本番の画面に足して測ると、74 画面 × 2 つの幅で小さい押す所 0・はみ出し 0（利用開始の画面は、ログインと新規登録を開いた形も）。試験は `tests/noah-tap-floor.test.mjs`（下限の規則）・`tests/noah-help-tap.test.mjs`（/noah/help の 2 つ）。公開の後に、本番で同じ道具で測り直す。
+  - 審査者の画面（`/noah/review` の下）は、審査者でない人には 404（決めた通り）なので、この道具では測らない。
 - **2026-11-24 本番で測った**（PR #50 の後の公開。`scripts/noah-public-walk.mjs`）: `/noah`・`/noah/ready`・`/noah/explore`・`/noah/profile`・`/noah/saved`・`/noah/activity` は、はみ出し 0。小さい押す所は `/noah` の「注目のAgent」の「すべて見る」（73×40px）だけ。44px にした（`tests/noah-store-heading-tap.test.mjs`）。
 - **2026-11-23 Claude が主な 9 画面を済ませた**（枝 `claude/ice2/noah-taps`）: 手元の本番と同じ build で、`/noah`・探す・保存・マイAgent・実行中・登録情報・追加・利用状況・登録サポートが「small 0」。PR #37（Agent Store）の行の評価の札（30px）・「その他の操作」（38px）・`productPill`（40px）も 44px にした（枝 `claude/ice2/noah-store-taps`。本番の行に同じ規則を足して 44px になる事を確かめた）。残り: ほかの画面。
 
