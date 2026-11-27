@@ -54,6 +54,7 @@
 2. **全部の設計図を止めている 2 つの工程を埋める。** [spec-122](noah/spec-122-business-blueprints.md) の 2026-11-22 の結果では、市場調査と成果の読み取りが 433 件すべてを止めている。市場調査 = DeerFlow・GPT-Researcher（公開の頁は Firecrawl）。成果の読み取り = browser-use か Stagehand で、本人がサインインしたブラウザの ASP・売り場の画面を読む（サインインと口座は本人。Codex の PR #374 は Chrome で ASP を読んでいる）。どれも 5 章の「確かめる」（見本の仕事と決まった検査）を通してから使う。
    - 2026-11-27 追記: 2 つとも、Eve の部品で埋まった（2026-11-24、task 130）。`data/noah-business-capabilities.json` の `research.market` = `eve-part:keyword-research`、`tracking.results` = `eve-part:results-csv`（成果は、ASP から書き出した CSV を読む）。部品は手元の Qwen で確かめた版なので、別のモデルで動かす時は確かめ直す。DeerFlow・browser-use は、部品で足りない時（画面を直に読む・深く調べる）の次の候補として残す。
 3. **目的型（ヘルスケアなど）は、記憶と決まった時刻の仕事を持つ常駐の Agent に、記録の道具をつなぐ。** 例「1 キロ痩せたい」: Hermes Agent（記憶と cron。Noah のクラウドで動いている）＋ SparkyFitness か HiMe（食事・体重・睡眠の記録）＋ 本人が使うチャットの窓口（LINE など）。毎日の確認と週の振り返りを回し、目標に届いたら完成。値段は一旦無料（本人回答 2026-11-24）。医療の判断に当たる事（診断・薬の指示）は言わない。
+   - 2026-11-27 追記: 1 つ目を「体調ノート」（`/noah/goals/health`、無料、task 142、[spec-goal-health](noah/spec-goal-health.md)）として出した（本人の許可 2026-11-27）。まずは Noah の画面だけで、毎朝の睡眠・体・気分を記録して週ごとに振り返る形。記録は端末のブラウザにだけ置くので、常駐の Agent（Hermes）と LINE の窓口は、記録の置き場所と同意の文を本人が決めてからつなぐ。SparkyFitness・HiMe は、食事・体重・時計の数を扱う時の候補として残す。
 4. **Eve が足りない Agent を作る時の作り手。** OpenCode・Codex CLI・OpenHands を箱の中で動かす（[spec-122](noah/spec-122-business-blueprints.md) 5 章の 3）。アプリの設計図（App Store × 5）もこれで作る。
 5. **本人ごとの記憶。** 複数の Agent が同じ本人の文脈を使う時は Mem0 か Letta。健康の記録は本人の側に置く（扱いの決まりは別に決める）。
 
