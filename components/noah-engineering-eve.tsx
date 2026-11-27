@@ -6,12 +6,13 @@ import { engineeringEveDraft } from '@/lib/noah-engineering-eve';
 import type { NoahEngineeringStep } from '@/lib/noah-engineering';
 import type { NoahLocale } from '@/lib/noah-i18n';
 import { OWNER_SCOPE_HEADER, readOwnerScope } from '@/lib/owner-intent';
-import { eveChatContext, evePlanDraft, type EveChatCandidate, type EveChatPlan } from '@/lib/eve-chat';
+import { eveChatContext, evePlanDraft, eveCandidateHref, type EveChatCandidate, type EveChatPlan } from '@/lib/eve-chat';
 import { eveLocalStore, newEveChat, type EveLocalChat, type EveLocalSummary, type EveLocalMessage } from '@/lib/eve-chat-local';
 import { useNoahLocale } from './noah-locale';
+import EveParticipantRun from './eve-participant-run';
 import styles from './noah-engineering-eve.module.css';
 
-const examples = ['会議メモから担当者別のタスクを作りたい', '毎朝ニュースを集めて短くまとめたい', 'いま使っているAgentを組み合わせたい'];
+const examples = ['会議メモから担当者別のタスクを作りたい', '毎朝ニュースを集めて短くまとめたい', '原稿の出典を整理して、記事の無料版を作りたい'];
 export default function NoahEngineeringEve({ stage = 'create', draftLocale, emptyDraft = false }: {
   stage?: NoahEngineeringStep; draftLocale?: NoahLocale; emptyDraft?: boolean;
 }) {
@@ -143,9 +144,16 @@ export default function NoahEngineeringEve({ stage = 'create', draftLocale, empt
           <h3>{message.plan.name}</h3><p>{message.plan.summary}</p>
           <dl><dt>{t('入力')}</dt><dd>{message.plan.input}</dd><dt>{t('受け取る成果')}</dt><dd>{message.plan.outcome}</dd><dt>{t('試すときの合格条件')}</dt><dd>{message.plan.acceptance}</dd></dl>
           <ol>{message.plan.steps.map((step, i) => <li key={i}><strong>{step.role}</strong><p>{step.output}</p>
-            {step.agentId ? <a href={'/noah/discover/agent?id=' + encodeURIComponent(step.agentId)}>{message.candidates?.find(item => item.id === step.agentId)?.name ?? t('候補のAgentを確認')}</a> : <span>{t('新しく開発する部分')}</span>}
+            {step.agentId ? <a href={eveCandidateHref(step.agentId)}>{message.candidates?.find(item => item.id === step.agentId)?.name ?? t('候補のAgentを確認')}</a> : <span>{t('新しく開発する部分')}</span>}
           </li>)}</ol>
           <p className={styles.note}>{t('設計案です。Agent同士の接続や動作は、まだ確認していません。')}</p>
+          <EveParticipantRun key={message.participantRequestId ?? message.id} plan={message.plan} candidates={message.candidates ?? []} owner={chat.owner} requestId={message.participantRequestId ?? message.id}
+            onNewRun={() => {
+              const active = current.current;
+              if (!active || active.id !== chat.id || active.owner !== chat.owner || storageError) return;
+              const participantRequestId = crypto.randomUUID();
+              void persist({ ...active, messages: active.messages.map(item => item.id === message.id ? { ...item, participantRequestId } : item) });
+            }} />
           <button className={styles.primary} type="button" disabled={busy} onClick={() => void savePlan(message.plan!, message.candidates ?? [])}>{t('設計案をNoahの下書きに保存')}</button>
           <p className={styles.note}>{t('この設計案だけをクラウドに保存し、コード・接続先の設定へ進みます。会話履歴は送りません。')}</p>
         </div>}

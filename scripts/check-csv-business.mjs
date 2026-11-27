@@ -64,7 +64,9 @@ for (const required of [
 ])
   if (!contract.includes(required))
     throw new Error(`CSV_CONTRACT_MISSING:${required}`);
-const source = readFileSync(resolve(root, 'lib/csv-transform.ts'), 'utf8');
+const source = ['lib/csv-transform.ts', 'lib/csv-table.ts']
+  .map(file => readFileSync(resolve(root, file), 'utf8'))
+  .join('\n');
 for (const required of [
   '10 * 1024 * 1024',
   '50_000',

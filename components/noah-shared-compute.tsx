@@ -4,6 +4,7 @@ import { useEffect, useMemo, useRef, useState, type ReactNode } from 'react';
 import { noahAccountHref } from '@/lib/noah-navigation';
 import { OWNER_SCOPE_HEADER, readOwnerScope } from '@/lib/owner-intent';
 import { encodePublicTopicTerms, readPublicTopicTerms } from '@/lib/noah-shared-workload';
+import { EVE_WORKLOAD } from '@/lib/noah-eve-participant';
 import topicModel from '@/public/noah-shared-compute/model.json';
 import common from './noah-unified.module.css';
 import styles from './noah-shared-compute.module.css';
@@ -16,9 +17,9 @@ type JobStatus = 'queued' | 'leased' | 'completed' | 'cancelled' | 'expired';
 const states: Record<JobStatus, string> = {
   queued: '参加端末を待っています', leased: '参加端末で計算中', completed: '検収済み', cancelled: '取り消し済み', expired: '期限切れ',
 };
-type Job = { id: string; title?: string; sampleId: string; status: JobStatus; result: {label: string; score: number} | null; receiptId: string | null };
+type Job = { id: string; inputKind?: string; title?: string; sampleId: string; status: JobStatus; result: {label: string; score: number} | null; receiptId: string | null };
 type Dashboard = {
-  ownerScope: string; consentVersion: string; acceptingDevices: boolean; devices: { id: string; active: boolean; enrolledAt: number; mode: 'test' | 'live'; currentEnvironment: boolean }[]; jobs: Job[];
+  ownerScope: string; consentVersion: string; chainConsentVersion?: string; canHostChain?: boolean; pilot?: { active: boolean }; acceptingDevices: boolean; devices: { id: string; active: boolean; enrolledAt: number; mode: 'test' | 'live' | 'pilot'; chain?: boolean; currentEnvironment: boolean }[]; jobs: Job[];
 };
 type PlanState = {
   ownerScope: string; configured: boolean; testMode: boolean;
@@ -68,7 +69,9 @@ export default function NoahSharedCompute() {
   const counts = sample ? readPublicTopicTerms(sample) : null;
   const selectedPreset = topicModel.samples.find(preset => preset.text === publicText)?.id ?? '';
   const [platform, setPlatform] = useState<'android' | 'linux'>('android');
-  const [secret, setSecret] = useState<{id: string; token: string; platform: 'android' | 'linux'} | null>(null);
+  const [workload, setWorkload] = useState('public-topic-v1');
+  const chainHost = workload === EVE_WORKLOAD;
+  const [secret, setSecret] = useState<{id: string; token: string; platform: 'android' | 'linux'; chain: boolean} | null>(null);
   const [busy, setBusy] = useState(false);
   const [refresh, setRefresh] = useState(0);
   const pendingJob = useRef<{id: string; intent: string} | null>(null);
@@ -78,7 +81,10 @@ export default function NoahSharedCompute() {
   const pendingCheckout = plan?.subscription.status === 'pending';
   const terms = plan?.contract ?? plan?.plan;
   const planIntent = plan && terms ? [plan.ownerScope, terms.termsVersion].join('/') : '';
-  const hostIntent = board ? [board.ownerScope, board.consentVersion, platform].join('/') : '';
+  const hostVersion = chainHost ? board?.chainConsentVersion : board?.consentVersion;
+  const acceptsHost = chainHost ? board?.canHostChain : board?.acceptingDevices;
+  const hostIntent = board && acceptsHost && hostVersion ? [board.ownerScope, hostVersion, platform, workload].join('/') : '';
+  const classificationJobs = board?.jobs.filter(job => job.inputKind !== 'eve-chain') ?? [];
   const jobIntent = sample && board && plan?.ownerScope === board.ownerScope && plan.subscription.entitled && plan.subscription.attempt && plan.contract
     ? [board.ownerScope, board.consentVersion, plan.subscription.attempt, plan.contract.termsVersion, sample].join('/') : '';
   const planConsent = !!planIntent && acceptedPlan === planIntent;
@@ -176,11 +182,11 @@ export default function NoahSharedCompute() {
     });
   }
   function enroll() {
-    if (!board?.acceptingDevices || !hostConsent) return;
+    if (!board || !acceptsHost || !hostConsent) return;
     const id = crypto.randomUUID();
     void run(async signal => {
-      const result = await api<{deviceToken: string}>('', signal, {owner: board.ownerScope, body: {action: 'enroll', deviceId: id, consentVersion: board.consentVersion, acceptThirdParty: true}});
-      setSecret({id, token: result.deviceToken, platform}); setAcceptedHost('');
+      const result = await api<{deviceToken: string}>('', signal, {owner: board.ownerScope, body: {action: 'enroll', deviceId: id, consentVersion: hostVersion, acceptThirdParty: true, ...(chainHost ? {workloads: [EVE_WORKLOAD]} : {})}});
+      setSecret({id, token: result.deviceToken, platform, chain: chainHost}); setAcceptedHost('');
     });
   }
   function revoke(id: string) {
@@ -243,7 +249,7 @@ export default function NoahSharedCompute() {
         <Consent value={jobConsent} disabled={!jobIntent || busy} change={yes => setAcceptedJob(yes ? jobIntent : '')}>この4つの一致数をNoahと他の利用者の参加端末に送り、分類を依頼します。</Consent>
         <button className={common.secondary} type="button" disabled={busy || !jobConsent} onClick={submit}>参加端末に依頼</button>
         {plan && !plan.subscription.entitled && <p className={styles.note}>依頼には有効な月額プランが必要です。</p>}
-        {!!board?.jobs.length && <ul className={styles.list} aria-label="自分の依頼">{board.jobs.map(job => <li key={job.id}>
+        {board && !!classificationJobs.length && <ul className={styles.list} aria-label="自分の依頼">{classificationJobs.map(job => <li key={job.id}>
           <strong>{job.title ?? sampleTitle.get(job.sampleId) ?? '公開英文'}</strong><span>{states[job.status]}</span>
           {job.result && <p>分類結果　{categories[job.result.label] ?? job.result.label}（スコア {job.result.score}）</p>}
           {job.receiptId && <small>検収記録　{job.receiptId}</small>}
@@ -254,27 +260,36 @@ export default function NoahSharedCompute() {
       </section>
       <section className={styles.section} aria-labelledby="compute-host">
         <h2 id="compute-host">自分の端末を提供する</h2>
-        <p>他の利用者から届く英単語の一致数を、参加中の端末で分類します。端末の電力と通信を使い、発熱することがあります。提供者への報酬はありません。</p>
+        <label className={styles.field}>提供する処理
+          <select value={workload} disabled={busy} onChange={event => { setWorkload(event.target.value); setAcceptedHost(''); setSecret(null); }}>
+            <option value="public-topic-v1">公開英文の分類</option><option value={EVE_WORKLOAD}>Eveで組み合わせたAgentの実行</option>
+          </select>
+        </label>
+        {chainHost ? <>
+          <p>依頼者が共有に同意した公開原稿・CSV・記事設定を受け取り、出典整理、記事の無料版作成、CSVの空白・重複の整理を依頼された順に処理します。原稿と結果は参加中の端末で読めます。</p>
+          <p>{board?.pilot?.active ? '本人限定の無料試験です。もう一方の試験用アカウントから届く依頼を実行します。' : board && !board.canHostChain ? 'Eveの実機試験は登録された本人のアカウント限定です。' : '提供する端末を登録し、参加プログラムから開始してください。'}</p>
+        </> : <p>他の利用者から届く英単語の一致数を、参加中の端末で分類します。</p>}
+        <p>端末の電力と通信を使い、発熱することがあります。提供者への報酬はありません。</p>
         <p>Android 11以降とLinuxに対応します。電源・温度・回線の条件を確認できる端末で、参加プログラムを開いている間だけ処理します。1回の起動は最大15分、30件、アプリの通信量256 KiBまでです。端末の提供は無料で、いつでも停止できます。提供停止後も月額契約は自動更新の設定に従います。</p>
         <label className={styles.field}>参加する端末
           <select value={platform} onChange={event => { setPlatform(event.target.value === 'linux' ? 'linux' : 'android'); setAcceptedHost(''); }}>
             <option value="android">Android 11以降</option><option value="linux">Linux</option>
           </select>
         </label>
-        {platform === 'android' && <p className={styles.note}>参加にはAndroidアプリ「Noah 端末参加」が必要です。現在は開発者向けの試験版です。</p>}
-        <Consent value={hostConsent} change={yes => setAcceptedHost(yes ? hostIntent : '')}>他の利用者の処理に、選んだ端末を提供することに同意します。</Consent>
-        <button type="button" className={common.secondary} disabled={busy || !board?.acceptingDevices || !hostConsent} onClick={enroll}>端末を登録する</button>
-        {board && !board.acceptingDevices && <p className={styles.note}>現在、新しい参加端末の受付を準備しています。</p>}
+        {platform === 'android' && <p className={styles.note}>参加にはAndroidアプリ「Noah 端末参加」が必要です。最新版の参加アプリで対応を確認できた端末のみ利用できます。</p>}
+        <Consent value={hostConsent} disabled={!hostIntent || busy} change={yes => setAcceptedHost(yes ? hostIntent : '')}>{chainHost ? '他の利用者の公開原稿やCSVを受け取り、選んだ端末でEveのAgentを実行することに同意します。' : '他の利用者の処理に、選んだ端末を提供することに同意します。'}</Consent>
+        <button type="button" className={common.secondary} disabled={busy || !acceptsHost || !hostConsent} onClick={enroll}>端末を登録する</button>
+        {board && !chainHost && !board.acceptingDevices && <p className={styles.note}>現在、新しい参加端末の受付を準備しています。</p>}
         {secret && <section className={styles.setup} aria-label="端末の接続手順">
           {secret.platform === 'android' ? <>
             <h3>Androidで参加</h3>
-            <p>「Noah 端末参加」を開き、端末IDと下の接続キーを入力します。参加時間を選び、同意して開始してください。画面を離れるか、アプリの停止ボタンを押すと終了します。</p>
+            <p>「Noah 端末参加」を開き、端末IDと下の接続キーを入力します。{secret.chain && 'EveのAgent処理を選び、'}参加時間を選び、同意して開始してください。画面を離れるか、アプリの停止ボタンを押すと終了します。</p>
             <p>端末ID</p><code>{secret.id}</code>
           </> : <>
           <h3>Linux端末で起動</h3>
-          <p>Node.js 22以降を用意し、次の2ファイルを同じフォルダーに保存してください。</p>
-          <p><a href="/noah-shared-compute/runner.mjs" download>実行プログラム</a> · <a href="/noah-shared-compute/model.json" download>分類モデル</a></p>
-          <code>node runner.mjs --device {secret.id}</code>
+          <p>Node.js 22以降を用意し、次の{secret.chain ? 3 : 2}ファイルを同じフォルダーに保存してください。</p>
+          <p><a href="/noah-shared-compute/runner.mjs" download>実行プログラム</a> · <a href="/noah-shared-compute/model.json" download>分類モデル</a>{secret.chain && <> · <a href="/noah-shared-compute/eve-agents.mjs" download>EveのAgent処理</a></>}</p>
+          <code>node runner.mjs --device {secret.id}{secret.chain ? ' --eve' : ''}</code>
           <p>起動後に接続キーを入力します。停止は Ctrl+C でできます。</p>
           </>}
           <p>接続キーは今回だけ表示します。紛失した場合は、この端末の提供を停止して登録し直してください。</p>
@@ -282,10 +297,18 @@ export default function NoahSharedCompute() {
           <button type="button" className={common.secondary} onClick={() => setSecret(null)}>キーを閉じる</button>
         </section>}
         {!!board?.devices.length && <ul className={styles.list} aria-label="自分の参加端末">{board.devices.map(device => <li key={device.id}>
-          <strong>端末 {device.id.slice(0, 8)}</strong><span>{device.active ? '登録済み' : '提供停止済み'} · {device.mode === 'test' ? 'テスト環境' : '実運用環境'}{!device.currentEnvironment && '（現在の接続先とは異なります）'}</span>
+          <strong>端末 {device.id.slice(0, 8)}</strong><span>{device.active ? '登録済み' : '提供停止済み'} · {device.mode === 'pilot' ? '本人限定の無料試験' : device.mode === 'test' ? 'テスト環境' : '実運用環境'} · {device.chain ? 'EveのAgent処理' : '公開英文の分類'}{!device.currentEnvironment && '（現在の接続先とは異なります）'}</span>
           {device.active && <button type="button" className={common.secondary} disabled={busy} onClick={() => revoke(device.id)}>この端末の提供を停止</button>}
         </li>)}</ul>}
       </section>
+      {board && <details className={styles.dictionary}><summary>試験用IDを確認</summary>
+        <p>本人限定の試験に登録するためのアカウント識別子です。</p>
+        <label className={styles.field}>試験用ID<input readOnly value={board.ownerScope} onFocus={event => event.target.select()} /></label>
+        <button type="button" className={common.secondary} onClick={() => {
+          if (!navigator.clipboard) { setActionError('試験用ID欄を選択してコピーしてください。'); return; }
+          void navigator.clipboard.writeText(board.ownerScope).then(() => { setActionError(''); setNotice('試験用IDをコピーしました。'); }).catch(() => setActionError('試験用ID欄を選択してコピーしてください。'));
+        }}>試験用IDをコピー</button>
+      </details>}
       <div><button className={common.secondary} type="button" disabled={busy} onClick={() => { editPublicText(''); setRefresh(n => n + 1); }}>状況を更新</button></div>
     </div>}
   </main>;

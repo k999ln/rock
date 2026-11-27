@@ -1,0 +1,33 @@
+<!doctype html>
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'nonce-{{NONCE}}'; connect-src 'none'; form-action 'none'; base-uri 'none'">
+<script type="module" nonce="{{NONCE}}">
+{{PROGRAM}}
+
+// The packaged program uses these two string/array operations on older Android WebViews.
+if (!Array.prototype.at) {
+  Array.prototype.at = function (index) {
+    return this[index < 0 ? this.length + index : index];
+  };
+}
+if (!String.prototype.replaceAll) {
+  String.prototype.replaceAll = function (from, to) {
+    return this.split(from).join(to);
+  };
+}
+const probe = runEveAgents({ agents: ["market:tool:rockstar-csv-cleanup"], source: "id\nx\nx" });
+if (probe.text !== "id\r\nx\r\n") throw new Error("Unsupported runtime");
+
+globalThis.addEventListener("message", event => {
+  const reply = event.ports[0];
+  if (!reply) return;
+  try {
+    const result = runEveAgents(JSON.parse(event.data));
+    reply.postMessage(JSON.stringify(result));
+  } catch {
+    reply.postMessage("null");
+  } finally {
+    reply.close();
+  }
+}, { once: true });
+globalThis.noahEveReady = true;
+</script>

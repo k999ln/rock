@@ -1,5 +1,5 @@
 import type { EveChatCandidate, EveChatMessage, EveChatPlan } from './eve-chat.ts';
-export type EveLocalMessage = EveChatMessage & { id: string; plan?: EveChatPlan | null; candidates?: EveChatCandidate[] };
+export type EveLocalMessage = EveChatMessage & { id: string; participantRequestId?: string; plan?: EveChatPlan | null; candidates?: EveChatCandidate[] };
 export type EveLocalChat = { id: string; owner: string; revision: number; updatedAt: number; title: string; draft: string; messages: EveLocalMessage[] };
 export type EveLocalSummary = Pick<EveLocalChat, 'id' | 'owner' | 'updatedAt' | 'title'>;
 export const newEveChat = (owner: string): EveLocalChat => ({ id: crypto.randomUUID(), owner, revision: 0, updatedAt: Date.now(), title: '新しい相談', draft: '', messages: [] });

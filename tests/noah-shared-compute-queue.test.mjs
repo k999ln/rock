@@ -20,16 +20,25 @@ import { readComputeBillingScope } from '../lib/noah-shared-compute-plan.ts';
 import {
   makeApi,
   loadModel,
+  loadEveAgents,
+  runEveRecipe,
   processLease,
 } from '../public/noah-shared-compute/runner.mjs';
 
+import {
+  readComputePilot,
+  PILOT_JOB_LIMIT,
+} from '../lib/noah-compute-pilot.ts';
+import { EVE_AGENT_SHA256, EVE_WORKLOAD } from '../lib/noah-eve-participant.ts';
+
 const path = 'https://noah.test/api/noah/shared-compute';
 const consent = { consentVersion: 'shared-compute-v2', acceptThirdParty: true };
-async function setup(t, limit = 1, billing) {
+async function setup(t, limit = 1, billing, pilot = null) {
   const f = billing?.f ?? fixture(t);
   for (const name of [
     '0062_noah_shared_compute',
     '0063_noah_compute_subscriptions',
+    '0064_noah_eve_participant',
   ]) {
     const sql = readFileSync(
       new URL(`../drizzle/${name}.sql`, import.meta.url),
@@ -78,6 +87,7 @@ async function setup(t, limit = 1, billing) {
     : { mode: 'test', accountId: 'acct_test' };
   const deps = {
     db: f.db,
+    pilot,
     now: billing ? Date.now : f.time,
     scope,
     authenticate: (req) =>
@@ -118,7 +128,7 @@ async function setup(t, limit = 1, billing) {
       );
     return attempt;
   }
-  async function call(who, input, extra = {}, Active = scope) {
+  async function call(who, input, extra = {}, Active = scope, requestId) {
     const method = input ? 'POST' : 'GET';
     const accountHeaders = who
       ? {
@@ -128,7 +138,7 @@ async function setup(t, limit = 1, billing) {
         }
       : {};
     const response = await createSharedComputeApi({ ...deps, scope: Active })(
-      new Request(path, {
+      new Request(requestId ? path + '?requestId=' + requestId : path, {
         method,
         headers: {
           'content-type': 'application/json',
@@ -824,4 +834,300 @@ void test('public topic input has four canonical bounded integers and both parti
     (await w.submit('buyer', crypto.randomUUID(), sampleId)).status,
     200,
   );
+});
+
+const eveConsent = {
+  consentVersion: 'eve-participant-v1',
+  acceptThirdParty: true,
+};
+const specimen = {
+  agents: ['market:tool:mr-citations', 'market:tool:mr-citations'],
+  source: 'Public article [1]\n\n[1] https://example.org/reference',
+};
+async function pilotSetup(t) {
+  const owners = await Promise.all(['sender', 'host'].map(ownerScopeFor));
+  const until = '2026-11-20T12:00:00Z';
+  const pilot = await readComputePilot({
+    NOAH_COMPUTE_PILOT_OWNER_SCOPES: owners.join(','),
+    NOAH_COMPUTE_PILOT_UNTIL: until,
+  });
+  assert.ok(pilot);
+  const w = await setup(t, 1, undefined, pilot);
+  const api = (who, body) => w.call(who, body, {}, null);
+  const submit = (
+    who = 'sender',
+    requestId = crypto.randomUUID(),
+    recipe = specimen,
+  ) => api(who, { action: 'submitChain', requestId, recipe, ...eveConsent });
+  const enroll = async (who) => {
+    const deviceId = crypto.randomUUID();
+    const res = await api(who, {
+      action: 'enroll',
+      deviceId,
+      workloads: [EVE_WORKLOAD],
+      ...eveConsent,
+    });
+    assert.equal(res.status, 200, JSON.stringify(res.body));
+    return { deviceId, deviceToken: res.body.deviceToken };
+  };
+  const claim = (d) =>
+    api(null, { action: 'claim', workloads: [EVE_WORKLOAD], ...d });
+  const work = (action, d, lease, data = {}) =>
+    api(null, {
+      action,
+      ...d,
+      leaseId: lease.leaseId,
+      jobId: lease.jobId,
+      ...data,
+    });
+  return { w, api, submit, enroll, claim, work, pilot };
+}
+
+void test('Eve grants a free bounded pilot to two accounts, verifies the published participant program, and exposes only the owner receipt', async (t) => {
+  const { w, api, enroll, submit, claim, work } = await pilotSetup(t);
+  const dashboard = (await api('sender')).body;
+  assert.equal(dashboard.canSubmitChain, true);
+  assert.equal(dashboard.canHostChain, true);
+  assert.equal(dashboard.acceptingDevices, false);
+  assert.equal(dashboard.pilot.jobLimit, PILOT_JOB_LIMIT);
+  const outsider = (await api('stranger')).body;
+  assert.equal(outsider.canSubmitChain, false);
+  assert.equal(outsider.canHostChain, false);
+  assert.equal((await submit('stranger')).status, 403);
+  assert.equal(
+    (
+      await api('stranger', {
+        action: 'enroll',
+        deviceId: crypto.randomUUID(),
+        workloads: [EVE_WORKLOAD],
+        ...eveConsent,
+      })
+    ).status,
+    403,
+  );
+  const requestId = crypto.randomUUID();
+  const requested = await submit('sender', requestId);
+  assert.equal(requested.status, 200, JSON.stringify(requested.body));
+  assert.deepEqual((await submit('sender', requestId)).body, requested.body);
+  assert.equal(
+    (
+      await submit('sender', requestId, {
+        ...specimen,
+        source: 'another public text',
+      })
+    ).status,
+    409,
+  );
+  assert.equal(
+    (
+      await submit('sender', crypto.randomUUID(), {
+        ...specimen,
+        agents: ['custom:unspecified'],
+      })
+    ).status,
+    400,
+  );
+  const self = await enroll('sender'),
+    device = await enroll('host');
+  assert.equal((await claim(self)).body.lease, null);
+  assert.equal(
+    (await api(null, { action: 'claim', ...device })).body.lease,
+    null,
+  );
+  assert.equal(
+    (
+      await api('sender', {
+        action: 'submitChain',
+        requestId: crypto.randomUUID(),
+        recipe: specimen,
+        ...consent,
+      })
+    ).status,
+    403,
+  );
+  const { lease } = (await claim(device)).body;
+  assert.equal(lease.jobId, requested.body.jobId);
+  assert.deepEqual(lease.recipe, specimen);
+  assert.equal(lease.artifactSha256, EVE_AGENT_SHA256);
+  assert.doesNotMatch(
+    JSON.stringify(lease),
+    /owner_scope|owner-v1|deviceToken/,
+  );
+  const result = await runEveRecipe(
+    await loadEveAgents(),
+    lease.recipe,
+    AbortSignal.timeout(3000),
+  );
+  w.f.advance(500);
+  assert.equal(
+    (
+      await work('complete', device, lease, {
+        result: { ...result, text: 'forged' },
+        elapsedMs: 30,
+      })
+    ).status,
+    422,
+  );
+  const receipt = await work('complete', device, lease, {
+    result,
+    elapsedMs: 30,
+  });
+  assert.equal(receipt.status, 200, JSON.stringify(receipt.body));
+  assert.deepEqual(
+    (await work('complete', device, lease, { result, elapsedMs: 30 })).body,
+    receipt.body,
+  );
+  assert.equal(
+    (
+      await work('complete', device, lease, {
+        result: { ...result, steps: [] },
+        elapsedMs: 30,
+      })
+    ).status,
+    422,
+  );
+  const [job] = (await w.call('sender', undefined, {}, null, requestId)).body
+    .jobs;
+  assert.equal(job.requestId, requestId);
+  assert.equal(job.receiptId, receipt.body.receiptId);
+  assert.deepEqual(job.result, result);
+  assert.equal(
+    (await w.call('host', undefined, {}, null, requestId)).body.jobs.length,
+    0,
+  );
+  assert.equal(
+    w.f.sql.prepare('SELECT recipe_json FROM noah_compute_chain_payloads').get()
+      .recipe_json,
+    null,
+  );
+  assert.equal(
+    w.f.sql.prepare('SELECT COUNT(*) n FROM noah_compute_subscriptions').get()
+      .n,
+    0,
+  );
+});
+
+void test('pilot caps, expiry, revocation and manuscript erasure cannot be overridden by a runner or request body', async (t) => {
+  const { w, api, enroll, submit, claim, work, pilot } = await pilotSetup(t);
+  const device = await enroll('host');
+  assert.equal((await submit()).status, 200);
+  const { lease } = (await claim(device)).body;
+  assert.equal(
+    (
+      await w.editPolicy('sender', {
+        action: 'grant',
+        grant: {
+          target: EVE_WORKLOAD,
+          action: 'run',
+          mode: 'deny',
+          name: 'Eve',
+          label: '依頼',
+          digest: EVE_AGENT_SHA256,
+        },
+      })
+    ).status,
+    200,
+  );
+  assert.equal((await work('heartbeat', device, lease)).status, 409);
+  assert.equal(
+    w.f.sql
+      .prepare(
+        'SELECT recipe_json FROM noah_compute_chain_payloads WHERE job_id=?',
+      )
+      .get(lease.jobId).recipe_json,
+    null,
+  );
+  assert.equal((await submit()).status, 403);
+  for (let i = 0; i < PILOT_JOB_LIMIT; i++)
+    assert.equal((await submit('host')).status, 200);
+  assert.equal((await submit('host')).status, 429);
+  assert.ok(
+    w.f.sql
+      .prepare(
+        'SELECT count(*) n FROM noah_compute_chain_payloads WHERE recipe_json IS NOT NULL',
+      )
+      .get().n,
+  );
+  w.f.advance(pilot.expiresAt - w.f.time() + 1);
+  assert.equal((await claim(device)).status, 403);
+  const ended = (await api('host')).body;
+  assert.equal(ended.canSubmitChain, false);
+  assert.ok(ended.jobs.every((job) => job.status === 'expired'));
+  assert.equal(
+    w.f.sql
+      .prepare(
+        'SELECT count(*) n FROM noah_compute_chain_payloads WHERE recipe_json IS NOT NULL',
+      )
+      .get().n,
+    0,
+  );
+  assert.equal(
+    w.f.sql.prepare('SELECT count(*) n FROM noah_compute_subscriptions').get()
+      .n,
+    0,
+  );
+  assert.equal(
+    await readComputePilot({
+      NOAH_COMPUTE_PILOT_OWNER_SCOPES: pilot.owners[0],
+      NOAH_COMPUTE_PILOT_UNTIL: '2026-11-20T12:00:00Z',
+    }),
+    null,
+  );
+  assert.equal(
+    await readComputePilot({
+      NOAH_COMPUTE_PILOT_OWNER_SCOPES: pilot.owners.join(','),
+      NOAH_COMPUTE_PILOT_UNTIL: 'forever',
+    }),
+    null,
+  );
+});
+
+void test('paid Eve work and classifier requests consume the same real period, with a separate opt-in for the new workload', async (t) => {
+  const w = await setup(t, 1);
+  const send = (funding = 'monthly') =>
+    w.call('payer', {
+      action: 'submitChain',
+      funding,
+      requestId: crypto.randomUUID(),
+      recipe: specimen,
+      ...eveConsent,
+    });
+  assert.equal((await send()).status, 403);
+  await w.purchase('payer');
+  assert.equal((await send('pilot')).status, 409);
+  assert.equal((await send()).status, 200);
+  assert.equal((await w.submit('payer')).status, 429);
+  const old = await w.host('provider');
+  assert.equal(
+    (await w.call(null, { action: 'claim', workloads: [EVE_WORKLOAD], ...old }))
+      .body.lease,
+    null,
+  );
+  assert.equal(await w.claim(old), null);
+  const deviceId = crypto.randomUUID();
+  const enrolled = await w.call('provider', {
+    action: 'enroll',
+    workloads: [EVE_WORKLOAD],
+    deviceId,
+    ...eveConsent,
+  });
+  assert.equal(enrolled.status, 200);
+  const fresh = { deviceId, deviceToken: enrolled.body.deviceToken };
+  const { lease } = (
+    await w.call(null, { action: 'claim', workloads: [EVE_WORKLOAD], ...fresh })
+  ).body;
+  assert.deepEqual(lease.recipe, specimen);
+  await w.editPolicy('provider', {
+    action: 'grant',
+    grant: {
+      target: EVE_WORKLOAD,
+      action: 'connect',
+      mode: 'deny',
+      name: 'Eve',
+      label: '参加',
+      digest: EVE_AGENT_SHA256,
+    },
+  });
+  assert.equal((await w.work('heartbeat', fresh, lease)).status, 403);
+  assert.equal((await w.call(null, { action: 'claim', ...old })).status, 200);
 });

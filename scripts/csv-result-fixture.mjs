@@ -58,6 +58,7 @@ const inspection = {
   data: 'synthetic; no customer data or external services',
   method: 'literal UTF-8 golden bytes and explicit report assertions independent of production expectedRows',
   sourceSha256: sha256(await readFile(new URL('../lib/csv-transform.ts', import.meta.url))),
+  tableSourceSha256: sha256(await readFile(new URL('../lib/csv-table.ts', import.meta.url))),
   generatorSha256: sha256(await readFile(fileURLToPath(import.meta.url))),
   artifacts: Object.fromEntries(Object.entries(files).map(([name, bytes]) => [name, { sha256: sha256(bytes), bytes: Buffer.byteLength(bytes) }])),
   remaining: ['product validator shares expectedRows', 'no versioned job-bound inspection API', 'no authenticated storage, real provider or customer acceptance'],

@@ -5,6 +5,8 @@ import android.content.*;
 import android.os.*;
 import android.view.*;
 import android.widget.*;
+import java.lang.reflect.*;
+import org.json.*;
 import java.util.concurrent.*;
 import java.util.concurrent.atomic.AtomicReference;
 
@@ -47,6 +49,25 @@ public final class Smoke extends Instrumentation {
         try { check(done.await(4, TimeUnit.SECONDS), "service response"); return answer.get(); }
         finally { context.unbindService(connection); }
     }
+    private JSONObject eve(JSONObject recipe) throws Exception {
+        Context c = getTargetContext();
+        Class<?> client = c.getClassLoader().loadClass("si.avoado.noah.participant.EveAgentClient");
+        Constructor<?> constructor = client.getDeclaredConstructor(Context.class);
+        Method prepare = client.getDeclaredMethod("prepare"), run = client.getDeclaredMethod("run", JSONObject.class);
+        constructor.setAccessible(true); prepare.setAccessible(true); run.setAccessible(true);
+        Object instance = constructor.newInstance(c);
+        try {
+            check((Boolean)prepare.invoke(instance), "packaged agent renderer prepared in a separate process");
+            try { return (JSONObject)run.invoke(instance, recipe); }
+            catch (InvocationTargetException e) {
+                if (e.getCause() instanceof java.io.IOException) return null;
+                throw e;
+            }
+        } finally {
+            ((AutoCloseable)instance).close();
+        }
+    }
+
     @Override public void onStart() {
         Bundle report = new Bundle();
         try {
@@ -57,6 +78,8 @@ public final class Smoke extends Instrumentation {
                 check((screen.getWindow().getAttributes().flags & WindowManager.LayoutParams.FLAG_SECURE) != 0, "secret screen");
                 check(!find(root, CheckBox.class, null).isChecked(), "opt-out by default");
                 check(!find(root, Button.class, "今すぐ停止").isEnabled(), "idle by default");
+                CheckBox eveConsent = find(root, CheckBox.class, "Eveで組み合わせたAgentにも参加する。他の利用者が送った公開原稿と記事の設定を受け取り、出典の整形、無料記事の作成、CSVの整理をこの端末で行います。");
+                check(eveConsent != null && !eveConsent.isChecked(), "Eve is separately opt-in");
                 find(root, Button.class, "端末参加を開始").performClick();
                 check(find(root, TextView.class, "登録画面の端末ID・トークンを入力し、端末参加に同意してください。") != null, "requires explicit consent");
                 TextView tokenLabel = find(root, TextView.class, "端末トークン");
@@ -83,7 +106,25 @@ public final class Smoke extends Instrumentation {
             for (String invalid : new String[]{"unknown", "terms-0.0.0.0", "terms-00.1.0.0", "terms-16.0.0.0", "terms-1.0.0.0\n", "terms-1..0.0"}) {
                 check(classify(invalid) == null, "invalid input");
             }
-            report.putString("result", "PASS consent, unplugged refusal, privacy flag, token cleared on pause, isolation, four built-in samples, public dictionary counts, rejected noncanonical inputs");
+            String csv = "market:tool:rockstar-csv-cleanup", citations = "market:tool:mr-citations";
+            String literal = "<script>globalThis.noahEveReady=false</script>";
+            JSONArray steps = new JSONArray().put(csv).put(csv);
+            JSONObject cleaned = eve(new JSONObject().put("agents", steps).put("source", "id\n " + literal + " \n" + literal));
+            check(cleaned != null && ("id\r\n" + literal + "\r\n").equals(cleaned.getString("text"))
+                && steps.toString().equals(cleaned.getJSONArray("steps").toString()), "CSV handoff and literal source");
+            JSONObject formatted = eve(new JSONObject().put("agents", new JSONArray().put(citations))
+                .put("source", "本文。（出典: [例](https://example.org)）"));
+            check(formatted != null && formatted.getString("text").contains("## 出典"), "citation agent");
+            JSONArray articleSteps = new JSONArray().put(citations).put("market:tool:mr-free-article");
+            JSONObject articleOptions = new JSONObject().put("afterChars", 1).put("price", 100)
+                .put("summary","- 資料\n- 要点\n- 次回").put("paidContents","残りの説明").put("noteUrl","https://note.com/sample/n/test");
+            JSONObject article = eve(new JSONObject().put("agents", articleSteps)
+                .put("source", "# 例\n概要。詳しい説明。（出典: [例](https://example.org)）").put("options", articleOptions));
+            check(article != null && articleSteps.toString().equals(article.getJSONArray("steps").toString())
+                && article.getString("text").contains("## 出典") && article.getString("text").contains("## まとめ")
+                && article.getString("text").contains("https://note.com/sample/n/test"), "citations to free article handoff");
+            check(eve(new JSONObject().put("agents", new JSONArray().put("external")).put("source","id")) == null, "fixed agent allowlist");
+            report.putString("result", "PASS consent, unplugged refusal, privacy flag, token cleared on pause, isolation, four built-in samples, public dictionary counts, rejected noncanonical inputs, Eve opt-in, sandboxed CSV and citation-to-free-article chains, rejected external agent");
             finish(Activity.RESULT_OK, report);
         } catch (Throwable error) {
             report.putString("error", android.util.Log.getStackTraceString(error));

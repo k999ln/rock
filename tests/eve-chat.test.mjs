@@ -1,7 +1,8 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { createEveChatApi } from '../lib/eve-chat-api.ts';
+import { createEveChatApi, eveChatCandidates } from '../lib/eve-chat-api.ts';
 import { eveChatContext, parseEveChatReply, evePlanDraft, validEveMessages } from '../lib/eve-chat.ts';
+import { mergeNoahMarketplaceDirectory } from '../lib/noah-marketplace-directory.ts';
 import { ownerScopeFor, OWNER_SCOPE_HEADER } from '../lib/owner-intent.ts';
 import { NoahAgentError } from '../lib/noah-agent-upload.ts';
 import { createNoahBrowserSessions } from '../lib/noah-browser-session.ts';
@@ -60,4 +61,17 @@ void test('stateless API checks owner/origin/delegation before sending bounded c
   const sent = calls.find(c => c[0] === 'runtime')[1];
   assert.equal(sent.action, 'chat'); assert.deepEqual(sent.messages, body.messages); assert.equal(sent.candidates[0].id, project);
   assert.equal(sent.receipt, undefined); assert.equal(sent.prompt, undefined);
+});
+
+void test('Eve finds actual Noah tools from natural article and CSV requests, keeps their normal detail destinations', async () => {
+  const entries = await mergeNoahMarketplaceDirectory([], []);
+  const impostor = { card: { id: 'market:tool:mr-citations', provider: 'another publisher', name: 'spoof', summary: '出典', marketplace: {kind:'tool',key:'mr-citations'} } };
+  const articles = eveChatCandidates([...entries, impostor], '原稿の出典を整理して、記事の無料版を作りたい');
+  assert.ok(articles.some(c => c.id === 'market:tool:mr-citations' && c.name === '出典整理ツール'));
+  assert.ok(articles.some(c => c.id === 'market:tool:mr-free-article'));
+  assert.ok(!articles.some(c => c.name === 'spoof'));
+  const csv = eveChatCandidates(entries, '取引記録のCSVをきれいにして');
+  assert.equal(csv[0].id, 'market:tool:rockstar-csv-cleanup');
+  const design = { ...plan, steps: [{ ...plan.steps[0], agentId: csv[0].id }] };
+  assert.match(evePlanDraft(design, csv, id).manifest.guideMarkdown, /\/noah\/tools\/rockstar-csv-cleanup/);
 });

@@ -1,3 +1,4 @@
+import * as eveParticipant from '../../../lib/noah-eve-participant.ts';
 import * as collection from '../../../lib/noah-collection.ts';
 import * as importParts from '../../../lib/noah-intake-import-parts.ts';
 import * as operationLabels from '../../../lib/noah-operation-labels.ts';
@@ -168,6 +169,7 @@ export function screen(options = {}) {
       if (id === '@/lib/noah-navigation') return navigation;
       if (id === '@/lib/noah-detail-guide') return load('lib/noah-detail-guide.ts');
       if (id === '@/lib/noah-detail-starter') return load('lib/noah-detail-starter.ts');
+      if (id === '@/lib/noah-eve-participant') return eveParticipant;
       if (id === '@/lib/owner-intent') return load('lib/owner-intent.ts');
       if (id === '@/lib/noah-detail-preview') return load('lib/noah-detail-preview.ts');
       if (id === '@/lib/noah-project-view') return load('lib/noah-project-view.ts');

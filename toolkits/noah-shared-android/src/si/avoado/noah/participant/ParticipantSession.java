@@ -4,6 +4,7 @@ import android.content.*;
 import android.net.Network;
 import android.os.*;
 import org.json.JSONObject;
+import org.json.JSONArray;
 import java.io.*;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
@@ -17,6 +18,7 @@ final class ParticipantSession {
     private final DeviceConditions conditions;
     private final String deviceId;
     private final String token;
+    private final boolean eveEnabled;
     private final Listener listener;
     private final long end;
     private final AtomicBoolean stopped = new AtomicBoolean();
@@ -24,11 +26,12 @@ final class ParticipantSession {
     private volatile HttpsURLConnection current;
     private int remainingBytes = 256 * 1024;
 
-    ParticipantSession(Context ctx, DeviceConditions conditions, String deviceId, String token, int minutes, Listener listener) {
+    ParticipantSession(Context ctx, DeviceConditions conditions, String deviceId, String token, int minutes, boolean eveEnabled, Listener listener) {
         this.context = ctx.getApplicationContext();
         this.conditions = conditions;
         this.deviceId = deviceId;
         this.token = token;
+        this.eveEnabled = eveEnabled;
         this.listener = listener;
         end = SystemClock.elapsedRealtime() + minutes * 60_000L;
     }
@@ -55,8 +58,8 @@ final class ParticipantSession {
         Network network = check();
         body.put("action", action).put("deviceId", deviceId).put("deviceToken", token);
         byte[] payload = body.toString().getBytes(StandardCharsets.UTF_8);
-        final int maxReply = 4096;
-        if (remainingBytes < payload.length + maxReply) throw new IOException("通信量の上限に達しました。");
+        final int maxReply = action.equals("claim") && body.has("workloads") ? 32768 : 4096;
+        if (payload.length > 32768 || remainingBytes < payload.length + maxReply) throw new IOException("通信量の上限に達しました。");
         remainingBytes -= payload.length + maxReply;
         URL url = new URL("https://avoado.si/api/noah/shared-compute");
         HttpsURLConnection conn = (HttpsURLConnection) network.openConnection(url);
@@ -133,22 +136,45 @@ final class ParticipantSession {
     void start() {
         executor.execute(() -> {
             String status = "参加時間が終了しました。";
+            EveAgentClient eve = null;
             try {
                 for (int jobs = 0; jobs < 30 && SystemClock.elapsedRealtime() < end;) {
-                    JSONObject lease = api("claim", new JSONObject()).optJSONObject("lease");
+                    check();
+                    JSONObject claim = new JSONObject();
+                    if (eveEnabled) {
+                        if (eve == null) {
+                            eve = new EveAgentClient(context);
+                            if (!eve.prepare()) {
+                                status = "この端末のWebViewでAgentの隔離実行を確認できません。WebViewを更新して再度お試しください。";
+                                break;
+                            }
+                        }
+                        claim.put("workloads", new JSONArray().put(EveAgentService.WORKLOAD));
+                    }
+                    JSONObject lease = api("claim", claim).optJSONObject("lease");
                     if (lease != null) {
                         jobs++;
-                        if (!"public-topic-v1".equals(lease.optString("workload")) || !InferenceService.acceptsInput(lease.optString("sampleId"))
-                                || !InferenceService.DIGEST.equals(lease.optString("artifactSha256")) || !validLease(lease))
+                        boolean isEve = EveAgentService.WORKLOAD.equals(lease.optString("workload"));
+                        boolean supported = isEve ? eveEnabled && eve != null && EveAgentService.DIGEST.equals(lease.optString("artifactSha256"))
+                                && lease.optJSONObject("recipe") != null
+                                : "public-topic-v1".equals(lease.optString("workload")) && InferenceService.acceptsInput(lease.optString("sampleId"))
+                                && InferenceService.DIGEST.equals(lease.optString("artifactSha256"));
+                        if (!supported || !validLease(lease))
                             throw new IOException("対応する割り当てを確認できません。");
                         JSONObject heartbeat = api("heartbeat", ids(lease));
                         if (!validLease(heartbeat)) throw new IOException("割り当て期限が終了しました。");
                         check();
                         long start = SystemClock.elapsedRealtime();
-                        Bundle result = compute(lease.getString("sampleId"));
+                        JSONObject output;
+                        if (isEve) {
+                            output = eve.run(lease.getJSONObject("recipe"));
+                            eve.close(); eve = null;
+                        } else {
+                            Bundle result = compute(lease.getString("sampleId"));
+                            output = new JSONObject().put("label", result.getString("label")).put("score", result.getInt("score"));
+                        }
                         long elapsed = Math.max(1, SystemClock.elapsedRealtime() - start);
                         if (elapsed > 750 || !validLease(heartbeat)) throw new IOException("計算期限が終了しました。");
-                        JSONObject output = new JSONObject().put("label", result.getString("label")).put("score", result.getInt("score"));
                         api("complete", ids(lease).put("result", output).put("elapsedMs", elapsed));
                         if (jobs == 30) { status = "30件の上限に達しました。"; break; }
                     }
@@ -157,6 +183,7 @@ final class ParticipantSession {
             } catch (Exception ex) {
                 status = "端末参加を停止しました。通信、参加許可、充電・温度の条件を確認してください。";
             } finally {
+                if (eve != null) eve.close();
                 stop();
                 listener.ended(status);
             }

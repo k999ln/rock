@@ -3112,3 +3112,10 @@ export const noahComputeDelegationFences = sqliteTable('noah_compute_delegation_
   primaryKey({ columns: [t.ownerScope,t.action] }),
   check('noah_compute_delegation_fences_action', sql`${t.action} IN ('run','connect')`),
 ]);
+
+export const noahComputeChainPayloads = sqliteTable('noah_compute_chain_payloads', {
+  jobId: text('job_id').primaryKey().notNull().references(() => noahComputeJobs.id, { onDelete: 'cascade' }),
+  recipeJson: text('recipe_json'),
+  expiresAt: integer('expires_at').notNull(),
+  resultJson: text('result_json'),
+}, t => [index('noah_compute_chain_expiry').on(t.expiresAt).where(sql`${t.recipeJson} IS NOT NULL`)]);

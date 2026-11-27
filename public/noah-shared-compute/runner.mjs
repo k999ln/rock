@@ -1,5 +1,5 @@
-// Linux foreground participant for the fixed, synthetic public-topic-v1 workload.
-// Download runner.mjs and model.json into the same directory. Requires Node 22+.
+// Foreground Linux participant. Eve requires a separately enabled, bundled program.
+// Place the downloaded artifacts next to this file. Requires Node 22+.
 import { createHash } from 'node:crypto';
 import { execFile } from 'node:child_process';
 import { open, readFile, readdir } from 'node:fs/promises';
@@ -13,25 +13,38 @@ import { Worker, isMainThread, parentPort, workerData } from 'node:worker_thread
 const runCommand = promisify(execFile);
 const MODEL_SHA256 = 'c76d26657b9dc9697400af2b6cc063fe44448df227427c6b8b7a426b992bcfdb';
 const VERSION = 'public-topic-v1';
+export const EVE_WORKLOAD = 'eve-agent-chain-v1';
+export const EVE_DIGEST = 'f55ce73ace6e469e945e223d5533afac296228ecfb9deced2f811c93c0e7b066';
+const WIRE_LIMIT = 32 * 1024;
+const RECIPE_TEXT_LIMIT = 4 * 1024;
+const RESULT_LIMIT = 12 * 1024;
 const API = 'https://avoado.si/api/noah/shared-compute';
 const UUID = /^[0-9a-f]{8}(?:-[0-9a-f]{4}){3}-[0-9a-f]{12}$/i;
 const JOB_LIMIT_MS = 750;
 const POLL_MS = 5_000;
 const REPLY_LIMIT = 4096;
 
-export async function loadModel() {
-  const file = await open(new URL('./model.json', import.meta.url), 'r');
+async function readArtifact(name, expected, maxBytes) {
+  const file = await open(new URL(name, import.meta.url), 'r');
   try {
     const { size } = await file.stat();
-    if (size < 1 || size > 8192) throw new Error('モデルのサイズを確認できません。');
+    if (size < 1 || size > maxBytes) throw new Error('配布ファイルのサイズを確認できません。');
     const bytes = Buffer.alloc(size);
     const { bytesRead } = await file.read(bytes, 0, size, 0);
-    if (bytesRead !== size || createHash('sha256').update(bytes).digest('hex') !== MODEL_SHA256)
-      throw new Error('モデルの版が一致しません。');
-    return JSON.parse(bytes);
+    if (bytesRead !== size || createHash('sha256').update(bytes).digest('hex') !== expected)
+      throw new Error('配布ファイルの版が一致しません。');
+    return new TextDecoder('utf-8', { fatal: true }).decode(bytes);
   } finally {
     await file.close();
   }
+}
+
+export async function loadModel() {
+  return JSON.parse(await readArtifact('./model.json', MODEL_SHA256, 8192));
+}
+
+export function loadEveAgents() {
+  return readArtifact('./eve-agents.mjs', EVE_DIGEST, 128 * 1024);
 }
 
 // Requesters can send four bounded dictionary counts from public material, or a built-in example ID.
@@ -66,9 +79,14 @@ export function runSample(model, sampleId, signal) {
   signal.throwIfAborted();
   const features = inputFeatures(model, sampleId);
   if (!features) throw new Error('対象外の分類入力です。');
+  return isolatedWork({ kind: 'sample', features, classes: model.classes, dot4Wasm: model.dot4Wasm }, signal);
+}
+
+function isolatedWork(data, signal) {
+  signal.throwIfAborted();
   return new Promise((resolve, reject) => {
     const worker = new Worker(new URL(import.meta.url), {
-      workerData: { features, classes: model.classes, dot4Wasm: model.dot4Wasm }, env: {}, execArgv: [],
+      workerData: data, env: {}, execArgv: data.kind === 'eve' ? ['--experimental-vm-modules', '--no-warnings'] : [],
       resourceLimits: { maxOldGenerationSizeMb: 12, maxYoungGenerationSizeMb: 4, stackSizeMb: 2 },
     });
     let stopped = false;
@@ -88,6 +106,33 @@ export function runSample(model, sampleId, signal) {
       else resolve(result);
     });
   });
+}
+
+function validRecipeSize(recipe) {
+  return recipe && typeof recipe.source === 'string' && Buffer.byteLength(recipe.source) <= RECIPE_TEXT_LIMIT
+    && Buffer.byteLength(JSON.stringify(recipe)) <= WIRE_LIMIT;
+}
+
+export function runEveRecipe(program, recipe, signal) {
+  if (typeof program !== 'string' || !validRecipeSize(recipe)) throw new Error('Agentの入力サイズを確認してください。');
+  return isolatedWork({ kind: 'eve', program, recipe }, signal);
+}
+
+async function executeEve({ program, recipe }) {
+  if (createHash('sha256').update(program).digest('hex') !== EVE_DIGEST) throw new Error('Agentの版が一致しません。');
+  const { SourceTextModule, createContext, runInContext } = await import('node:vm');
+  const context = createContext({ URL, TextEncoder, recipeJson: JSON.stringify(recipe) }, {
+    codeGeneration: { strings: false, wasm: false },
+  });
+  const allowed = new SourceTextModule(program, { context });
+  await allowed.link(() => { throw new Error('Agentの外部依存は利用できません。'); });
+  await allowed.evaluate({ timeout: JOB_LIMIT_MS });
+  // Only the pinned entry point receives JSON data. No API, cookie, device token, file or network interface enters this context.
+  context.runEveAgents = allowed.namespace.runEveAgents;
+  const result = JSON.parse(runInContext('JSON.stringify(runEveAgents(JSON.parse(recipeJson)))', context, { timeout: JOB_LIMIT_MS }));
+  if (typeof result?.text !== 'string' || Buffer.byteLength(result.text) > RESULT_LIMIT || !Array.isArray(result.steps))
+    throw new Error('Agentの結果を確認できません。');
+  return result;
 }
 
 async function command(file, args, signal) {
@@ -153,8 +198,9 @@ export function makeApi({ deviceId, token, maxBytes, request = fetch }) {
     // Reserve a full response before transmitting. Counts application payload bytes; TLS/HTTP
     // framing belongs to the OS and is not estimated as service data.
     const requestBytes = Buffer.byteLength(body);
-    if (used + requestBytes + REPLY_LIMIT > maxBytes) throw new Error('通信枠の上限です。');
-    used += requestBytes + REPLY_LIMIT;
+    const limit = action === 'claim' && data.workloads?.includes(EVE_WORKLOAD) ? WIRE_LIMIT : REPLY_LIMIT;
+    if (requestBytes > WIRE_LIMIT || used + requestBytes + limit > maxBytes) throw new Error('通信枠の上限です。');
+    used += requestBytes + limit;
     const response = await request(API, {
       method: 'POST', headers: { 'Content-Type': 'application/json' }, body,
       redirect: 'error', signal: AbortSignal.any([signal, AbortSignal.timeout(1500)]),
@@ -168,7 +214,7 @@ export function makeApi({ deviceId, token, maxBytes, request = fetch }) {
         const chunk = await reader.read();
         if (chunk.done) break;
         size += chunk.value.byteLength;
-        if (size > REPLY_LIMIT) {
+        if (size > limit) {
           await reader.cancel();
           throw new Error('応答が大きすぎます。');
         }
@@ -177,7 +223,7 @@ export function makeApi({ deviceId, token, maxBytes, request = fetch }) {
     } finally {
       reader.releaseLock();
     }
-    used -= REPLY_LIMIT - size;
+    used -= limit - size;
     if (!response.ok) throw new Error('参加受付が停止しました (HTTP ' + response.status + ')。');
     return JSON.parse(Buffer.concat(chunks).toString('utf8'));
   };
@@ -188,11 +234,14 @@ function leaseRemaining(lease) {
   return Math.min(3500, expires - Date.now() - 150);
 }
 
-export async function processLease({ lease, model, api, eligible, signal, compute = runSample }) {
+export async function processLease({ lease, model, eveProgram, api, eligible, signal, compute = runSample }) {
   const ids = { jobId: lease.jobId, leaseId: lease.leaseId };
   const remaining = leaseRemaining(lease);
-  if (lease.workload !== VERSION || lease.artifactSha256 !== MODEL_SHA256 || !inputFeatures(model, lease.sampleId)
-    || !Number.isFinite(remaining) || remaining < JOB_LIMIT_MS) return false;
+  const eve = lease.workload === EVE_WORKLOAD;
+  if (!Number.isFinite(remaining) || remaining < JOB_LIMIT_MS) return false;
+  if (eve) {
+    if (!eveProgram || lease.artifactSha256 !== EVE_DIGEST || !validRecipeSize(lease.recipe)) return false;
+  } else if (lease.workload !== VERSION || lease.artifactSha256 !== MODEL_SHA256 || !inputFeatures(model, lease.sampleId)) return false;
   const local = AbortSignal.any([signal, AbortSignal.timeout(Math.floor(remaining))]);
   let completed = false;
   try {
@@ -203,7 +252,7 @@ export async function processLease({ lease, model, api, eligible, signal, comput
     if (!Number.isFinite(refreshed) || refreshed < JOB_LIMIT_MS) return false;
     local.throwIfAborted();
     const start = performance.now();
-    const result = await compute(model, lease.sampleId, local);
+    const result = eve ? await runEveRecipe(eveProgram, lease.recipe, local) : await compute(model, lease.sampleId, local);
     const elapsedMs = Math.ceil(performance.now() - start);
     local.throwIfAborted();
     if (elapsedMs > JOB_LIMIT_MS || !(await eligible(local))) return false;
@@ -221,15 +270,17 @@ export async function processLease({ lease, model, api, eligible, signal, comput
 function options(argv) {
   const out = { minutes: 15, maxJobs: 30, maxKiB: 256 };
   const limits = { '--minutes': ['minutes', 15], '--max-jobs': ['maxJobs', 30], '--max-kib': ['maxKiB', 256] };
-  for (let i = 0; i < argv.length; i += 2) {
-    const key = argv[i], value = argv[i + 1];
+  for (let i = 0; i < argv.length;) {
+    const key = argv[i++];
+    if (key === '--eve') { out.eve = true; continue; }
+    const value = argv[i++];
     if (key === '--device' && UUID.test(value ?? '')) { out.deviceId = value; continue; }
     if (!limits[key] || !/^\d+$/.test(value ?? '')) throw new Error('参加端末のIDと利用上限を確認してください。');
     const [field, max] = limits[key];
     if (Number(value) < 1 || Number(value) > max) throw new Error('利用上限の範囲を超えています。');
     out[field] = Number(value);
   }
-  if (!out.deviceId) throw new Error('使い方: node runner.mjs --device <端末ID> [--minutes 1..15] [--max-jobs 1..30] [--max-kib 1..256]');
+  if (!out.deviceId) throw new Error('使い方: node runner.mjs --device <端末ID> [--eve] [--minutes 1..15] [--max-jobs 1..30] [--max-kib 1..256]');
   return out;
 }
 
@@ -253,6 +304,8 @@ async function main() {
   const config = options(process.argv.slice(2));
   if (!(await eligibleLinux())) throw new Error('参加条件を確認できません。Linux、AC電源、CPU温度70℃未満、省電力オフ、従量制「いいえ」の接続を確認してください。');
   const model = await loadModel();
+  const eveProgram = config.eve ? await loadEveAgents() : null;
+  if (eveProgram) process.stderr.write('Eve参加: 他の利用者が同意して送った公開原稿を、この端末の電力・通信で加工します。Ctrl-Cで停止します。\n');
   const stop = new AbortController();
   const interrupt = () => stop.abort();
   process.once('SIGINT', interrupt); process.once('SIGTERM', interrupt);
@@ -265,10 +318,10 @@ async function main() {
     process.stderr.write('参加中です。Ctrl-Cで停止します。\n');
     while (!signal.aborted && leases < config.maxJobs) {
       if (!(await eligible(signal))) break;
-      const { lease } = await api('claim', {}, signal);
+      const { lease } = await api('claim', eveProgram ? { workloads: [EVE_WORKLOAD] } : {}, signal);
       if (lease) {
         leases++;
-        const completed = await processLease({ lease, model, api, eligible, signal });
+        const completed = await processLease({ lease, model, eveProgram, api, eligible, signal });
         if (!completed) break;
         process.stderr.write('検収に提出しました。\n');
       }
@@ -281,7 +334,7 @@ async function main() {
 }
 
 if (!isMainThread) {
-  parentPort.postMessage(await classify(workerData));
+  parentPort.postMessage(workerData.kind === 'eve' ? await executeEve(workerData) : await classify(workerData));
 } else if (process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href) {
   main().catch(error => {
     if (error?.name === 'AbortError' || error?.name === 'TimeoutError') return;

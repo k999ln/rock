@@ -64,3 +64,12 @@ LinuxはNode.js 22以降、NetworkManager、iproute2、power-profiles-daemon、�
 契約発行先のStripeアカウント、モード、価格、請求と入金を検証する。署名済みWebhookは `POST /api/noah/shared-compute/plan/webhook`。Checkoutの完了・非同期決済・期限切れ、Subscriptionの変更、Invoiceの入金・失敗・無効化・回収不能、返金・異議申立て・早期不正警告のイベントを受ける。キーは環境ごとの秘密設定に置く。再送・順序逆転時は現在の決済状態を再取得する。契約・実行の追加テーブルは `0062_noah_shared_compute` と `0063_noah_compute_subscriptions`。本番D1への適用、決済サービスの設定、実機受入は別途行う。
 
 動作確認には `node --experimental-strip-types --test tests/noah-compute-subscriptions.test.mjs tests/noah-shared-compute-queue.test.mjs tests/noah-shared-runner.test.mjs` を使う。決済事業者の応答を模擬し、2アカウントでの依頼・配分・端末推論・検収・更新終了を実際のAPI処理で検証する。
+
+## Eveの組み合わせを試す
+
+1. 運営者は本人が管理する依頼用・端末提供用の2アカウントを指定する。各アカウントで `/noah/shared-compute` にログインして試験用IDを確認する。`NOAH_COMPUTE_PILOT_OWNER_SCOPES` にはその2件をカンマ区切りで、`NOAH_COMPUTE_PILOT_UNTIL` にはUTCの終了時刻（YYYY-MM-DDThh:mm:ssZ）を設定する。期限内は1アカウント30件まで無料。Stripe契約は不要。
+2. 提供用アカウントでEveの工程に同意し、新しく端末を登録する。Linuxは同じフォルダーに `runner.mjs`、`model.json`、`eve-agents.mjs` を置き、`node runner.mjs --device <端末ID> --eve` を起動する。Androidは対応する参加アプリでEveの工程を選ぶ。アプリに表示された条件を満たした時間だけ受け付ける。
+3. 依頼用アカウントで `/noah/engineering` を開く。Eveが提案した引用一覧・無料記事の工程は掲載順に、CSV整理は表データで実行できる。各依頼で参加端末に渡す公開入力（UTF-8で最大4,096バイト）を確認する。記事のURL・価格は生成原稿に記載する情報。会話履歴は送信対象に含めない。
+4. 検収済みの成果と実行した工程を依頼者が確認する。公開原稿を扱うため、提供者には入力が読める。依頼の完了・取消時に待ち行列の原稿を消去する。受付後15分を過ぎた入力は配分対象から外れ、キュー利用時または定期処理時に原稿を消去する。
+
+`0064_noah_eve_participant` が入力の有効期限と検収済みの結果を管理する。参加者による実機受入を終えて有料提供する場合は、既存の料金契約・実機受入設定に加えて `NOAH_COMPUTE_LIVE_EVE_ACCEPTANCE=approved` を設定する。

@@ -19,7 +19,7 @@ if [[ ${2:-} == --instrumentation ]]; then
   manifest="$here/test/AndroidManifest.xml"
   sources="$here/test/si/avoado/noah/participant/test"
 else
-  cp "$here/../../public/noah-shared-compute/model.json" "$tmp/assets/model.json"
+  cp "$here/../../public/noah-shared-compute/model.json" "$here/../../public/noah-shared-compute/eve-agents.mjs" "$here/assets/eve-renderer.html" "$tmp/assets/"
 fi
 "$tools/aapt2" link -o "$tmp/base.apk" -I "$platform" -A "$tmp/assets" --manifest "$manifest"
 "$JAVA_HOME/bin/javac" --release 8 -cp "$platform" -d "$tmp/classes" "$sources"/*.java

@@ -4,13 +4,26 @@ import { ownerScopeFor, OWNER_SCOPE_HEADER } from './owner-intent.ts';
 import { NOAH_EVE_HERMES_PROJECT, NOAH_CLOUD_PROFILES, noahCloudDigest, noahCloudId } from './noah-cloud-contract.ts';
 import { noahSearchTerms, noahSearchMatcher } from './noah-search-terms.ts';
 import { validEveMessages, parseEveChatReply, type EveChatCandidate } from './eve-chat.ts';
+import { isEveParticipantAgent } from './noah-eve-participant.ts';
 import type { DirectoryEntry } from './noah-agent-directory.ts';
 export function eveChatCandidates(entries: DirectoryEntry[], query: string): EveChatCandidate[] {
   const matchers = noahSearchTerms(query).map(group => noahSearchMatcher([group]));
-  return entries.map(entry => ({ entry, score: matchers.reduce((sum, match) => sum + Number(match((entry.card.name + ' ' + entry.card.summary).toLowerCase())), 0) }))
-    .filter(({ entry, score }) => score > 0 && /^project-[a-f0-9]{64}$/.test(entry.card.feedbackId ?? entry.card.id))
-    .sort((a, b) => b.score - a.score).slice(0, 6)
-    .map(({ entry: { card } }) => ({ id: card.feedbackId ?? card.id, name: card.name.slice(0, 100), summary: card.summary.slice(0, 300) }));
+  const queryText = query.toLowerCase();
+  const participantTerms: Record<string, string[]> = {
+    'mr-citations': ['出典', '引用元', 'citations'],
+    'mr-free-article': ['無料版', '無料記事', '紹介記事', 'free article'],
+    'rockstar-csv-cleanup': ['csv'],
+  };
+  return entries.flatMap(({ card }) => {
+    const id = card.feedbackId ?? card.id;
+    const market = card.marketplace;
+    const tool = market?.kind === 'tool' && card.provider === 'Noah' && id === 'market:tool:' + market.key && isEveParticipantAgent(id);
+    if (!tool && !/^project-[a-f0-9]{64}$/.test(id)) return [];
+    const searchable = (card.name + ' ' + card.summary).toLowerCase();
+    const score = matchers.reduce((sum, match) => sum + Number(match(searchable)), 0)
+      + (tool && participantTerms[market.key]?.some(term => queryText.includes(term)) ? 8 : 0);
+    return score > 0 ? [{ score, candidate: { id, name: card.name.slice(0, 100), summary: card.summary.slice(0, 300) } }] : [];
+  }).sort((a, b) => b.score - a.score).slice(0, 6).map(match => match.candidate);
 }
 type Dependencies = { authenticate: (request: Request) => Promise<string>; directory: () => Promise<DirectoryEntry[]>; authorize: (owner: string, target: string, action: string, digest: string, confirmed: boolean) => Promise<void>; runtime: (body: Record<string, unknown>) => Promise<Response>; available: boolean };
 const json = (body: unknown, status = 200) => Response.json(body, { status, headers: { 'Cache-Control': 'private, no-store', Vary: 'Cookie, Authorization', 'X-Content-Type-Options': 'nosniff' } });

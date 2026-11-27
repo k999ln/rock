@@ -19,7 +19,7 @@ void test('database status inventories every boundary and keeps production readb
     project.tasks.map(({ id, status }) => [id, status]),
   );
   assert.equal(report.summary.boundaryCount, 6);
-  assert.equal(report.summary.tableCount, 263);
+  assert.equal(report.summary.tableCount, 264);
   for (const table of ['distribution_assignments','distribution_lots','distribution_addresses','distribution_plans','distribution_occurrences']) {
     assert.deepEqual(report.boundaries.filter(boundary=>boundary.tables.includes(table)).map(b=>b.id),['operator-dock-d1'],table);
   }
@@ -33,8 +33,8 @@ void test('database status inventories every boundary and keeps production readb
       .deploymentStatus,
     'OWNER_ACCESS_BLOCKED',
   );
-  assert.equal(report.webSchema.tableCount, 186);
-  assert.equal(report.webSchema.migrationCount, 44);
+  assert.equal(report.webSchema.tableCount, 187);
+  assert.equal(report.webSchema.migrationCount, 45);
   for (const name of ['cloud_usage_records', 'cloud_admission_probes', 'cloud_execution_timings']) {
     assert.ok(report.webSchema.tables.includes(name), name);
   }
@@ -74,7 +74,7 @@ void test('database status inventories every boundary and keeps production readb
   assert.ok(report.webSchema.tables.includes('jennifer_task_attempts'));
   assert.ok(report.webSchema.tables.includes('jennifer_passkey_credentials'));
   assert.ok(report.webSchema.tables.includes('jennifer_passkey_sessions'));
-  assert.equal(report.webSchema.latestMigration, '0063_noah_compute_subscriptions.sql');
+  assert.equal(report.webSchema.latestMigration, '0064_noah_eve_participant.sql');
   assert.equal(report.webSchema.accidentalDuplicateCount, 0);
   assert.equal(report.webSchema.publishedConvergenceDeclarations, 25);
   assert.equal(report.webSchema.marketplaceRelationGuardCount, 8);
@@ -82,7 +82,7 @@ void test('database status inventories every boundary and keeps production readb
     report.webSchema.domains.map(({ id, tableCount }) => [id, tableCount]),
     [
       ['core', 33],
-      ['sky', 116],
+      ['sky', 117],
       ['marketplace', 7],
       ['csv', 5],
       ['business', 25],

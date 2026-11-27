@@ -1,15 +1,27 @@
 import { boundedNoahBody } from './noah-agent-api.ts';
-import { NoahAgentError, noahUploadId } from './noah-agent-upload.ts';
+import {
+  NoahAgentError,
+  noahSha256,
+  noahUploadId,
+} from './noah-agent-upload.ts';
 import { OWNER_SCOPE_HEADER, ownerScopeFor } from './owner-intent.ts';
 import {
   SHARED_COMPUTE_CONSENT,
   createSharedComputeStore,
+  EVE_COMPUTE_CONSENT,
+  purgeExpiredEveComputeInputs,
 } from './noah-shared-compute-store.ts';
 import {
   isSharedSampleId,
   SHARED_WORKLOAD_SHA256,
   SHARED_WORKLOAD_VERSION,
 } from './noah-shared-workload.ts';
+import {
+  EVE_AGENT_SHA256,
+  EVE_WORKLOAD,
+  normalizeEveRecipe,
+} from './noah-eve-participant.ts';
+import type { ComputePilot } from './noah-compute-pilot.ts';
 import type { BillingScope } from './noah-shared-compute-plan.ts';
 
 const respond = (data: unknown, status = 200) =>
@@ -31,11 +43,11 @@ function keys(input: Record<string, unknown>, allowed: string[]) {
   if (Object.keys(input).some((key) => !allowed.includes(key)))
     throw inputError();
 }
-function consent(input: Record<string, unknown>) {
-  if (
-    input.consentVersion !== SHARED_COMPUTE_CONSENT ||
-    input.acceptThirdParty !== true
-  ) {
+function consent(
+  input: Record<string, unknown>,
+  version = SHARED_COMPUTE_CONSENT,
+) {
+  if (input.consentVersion !== version || input.acceptThirdParty !== true) {
     throw new NoahAgentError(
       '第三者の参加端末での処理に明示的な同意が必要です。',
       403,
@@ -54,9 +66,16 @@ export function createSharedComputeApi(deps: {
     confirmed: boolean,
   ) => Promise<number>;
   scope: BillingScope | null;
+  pilot?: ComputePilot | null;
+  paidEve?: boolean;
   now?: () => number;
 }) {
-  const store = createSharedComputeStore(deps.db, deps.scope);
+  const store = createSharedComputeStore(
+    deps.db,
+    deps.scope,
+    deps.pilot,
+    deps.paidEve ?? deps.scope?.mode === 'test',
+  );
   async function account(request: Request, write = false) {
     const user = await deps.authenticate(request);
     if (!user || user.startsWith('noah-browser:')) throw Error('UNAUTHORIZED');
@@ -73,11 +92,14 @@ export function createSharedComputeApi(deps: {
       const clock = deps.now ?? Date.now;
       if (request.method === 'GET') {
         const { owner } = await account(request);
+        const query = new URL(request.url).searchParams.get('requestId');
+        const requestId = query === null ? undefined : noahUploadId(query);
+        await purgeExpiredEveComputeInputs(deps.db, clock());
         return respond({
           ownerScope: owner,
           consentVersion: SHARED_COMPUTE_CONSENT,
-          acceptingDevices: !!deps.scope,
-          ...(await store.status(owner, clock())),
+          chainConsentVersion: EVE_COMPUTE_CONSENT,
+          ...(await store.status(owner, clock(), requestId)),
         });
       }
       if (request.method !== 'POST')
@@ -96,7 +118,7 @@ export function createSharedComputeApi(deps: {
       const input = record(
         JSON.parse(
           new TextDecoder('utf-8', { fatal: true }).decode(
-            await boundedNoahBody(request, 2048),
+            await boundedNoahBody(request, 96 * 1024),
           ),
         ),
       );
@@ -111,11 +133,22 @@ export function createSharedComputeApi(deps: {
         const device = await store.authenticateDevice(
           noahUploadId(input.deviceId),
           noahUploadId(input.deviceToken),
+          clock(),
         );
         const now = clock();
         if (action === 'claim') {
-          keys(input, runnerKeys);
-          return respond(await store.claim(device, now));
+          keys(input, [...runnerKeys, 'workloads']);
+          if (
+            input.workloads !== undefined &&
+            (!Array.isArray(input.workloads) ||
+              input.workloads.length !== 1 ||
+              input.workloads[0] !== EVE_WORKLOAD)
+          )
+            throw inputError();
+          await purgeExpiredEveComputeInputs(deps.db, now);
+          return respond(
+            await store.claim(device, now, input.workloads !== undefined),
+          );
         }
         keys(input, [
           ...runnerKeys,
@@ -130,7 +163,12 @@ export function createSharedComputeApi(deps: {
         if (action === 'release')
           return respond(await store.release(device, job, lease, now));
         const result = record(input.result);
-        keys(result, ['label', 'score']);
+        keys(
+          result,
+          device.consent === EVE_COMPUTE_CONSENT
+            ? ['text', 'steps']
+            : ['label', 'score'],
+        );
         if (
           !Number.isInteger(input.elapsedMs) ||
           typeof input.elapsedMs !== 'number' ||
@@ -152,14 +190,23 @@ export function createSharedComputeApi(deps: {
       if (origin === null) throw Error('ORIGIN');
       const { owner, user } = await account(request, true);
       switch (action) {
-        case 'enroll':
+        case 'enroll': {
           keys(input, [
             'action',
             'deviceId',
+            'workloads',
             'consentVersion',
             'acceptThirdParty',
           ]);
-          consent(input);
+          const chain = input.workloads !== undefined;
+          if (
+            chain &&
+            (!Array.isArray(input.workloads) ||
+              input.workloads.length !== 1 ||
+              input.workloads[0] !== EVE_WORKLOAD)
+          )
+            throw inputError();
+          consent(input, chain ? EVE_COMPUTE_CONSENT : SHARED_COMPUTE_CONSENT);
           const hostRevision = await deps.authorize(
             user,
             SHARED_WORKLOAD_VERSION,
@@ -167,14 +214,28 @@ export function createSharedComputeApi(deps: {
             SHARED_WORKLOAD_SHA256,
             true,
           );
+          const revision = chain
+            ? Math.min(
+                hostRevision,
+                await deps.authorize(
+                  user,
+                  EVE_WORKLOAD,
+                  'connect',
+                  EVE_AGENT_SHA256,
+                  true,
+                ),
+              )
+            : hostRevision;
           return respond(
             await store.enroll(
               owner,
               noahUploadId(input.deviceId),
-              hostRevision,
+              revision,
               clock(),
+              chain,
             ),
           );
+        }
         case 'revoke':
           keys(input, ['action', 'deviceId']);
           return respond(
@@ -210,6 +271,58 @@ export function createSharedComputeApi(deps: {
               clock(),
             ),
           );
+        case 'submitChain': {
+          keys(input, [
+            'action',
+            'requestId',
+            'recipe',
+            'funding',
+            'consentVersion',
+            'acceptThirdParty',
+          ]);
+          consent(input, EVE_COMPUTE_CONSENT);
+          const funding = input.funding ?? 'pilot';
+          if (funding !== 'pilot' && funding !== 'monthly') throw inputError();
+          const requestId = noahUploadId(input.requestId);
+          let recipe;
+          try {
+            recipe = normalizeEveRecipe(input.recipe);
+          } catch (error) {
+            throw new NoahAgentError(
+              error instanceof Error
+                ? error.message
+                : '依頼内容を確認してください。',
+            );
+          }
+          const digest = await noahSha256(
+            new TextEncoder().encode(JSON.stringify(recipe)),
+          );
+          const generic = await deps.authorize(
+            user,
+            SHARED_WORKLOAD_VERSION,
+            'run',
+            SHARED_WORKLOAD_SHA256,
+            true,
+          );
+          const revision = await deps.authorize(
+            user,
+            EVE_WORKLOAD,
+            'run',
+            EVE_AGENT_SHA256,
+            true,
+          );
+          return respond(
+            await store.submit(
+              owner,
+              requestId,
+              digest,
+              Math.min(generic, revision),
+              clock(),
+              recipe,
+              funding,
+            ),
+          );
+        }
         case 'cancel':
           keys(input, ['action', 'jobId']);
           return respond(
