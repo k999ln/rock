@@ -30,7 +30,7 @@
 - **入力が要る（宣言と違う）**（7）: 入力は要らないと宣言している道具を呼んだら、相手のサーバーが入力を求めた。サーバーは動いている。
 - **一時的に失敗**（1）: 相手の先のデータが混んでいた（「60 秒後に」）。後でもう一度。
 - **入力が要る・読み取りだけの道具が無い**（17・37）: 呼んでいない（上の決まり）。動くかどうかは、まだ分からない。
-- **壊れている**（9）: 握手が通らない（相手のサーバーが応答しない）。道具だけが壊れている物は 0。9 件のうち 6 件は同じ相手（`ai.agentlookups`）なので、その相手のサーバーが 1 つ止まっていただけかもしれない。巡回の決まり（spec-88: 1 回目の失敗の後、6 時間あけて確かめ直し、2 回続けて失敗したら外す）に合わせて、6 時間あけて確かめ直す（`--ids` で、この 9 件だけ）。
+- **壊れている**（9）: 握手が通らない（相手のサーバーが応答しない）。道具だけが壊れている物は 0。2026-11-28 05:26 の 2 回目でも、9 件とも通らなかった（4.1）。9 件のうち 6 件は同じ相手（`ai.agentlookups`）なので、その相手のサーバーが 1 つ止まっていただけかもしれない。巡回の決まり（spec-88: 1 回目の失敗の後、6 時間あけて確かめ直し、2 回続けて失敗したら外す）に合わせて、6 時間あけて確かめ直す（`--ids` で、この 9 件だけ）。
 
 ## 3. 1 件ずつ
 
@@ -212,10 +212,23 @@
 
 ### 4.1 6 時間あけた 2 回目
 
-- 2026-11-28 05:25（JST）ごろに、`node scripts/noah-prod-check.mjs unverified https://avoado.si --write --ids=<3 章の「壊れている」の 9 件>` で確かめ直す。結果はここに書き足す。
+- 2026-11-28 05:26（JST。1 回目の約 6 時間 10 分後）に、`node scripts/noah-prod-check.mjs unverified https://avoado.si --write --ids=<3 章の「壊れている」の 9 件>` で確かめ直した。**9 件とも、また握手が通らなかった**（どれも「相手のサーバーが応答しません。」）。9 件とも、まだ一覧に載っている（一覧は 212 件）。
+- だから、9 件とも、巡回の決まり（2 回続けて失敗したら外す）に当たる。外す候補は次の 9 件（審査者が `/noah/review/intake` で取り下げる）:
+
+| Agent | 1 回目（2026-11-27 23 時台） | 2 回目（2026-11-28 05:26） |
+| --- | --- | --- |
+| Licensed House Painters（`agency.ottobot/licensed-house-painters`） | 応答しない | 応答しない |
+| CounterScript - Drug Price Benchmarks（`ai.agentlookups/counterscript`） | 応答しない | 応答しない |
+| GroundRules - US Law Text（`ai.agentlookups/groundrules`） | 応答しない | 応答しない |
+| GroundTruth - Environmental Records（`ai.agentlookups/groundtruth`） | 応答しない | 応答しない |
+| ai.agentlookups/overassessed（`ai.agentlookups/overassessed`） | 応答しない | 応答しない |
+| Plumbline - Contractor License Checks（`ai.agentlookups/plumbline`） | 応答しない | 応答しない |
+| Spoon Scout - Food Contaminant Lookup（`ai.agentlookups/spoon-scout`） | 応答しない | 応答しない |
+| Avasis Agent Platform（`ai.avasis.agents/avasis`） | 応答しない | 応答しない |
+| ai.corduroy-labs/updates（`ai.corduroy-labs/updates`） | 応答しない | 応答しない |
 
 ## 5. 次の事
 
 - 「入力が要る」物: 見本の入力（例: 検索の言葉）を決めてから、1 回ずつ頼む（本人の許可の範囲に入るかは、本人に聞く）。
 - 「鍵が要る」物: 鍵を Noah で預かる形（spec-74）が出来るまで、一覧で「鍵が要る」と分かるようにする。
-- 「壊れている」物: 2 回続けて応答しなかった物を、審査者が取り下げるか、巡回に任せるかを、本人が決める。
+- 「壊れている」物: 9 件とも 2 回続けて応答しなかった（4.1）。審査者が取り下げるか、巡回に任せるかを、本人が決める。
