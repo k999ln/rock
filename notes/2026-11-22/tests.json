@@ -280,6 +280,21 @@
    "branch": "claude/ice2/noah-final-fixes d2b2eb55 vs ice/main 7337b003",
    "command": "npm test (full, Node 22.23.5, root, 2 CPUs); then the 7 failing files on an untouched main worktree",
    "result": "branch: 5,689 tests, 5,651 pass, 4 skipped, 34 fail. main: the same 7 files give the same 34 fails (migration-aliases 24: node:sqlite secure authorizer/serialize APIs missing in Node 22; mcp-connector 3; mcp 2; noah-operation-packs 2; mr-pc-adapter 1; noah-mac-runner 1; undici-dependency-security 1). CI uses Node 26.12.1."
+  },
+  {
+   "branch": "production avoado.si (before this PR) with scripts/noah-page-measure.mjs",
+   "command": "measure 74 Noah pages (app/noah + zodiac URLs + /noah/account) at 390 and 1280 as a browser person; then again with the PR's CSS injected",
+   "result": "before: overflow 0; small targets 390px 37 pages / 219, 1280px 47 pages / 196. with the PR's CSS injected: small 0 and overflow 0 on all 74 pages at both widths (account page also in its login and password-signup states)."
+  },
+  {
+   "branch": "production avoado.si (before this PR)",
+   "command": "node scripts/noah-prod-check.mjs accept https://avoado.si --write; ... loop --write; ... devices",
+   "result": "accept: 20 steps pass (search x3, connect -> tools -> ask -> result 791 chars -> disconnect, board create/remove, profile save/clear); one provider tool (dotsy get_plan) failed on their side. loop: row 1 pass; row 8 first half reaches the account page with passkey and login, but 3 small targets there (fixed in this PR). devices: Mac and Linux menus identical (10 links)."
+  },
+  {
+   "branch": "claude/ice2/noah-final-fixes 0572070e",
+   "command": "node --test (144 related files: noah-*, sky-*, rockstar-account*, common-os-entry*); npm run build; typecheck; lint:product; release:web-bundle/web-assets/private/project/repository/noah:screenless/version/design/release/baseline checks",
+   "result": "1,196 tests: 1,195 pass, 1 skipped, 0 fail. build ok and the compiled CSS has the floor rules; typecheck, lint and all 10 checks exit 0."
   }
  ]
 }

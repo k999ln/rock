@@ -29,7 +29,9 @@ main は 23:0x に PR #37（Agent Store）が入って `f285200f` になった�
 
 ## 最終版の計画（11-27 16:20。これが最新）
 
-**今の状態（11-27 16:45）**: 区切り 1（D2・D7・D8）の枝 `claude/ice2/noah-final-fixes` = `d2b2eb55`（署名あり、main `7337b003` の上）。本文は `pr/final-fixes.md`（CHANGELOG と 00-index の印 `FINALFIX`）。手元の確かめは `notes/2026-11-22/tests.json` の最後の 4 行。次: Codex（追記18）が PR・印・マージ・main から 1 回公開 → 本番で確かめる。本番の確かめの道具（`scripts/noah-prod-check.mjs`）は次の PR。12 問の答えはまだ無い（既定で進める）。
+**今の状態（11-27 22:40 JST）**: 区切り 1 の枝 `claude/ice2/noah-final-fixes` = `0572070e`（署名ありの commit 2 つ、main `7337b003` の上）: D2（1 人の分は相手の枠の 3 分の 1）・D7（全部の画面の 44px。本番の 74 画面 × 390px・1280px。直した CSS を本番の画面に足すと小さい押す所 0）・D8（サインインの行き先 2 つ）・本番の確かめの道具（`npm run noah:prod:check`）。本文は `pr/final-fixes.md`（CHANGELOG と 00-index の印 `FINALFIX`）。確かめは `notes/2026-11-22/tests.json` の最後の 7 行。
+次: Codex（追記18）に PR・印・マージ・main から 1 回公開を頼む（Mac がつながっていない間は送れない。21:45 ごろはノエルが Codex を使っていた）→ 公開の後、`npm run noah:prod:check -- https://avoado.si --write` で本番を確かめる。12 問の答えはまだ無い（既定で進める）。
+見つけた事（本人の判断）: 画面の「接続」は Noah のアカウントが要るが、API はブラウザだけの本人でもつなげる。
 
 本人の頼み（2026-11-27 15:58。本文は `notes/2026-11-27-request.txt`。要約は notes/2026-11-22/progress.txt の同じ日）: このチャットでやった事を全部改良して、世に出せる最終版にする。最後まで止まらずに。先に許された事: 本番 D1 に 0060（Codex 経由・手順と戻し方を確かめてから）／D6 の 165 件で外の道具を呼ぶ／Workers Paid は申込の直前まで（押すのは本人）／試行（NOAH_TRIAL_OPEN）を開く／稼ぐ設計図の 14 日の試しを費用 0 円の物から（アカウントと本人確認は本人）／目的型（ヘルスケア）の Agent を無料で 1 つ作って出す。
 
