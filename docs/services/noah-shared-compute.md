@@ -1,6 +1,6 @@
 # Noahの参加型計算サービス
 
-状態（2026-11-27）　月額契約、別アカウントの端末への配分、固定モデルの推論と検収を実装。Android 11のエミュレーターで隔離したプロセスの分類と同意・給電・停止の操作を検証した。一般向けの課金開始と携帯実機での受入は未実施。
+状態（2026-11-27）　月額契約、別アカウントの端末への配分、固定モデルの推論と、Eveが組み合わせたAgentの実行・検収を実装。Android 11のエミュレーターで出典整理から無料記事作成までの実行、CSV整理、同意・給電・停止を検証した。一般向けの課金開始と携帯実機での受入は未実施。
 
 - 本人が言う一言: 「利用者の意思で利用者の計算資源を使う」「毎月クラウド代を取る」「他の利用者の処理にも提供する」
 - Goal（Eveが作る）: 目的＝同意した端末の余力でAgentの計算を分担する / 入力＝仕事の固定版、許可済み入力、端末能力、同意版、上限 / 期待成果＝本人へ返す検収済み結果と利用明細 / 予算上限＝本人と運営の予約枠 / 要る権限＝端末資源の提供と、依頼者のデータ送信先の明示同意。
@@ -61,7 +61,7 @@ LinuxはNode.js 22以降、NetworkManager、iproute2、power-profiles-daemon、�
 | `NOAH_COMPUTE_TEST_` または `NOAH_COMPUTE_LIVE_` に続く設定 | `STRIPE_ACCOUNT`、`STRIPE_KEY`、`WEBHOOK_SECRET`、`PRICE_ID`、`AMOUNT_MINOR`（最小通貨単位）、`CURRENCY`（JPY、USD、EUR）、`MERCHANT`、`MONTHLY_JOBS`、`TERMS_VERSION` |
 | `NOAH_COMPUTE_LIVE_DEVICE_ACCEPTANCE` | 対応端末で隔離、資源上限、撤回、検収を受け入れた後に運用側が `approved` を設定する |
 
-契約発行先のStripeアカウント、モード、価格、請求と入金を検証する。署名済みWebhookは `POST /api/noah/shared-compute/plan/webhook`。Checkoutの完了・非同期決済・期限切れ、Subscriptionの変更、Invoiceの入金・失敗・無効化・回収不能、返金・異議申立て・早期不正警告のイベントを受ける。キーは環境ごとの秘密設定に置く。再送・順序逆転時は現在の決済状態を再取得する。契約・実行の追加テーブルは `0062_noah_shared_compute` と `0063_noah_compute_subscriptions`。本番D1への適用、決済サービスの設定、実機受入は別途行う。
+契約発行先のStripeアカウント、モード、価格、請求と入金を検証する。署名済みWebhookは `POST /api/noah/shared-compute/plan/webhook`。Checkoutの完了・非同期決済・期限切れ、Subscriptionの変更、Invoiceの入金・失敗・無効化・回収不能、返金・異議申立て・早期不正警告のイベントを受ける。キーは環境ごとの秘密設定に置く。再送・順序逆転時は現在の決済状態を再取得する。契約・実行の追加テーブルは `0062_noah_shared_compute` と `0063_noah_compute_subscriptions`。本人限定の無料試験と一般向けの料金設定・実機受入は個別に管理する。
 
 動作確認には `node --experimental-strip-types --test tests/noah-compute-subscriptions.test.mjs tests/noah-shared-compute-queue.test.mjs tests/noah-shared-runner.test.mjs` を使う。決済事業者の応答を模擬し、2アカウントでの依頼・配分・端末推論・検収・更新終了を実際のAPI処理で検証する。
 
