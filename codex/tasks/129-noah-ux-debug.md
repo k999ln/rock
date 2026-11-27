@@ -32,6 +32,7 @@
 
 ### D2 1 つの相手への依頼を、1 人で使い切れないようにする（抜け道 S2・重さ 中）
 
+- **2026-11-27 Claude が済ませた**（枝 `claude/ice2/noah-final-fixes`）: 1 人が 1 つの相手へ直近 60 秒に頼めるのは、相手の枠（`hostPerMinute`）の 3 分の 1（切り捨て、最低 1 回）まで（`lib/noah-limits.ts` の `noahAskOwnerHostLimit`、`lib/noah-form.ts` の `noahAskGate` の `share`）。本人の 1 分の上限（`perMinute`）を上げても変わらない。合格の試験は `tests/noah-ask-host-share.test.mjs`（本人の上限を 40 にして、1 人が 30 回送ると 10 回目までが通り、残りは「同じ Agent へ続けて頼みすぎています。」。その後、別の人が通る）。Turnstile は作っていない（本人の判断。下の 2026-11-23 の行）。
 - 2026-11-23 Claude が調べた: 1 人（1 つの本人）は、もともと 1 分に 10 回まで（`NOAH_ASK_LIMITS.perMinute`）で、相手の枠（1 分 30 回）の 3 分の 1 までしか使えない。使い切れるのは、本人を何人も作った時だけで、その量は D1 の 1 日の上限で抑えた。1 分の中で何人分にも分ける使い方は残る（ブラウザだけの本人の作成に、人の確かめ（例: Cloudflare Turnstile）を足す時に一緒に直す。外部の設定が要るので、本人の判断）。
 
 - わかっている事: 1 つの相手への依頼は、Noah 全体で 1 分 30 回まで（`NOAH_ASK_LIMITS.hostPerMinute`）。D1 の理由で、1 人が何人分にもなって、この枠を使い切れる。
@@ -63,6 +64,7 @@
 
 ### D7 押す所を 44px 以上に（全部の画面）
 
+- **2026-11-27 本番で測って直した**（枝 `claude/ice2/noah-final-fixes`）: スマホ幅で歩いた 10 画面のうち、小さい押す所は `/noah/help` の文の外のリンク 2 つ（「マーケットへ戻る」120×19px・「Mac用Noahと導入手順を見る」203×19px）だけ。44px にした（`tests/noah-help-tap.test.mjs`）。両方の幅・サインインの有無・全部の画面は、公開の後に本番の確かめの道具で測る。
 - **2026-11-24 本番で測った**（PR #50 の後の公開。`scripts/noah-public-walk.mjs`）: `/noah`・`/noah/ready`・`/noah/explore`・`/noah/profile`・`/noah/saved`・`/noah/activity` は、はみ出し 0。小さい押す所は `/noah` の「注目のAgent」の「すべて見る」（73×40px）だけ。44px にした（`tests/noah-store-heading-tap.test.mjs`）。
 - **2026-11-23 Claude が主な 9 画面を済ませた**（枝 `claude/ice2/noah-taps`）: 手元の本番と同じ build で、`/noah`・探す・保存・マイAgent・実行中・登録情報・追加・利用状況・登録サポートが「small 0」。PR #37（Agent Store）の行の評価の札（30px）・「その他の操作」（38px）・`productPill`（40px）も 44px にした（枝 `claude/ice2/noah-store-taps`。本番の行に同じ規則を足して 44px になる事を確かめた）。残り: ほかの画面。
 
@@ -72,6 +74,7 @@
 
 ### D8 サインインの行き先
 
+- **2026-11-27 Claude が残りを済ませた**（枝 `claude/ice2/noah-final-fixes`）: #91 の後に入った 2 つ（`components/noah-first-earning.tsx` の「サインイン」、`components/noah-shared-compute.tsx` の「ログインする」）が、まだ `/noah/account` へ行っていた。どちらも API がブラウザだけの本人に 401 を返すので、同じ画面へ戻り続けて進めなかった。`noahSignInHref`（ChatGPT のサインイン、元の画面へ戻る）にした。合格の試験は `tests/noah-signin-destination.test.mjs`（`components/noah*.tsx` と `app/noah` の、「サインイン」「ログイン」と書いた全部のリンクが `/noah/account` へ行かない）。`components/noah-connect-button.tsx` の接続の前の移動（`noahReadyAccountHref`）は、ブラウザだけの本人で足りるので、そのまま（既存の試験が固定している）。
 - 2026-11-26 [PR #91](https://github.com/iceiceice999/rock/pull/91) を正本に統合し、Sites v257で公開した。認証が必要な接続・登録・保存・審査ではChatGPTのサインインへ進む。選んだAgentや道具を戻り先に引き継ぐ仕様と回帰試験を入れた。
 
 - 2026-11-23 Claude が調べた: `/noah/account` は、元の画面へ戻すだけだが、戻った先で「ブラウザだけの本人」が自動で作られるので、ブラウザの本人で足りる画面では、行き止まりにならない。行き止まりになり得るのは、本当のサインインが要る画面（例: `noah-launch.tsx` の「自分のAgentとMacを管理するには」）。ただし、その行き先は既存の試験（`tests/noah-launch-ui.test.mjs` など）が `/noah/account?…` で固定している。試験を書き換えずに直せないので、本人の判断に回す。

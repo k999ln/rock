@@ -11,7 +11,7 @@ import { noahResultImage, NOAH_IMAGE_BASE64_LIMIT, type NoahReceivedResult, type
  * 仕様の本文は docs/noah/spec-87-tool-agent.md の 11 章。
  */
 import { canonicalJson, sha256Hex } from './noah-connect-requirements.ts';
-import { NOAH_ASK_LIMITS } from './noah-limits.ts';
+import { NOAH_ASK_LIMITS, noahAskOwnerHostLimit } from './noah-limits.ts';
 import type { NoahToolDef } from './noah-mouth-mcp-remote.ts';
 
 /** 数値は候補。実測（握手が通った 276 host・道具 3,699 個）は docs/design-validation/noah/README.md。 */
@@ -470,19 +470,24 @@ export { NOAH_ASK_LIMITS };
 /** 接続先の枠（host_take）が取れなかった時の文。相手が「混んでいる」と返して待っている間も、同じ文を出す。 */
 export const NOAH_HOST_BUSY = 'この Agent は、今こんでいます。少し待ってから試してください。';
 
-export type NoahAskGate = { ok: true } | { ok: false; status: 409 | 429; code: 'open' | 'minute' | 'day' | 'host'; message: string };
+/** 本人が、1 つの接続先への枠のうち自分の分（noahAskOwnerHostLimit）を使い切った時の文。task 129 の D2。 */
+export const NOAH_HOST_SHARE_USED = '同じ Agent へ続けて頼みすぎています。少し待ってから試してください。';
+
+export type NoahAskGate = { ok: true } | { ok: false; status: 409 | 429; code: 'open' | 'minute' | 'day' | 'host' | 'share'; message: string };
 /**
- * 頼む前の検査。数は呼ぶ側が数えて渡す（本人の終わっていない依頼、本人の直近 60 秒、本人の直近 24 時間、接続先の直近 60 秒）。
- * 「1 日」は、時刻の帯に依らないように、直近 24 時間で数える。上から順に見て、最初に越えた物を返す。
+ * 頼む前の検査。数は呼ぶ側が数えて渡す（本人の終わっていない依頼、本人の直近 60 秒、本人の直近 24 時間、接続先の直近 60 秒、
+ * 本人がその接続先へ頼んだ直近 60 秒）。「1 日」は、時刻の帯に依らないように、直近 24 時間で数える。上から順に見て、最初に越えた物を返す。
+ * 最後の 1 つ（ownerHostLastMinute）は、渡した時だけ見る。本人がその接続先へ頼めるのは、接続先の枠の 3 分の 1 まで（task 129 の D2）。
  */
 export function noahAskGate(
-  counts: { open: number; lastMinute: number; lastDay: number; hostLastMinute: number },
+  counts: { open: number; lastMinute: number; lastDay: number; hostLastMinute: number; ownerHostLastMinute?: number },
   limits: Pick<typeof NOAH_ASK_LIMITS, 'open' | 'perMinute' | 'perDay' | 'hostPerMinute'> = NOAH_ASK_LIMITS,
 ): NoahAskGate {
   if (counts.open >= limits.open) return { ok: false, status: 409, code: 'open', message: '進んでいる依頼が多すぎます。終わるまで待ってください。' };
   if (counts.lastMinute >= limits.perMinute) return { ok: false, status: 429, code: 'minute', message: '続けて頼みすぎています。少し待ってから試してください。' };
   if (counts.lastDay >= limits.perDay) return { ok: false, status: 429, code: 'day', message: 'この 24 時間の回数を使い切りました。時間をおいて、また使えます。' };
   if (counts.hostLastMinute >= limits.hostPerMinute) return { ok: false, status: 429, code: 'host', message: NOAH_HOST_BUSY };
+  if ((counts.ownerHostLastMinute ?? 0) >= noahAskOwnerHostLimit(limits.hostPerMinute)) return { ok: false, status: 429, code: 'share', message: NOAH_HOST_SHARE_USED };
   return { ok: true };
 }
 

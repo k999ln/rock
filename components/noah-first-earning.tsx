@@ -3,6 +3,7 @@
 import Link from 'next/link';
 import { useCallback, useEffect, useState, type SubmitEvent } from 'react';
 import type { noahFirstEarningStore } from '@/lib/noah-first-earning';
+import { noahSignInHref } from '@/lib/noah-navigation';
 import { OWNER_SCOPE_HEADER, readOwnerScope } from '@/lib/owner-intent';
 import styles from './noah-unified.module.css';
 import formStyle from './noah-first-earning.module.css';
@@ -97,7 +98,7 @@ export default function NoahFirstEarning() {
     <Link className={styles.back} href="/noah">Noahに戻る</Link>
     <header className={styles.heading}><h1>初回の売上</h1></header>
     {error && <p role="alert" className={styles.error}>{error}</p>}
-    {signedOut && <Link className={styles.primary} href="/noah/account?mode=login&returnTo=%2Fnoah%2Ffirst-earning">サインイン</Link>}
+    {signedOut && <Link className={styles.primary} href={noahSignInHref('/noah/first-earning')}>サインイン</Link>}
     {loading && <output>進捗を確認中…</output>}
     {state && <div className={styles.groups}>
       {state.reviewer && <section className={styles.task}>

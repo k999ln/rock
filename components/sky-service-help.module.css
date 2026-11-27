@@ -10,6 +10,8 @@
 .notice p + p { margin-top: 14px; }
 .page li + li { margin-top: 10px; }
 .page a { color: var(--sky-text); text-underline-offset: 4px; }
+/* 文の外に 1 つで置いたリンク（「マーケットへ戻る」・節の最後の案内）は、押す所を 44px 以上にする（task 129 の D7）。文の中のリンクは、文の行の高さのまま。 */
+.page > a, .page section > a { display: inline-flex; align-items: center; min-height: 44px; }
 .page a:focus-visible { outline: 2px solid var(--sky-accent); outline-offset: 4px; }
 .page dl { margin: 0; }
 .page dl > div { display: grid; grid-template-columns: minmax(120px, 1fr) 3fr; gap: 16px; padding: 10px 0; }

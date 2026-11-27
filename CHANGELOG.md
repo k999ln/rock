@@ -1,5 +1,7 @@
 ## 2026-11-27
 
+- Noahの公開前の残り3つを修正（task129 D2・D7・D8）。1人が1つのAgentへ頼めるのは、そのAgentの1分の枠（30回）の3分の1まで（本人の1分の上限を上げても変わらない。1人が30回送った後も別の人が頼めることを回帰検証）。/noah/help の「マーケットへ戻る」「Mac用Noahと導入手順を見る」を44pxに。「初回の売上」のサインインと「参加型計算」のログインを、元の画面へ戻るChatGPTのサインインへ変更（/noah/accountでは同じ画面へ戻り続けて進めなかった）。Noahの画面に /noah/account へ行く「サインイン」「ログイン」が無いことを検証（[PR #FINALFIX](https://github.com/iceiceice999/rock/pull/FINALFIX)）。Turnstileは未導入（本人の判断）。
+
 - Eveから出典整理・無料記事作成・CSV整理を同意した別アカウントの端末に依頼し、検収結果を受け取れるようにした。本人限定の無料試験と端末ごとの停止に対応（[PR #122](https://github.com/iceiceice999/rock/pull/122)）。
 
 - 参加型計算の月額契約、同意した別の利用者のAndroid／Linux端末での公開英文の分類、結果検収、提供停止・自動更新停止を実装（task130、[PR #121](https://github.com/iceiceice999/rock/pull/121)）。

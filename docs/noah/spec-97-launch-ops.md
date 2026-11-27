@@ -133,7 +133,7 @@ D1 の書き込みの内訳（1 日。索引の書き込みも 1 行と数える
 | `NOAH_INTAKE_PUBLIC` | 閉 | 一覧・詳細・検索・navigation の行が、誰にでも見える | 審査者だけに見える |
 | `NOAH_ASK_FORM` | 閉 | 接続と、入力欄で頼む事が、誰にでもできる（`NOAH_INTAKE_PUBLIC` も開いている時だけ） | 新しい接続と依頼が 503。進んでいる依頼は、最後まで進む。つないだ記録と成果は残る |
 | `NOAH_PROBE_L2` | 閉 | （ローンチの範囲に、開けた時の動きは無い。本人の決定の後に作る） | — |
-| `NOAH_ASK_LIMITS` | 無し（既定の数） | JSON で数を上書きする。例 `{"perDay":50}`。項目は 8 つ: 依頼（`open` 8・`perMinute` 10・`perDay` 200・`hostPerMinute` 30）、接続（`connectLive` 50・`connectPerMinute` 10・`connectPerDay` 100）、1 つの接続先へ、利用者の操作から始める握手を全員合わせて 60 秒に何回まで（`hostHandshakes` 60） | — |
+| `NOAH_ASK_LIMITS` | 無し（既定の数） | JSON で数を上書きする。例 `{"perDay":50}`。項目は 8 つ: 依頼（`open` 8・`perMinute` 10・`perDay` 200・`hostPerMinute` 30）、接続（`connectLive` 50・`connectPerMinute` 10・`connectPerDay` 100）、1 つの接続先へ、利用者の操作から始める握手を全員合わせて 60 秒に何回まで（`hostHandshakes` 60）。1 人が 1 つの接続先へ 60 秒に頼めるのは `hostPerMinute` の 3 分の 1（切り捨て、最低 1 回。`lib/noah-limits.ts` の `noahAskOwnerHostLimit`。task 129 の D2）で、項目ではない（`hostPerMinute` を変えると一緒に変わる。`perMinute` を上げても、この数は変わらない） | — |
 | `NOAH_PATROL_BUDGET` | 無し（既定の数） | 同上。例 `{"probes":16}` | — |
 
 開ける順は [ローンチの最小限](mvp-launch.md) の 9 章（段 0〜3）。環境変数を変えた後は、今の保存版を配備し直す（変えるだけでは効かない）。
