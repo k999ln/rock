@@ -17,6 +17,8 @@ export type NoahReadyItem = {
   users: number;
   /** 審査済みの日本語の題・入れる物・返る物と図解。公開条件が閉じている時は API がこの項目を返さない。 */
   pin?: NoahPin;
+  /** 説明の日本語の 1 行（lib/noah-summary-ja.ts）。英語の説明が変わった時は無い。 */
+  summaryJa?: string | null;
   connect: {
     badge: 'one_click' | 'taps' | 'setup' | 'unverified' | 'blocked'; taps: number; typed: number;
     place: string | null; placeLabel: string | null; need: string | null; level: number;

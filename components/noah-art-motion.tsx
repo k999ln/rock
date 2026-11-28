@@ -113,7 +113,9 @@ export type NoahPinDiagramView = { scene: NoahPinScene; tone: number };
 
 // 絵の順: 作者が選んだ表紙 → ピンの動画（本人の指示 2026-11-25「こういう動画をgifにしてピン画像にする」）→ 図解 → 場面の絵。
 // 前の物が無いか読めない時に、次の物を出す（本人の決定 2026-11-25「作者の表紙→図解→場面」に、動画を図解の前に足した）。
-export function NoahPinMotion({ id, name, summary, cover, diagram, video }: { id: string; name: string; summary?: string; cover?: NoahCoverView; diagram?: NoahPinDiagramView; video?: NoahPinVideo }) {
+// 場面の絵は、元の説明（summary）で選び、絵の中に書く字は caption（日本語の 1 行など）があればそれにする。
+// 一覧のカードと詳細の頭で、同じ Agent が同じ絵になる（どちらも元の説明で選ぶ）。
+export function NoahPinMotion({ id, name, summary, caption, cover, diagram, video }: { id: string; name: string; summary?: string; caption?: string; cover?: NoahCoverView; diagram?: NoahPinDiagramView; video?: NoahPinVideo }) {
   const ref = useArtEntrance();
   const [failed, setFailed] = useState<string[]>([]);
   const fail = (url: string) => setFailed((old) => (old.includes(url) ? old : [...old, url]));
@@ -127,6 +129,6 @@ export function NoahPinMotion({ id, name, summary, cover, diagram, video }: { id
       <img className={styles.coverMedia} src={source.url} alt="" loading="lazy" onError={() => fail(source.url)} /> :
       loop ? <PinLoopVideo key={loop.url} video={loop} onError={() => fail(loop.url)} /> :
       drawn ? <NoahPinSceneArt scene={drawn.scene} tone={drawn.tone} /> :
-      <NoahAgentScene art={resolveNoahAgentArt(id,name,summary)} name={name} summary={summary} />}
+      <NoahAgentScene art={resolveNoahAgentArt(id,name,summary)} name={name} summary={caption || summary} />}
   </span>;
 }

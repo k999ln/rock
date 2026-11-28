@@ -19,7 +19,16 @@ export const NOAH_COLLECTION_LABELS: Record<NoahCollectionSource, string> = {
  * 決まった語の照合だけ（ML なし）。外した数は収集機の状態に残す。
  */
 export const NOAH_COLLECTION_BLOCKED = /\b(?:nsfw|uncensored|nude|nudity|naked|porn\w*|hentai|erotic\w*|sexy|undress\w*|deepfakes?|face[ -]?swap\w*|lewd|onlyfans|r18|18\+)(?![\w])/iu;
-export const noahCollectionBlocked = (item: { name: string; summary: string; url: string }) => NOAH_COLLECTION_BLOCKED.test(`${item.name} ${item.summary} ${item.url}`);
+/**
+ * 利用規約やライセンスをすり抜ける道具（試用のリセット・機械 ID の書き換え・クラック・キー生成・ゲームの不正の実行器・個人向けの定額の契約を API に変える中継）も紹介しない。
+ * 2026-11-28 に本番のホームの 59 枚目に「Claude Code Pro Trial Reset & Machine ID」、74 枚目に「Codex Roblox Script Executor」が出ていた。
+ * 本番の 1,200 枚と掲載中の 212 系列で当たるのは、その 2 件と、同じ種類の Roblox の実行器 2 件と、392 枚目の「Claude Pro/Max の契約を API に変える」中継 1 件だけ。
+ */
+export const NOAH_COLLECTION_CIRCUMVENTION = /\b(?:trial[ -]?resets?|keygens?|cracked[ -]+(?:versions?|apps?|software|licen[cs]es?|pro|apks?)|license[ -]?(?:crack|bypass|reset)\w*|activation[ -]?(?:crack|bypass)\w*|machine[ -]?ids?[ -]?(?:reset|spoof|chang)\w*|(?:reset|spoof)\w*[ -]+(?:the[ -]+)?machine[ -]?ids?)(?![\w])|\b(?:roblox|fivem|fortnite|valorant|csgo|cs2)\b[\w -]{0,24}\b(?:executors?|exploits?|injectors?|cheats?|aimbots?)\b|\b(?:executors?|exploits?|injectors?)\b[\w -]{0,24}\broblox\b|\b(?:aimbots?|wallhacks?)\b|\b(?:claude|chatgpt|openai|codex|cursor|copilot)\b[\w /+-]{0,24}\b(?:pro|max|plus|team|subscriptions?|plans?)\b[\w /-]{0,24}\b(?:into|as) (?:an? )?[\w -]{0,30}\bapi\b|破解|无限试用|重置试用|试用重置/iu;
+export const noahCollectionBlocked = (item: { name: string; summary: string; url: string }) => {
+  const text = `${item.name} ${item.summary} ${item.url}`;
+  return NOAH_COLLECTION_BLOCKED.test(text) || NOAH_COLLECTION_CIRCUMVENTION.test(text);
+};
 /** 投稿（SNS）の出所。投稿の本文は転載せず、決まった説明文とリンク・数だけを載せる。 */
 export const NOAH_COLLECTION_SOCIAL = ['x', 'reddit', 'bluesky'] as const;
 export const NOAH_COLLECTION_SOCIAL_SUMMARY: Record<typeof NOAH_COLLECTION_SOCIAL[number], string> = {

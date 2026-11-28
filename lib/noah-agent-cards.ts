@@ -12,6 +12,8 @@ export type NoahAgentCard = {
   notice?: 'noah-ad';
   /** 日本語の題・入れる物・返る物と、資料の図解（codex/tasks/131 で Luna Max が書き、確かめた物だけ）。無い時は、名前・説明・頭文字の面。 */
   pin?: NoahPin;
+  /** 説明の日本語の 1 行（取り込みの summary_ja、無ければ同梱の写し lib/noah-summary-ja.ts）。英語の説明が変わった時は無い。 */
+  summaryJa?: string | null;
   /** ピンの動画（集めた動画を 5〜8 秒・縦 3:4・音なしのループにした物。codex/tasks/132）。ある時は、図解の代わりに見えている間繰り返す。 */
   pinVideo?: NoahPinVideo;
 };

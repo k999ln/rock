@@ -7,6 +7,7 @@ import type { IntakeDb } from './noah-intake-db.ts';
 import { noahSearchMatcher, noahSearchTerms } from './noah-search-terms.ts';
 import { parseStoredNoahPin } from './noah-pin-storage.ts';
 import type { NoahPin } from './noah-pin-scene.ts';
+import { noahBundledSummaryJa } from './noah-summary-ja.ts';
 
 type Family = { id: string; name: string; summary: string; external_key: string; repository: string | null; record_json: string; connect_json: string | null };
 export type DirectoryEntry = { firstParty?: 'business-training' | 'wordpress-maintenance' | 'ec-production'; cloudProfile?: NoahCloudProfile; card: NoahAgentCard; families: string[]; observedAt: number; createdAt?: number; hot?: number };
@@ -75,7 +76,9 @@ export async function readNoahDirectory(deps: DirectoryDependencies, target?: { 
     if (target && feedbackId !== targetId) continue;
     const existing = entries.get(feedbackId);
     if (existing) { existing.families.push(row.id); continue; }
+    const summaryJa = noahBundledSummaryJa(row.id, row.summary);
     entries.set(feedbackId, { families: [row.id], observedAt: 0, card: { ...base(row.id, row.name, row.summary, row.external_key.split('/')[0], url), feedbackId,
+      ...(summaryJa ? { summaryJa } : {}),
       ...(familyPins.has(row.id) ? { pin: familyPins.get(row.id) } : {}) } });
   }
   const listedIds = new Set(rows.results.map(row => row.id));
@@ -90,8 +93,10 @@ export async function readNoahDirectory(deps: DirectoryDependencies, target?: { 
   for (const item of noahCollectionCards(selected)) {
     const url = item.url;
     const feedbackId = projectIds.get(url)!;
+    // 見つかった物の説明の日本語の 1 行（同梱の写し。説明が同じ時だけ）。
+    const projectJa = noahBundledSummaryJa(feedbackId, item.summary);
     const entry: DirectoryEntry = entries.get(feedbackId) ?? { families: [], observedAt: item.observedAt,
-      card: { ...base(feedbackId, item.name, item.summary, item.author, url), feedbackId, href: url, external: true } };
+      card: { ...base(feedbackId, item.name, item.summary, item.author, url), feedbackId, href: url, external: true, ...(projectJa ? { summaryJa: projectJa } : {}) } };
     const seen = new Set<string>();
     entry.card.sources = item.sources.filter((source: NoahAgentSource) => {
       if (seen.has(source.sourceUrl)) return false;
@@ -115,9 +120,10 @@ export async function readNoahDirectory(deps: DirectoryDependencies, target?: { 
 }
 export function selectNoahDirectory(entries: DirectoryEntry[], source: string, query: string, order: 'hot' | 'new' = 'hot') {
   // 語ごとに当てる。日本語の語は英語の語幹にも広げる（一覧の説明は、ほとんど英語）。lib/noah-search-terms.ts
+  // 説明の日本語の 1 行（summaryJa）がある Agent は、日本語の語でもそのまま当たる。
   const groups = noahSearchTerms(query), matches = noahSearchMatcher(groups), searching = groups.some(group => group.length);
   return entries.filter(entry => (!source || source === 'noah' ? !source || entry.families.length > 0 || !!entry.firstParty || !!entry.cloudProfile : source === 'discovered' ? !!entry.card.sources?.length : entry.card.sources?.some(s => s.source === source))
-    && (!searching || matches(`${entry.card.name} ${entry.card.summary} ${entry.card.provider}`.toLowerCase())))
+    && (!searching || matches(`${entry.card.name} ${entry.card.summary} ${entry.card.summaryJa ?? ''} ${entry.card.provider}`.toLowerCase())))
     .sort((a,b) => {
       const rank = source === 'noah' ? b.observedAt-a.observedAt : order === 'new'
         ? (b.createdAt ?? 0)-(a.createdAt ?? 0)

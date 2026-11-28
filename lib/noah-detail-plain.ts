@@ -24,12 +24,13 @@ export function noahPlainNeedsLine(needs: readonly string[] = []): { required: s
   return { required, optional: needs.length - required.length };
 }
 
-export type NoahPlainUse = { key: string; name: string; text: string; needs: string[] };
+/** text は提供者の文のまま。textJa はその日本語の 1 行（同梱の訳がある道具だけ）。 */
+export type NoahPlainUse = { key: string; name: string; text: string; textJa?: string; needs: string[] };
 
 /** 「こんな事を頼めます」に並べる物（道具の工程ごと）。道具の工程が無い時は空（説明は、上の「詳細」に出ているので繰り返さない）。 */
 export function noahPlainUses(steps: readonly NoahStep[] = []): NoahPlainUse[] {
   return steps.filter((step) => step.id.startsWith('tool:'))
-    .map((step) => ({ key: step.id, name: noahPlainToolName(step.label), text: step.note ?? '', needs: noahPlainNeeds(step.flow?.inputs) }));
+    .map((step) => ({ key: step.id, name: noahPlainToolName(step.label), text: step.note ?? '', ...(step.noteJa ? { textJa: step.noteJa } : {}), needs: noahPlainNeeds(step.flow?.inputs) }));
 }
 
 /** 「接続」を押すと何が起きるかの 1 行（日本語の原文。画面で訳す）。 */

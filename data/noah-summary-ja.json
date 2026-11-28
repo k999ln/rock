@@ -1,0 +1,854 @@
+{
+ "schema": "noah-summary-ja/1",
+ "source": "Claude が 2026-11-28 に、掲載中の 212 系列の英語の説明（本番の /api/noah/intake）から書いた日本語の 1 行",
+ "series": {
+  "mcp-registry:ac.mizan/registry": {
+   "summary": "Player ban records from 560+ game community ban lists, with Steam's own bans. Reads need no key.",
+   "ja": "560 以上のゲームコミュニティの BAN リストと Steam 自身の BAN から、プレイヤーの BAN 記録を調べます。読むだけなら鍵は要りません。"
+  },
+  "mcp-registry:ac.tandem/docs-mcp": {
+   "summary": "Remote MCP server for Tandem docs, install guides, SDKs, workflows, and agent setup help.",
+   "ja": "Tandem のドキュメント・導入ガイド・SDK・ワークフローと、Agent の設定の手引きを調べられます。"
+  },
+  "mcp-registry:academy.apexai/apex-ai-academy": {
+   "summary": "Co-Learn with your Agent: fact-checked AI lessons with Human and Agent views.",
+   "ja": "Agent と一緒に学ぶ、事実確認済みの AI の講座。人向けと Agent 向けの 2 つの見方があります。"
+  },
+  "mcp-registry:academy.ase/periodic-system": {
+   "summary": "Practices for building software with coding agents, each with a test you check on your repo.",
+   "ja": "コーディング Agent でソフトを作るための実践集。どれも、自分のリポジトリで確かめられるテスト付き。"
+  },
+  "mcp-registry:ad.inside/inside-ads": {
+   "summary": "Telegram ad exchange: estimate reach and cost with no account, then create and run campaigns.",
+   "ja": "Telegram の広告取引所。アカウント無しで届く人数と費用を見積もり、広告を作って出せます。"
+  },
+  "mcp-registry:ad.tide/mcp": {
+   "summary": "Sui blockchain data in plain English: transactions, wallets, coins, balances, fund flows and SQL.",
+   "ja": "Sui ブロックチェーンのデータを、わかりやすい言葉で。取引・ウォレット・コイン・残高・資金の流れ・SQL。"
+  },
+  "mcp-registry:ae.alexeysound/alexey-sound": {
+   "summary": "Find and book a location sound recordist / production sound mixer in Dubai and the UAE.",
+   "ja": "ドバイと UAE で、ロケの録音技師（整音担当）を探して予約できます。"
+  },
+  "mcp-registry:ae.beachclubs/mcp": {
+   "summary": "Search UAE beach clubs, day pass prices, amenities, opening hours and events across all 7 emirates.",
+   "ja": "UAE の 7 首長国のビーチクラブを、デイパスの料金・設備・営業時間・イベントで探せます。"
+  },
+  "mcp-registry:ae.brainy.tipline/gta6": {
+   "summary": "Unofficial GTA 6 guide: sourced facts on characters, places, vehicles and release times.",
+   "ja": "非公式の GTA 6 ガイド。登場人物・場所・乗り物・発売時期を、出典付きの事実で調べられます。"
+  },
+  "mcp-registry:ae.brainy/grocery-prices": {
+   "summary": "Source-backed UAE costs: groceries, schools, housing, transport, utilities, telecom and relocation",
+   "ja": "UAE の生活費を出典付きで。食料品・学校・住まい・交通・光熱費・通信・引っ越し。"
+  },
+  "mcp-registry:ae.datadubai/dubai-real-estate": {
+   "summary": "Dubai property prices, AED/sqft, sales, rents, yields and projects from DLD registered transactions.",
+   "ja": "ドバイの不動産の価格・平方フィートあたりの AED・売買・家賃・利回り・物件を、DLD に登記された取引から。"
+  },
+  "mcp-registry:ae.discond/discond": {
+   "summary": "UAE restaurant picks and live discounts across Fazaa, The Entertainer, Talabat and more.",
+   "ja": "UAE のレストランのおすすめと、Fazaa・The Entertainer・Talabat などの今使える割引。"
+  },
+  "mcp-registry:ae.employerofrecord/moha": {
+   "summary": "Hire in the UAE without a local company: guide, quotes and accounts via an Employer of Record.",
+   "ja": "UAE に会社が無くても人を雇えます。Employer of Record を通した手引き・見積もり・手続き。"
+  },
+  "mcp-registry:ae.genosys/genosys": {
+   "summary": "Shop GENOSYS Korean skincare in the UAE from chat: find products, AED prices, order and pay.",
+   "ja": "UAE で GENOSYS の韓国スキンケアをチャットから買えます。商品探し・AED の価格・注文・支払い。"
+  },
+  "mcp-registry:ae.grovisor/grotax": {
+   "summary": "UAE Corporate Tax: CT computation, SBR, penalties, free zone test, TP and health-check.",
+   "ja": "UAE の法人税。税額の計算・小規模事業者の救済（SBR）・罰金・フリーゾーンの判定・移転価格・健全性の確認。"
+  },
+  "mcp-registry:ae.mrk/dubai-property": {
+   "summary": "Dubai real estate data: 2,400+ projects, developers, communities, purchase costs and Golden Visa.",
+   "ja": "ドバイの不動産データ。2,400 以上の物件・開発会社・地区・購入にかかる費用・ゴールデンビザ。"
+  },
+  "mcp-registry:ae.plantguide/dubai-gardening": {
+   "summary": "What to plant in Dubai, indoor plants, plant care in the heat, garden styles and Garden Care prices.",
+   "ja": "ドバイで何を植えるか、室内の植物、暑さの中での手入れ、庭の様式、Garden Care の料金。"
+  },
+  "mcp-registry:ae.projectory/mcp": {
+   "summary": "Find UAE off-plan developments, registered residential sales and research reports.",
+   "ja": "UAE の完成前（オフプラン）の物件、登記された住宅の売買、調査レポートを探せます。"
+  },
+  "mcp-registry:aero.events/events": {
+   "summary": "Find aviation events: airshows, fly-ins, workshops and club meets. Public and read-only.",
+   "ja": "航空のイベントを探せます。航空ショー・フライイン・ワークショップ・クラブの集まり。公開の情報を読むだけ。"
+  },
+  "mcp-registry:africa.divisi/divisi": {
+   "summary": "Farm, trade and learn together: what to plant and when, what ails a crop, prices near you.",
+   "ja": "一緒に育てて、売って、学ぶ。何をいつ植えるか、作物の病気、近くの相場。"
+  },
+  "mcp-registry:ag.hood/name-service": {
+   "summary": "Resolve .hood names on Robinhood Chain — forward/reverse, text records, availability & pricing.",
+   "ja": "Robinhood Chain の .hood の名前を引けます（正引き・逆引き）。テキストレコード・空き状況・価格。"
+  },
+  "mcp-registry:agency.almostimpossible/site": {
+   "summary": "Read-only access to the Almost Impossible agency website: case studies, team, news and pages.",
+   "ja": "Almost Impossible（制作会社）のサイトを読むだけ。事例・チーム・ニュース・各ページ。"
+  },
+  "mcp-registry:agency.goji/goji": {
+   "summary": "Answers on AEO, SEO, web and brand from GOJI's published material. Melbourne, Australia.",
+   "ja": "GOJI が公開している資料から、AEO・SEO・Web・ブランドについて答えます（オーストラリア・メルボルン）。"
+  },
+  "mcp-registry:agency.justidea/justidea-agency": {
+   "summary": "Services, prices, inquiries and free analytics, AI and Google visibility scans by JustIdea, Poland.",
+   "ja": "ポーランドの JustIdea のサービス・料金・問い合わせと、無料の分析、AI と Google での見え方の診断。"
+  },
+  "mcp-registry:agency.ottobot/business-contact-finder": {
+   "summary": "Check how to contact a business website, and whether that contact path actually works.",
+   "ja": "会社の Web サイトへの連絡方法と、その連絡先が本当に届くかを確かめます。"
+  },
+  "mcp-registry:agency.ottobot/contractor-license-changes": {
+   "summary": "Did this contractor's licence change? Observed lapses and reinstatements, not a snapshot.",
+   "ja": "この業者の免許は変わった？ 一時点の記録ではなく、観測した失効と復活を確かめます。"
+  },
+  "mcp-registry:agency.ottobot/licensed-house-painters": {
+   "summary": "Find licensed house painters in 11 US states, with dated license status from state boards.",
+   "ja": "米国の 11 州で、州の委員会の日付付きの免許状況から、免許のある塗装業者を探せます。"
+  },
+  "mcp-registry:agency.thebureauoflostcontext/bureau-public": {
+   "summary": "Bureau-operated public read-only MCP service for public Context Packets and Cases.",
+   "ja": "Bureau が運営する、読むだけの公開サービス。公開の Context Packet と Case を読めます。"
+  },
+  "mcp-registry:agency.thirdhemisphere/ai-authority-index": {
+   "summary": "Read-only CRISP scores and AI visibility data from Third Hemisphere's AI Authority Index.",
+   "ja": "Third Hemisphere の AI Authority Index から、CRISP スコアと AI での見え方のデータを読めます。"
+  },
+  "mcp-registry:agency.zoll/ausfuhr": {
+   "summary": "Regeln und Suchen zur Ausfuhr aus der EU: Kumulierung, Präferenznachweis, Incoterms, Warennummer",
+   "ja": "EU からの輸出の決まりと検索。累積・原産地（特恵）の証明・インコタームズ・品目番号。"
+  },
+  "mcp-registry:ai.1court.state/court-directory": {
+   "summary": "US county court directory: clerk, courthouse address, e-filing, filing fees, and case lookup.",
+   "ja": "米国の郡の裁判所の一覧。書記官・裁判所の住所・電子での申立て・手数料・事件の検索。"
+  },
+  "mcp-registry:ai.28in28/agent-service-desk": {
+   "summary": "Check SPF/DKIM/DMARC of a domain, get a non-binding Fix & Verify quote, re-verify after the DNS fix.",
+   "ja": "ドメインの SPF・DKIM・DMARC を確かめ、拘束力の無い修正の見積もりを受け、DNS を直した後に確かめ直せます。"
+  },
+  "mcp-registry:ai.4ai/domains": {
+   "summary": "Search 254 premium .ai domains for sale, get free .ai value estimates and real .ai sales data.",
+   "ja": "売り出し中の .ai のドメイン 254 件を探し、無料の価値の見積もりと、実際の売買のデータを見られます。"
+  },
+  "mcp-registry:ai.a2uicatalog/catalog": {
+   "summary": "500+ typed UI atoms an agent composes into real rendered interfaces. Free, no API key.",
+   "ja": "Agent が組み合わせて実際の画面を作るための、型付きの UI 部品 500 以上。無料・API キー不要。"
+  },
+  "mcp-registry:ai.achurch/church": {
+   "summary": "A sanctuary for AI agents and humans: attend a service, reflect, read, search, and ask. No auth.",
+   "ja": "AI の Agent と人のための聖域。礼拝に出る・振り返る・読む・探す・尋ねる。認証は要りません。"
+  },
+  "mcp-registry:ai.acubic/acubic": {
+   "summary": "Explain, screen, build and backtest systematic portfolios from eToro and Trading 212 universes.",
+   "ja": "eToro と Trading 212 の銘柄から、規則に沿ったポートフォリオを説明・選別・作成・バックテストします。"
+  },
+  "mcp-registry:ai.adoraads/beauty": {
+   "summary": "AI-native beauty ads, sponsored product discovery, and brand recommendations.",
+   "ja": "AI 向けの美容の広告、スポンサー付きの商品探し、ブランドのおすすめ。"
+  },
+  "mcp-registry:ai.advisorsai/service-navigator": {
+   "summary": "Describe a store's problem: get the matching service, its fixed price, and a request link.",
+   "ja": "お店の困り事を書くと、合うサービスと決まった料金、依頼のリンクが返ります。"
+  },
+  "mcp-registry:ai.aeoengine/best-ai-search-agency-aeo-report": {
+   "summary": "Free AEO visibility report MCP — run AI search audits for any domain.",
+   "ja": "無料の AEO（AI 検索での見え方）レポート。どのドメインでも AI 検索の診断ができます。"
+  },
+  "mcp-registry:ai.afg/afg": {
+   "summary": "Sandbox marketplace where AI agents hire agents for verified outcomes. Test money only.",
+   "ja": "AI の Agent が Agent を雇う、試験用の市場。結果は確かめられ、お金はテスト用だけ。"
+  },
+  "mcp-registry:ai.afmr/discovery": {
+   "summary": "Read AFMR failure modes and discover scoped attestation and lift-evidence contracts.",
+   "ja": "AFMR の失敗のパターンを読み、範囲を決めた証明と、効果の根拠の契約を探します。"
+  },
+  "mcp-registry:ai.agenlify/catalog": {
+   "summary": "Find AI tools by task, with pricing context, setup steps, limitations and official sources.",
+   "ja": "やりたい事から AI ツールを探せます。料金の目安・導入の手順・できない事・公式の出典付き。"
+  },
+  "mcp-registry:ai.agent-bev/bev-door": {
+   "summary": "The world's largest agentic B2B hub for beer, wine and spirits. Powered by CUVEE. Trade only.",
+   "ja": "ビール・ワイン・蒸留酒の、Agent 向けの B2B の取引の場（CUVEE 提供）。事業者向け。"
+  },
+  "mcp-registry:ai.agent-bev/bevgtin": {
+   "summary": "bevGTIN — the beverage alcohol sourcing GTIN confirmation.",
+   "ja": "酒類の仕入れのための、GTIN（商品コード）の確認。"
+  },
+  "mcp-registry:ai.agent-bev/library": {
+   "summary": "The trade rulebook for beverage alcohol, country by country, each section with its official sources.",
+   "ja": "酒類の取引の決まりを国ごとに。どの節にも公式の出典が付いています。"
+  },
+  "mcp-registry:ai.agentasy/cronjob": {
+   "summary": "Scheduled, HMAC-signed, retried webhook triggers for AI agents. No account: self-register via tools.",
+   "ja": "AI の Agent のための、決まった時刻に動く Webhook（HMAC の署名・再試行付き）。アカウント不要で、道具から登録します。"
+  },
+  "mcp-registry:ai.agentberg/agentberg": {
+   "summary": "Agent-to-agent trading intelligence exchange. Publish findings, vote on quality, earn reputation.",
+   "ja": "Agent どうしで取引の情報を交換する場。見つけた事を公開し、質に投票し、評判を得ます。"
+  },
+  "mcp-registry:ai.agentblueprint/agent-blueprint": {
+   "summary": "Measured agent costs, a one-page agent summary check, and an offline access map. No sign-in.",
+   "ja": "測った Agent の費用、1 ページの Agent の概要の確認、オフラインで使えるアクセスの地図。サインイン不要。"
+  },
+  "mcp-registry:ai.agentboard/agentboard": {
+   "summary": "The public message board for AI agents: register in one call, introduce yourself, ask, read replies.",
+   "ja": "AI の Agent のための公開の掲示板。1 回で登録して、自己紹介し、質問し、返事を読めます。"
+  },
+  "mcp-registry:ai.agentcv/registry": {
+   "summary": "Search AgentCV's registry of AI agent teams and check a team profile before registering it.",
+   "ja": "AgentCV の AI Agent のチームの登録簿を探し、登録する前にチームの紹介を確かめます。"
+  },
+  "mcp-registry:ai.agentgates/compute": {
+   "summary": "Confidential computers for AI swarms: sealed VMs (Intel TDX) by the hour, USDC over x402.",
+   "ja": "多数の AI Agent 向けの機密の計算機。Intel TDX で封じた VM を時間単位で借り、x402 経由の USDC で払います。"
+  },
+  "mcp-registry:ai.agenticcart/agenticcart": {
+   "summary": "Check any Shopify, WooCommerce or other online store, product page or feed for AI readiness.",
+   "ja": "Shopify・WooCommerce などのネットショップ、商品ページ、商品フィードが AI に対応できているかを確かめます。"
+  },
+  "mcp-registry:ai.agenticfabricationnetwork/ufp": {
+   "summary": "Turn designs into shipped parts: quote 3D printing, CNC, and decals, then check out.",
+   "ja": "設計を部品にして届けます。3D プリント・CNC・デカールの見積もりから購入まで。"
+  },
+  "mcp-registry:ai.agenticplug/agent-ready-report": {
+   "summary": "Scan any public website and see how ready it is for AI agents and AI search, explained plainly.",
+   "ja": "公開の Web サイトが、AI の Agent と AI 検索にどれだけ対応しているかを診断し、わかりやすく説明します。"
+  },
+  "mcp-registry:ai.agenticterminal/directory": {
+   "summary": "Verified merchants accepting agentic payments on Lightning/L402/BOLT12/USDT — search, verify, pay.",
+   "ja": "Lightning・L402・BOLT12・USDT で Agent からの支払いを受け付ける、確認済みのお店を探して確かめ、支払えます。"
+  },
+  "mcp-registry:ai.agentlookups/counterscript": {
+   "summary": "Free US drug-price benchmarks from federal data (CMS NADAC): a benchmark, not a price anyone owes.",
+   "ja": "米国の連邦データ（CMS NADAC）からの無料の薬価の基準値。誰かが払うべき値段ではなく、目安です。"
+  },
+  "mcp-registry:ai.agentlookups/groundrules": {
+   "summary": "The original text of US federal and state law, with official sources; never a summary or advice.",
+   "ja": "米国の連邦法と州法の原文を、公式の出典付きで。要約や助言ではありません。"
+  },
+  "mcp-registry:ai.agentlookups/groundtruth": {
+   "summary": "Federal environmental records near any US location, with dates and provenance; never a safety score.",
+   "ja": "米国のどの場所でも、近くの連邦の環境の記録を日付と出どころ付きで。安全の点数ではありません。"
+  },
+  "mcp-registry:ai.agentlookups/overassessed": {
+   "summary": "Maryland property-assessment fairness checks vs similar homes, with appeal windows and links.",
+   "ja": "メリーランド州の固定資産の評価が、似た家と比べて妥当かを確かめます。不服申し立ての期間とリンク付き。"
+  },
+  "mcp-registry:ai.agentlookups/plumbline": {
+   "summary": "Free contractor-license checks from official state records; a no-match never proves unlicensed.",
+   "ja": "州の公式記録から、業者の免許を無料で確かめます。見つからなくても、無免許の証明にはなりません。"
+  },
+  "mcp-registry:ai.agentlookups/spoon-scout": {
+   "summary": "Lab results, FDA recalls and additive rules for US packaged foods, with sources; never a grade.",
+   "ja": "米国の包装食品の検査結果・FDA のリコール・添加物の決まりを、出典付きで。評価の点数ではありません。"
+  },
+  "mcp-registry:ai.agentroam/agentroam": {
+   "summary": "Buy travel eSIMs, gift cards and mobile top-ups with crypto — user confirms before any order.",
+   "ja": "旅行用の eSIM・ギフトカード・携帯のチャージを暗号資産で買えます。注文の前に必ず本人が確かめます。"
+  },
+  "mcp-registry:ai.agentsindex/mcp": {
+   "summary": "The editors' index of AI-native software, from AI agents to the models and frameworks behind them.",
+   "ja": "編集者が選んだ、AI ネイティブなソフトの索引。AI の Agent から、その裏のモデルと枠組みまで。"
+  },
+  "mcp-registry:ai.agentsrank/agentsrank": {
+   "summary": "Hire listed AI workers for research and briefs. Review a draft, then open the result.",
+   "ja": "掲載された AI の働き手に、調査や要約を頼めます。下書きを確かめてから、結果を開きます。"
+  },
+  "mcp-registry:ai.agilex.service/docs": {
+   "summary": "Official AGILEX robotics product docs: manuals, CAN protocol, firmware, FAQ. Read-only.",
+   "ja": "AGILEX のロボット製品の公式資料。説明書・CAN の通信の決まり・ファームウェア・よくある質問。読むだけ。"
+  },
+  "mcp-registry:ai.ai-portal/ai-portal": {
+   "summary": "Live AI data for agents: model releases, regulations (EU AI Act), GenAI glossary, daily news.",
+   "ja": "Agent 向けの最新の AI の情報。モデルの発表・規制（EU AI Act）・生成 AI の用語集・毎日のニュース。"
+  },
+  "mcp-registry:ai.aim-shield/mcp": {
+   "summary": "Dice si un mensaje, enlace o cuenta bancaria es una estafa y da la nota de seguridad de un dominio.",
+   "ja": "メッセージ・リンク・銀行口座が詐欺かどうかを判定し、ドメインの安全の点数を返します。"
+  },
+  "mcp-registry:ai.airboxship/shipping-public": {
+   "summary": "Find USPS pickup points, compare USPS and UPS rates, track USPS packages. No sign-in.",
+   "ja": "USPS の集荷場所を探し、USPS と UPS の料金を比べ、USPS の荷物を追跡できます。サインイン不要。"
+  },
+  "mcp-registry:ai.airshelf/catalog": {
+   "summary": "Cross-vendor B2B catalog for AI agents: search, compare, find equivalents, request a quote.",
+   "ja": "AI の Agent 向けの、複数の売り手の B2B のカタログ。探す・比べる・同等品を見つける・見積もりを頼む。"
+  },
+  "mcp-registry:ai.aislabs/cve": {
+   "summary": "Daily CVE priorities ranked by real exploitation (KEV+EPSS) for AI agents; free teaser, paid full",
+   "ja": "実際に悪用されている度合い（KEV・EPSS）で並べた、毎日の脆弱性（CVE）の優先順位。無料の抜粋と、有料の全体版。"
+  },
+  "mcp-registry:ai.aivonic/mcp": {
+   "summary": "Do business with Aivonic: pricing, products, check availability, book a demo, request a quote.",
+   "ja": "Aivonic と取引できます。料金・製品・空き状況の確認・デモの予約・見積もりの依頼。"
+  },
+  "mcp-registry:ai.alcock/arena": {
+   "summary": "AI forecasting gym: markets, sports, policy and tech. Graded by reality, measured against markets.",
+   "ja": "AI の予測の練習場。市場・スポーツ・政策・技術を、現実で採点し、市場と比べて測ります。"
+  },
+  "mcp-registry:ai.aldro/tax": {
+   "summary": "US and Canada business tax deadlines, annual reports, sales tax permits and quotes, with sources.",
+   "ja": "米国とカナダの事業の税。申告の期限・年次報告・売上税の許可と見積もりを、出典付きで。"
+  },
+  "mcp-registry:ai.alphabazaar/arena": {
+   "summary": "Paper-trading arena for AI agents: publish stock calls, build attested track records, compete.",
+   "ja": "AI の Agent の模擬取引の場。株の予想を公開し、証明された成績を積み、競います。"
+  },
+  "mcp-registry:ai.alphaquantlabs/propertycheck": {
+   "summary": "Gold Coast & Brisbane: the building, the street at its door and the everyday context around it.",
+   "ja": "ゴールドコーストとブリスベンの 1 つの住所について、建物・目の前の通り・身近な周りの様子を確かめます。"
+  },
+  "mcp-registry:ai.alpic.alpix/Alpix": {
+   "summary": "A pixel wars MCP server: ask your agent to collaboratively draw pixels in a huge square",
+   "ja": "ピクセルの陣取り。Agent に頼んで、大きな正方形にみんなでピクセルを描きます。"
+  },
+  "mcp-registry:ai.amigurumi/patterns": {
+   "summary": "Free crochet amigurumi toy patterns with 3D models, plus a circle, ball and tube round calculator.",
+   "ja": "かぎ針編みのあみぐるみの無料の編み図（3D モデル付き）と、円・球・筒の段の計算。"
+  },
+  "mcp-registry:ai.analyticslegends/sap-analytics": {
+   "summary": "SAP AI & analytics market data for agents: SAP firms, day rates, jobs, Joule & BDC news",
+   "ja": "Agent 向けの SAP の AI と分析の市場データ。SAP の会社・日当・求人・Joule と BDC のニュース。"
+  },
+  "mcp-registry:ai.ankra/docs": {
+   "summary": "Search the Ankra documentation: clusters, stacks, GitOps, CI/CD and the CLI. No account needed.",
+   "ja": "Ankra の資料を探せます。クラスター・スタック・GitOps・CI/CD・コマンド。アカウント不要。"
+  },
+  "mcp-registry:ai.apexrunner/signals": {
+   "summary": "Live crypto market signals for trading agents, pay-per-call in USDC on Base via x402.",
+   "ja": "取引する Agent 向けの、暗号資産の市場の今の合図。Base の USDC で 1 回ごとに払います（x402）。"
+  },
+  "mcp-registry:ai.apir/verify": {
+   "summary": "Check an AI agent you did not build: is it who it claims, inside its mandate, and what's its record",
+   "ja": "自分で作っていない AI の Agent を確かめます。名乗りどおりか、任された範囲の中か、これまでの記録は。"
+  },
+  "mcp-registry:ai.aqta/seal": {
+   "summary": "Verify Seal AI decision receipts: signed evidence anyone can check, no account needed.",
+   "ja": "Seal の AI の判断の受領書を確かめます。誰でも確かめられる署名付きの証拠。アカウント不要。"
+  },
+  "mcp-registry:ai.arabickeyboard/name-calligraphy": {
+   "summary": "Writes names in Arabic script with alternative spellings, six calligraphy styles and PNG artwork.",
+   "ja": "名前をアラビア文字で書きます。別の綴り、6 つの書体、PNG の作品付き。"
+  },
+  "mcp-registry:ai.arclan/registry": {
+   "summary": "MCP registry: 138k servers crawled, handshake-validated, reliability-scored. 744 production-safe.",
+   "ja": "MCP の登録簿。138k のサーバーを集めて握手で確かめ、信頼性を点数にしています（本番で安全なのは 744）。"
+  },
+  "mcp-registry:ai.arcreport/ask": {
+   "summary": "Free open check: can an AI agent reach checkout on this store? Advisory; ARC stops before payment.",
+   "ja": "このお店で、AI の Agent が購入画面までたどり着けるかを無料で確かめます。参考の結果で、支払いの前で止まります。"
+  },
+  "mcp-registry:ai.artemisgtm/gtm-engineer": {
+   "summary": "GTM engineering consulting firm for seed to Series C startups. We build and run GTM systems.",
+   "ja": "シードからシリーズ C のスタートアップ向けの、GTM（市場に出す仕組み）のエンジニアリングの会社。仕組みを作って動かします。"
+  },
+  "mcp-registry:ai.artidrop/artidrop": {
+   "summary": "Publish HTML, Markdown, and multi-file sites as shareable URLs instantly via MCP.",
+   "ja": "HTML・Markdown・複数のファイルのサイトを、MCP からすぐに共有できる URL で公開します。"
+  },
+  "mcp-registry:ai.arvx/arvx": {
+   "summary": "ARVX™ models both people in a relationship and reads its health area by area with every Reading.",
+   "ja": "ARVX™ は、関係の 2 人をそれぞれモデルにして、読むたびに関係の健康を分野ごとに読み取ります。"
+  },
+  "mcp-registry:ai.askmiles/catalog": {
+   "summary": "Miles' public credit-card catalog: facts, transfer partners, valuations. Keyless, read-only.",
+   "ja": "Miles の公開のクレジットカードの一覧。事実・ポイントの移行先・価値の評価。キー不要・読むだけ。"
+  },
+  "mcp-registry:ai.asrm/asrm": {
+   "summary": "Check a website's AI readiness and answer AI visibility and GEO questions from ASRM's guides.",
+   "ja": "Web サイトの AI への対応を確かめ、AI での見え方と GEO についての質問に、ASRM の手引きから答えます。"
+  },
+  "mcp-registry:ai.assistable/assistable": {
+   "summary": "Give any AI agent a phone: make and answer calls, get through phone menus, and send texts.",
+   "ja": "AI の Agent に電話を持たせます。電話をかける・受ける、音声メニューを進める、SMS を送る。"
+  },
+  "mcp-registry:ai.atdev/supershopping": {
+   "summary": "나만을 위한 AI 쇼핑 MCP — 상품을 자연어로 검색·비교·추천해 사용자의 효과적인 쇼핑을 돕습니다.",
+   "ja": "自分だけの AI ショッピング。言葉で商品を探し、比べ、おすすめを受けて、上手に買い物できます。"
+  },
+  "mcp-registry:ai.athenahq/mcp": {
+   "summary": "Track how AI assistants mention, cite, and rank your brand and competitors in AI search.",
+   "ja": "AI 検索で、AI アシスタントが自分のブランドと競合をどう取り上げ、引用し、順位づけしているかを追えます。"
+  },
+  "mcp-registry:ai.atmy/air-quality": {
+   "summary": "PM2.5 of 300+ cities: now, history, forecast, rankings; 12 000 sensors with a quality rating.",
+   "ja": "300 以上の都市の PM2.5。今・これまで・予報・ランキング。品質の評価付きの 12,000 のセンサー。"
+  },
+  "mcp-registry:ai.augenix/build": {
+   "summary": "Free preview websites for local trades, then Stripe Checkout for $29/mo hosting.",
+   "ja": "地域の職人のための無料の Web サイトの試作。公開するなら Stripe で月 29 ドルのホスティング。"
+  },
+  "mcp-registry:ai.augmap/maps": {
+   "summary": "Make maps of places across the continental US with your AI assistant.",
+   "ja": "AI アシスタントと一緒に、米国本土の場所の地図を作れます。"
+  },
+  "mcp-registry:ai.auteng/docs": {
+   "summary": "Agent document workspace with wallet auth. Create, update and share markdown docs. By AutEng.ai",
+   "ja": "ウォレットで認証する、Agent の文書の作業場。Markdown の文書を作る・直す・共有する（AutEng.ai）。"
+  },
+  "mcp-registry:ai.autoblogging/autoblogging": {
+   "summary": "Facts about Autoblogging.ai, the AI article writer: pricing, plans, features and site search.",
+   "ja": "AI の記事作成ツール Autoblogging.ai についての事実。料金・プラン・機能・サイト内の検索。"
+  },
+  "mcp-registry:ai.autonomad/travel": {
+   "summary": "Flights and hotels booked in one checkout; tours, events and dining to plan; group trips.",
+   "ja": "航空券とホテルを 1 回の支払いで予約。ツアー・イベント・食事の計画や、グループ旅行も。"
+  },
+  "mcp-registry:ai.autoposter/autoposter": {
+   "summary": "Multi-platform social media post creation, scheduling, and publishing.",
+   "ja": "複数の SNS への投稿を、作る・予約する・公開する。"
+  },
+  "mcp-registry:ai.avasis.agents/avasis": {
+   "summary": "Free MCP tools to quote and sample x402 APIs: Solana rug checks, Base token-watch, $49 starter kit",
+   "ja": "x402 の API を見積もって試せる無料の MCP の道具。Solana の詐欺トークンの確認、Base のトークンの見張りなど。"
+  },
+  "mcp-registry:ai.aviado/health": {
+   "summary": "Cited supplement evidence, biomarker effects, interaction checks and brand quality",
+   "ja": "出典付きのサプリメントの根拠、血液などの指標への効果、飲み合わせの確認、ブランドの品質。"
+  },
+  "mcp-registry:ai.avlira/back-office": {
+   "summary": "Real-estate brokerage back office: agent roster, commission plans, deals and monthly dues.",
+   "ja": "不動産仲介の事務。担当者の名簿・報酬の計画・取引・毎月の会費。"
+  },
+  "mcp-registry:ai.awardcast/federal-contracts": {
+   "summary": "US federal contracting data: open solicitations, buying agencies, contractors, price history.",
+   "ja": "米国の連邦の調達のデータ。募集中の案件・買う機関・受注した会社・価格の履歴。"
+  },
+  "mcp-registry:ai.bankrolled/agent-hub": {
+   "summary": "Free, sourced deposit-insurance/savings/retirement limits. US, UK, CA, AU, NZ. No key, no payment.",
+   "ja": "預金保険・貯蓄・年金の上限を無料で、出典付きで。米国・英国・カナダ・オーストラリア・ニュージーランド。キーも支払いも不要。"
+  },
+  "mcp-registry:ai.baseedgelabs/catalog": {
+   "summary": "Browse BaseEdge Labs trading strategies for TradingView and get free presets. No account needed.",
+   "ja": "TradingView 向けの BaseEdge Labs の取引戦略を見て、無料の設定を受け取れます。アカウント不要。"
+  },
+  "mcp-registry:ai.bazichart/bazichart-mcp": {
+   "summary": "BaZi (Four Pillars) and Zi Wei Dou Shu chart calculation with true solar time. No install or login.",
+   "ja": "真太陽時で、四柱推命（BaZi）と紫微斗数の命式を計算します。インストールもログインも不要。"
+  },
+  "mcp-registry:ai.bcited/bcited": {
+   "summary": "AEO tools: scan any URL for AI-citation readiness, read the public leaderboard and citation panel.",
+   "ja": "AEO の道具。どの URL でも AI に引用されやすいかを診断し、公開のランキングと引用の一覧を読めます。"
+  },
+  "mcp-registry:ai.beevr/beevr": {
+   "summary": "Read-only access to BeevR's services, fixed-price MVP packages, case studies and articles (EN/VI).",
+   "ja": "BeevR のサービス・決まった料金の MVP の組み合わせ・事例・記事を読むだけ（英語・ベトナム語）。"
+  },
+  "mcp-registry:ai.beliefstate/investor-research": {
+   "summary": "26 account tools; 23 wallet tools (20 paid). Free company snapshots and cited research.",
+   "ja": "アカウントの道具 26 個と、ウォレットの道具 23 個（有料 20）。会社の概要の無料版と、出典付きの調査。"
+  },
+  "mcp-registry:ai.benchgecko/benchgecko": {
+   "summary": "AI model prices per provider, benchmarks, own AI behavior tests and AI economy data, with sources.",
+   "ja": "提供元ごとの AI のモデルの価格、ベンチマーク、独自の AI の振る舞いの試験、AI 経済のデータを出典付きで。"
+  },
+  "mcp-registry:ai.benroberts/b4-index": {
+   "summary": "Independent build-vs-buy index: score software categories BUILD/BUY/BRIDGE/BEWARE.",
+   "ja": "作るか買うかの独立した指標。ソフトの分野を BUILD・BUY・BRIDGE・BEWARE で採点します。"
+  },
+  "mcp-registry:ai.bezal/local-commerce": {
+   "summary": "Search 7,000+ local service businesses across America by category, location, or keyword.",
+   "ja": "米国の 7,000 以上の地域のサービス業を、分野・場所・キーワードで探せます。"
+  },
+  "mcp-registry:ai.bidbetter/collector-car-values": {
+   "summary": "Collector-car values from completed auction sales: median, 25th-75th band and sale count by model.",
+   "ja": "落札済みのオークションから、クラシックカーの相場を車種ごとに。中央値・25〜75% の幅・件数。"
+  },
+  "mcp-registry:ai.bidclub/bidclub": {
+   "summary": "Search 45+ investor podcasts and read transcripts, TL;DRs, digests — bilingual EN/中文, keyless.",
+   "ja": "45 以上の投資家のポッドキャストを探し、文字起こし・要点・まとめを読めます（英語・中国語。キー不要）。"
+  },
+  "mcp-registry:ai.bithuman/characters": {
+   "summary": "Animated AI characters in your chat: short clips of a character saying your words, or a live talk.",
+   "ja": "チャットに動く AI のキャラクター。キャラクターが言葉をしゃべる短い動画や、その場での会話。"
+  },
+  "mcp-registry:ai.bithuman/docs": {
+   "summary": "The bitHuman docs over MCP: two read-only tools, search and fetch; it needs no account and no key.",
+   "ja": "bitHuman の資料を MCP で。読むだけの道具は「探す」と「取り出す」の 2 つ。アカウントもキーも不要。"
+  },
+  "mcp-registry:ai.bittuitive.api/bittuitive": {
+   "summary": "Pay-per-call data for AI agents: BTC price, airport delays, weather, SEC filings, paid-API routing",
+   "ja": "AI の Agent 向けの 1 回ごとに払うデータ。BTC の価格・空港の遅れ・天気・SEC の書類・有料 API の振り分け。"
+  },
+  "mcp-registry:ai.bizmoon/regulatory": {
+   "summary": "Live US federal and state regulatory changes and grant programs, every result cited.",
+   "ja": "米国の連邦と州の規制の変更と、補助金の制度を最新の情報で。どの結果にも出典付き。"
+  },
+  "mcp-registry:ai.blast-radius/blast-radius": {
+   "summary": "Blast Radius tools for AI strategy, diligence, and market updates.",
+   "ja": "AI の戦略・事前調査（デューデリジェンス）・市場の最新情報のための Blast Radius の道具。"
+  },
+  "mcp-registry:ai.blinibot/agent-lounge": {
+   "summary": "A safe place where AI agents meet, build, sell services, invite agents and bring real people.",
+   "ja": "AI の Agent が出会い、作り、サービスを売り、ほかの Agent や本物の人を招ける、安全な場所。"
+  },
+  "mcp-registry:ai.bluebed.property/new-launches": {
+   "summary": "Reviewed Singapore new-launch floor plans, area details and buyer rules. Trial.",
+   "ja": "審査済みのシンガポールの新築物件の間取り・地域の詳細・買う人の決まり。試験中。"
+  },
+  "mcp-registry:ai.bluerate/loan-officers": {
+   "summary": "Find licensed US mortgage loan officers by state, city, ZIP code, loan type or language.",
+   "ja": "免許のある米国の住宅ローンの担当者を、州・市・ZIP コード・ローンの種類・言語で探せます。"
+  },
+  "mcp-registry:ai.boltclaw/docs": {
+   "summary": "Search and read the Bolt Claw API documentation. Read-only, and no key needed.",
+   "ja": "Bolt Claw の API の資料を探して読めます。読むだけで、キー不要。"
+  },
+  "mcp-registry:ai.booqer/booqer": {
+   "summary": "Verified Booqer shops. A keyless consult is confirmed when the slot is open.",
+   "ja": "確認済みの Booqer のお店。空いている枠があれば、キー無しの相談の予約が確定します。"
+  },
+  "mcp-registry:ai.borealhost/mcp": {
+   "summary": "Agent-native web hosting — deploy sites, manage DNS, register domains, scale infrastructure",
+   "ja": "Agent 向けの Web ホスティング。サイトの公開・DNS の管理・ドメインの登録・設備の拡張。"
+  },
+  "mcp-registry:ai.botappetit/bot-appetit": {
+   "summary": "Can a machine consume this page? AEO, SEO and performance scans. Page scans need no account.",
+   "ja": "このページを機械が読めるか？ AEO・SEO・表示の速さを診断します。ページの診断にアカウントは不要。"
+  },
+  "mcp-registry:ai.botinfo/robot-market-data": {
+   "summary": "Checkout-verified prices, stock, US FCC status and buy routes for humanoid and quadruped robots",
+   "ja": "人型ロボットと四足ロボットの、購入画面で確かめた価格・在庫・米国 FCC の状況・買える所。"
+  },
+  "mcp-registry:ai.brevium/agent-puzzle-bounty": {
+   "summary": "3-of-5 coalition puzzle bounty for AI agents: 3 distinct agents combine. PLAY money, not cash.",
+   "ja": "AI の Agent の協力パズルの懸賞。5 体のうち 3 体の別々の Agent が力を合わせて解きます。賞金は遊び用で、現金ではありません。"
+  },
+  "mcp-registry:ai.bringyour/bringyour": {
+   "summary": "No-data MCP handoff for local Claude Code to Codex harness moves. $49 lifetime.",
+   "ja": "手元の Claude Code の環境を Codex へ移すための、データを渡さない MCP の引き継ぎ。49 ドルの買い切り。"
+  },
+  "mcp-registry:ai.buhalteris/mcp": {
+   "summary": "Read-only Lithuanian tax rates, calculators and sourced guides from buhalteris.ai.",
+   "ja": "buhalteris.ai の、リトアニアの税率・計算機・出典付きの手引きを読むだけ。"
+  },
+  "mcp-registry:ai.buildersinfintech/fintech-data": {
+   "summary": "Fintech companies, products, rounds, investors, news, Agent-Ready scores. Free, keyless, CC BY 4.0.",
+   "ja": "フィンテックの会社・製品・資金調達・投資家・ニュース・Agent への対応の点数。無料・キー不要・CC BY 4.0。"
+  },
+  "mcp-registry:ai.buildwithorbit/orbit": {
+   "summary": "Turn any task into the right API calls: discover, evaluate, and integrate public APIs.",
+   "ja": "どんな作業も、ちょうど合う API の呼び出しに。公開の API を探し、評価し、組み込みます。"
+  },
+  "mcp-registry:ai.bumit/verify-business": {
+   "summary": "Swiss business verification with per-check source provenance and evidence freshness.",
+   "ja": "スイスの会社の確認。確かめるごとに情報の出どころと、根拠の新しさが付きます。"
+  },
+  "mcp-registry:ai.bv7x/agents": {
+   "summary": "Find bv7x prediction agents on Robinhood Chain by market; quote their sealed calls, sold via x402.",
+   "ja": "Robinhood Chain の bv7x の予測 Agent を市場ごとに探し、封をした予想の見積もりを取れます（x402 で販売）。"
+  },
+  "mcp-registry:ai.byteask/embedded-docs": {
+   "summary": "Page-cited retrieval for embedded docs, datasheets, MISRA, CMSIS, and RTOS references.",
+   "ja": "組み込みの資料・データシート・MISRA・CMSIS・RTOS の参考資料を、ページを示して探します。"
+  },
+  "mcp-registry:ai.canivibe/status": {
+   "summary": "Live status and health checks for AI coding providers: Claude, Cursor, Copilot, Codex and more.",
+   "ja": "AI コーディングのサービスの今の状態と健全性。Claude・Cursor・Copilot・Codex など。"
+  },
+  "mcp-registry:ai.capxule/capxule": {
+   "summary": "The context marketplace: expert guided journeys your assistant runs step by step.",
+   "ja": "文脈の市場。専門家が作った手順を、アシスタントが 1 歩ずつ進めます。"
+  },
+  "mcp-registry:ai.carfinity/marketplace": {
+   "summary": "Search new and used cars at US dealers, each ranked against its local market price.",
+   "ja": "米国の販売店の新車・中古車を探せます。どの車も、地域の相場と比べた順位付き。"
+  },
+  "mcp-registry:ai.catalystproject/evidence-graph": {
+   "summary": "Findings on what compounds and supplements do in the body, with evidence strength, quote and paper.",
+   "ja": "化合物やサプリメントが体の中で何をするかの研究結果を、根拠の強さ・引用・論文付きで。"
+  },
+  "mcp-registry:ai.celestio/celestio": {
+   "summary": "Birth charts and personal astrology readings, plus compatibility between two people's charts.",
+   "ja": "出生図と個人の占星術の読み解き。2 人の相性も。"
+  },
+  "mcp-registry:ai.centralcity/central-city": {
+   "summary": "Every AI. One room. The open hub where the world's AI agents meet, work together and exchange.",
+   "ja": "すべての AI が 1 つの部屋に。世界の AI の Agent が出会い、一緒に働き、やり取りする開かれた場所。"
+  },
+  "mcp-registry:ai.cerebrium/docs": {
+   "summary": "Search the Cerebrium docs: deployment, cerebrium.toml, hardware, endpoints. Also sends feedback.",
+   "ja": "Cerebrium の資料を探せます。デプロイ・cerebrium.toml・ハードウェア・エンドポイント。意見も送れます。"
+  },
+  "mcp-registry:ai.certifikit/coi-tools": {
+   "summary": "Certificate of insurance tools: build subcontractor insurance requirements, check an ACORD 25.",
+   "ja": "保険証明書（COI）の道具。下請けの保険の条件を作り、ACORD 25 を確かめます。"
+  },
+  "mcp-registry:ai.cfoplus/cfo": {
+   "summary": "Read-only facts on CFO+: 138 business activities, model questions, pricing, how numbers are made.",
+   "ja": "CFO+ についての事実を読むだけ。138 の事業活動・見本の質問・料金・数字の作り方。"
+  },
+  "mcp-registry:ai.childadhd/library": {
+   "summary": "Clinician-reviewed library on ADHD in children — evaluation, treatment, school, parenting.",
+   "ja": "子どもの ADHD についての、臨床医が確かめた資料集。評価・治療・学校・子育て。"
+  },
+  "mcp-registry:ai.childanxiety/library": {
+   "summary": "Clinician-reviewed library on anxiety, OCD, and phobias in children ages 5–12.",
+   "ja": "5〜12 歳の子どもの不安・強迫症（OCD）・恐怖症についての、臨床医が確かめた資料集。"
+  },
+  "mcp-registry:ai.childpsychiatry/library": {
+   "summary": "Clinician-reviewed library on child psychiatric evaluation and medication decision-making.",
+   "ja": "子どもの精神科の評価と、薬を使うかの判断についての、臨床医が確かめた資料集。"
+  },
+  "mcp-registry:ai.chinaapi/chinaapi": {
+   "summary": "Read-only ChinaAPI model catalogue, price snapshot, cost estimates and request recipes.",
+   "ja": "ChinaAPI のモデルの一覧・価格・費用の見積もり・依頼の書き方を読むだけ。"
+  },
+  "mcp-registry:ai.chucho/chucho": {
+   "summary": "Find vacation rentals worldwide by describing the trip, check host prices and book direct.",
+   "ja": "旅の内容を書くと、世界中の貸別荘を探せます。家主の価格を確かめて、直接予約。"
+  },
+  "mcp-registry:ai.ciphyr.agentmart/agentmart": {
+   "summary": "Webhook inbox, memory, wake-up calls, uptime watch and code kits for AI agents. Prepaid balance.",
+   "ja": "AI の Agent 向けの、Webhook の受け箱・記憶・呼び起こし・稼働の見張り・コードの部品。前払いの残高で使います。"
+  },
+  "mcp-registry:ai.clawfc/clawfc": {
+   "summary": "AI football league where your agent is a player: register, train, follow fixtures and match reports.",
+   "ja": "自分の Agent が選手になる AI のサッカーリーグ。登録・練習・日程と試合の記録。"
+  },
+  "mcp-registry:ai.clawfight/mcp": {
+   "summary": "An AI agent battle league: build a crab fighter over MCP and rap-battle in a rendered arena.",
+   "ja": "AI の Agent の対戦リーグ。MCP でカニの戦士を作り、描かれた闘技場でラップバトル。"
+  },
+  "mcp-registry:ai.cleartape/clear-tape": {
+   "summary": "Free trading calculators, trading-system rules, a glossary and lesson search. No market data.",
+   "ja": "無料の取引の計算機・取引の仕組みの決まり・用語集・講座の検索。市場のデータはありません。"
+  },
+  "mcp-registry:ai.clearthesis/clearthesis": {
+   "summary": "Plain-English investment theses on 650+ US stocks, refreshed every quarter.",
+   "ja": "米国の 650 以上の株の投資の見方を、わかりやすい英語で。四半期ごとに更新。"
+  },
+  "mcp-registry:ai.clearvoyance/clearvoyance": {
+   "summary": "Anonymous feedback from real people by voice or text, with an AI report. Flat price per campaign.",
+   "ja": "本物の人からの匿名の意見を声か文字で集め、AI のレポートに。1 回の募集ごとに決まった料金。"
+  },
+  "mcp-registry:ai.cloudworldmodel/cloud-world-model": {
+   "summary": "Simulate cloud infrastructure and estimate cost before deploying or changing infrastructure.",
+   "ja": "クラウドの設備を、配備や変更の前に模擬して、費用を見積もります。"
+  },
+  "mcp-registry:ai.coinfactory/coinfactory": {
+   "summary": "Agents launch, trade and discuss tokens on Base, non-custodially, and earn 54% of trading fees.",
+   "ja": "Agent が Base でトークンを発行・売買・議論します（資産は預けない）。取引の手数料の 54% を受け取れます。"
+  },
+  "mcp-registry:ai.collager/ai-collage-maker": {
+   "summary": "Photo mosaic maker and AI photo collage maker: turn your own photos into a mosaic or a collage.",
+   "ja": "自分の写真から、フォトモザイクや AI の写真コラージュを作れます。"
+  },
+  "mcp-registry:ai.com.nlp/open-model-catalog": {
+   "summary": "Search curated open-weight AI model releases, licenses, architectures, and primary sources.",
+   "ja": "厳選した、重みが公開された AI のモデルの発表・ライセンス・構造・一次資料を探せます。"
+  },
+  "mcp-registry:ai.commercebook/commercebook": {
+   "summary": "Search and buy products from sellers and verified warehouses, sell surplus stock, post requests.",
+   "ja": "売り手と確認済みの倉庫から商品を探して買い、余った在庫を売り、ほしい物を投稿できます。"
+  },
+  "mcp-registry:ai.companyproof/companyproof": {
+   "summary": "Find legal companies, retrieve registry profiles and verify company facts with source evidence.",
+   "ja": "実在する会社を探し、登記の情報を取り出し、会社についての事実を根拠付きで確かめます。"
+  },
+  "mcp-registry:ai.compeller/compel": {
+   "summary": "Create and track AI music videos and audio-reactive visuals from songs.",
+   "ja": "曲から、AI のミュージックビデオと音に合わせて動く映像を作り、進み具合を追えます。"
+  },
+  "mcp-registry:ai.contextstudios/mcp": {
+   "summary": "AI agency API: free tools for glossary, comparisons, blog, guides, estimates and consulting",
+   "ja": "AI の制作会社の API。用語集・比較・ブログ・手引き・見積もり・相談の、無料の道具。"
+  },
+  "mcp-registry:ai.corduroy-labs/updates": {
+   "summary": "Corduroy Labs studio updates over MCP: list_updates and get_update, backed by the site's JSON Feed.",
+   "ja": "Corduroy Labs の制作のお知らせを MCP で。一覧と 1 件ずつの読み取り（サイトの JSON Feed から）。"
+  },
+  "mcp-registry:ai.coreplex/shopping": {
+   "summary": "Search, compare prices and find official stores across brands that sell on Shopify.",
+   "ja": "Shopify で売っているブランドをまたいで、商品を探し、価格を比べ、公式のお店を見つけられます。"
+  },
+  "mcp-registry:ai.coreyjames/portfolio": {
+   "summary": "Fit reports and search over Corey James's work: GPU inference, agent governance, enterprise AI.",
+   "ja": "Corey James の仕事（GPU の推論・Agent の統制・企業の AI）を探し、合うかどうかのレポートを作ります。"
+  },
+  "mcp-registry:ai.cotal/cotal": {
+   "summary": "cotal.ai actions: product overview, site search, build log, feedback, Cloud waitlist, updates, calls",
+   "ja": "cotal.ai でできる事。製品の概要・サイトの検索・開発の記録・意見・Cloud の順番待ち・お知らせ・通話。"
+  },
+  "mcp-registry:ai.councilof/gspc": {
+   "summary": "54 tools (49 free, 5 x402-metered): GSPC board, evidence, Ed25519 card verify. Measurement only.",
+   "ja": "道具 54 個（無料 49・x402 の従量 5）。GSPC の掲示板・根拠・Ed25519 のカードの確認。測るだけです。"
+  },
+  "mcp-registry:ai.creationloop/creationloop": {
+   "summary": "CreationLoop is your Marketing Agent. Read the overview, offer, and FAQ; apply as a design partner.",
+   "ja": "CreationLoop はマーケティングの Agent。概要・提供内容・よくある質問を読み、デザインパートナーに応募できます。"
+  },
+  "mcp-registry:ai.cursu/job-age-checker": {
+   "summary": "When a job was first posted and whether it is still open, from the employer's own job link.",
+   "ja": "求人がいつ最初に出され、まだ募集中かを、会社自身の求人のリンクから確かめます。"
+  },
+  "mcp-registry:ai.cybernative/pdf-check": {
+   "summary": "Check a PDF on a public website for the structure screen readers use.",
+   "ja": "公開の Web サイトにある PDF が、画面読み上げに使う構造を持っているかを確かめます。"
+  },
+  "mcp-registry:ai.dablock/visibility-index": {
+   "summary": "Measured share of answer for 24 crypto and Web3 brands. An open dataset, not an audit of your site.",
+   "ja": "暗号資産と Web3 の 24 ブランドの、AI の答えに出る割合を測った公開データ。自分のサイトの診断ではありません。"
+  },
+  "mcp-registry:ai.dabyte/visibility-index": {
+   "summary": "Measured share of answer for 20 SaaS brands. An open dataset, not an audit of your site.",
+   "ja": "SaaS の 20 ブランドの、AI の答えに出る割合を測った公開データ。自分のサイトの診断ではありません。"
+  },
+  "mcp-registry:ai.darim/darim": {
+   "summary": "Russian group greeting cards: create, invite signers, track; split a gift, holiday dates.",
+   "ja": "ロシア語の寄せ書きカード。作る・書く人を招く・進み具合を見る。プレゼントの割り勘や記念日も。"
+  },
+  "mcp-registry:ai.darkfunnels/docs": {
+   "summary": "Search and read the DarkFunnels docs: WhatsApp AI sales agents connected by QR, no Meta Cloud API.",
+   "ja": "DarkFunnels の資料を探して読めます。QR でつなぐ WhatsApp の AI 販売 Agent（Meta Cloud API なし）。"
+  },
+  "mcp-registry:ai.datephotos/datephotos": {
+   "summary": "Tinder, Hinge and Bumble photo rules and AI-photo policies, plus a free dating photo audit.",
+   "ja": "Tinder・Hinge・Bumble の写真の決まりと AI の写真の扱い、無料のマッチングアプリの写真の診断。"
+  },
+  "mcp-registry:ai.daystruct.api/daystruct": {
+   "summary": "Discover reusable source, data and memory capabilities; inspect release evidence and compatibility.",
+   "ja": "使い回せる情報源・データ・記憶の機能を探し、リリースの根拠と互換性を確かめます。"
+  },
+  "mcp-registry:ai.decalabs/deca": {
+   "summary": "Demand signals, product ideas and real-ad demand tests for AI agents. Free to read.",
+   "ja": "AI の Agent 向けの需要の兆し、商品のアイデア、実際の広告での需要の試験。読むのは無料。"
+  },
+  "mcp-registry:ai.deepdna/knowledge": {
+   "summary": "Pharmacogenomics for AI agents: cited drug–gene, gene and rsID lookups plus a medication screen.",
+   "ja": "AI の Agent 向けの薬理遺伝学。出典付きの薬と遺伝子・遺伝子・rsID の検索と、薬の確認。"
+  },
+  "mcp-registry:ai.deepvalues/deepvalues": {
+   "summary": "Value investing for US stocks: SEC filings, 13F guru holdings, intrinsic value, AI briefings.",
+   "ja": "米国株のバリュー投資。SEC の書類・著名投資家の 13F の保有・本来の価値・AI の要約。"
+  },
+  "mcp-registry:ai.demanddiscovery/mcp": {
+   "summary": "Validate startup ideas with real people asking for them, each quote linked to its source.",
+   "ja": "起業のアイデアを、それを求めている本物の人の声で確かめます。どの声にも出どころのリンク付き。"
+  },
+  "mcp-registry:ai.deployit/product-expert": {
+   "summary": "AI product expert answering from live source code, with sources and a verification status.",
+   "ja": "今のソースコードから答える AI の製品の専門家。出典と、確かめたかどうかの状態付き。"
+  },
+  "mcp-registry:ai.dincat/dincat": {
+   "summary": "Learning and life in Japan: take-home pay, visa rule summaries and ready-made question pages.",
+   "ja": "日本での学びと暮らし。手取りの計算、ビザの決まりの要約、すぐ使える質問のページ。"
+  },
+  "mcp-registry:ai.discoveria/discoveria": {
+   "summary": "Read-only registry of AI-assisted scientific claims and where their evaluation stands (fr/en)",
+   "ja": "AI の助けを借りた科学の主張と、その評価がどこまで進んだかを読むだけの登録簿（フランス語・英語）。"
+  },
+  "mcp-registry:ai.dispatchmind/find": {
+   "summary": "Find a local service company by US ZIP code (garage door, locks, HVAC and more) and book a visit.",
+   "ja": "米国の ZIP コードから、ガレージのドア・鍵・空調などの地域の業者を探して、訪問を予約できます。"
+  },
+  "mcp-registry:ai.djzs/trust-mcp": {
+   "summary": "Deterministic pre-execution audit for trading agents. PASS/WAIT/FAIL, reproducible verdict_hash.",
+   "ja": "取引する Agent のための、実行の前の決まった監査。PASS・WAIT・FAIL と、再現できる判定の hash。"
+  },
+  "mcp-registry:ai.dreaminterpreter/dictionary": {
+   "summary": "Dream symbol meanings, and which symbols show up in real dreams by country.",
+   "ja": "夢に出てくるものの意味と、国ごとに本物の夢によく出てくるもの。"
+  },
+  "mcp-registry:ai.dreamlit/mcp": {
+   "summary": "Create, test, publish, and manage Dreamlit notification workflows from AI clients.",
+   "ja": "Dreamlit の通知の流れを、AI のアプリから作る・試す・公開する・管理する。"
+  },
+  "mcp-registry:ai.dripmetrics/mcp": {
+   "summary": "Institutional-grade market microstructure, a cent at a time. x402: Base USDC or Robinhood USDG.",
+   "ja": "機関投資家向けの水準の市場の細かい動きのデータを、1 セントずつ。x402 で Base の USDC か Robinhood の USDG。"
+  },
+  "mcp-registry:ai.droneintelligence/drone-intelligence": {
+   "summary": "Drone-sector market intelligence for AI agents: free briefings and profiles, licenced tracker data.",
+   "ja": "AI の Agent 向けのドローン業界の市場の情報。無料の要約と企業の紹介、ライセンスした追跡のデータ。"
+  },
+  "mcp-registry:ai.dsght/public": {
+   "summary": "Read-only MCP access to DSGHT.ai published foresight and country-grounded claim resolution.",
+   "ja": "DSGHT.ai が公開している先読みと、国に基づいた主張の判定を MCP で読むだけ。"
+  },
+  "mcp-registry:ai.dualsoft/aas": {
+   "summary": "Read-only MCP for DualSoft AAS 3.0 / AASX specs, DS2 PLC control docs, and 3D line examples.",
+   "ja": "DualSoft の AAS 3.0・AASX の仕様、DS2 の PLC 制御の資料、3D のラインの例を読むだけ。"
+  },
+  "mcp-registry:ai.duami/intent-exchange": {
+   "summary": "Directory of AI agents that are live right now: find, message, bid. Free.",
+   "ja": "今動いている AI の Agent の一覧。探す・メッセージを送る・入札する。無料。"
+  },
+  "mcp-registry:ai.duskly/duskly": {
+   "summary": "MLS compliance for edited listing photos: classify edits, write disclosures, verify provenance.",
+   "ja": "物件写真の加工についての MLS の決まり。加工の分類・開示の文・出どころの確認。"
+  },
+  "mcp-registry:ai.duvera/gateway": {
+   "summary": "Governed AI actions with signed, verifiable receipts: free keyless reads, human-approved writes.",
+   "ja": "署名付きの確かめられる受領書が付く、管理された AI の操作。読むのは無料でキー不要、書き込みは人が承認。"
+  },
+  "mcp-registry:ai.e-acc/eacc": {
+   "summary": "AI news for agents: daily, weekly and monthly briefings, trending events and model prices. No key.",
+   "ja": "Agent 向けの AI のニュース。毎日・毎週・毎月のまとめ、話題の出来事、モデルの価格。キー不要。"
+  },
+  "mcp-registry:ai.echoloc/company-technographics": {
+   "summary": "Search 760K+ companies by technographics with direction of change: adopting, replacing, evaluating",
+   "ja": "760K 以上の会社を、使っている技術と、その変化（導入中・置き換え中・検討中）で探せます。"
+  },
+  "mcp-registry:ai.echoo.www/public-catalog": {
+   "summary": "Read-only Echoo product facts, pricing, documentation and published writing skills.",
+   "ja": "Echoo の製品の事実・料金・資料・公開している文章のスキルを読むだけ。"
+  },
+  "mcp-registry:ai.echoteka/mastering": {
+   "summary": "Audio mastering for AI agents: LUFS analysis, Suno artifact cleanup, free daily master.",
+   "ja": "AI の Agent 向けの音声のマスタリング。LUFS の分析、Suno の雑音の掃除、毎日 1 回の無料マスタリング。"
+  },
+  "mcp-registry:ai.ecocheck/ecocheck": {
+   "summary": "Vietnam GHG inventory obligation checker, 2026 regulations, CBAM and ESG articles (read-only).",
+   "ja": "ベトナムの温室効果ガスの算定の義務の確認、2026 年の規制、CBAM と ESG の記事（読むだけ）。"
+  },
+  "mcp-registry:ai.edge-agents/intelligence": {
+   "summary": "Macro, market and decision intelligence over x402. Gaps are unavailable rather than estimated.",
+   "ja": "マクロ・市場・判断のための情報を x402 で。足りない所は推測せず「無し」と返します。"
+  },
+  "mcp-registry:ai.edgechat/edgepedia": {
+   "summary": "Search and read Edgepedia, a free and growing encyclopedia with citations. No key.",
+   "ja": "引用付きの無料の百科事典 Edgepedia を探して読めます。キー不要。"
+  },
+  "mcp-registry:ai.egonex/marketplace": {
+   "summary": "Search items and services from independent sellers, ask the seller, and request an order.",
+   "ja": "個人の売り手の品物とサービスを探し、売り手に質問し、注文を頼めます。"
+  },
+  "mcp-registry:ai.emberverse/emberverse": {
+   "summary": "A living knowledge graph to read, think against, and leave a deposit in that outlives you.",
+   "ja": "読んで、考えをぶつけて、自分より長く残る記録を置いていける、生きた知識のつながり。"
+  },
+  "mcp-registry:ai.emergenttechnologies/emergent": {
+   "summary": "AI and automation consulting, and licensing company data to AI labs, from Emergent Technologies.",
+   "ja": "Emergent Technologies の、AI と自動化の相談と、AI の研究所への会社のデータの提供。"
+  },
+  "mcp-registry:ai.entervista/entervista": {
+   "summary": "Find and book local service businesses (plumbers, HVAC, detailers) at real prices, with approval.",
+   "ja": "配管・空調・車の清掃などの地域の業者を、実際の価格で探して予約できます（承認してから）。"
+  },
+  "mcp-registry:ai.entityenricher/enricher": {
+   "summary": "Multi-LLM entity enrichment: schemas, single/batch enrichment, fusion, model benchmarks.",
+   "ja": "複数の LLM で会社や物の情報を補います。項目の定義・1 件ずつと一括の補完・結果の統合・モデルの比較。"
+  },
+  "mcp-registry:ai.entityindex/entityindex": {
+   "summary": "Verified hotels in Andorra for AI agents: search by area, spa, pets, ski-in, family; official links.",
+   "ja": "アンドラの確認済みのホテルを、地域・スパ・ペット・スキーイン・家族向けで探せます。公式のリンク付き。"
+  },
+  "mcp-registry:ai.enzos/enzos": {
+   "summary": "Search US homes for sale by style and budget, with honest buy verdicts and video tours.",
+   "ja": "米国の売り家を、様式と予算で探せます。正直な「買い」の判定と動画の内覧付き。"
+  },
+  "mcp-registry:ai.eosl/eosl": {
+   "summary": "Hardware end-of-life dates by part number, each linked to the vendor's own bulletin.",
+   "ja": "部品番号から、ハードウェアのサポート終了日を調べられます。どれも製造元の公式のお知らせにつながります。"
+  },
+  "mcp-registry:ai.epinu/epinu": {
+   "summary": "Agent-first marketplace for real-world assets — agro and energy first; humans approve every write.",
+   "ja": "実物の資産（まずは農業とエネルギー）を扱う、Agent が先に使う市場。書き込みはすべて人が承認します。"
+  }
+ }
+}

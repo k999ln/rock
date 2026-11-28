@@ -1,0 +1,834 @@
+{
+ "schema": "noah-project-summary-ja/1",
+ "source": "Claude が 2026-11-28 に、本番のホーム（hot）の最初の 400 枚にある、見つかった物（GitHub・Hugging Face・npm など）の説明から書いた日本語の 1 行",
+ "projects": {
+  "project-00c5218c203e970ea9957bfdf286a8560b03964c62c233feb0adc07598f93c19": {
+   "summary": "Edit Videos with Wan 2.2",
+   "ja": "Wan 2.2 で動画を編集します。"
+  },
+  "project-00e42b5545dcfaeaea1d3ad6aefd20ae3de3eded61b26951125919ece11508ec": {
+   "summary": "generate a video from an image with a text prompt",
+   "ja": "画像と文の指示から動画を作ります。"
+  },
+  "project-02ae1b489c1a19484f9155e7d88cd50000e1e3c528d67eb92a77c8b9c19cc050": {
+   "summary": "Intelligent Product Management Assistant - v1.0",
+   "ja": "賢いプロダクト管理のアシスタント（v1.0）。"
+  },
+  "project-03314523c606c3261f93a9639a903585b26135e202cd71fa0a17fa81b39e40f3": {
+   "summary": "Self-hosted AI agent that keeps working after the chat ends: it remembers, runs scheduled checks and tasks, edits files and runs commands. Reach it from Slack, Teams, the web or the terminal. Works with your LLM provider and MCP tools.",
+   "ja": "チャットが終わっても働き続ける、自分で置く AI の Agent。覚え、決まった確かめと仕事を走らせ、ファイルを直し、コマンドを走らせます。Slack・Teams・Web・端末から使え、自分の LLM の提供元と MCP の道具で動きます。"
+  },
+  "project-04bee46c61f3a5710942866093df7b0863ab9b7d2b4d0a5e0efa540885d6692e": {
+   "summary": "Generate PDF comic books",
+   "ja": "PDF の漫画の本を作ります。"
+  },
+  "project-05368a27f2602f7ac2319684ece41a5b8d3e3bfc1a5cdbf947f3fc0137e138c2": {
+   "summary": "Class-conditional ImageNet 256x256 image generation",
+   "ja": "ImageNet の 256x256 の、分類を条件にした画像の生成。"
+  },
+  "project-056277023b6d191d0a91167a369422823b6067ea9f42c9672232f9129b896a4f": {
+   "summary": "Official Paymos Merchant MCP server for stablecoin (USDT, USDC, USD1, DAI) and gold-backed XAUT payments across 13 deposit / 11 withdrawal networks: 188 remote OAuth 2.1 workspace tools (`https://app.paymos.io/connect/merchant-mcp`) and 191 tools via local CLI bridge (`npx -y @paymos/mcp`) for invoi",
+   "ja": "Paymos の公式の加盟店の MCP サーバー。ステーブルコイン（USDT・USDC・USD1・DAI）と金に裏付けられた XAUT の支払いを、入金 13・出金 11 のネットワークで。リモートの OAuth 2.1 の作業場の道具 188 個と、手元の CLI の橋渡しの道具 191 個…"
+  },
+  "project-058c8caefef804e1ce587b5181eb04fc3b0e6f2e9c334b193f712229e9f5a63b": {
+   "summary": "Drive the Clips Kitty desktop clipper over stdio: queue a Twitch, Kick or YouTube VOD or a local video, start the queue, follow the job, list the 9:16 clips it picked, read their captions, schedule posts to the user's own connected accounts and read each post's live link. Transcription, highlight pi",
+   "ja": "Clips Kitty のデスクトップの切り抜き道具を stdio で動かします。Twitch・Kick・YouTube の録画や手元の動画を並べて始め、仕事を追い、選んだ 9:16 の切り抜きと字幕を読み、利用者自身のアカウントへの投稿を予約して、投稿のリンクを読みます…"
+  },
+  "project-061529b743b1e305577b6a30ce7e396bf58072724f153f38d27ad24b0973b585": {
+   "summary": "Soy ağacından kaynaklı aile tarihi raporu ve Türkçe seslendirmeli göç haritası videosu üreten Claude Code skill'i",
+   "ja": "家系図から家族の歴史の報告と、トルコ語の語り付きの移住の地図の動画を作る Claude Code のスキル。"
+  },
+  "project-08081c9871cc5eb23665075190b233f432f5ec0e772084aa8de3f6bca7af36c5": {
+   "summary": "Agent skill that draws an original icon library matching your design system (React, Vue, Svelte, React Native, SVG).",
+   "ja": "デザインシステムに合う独自のアイコンの集まりを描く Agent のスキル（React・Vue・Svelte・React Native・SVG）。"
+  },
+  "project-09f76bd1b05cf30a4c7d75b1a6599a7bf354c2f745b5934e5f0f32469a729367": {
+   "summary": "Translate local PDF, scanned PDF, DOCX and EPUB files into 70+ languages with PageTranslate and get the same kind of file back with its layout kept; uploading returns the exact price before anything is charged.",
+   "ja": "手元の PDF・スキャンした PDF・DOCX・EPUB を PageTranslate で 70 以上の言語に訳し、レイアウトを保った同じ種類のファイルで受け取ります。上げると、請求の前に正確な値段を返します。"
+  },
+  "project-0aa2b3a713b1bddf8bc4b25954be243f36a6697d5c727ef40a1b440fae6dd9ff": {
+   "summary": "Typed decisions with Karpo Decision 2B",
+   "ja": "Karpo Decision 2B で、型の決まった判断。"
+  },
+  "project-0abe0cf2529da5bfeba9140c2fa5cef78e3cd8b4c6db678c67d5b8afefa4c201": {
+   "summary": "可评测的旅拍方案 Agent：确定性硬约束校验驱动修复，12 用例评测集 + 对照组 + CI 质量回归门禁（Python / FastAPI / SQLite）",
+   "ja": "評価できる旅行の撮影の計画の Agent。決まった厳しい条件の検査で直し、12 の例の評価の集まりと対照の組、CI の品質の回帰の関門（Python・FastAPI・SQLite）。"
+  },
+  "project-0cadda638255f2e28ca9225c9e5f5ff44fede55a61e4fd280c1240f9fbb6c868": {
+   "summary": "Self-hosted search over documentation websites and local Markdown folders. Returns ranked passages with a citation link to the exact section, using SQLite full-text search with code-aware tokenization. Read-only tools, no API keys.",
+   "ja": "資料の Web サイトと手元の Markdown のフォルダーを、自分で置いて探します。正確な節への引用のリンク付きの文を順位付きで返し、コードに合う区切りの SQLite の全文検索を使います。読むだけの道具で、API のキーは不要。"
+  },
+  "project-0d40718a59f72acdc7587886595ea07b00648e1de52aaab1f5e84735b5bebf1f": {
+   "summary": "Fibo 2.0 Dev text-to-image, plain or JSON prompts",
+   "ja": "Fibo 2.0 Dev の文から画像。ふつうの指示か JSON の指示で。"
+  },
+  "project-0de568f451e2169ccdbdd3a97533ab555e42fd13b2d0d1762b61725755767dc6": {
+   "summary": "열린영수증: 영수증을 올리면 AI 에이전트가 증빙 묶음을 완성하는, 작은 단체를 위한 지출 기록·결산 도구 (GPL-3.0-or-later)",
+   "ja": "열린영수증（開かれた領収書）: 領収書を上げると AI の Agent が証拠書類の束を仕上げる、小さな団体のための支出の記録と決算の道具（GPL-3.0-or-later）。"
+  },
+  "project-0e781c47e67831bb16fd224fcdc0c1ede4c5134a2cf755803386abc51873fd81": {
+   "summary": "Give your AI agent hands on another computer. Remote shell, files & Windows desktop control. CLI + MCP. Zero runtime dependencies.",
+   "ja": "AI の Agent に、別のコンピューターの手を持たせます。リモートのシェル、ファイル、Windows のデスクトップの操作。CLI と MCP。実行時の依存は無し。"
+  },
+  "project-0ee112f1d8946f87e88866b705ae83bb3512d2b588faaf4e61d66626d28faf41": {
+   "summary": "Free open-source AI music editor (DAW) + MCP server. Tell Claude Code, Cursor or any AI agent to write your song - chords, beats, bass, melodies, vocals - then mix & master to -14 LUFS. Built-in synths, 31 effects, Auto-Tune, stem separation. Fix anything by hand.",
+   "ja": "無料でオープンソースの AI の音楽編集ソフト（DAW）と MCP サーバー。Claude Code・Cursor などの AI の Agent に曲を書かせ（コード・ビート・ベース・メロディ・歌）、-14 LUFS に整えます。シンセ内蔵、エフェクト 31 種、オートチューン、音の分離。手でも直せます。"
+  },
+  "project-10cb161071533f88e4d6bc59a5ca9b17bf1b2baedffb6d83ae9ab3d8a88bf2dd": {
+   "summary": "Zero-dependency MCP gateway on Cloudflare Workers that turns any REST API into MCP tools via config; built-in Wikipedia, Hacker News, weather, currency, GitHub and web reader connectors, plus an OpenAPI 3 converter.",
+   "ja": "Cloudflare Workers の上の、依存の無い MCP の関門。設定だけで、どの REST API も MCP の道具にします。Wikipedia・Hacker News・天気・通貨・GitHub・Web を読む接続と、OpenAPI 3 の変換器を内蔵。"
+  },
+  "project-10e33e637e5560bfceba88b37c40c553ef3fc0425c9358443b4fa9dac10be0de": {
+   "summary": "Selenium test maintenance for Python (pytest) and Java (JUnit 5 / TestNG): verified locators, user story to tests, and self-healing locators that fixes tests, Page Objects and @FindBy annotations, reverts fixes that still fail, and opens a pull request with an audit report.",
+   "ja": "Python（pytest）と Java（JUnit 5・TestNG）の Selenium の試験の保守。確かめた位置指定、ユーザーストーリーから試験へ、自分で直る位置指定（試験・Page Object・@FindBy を直し、まだ落ちる直しは戻し、監査の報告付きのプルリクエストを開く）。"
+  },
+  "project-12236463cf5df776356a130881c5834d7cb4a0c35d98ae17082030de51be49fc": {
+   "summary": "AI agent that diagnoses failed GitHub Actions runs and posts the likely cause to Slack. Read-only: rules first, Claude for the unclear cases.",
+   "ja": "失敗した GitHub Actions の実行を診断し、ありそうな原因を Slack に投稿する AI の Agent。読むだけで、まず規則、はっきりしない時は Claude。"
+  },
+  "project-12ae3e4affcfea6cf397e52e5eed018f578865c3894546a12e70b9f400ca274a": {
+   "summary": "Independent desktop harness for OpenAI Codex - multi-task sessions, built-in automation, skills/plugins/connectors, expert teams",
+   "ja": "OpenAI Codex のための独立したデスクトップの土台。複数の仕事の会話、内蔵の自動化、スキル・プラグイン・コネクタ、専門家のチーム。"
+  },
+  "project-12bb0925f9de6072109df8a3d1356b7b5a50f1bb35d65f95c7c94cbcddfc06b4": {
+   "summary": "User Friendly Image & Video Upscaler!",
+   "ja": "使いやすい、画像と動画の高画質化。"
+  },
+  "project-141cfc565d08ba54664c589162078e02299eb87a7de096c7138751b9999e39eb": {
+   "summary": "Principal Program Manager. Building Ondatrace (ondatrace.com): one shared memory for a PMO's projects.",
+   "ja": "Principal Program Manager。Ondatrace（ondatrace.com）を作っています。PMO のプロジェクトのための 1 つの共有の記憶。"
+  },
+  "project-14646233acd11c4b759d6a3584b5e80d7256fb01936e48530b3cec2b0d925e34": {
+   "summary": "Heliophysics spacecraft positions and trajectories, alignments (radial, quadrature, conjunction), viewing geometry, solar observation records (IRIS, DKIST, Solar Orbiter) and PFSS solar magnetic connectivity from JPL Horizons ephemerides; every answer links to the same view on HelioFleet. `uvx helio",
+   "ja": "太陽圏の探査機の位置と軌道、並び（radial・quadrature・conjunction）、見る角度、太陽の観測の記録（IRIS・DKIST・Solar Orbiter）、PFSS の太陽の磁気のつながりを、JPL Horizons の暦から。どの答えも HelioFleet の同じ眺めにつながります…"
+  },
+  "project-15364fa08b42c66d8e7f41e456922fa4f66ab478461e21a47a4cbf12fe679e6a": {
+   "summary": "Verified, sha256-locked calculation cells (wages, VAT, currency, growth rates, margins, percentiles) that small local LLMs call instead of guessing. Per-model guides repair common tool-call mistakes; a missing cell becomes a request.",
+   "ja": "確かめて sha256 で固定した計算のセル（賃金・付加価値税・通貨・成長率・利益率・パーセンタイル）。小さな手元の LLM が、当て推量の代わりに呼びます。モデルごとの手引きがよくある道具の呼び間違いを直し、無いセルは依頼になります。"
+  },
+  "project-153ec5cf0acbdbd2dab39f578c2d48ccd513c6c739b2414e7fb1dc2b159ef57e": {
+   "summary": "让你的命令行 Agent 在后台自己接活、自己跟进到底；平时不烦你，遇到拿不准的事才发卡片找你拍板。",
+   "ja": "コマンドラインの Agent が、裏で自分で仕事を受け、最後まで追いかけます。ふだんは邪魔をせず、判断に迷う時だけカードを出してあなたに決めてもらいます。"
+  },
+  "project-1623b800128b8a25582336d7bd2ac69c4565b5d3ea81925894c767d5c18a7593": {
+   "summary": "A quiet terminal coding agent in Rust: one native binary, eleven providers, sessions on your disk, and an approval gate in front of every action.",
+   "ja": "Rust で書いた静かな端末のコーディングの Agent。1 つのネイティブの実行ファイル、11 の提供元、自分のディスクの会話、すべての操作の前の承認の関門。"
+  },
+  "project-170d494cd6b04a357dfdcf830feb4c4be39fa2a1e82a0f78338a9d508dc3a3fe": {
+   "summary": "126 anatomical structures on CT, CBCT and MRI",
+   "ja": "CT・CBCT・MRI の 126 の解剖の構造。"
+  },
+  "project-17fa5c466391ca2d7af39fadae56686c8271b8145ba046dbb267856159a5d60a": {
+   "summary": "Russian & English speech recognition (dual-head ASR)",
+   "ja": "ロシア語と英語の音声認識（2 つの頭の ASR）。"
+  },
+  "project-18049a4ca854e37baefd52941ce853284dc35112bed0940bc53bcae6e58a2c5f": {
+   "summary": "Generate video and images (Veo 3.1, Grok Imagine, Nano Banana, GPT Image 2) from MCP clients via the GenRelay API.",
+   "ja": "GenRelay の API を通して、MCP のクライアントから動画と画像（Veo 3.1・Grok Imagine・Nano Banana・GPT Image 2）を作ります。"
+  },
+  "project-188a7f8bb0e03dae1396725a640a9e6b57013ad83c260add142fabe91be093d5": {
+   "summary": "understand video via MCP",
+   "ja": "MCP で動画を理解します。"
+  },
+  "project-1973839b88efb2639d74f3e78cf70b731c6ea93ceff2e8459fdef96ded989695": {
+   "summary": "MCP server and web gallery for CC0-only assets (images, audio, video, HDRIs, textures, 3D models, museum art) from 17 sources, with license evidence per result.",
+   "ja": "CC0 だけの素材（画像・音声・動画・HDRI・テクスチャ・3D モデル・美術館の作品）の MCP サーバーと Web の展示。17 の出どころから、結果ごとにライセンスの根拠付き。"
+  },
+  "project-199dc3d2a70599992d94abfe09795641a43dfaad70677dcd59e16ebb66352080": {
+   "summary": "The canonical NIPO ODIN analysis engine: diagnostics, structural map, corpus audit and language reference, as a CLI and MCP server.",
+   "ja": "正式な NIPO ODIN の分析のエンジン。診断、構造の地図、資料の監査、言語の参照を、CLI と MCP サーバーで。"
+  },
+  "project-1ac633b47ce848f0ea02d60c13d4e51b90d0f6fb026868919b10265c37b77bcc": {
+   "summary": "Agentic open archaeology on your Mac. Use AI agents to search public lidar for mounds, hillforts and other earthworks, check every find against open records, and decide what each one is.",
+   "ja": "Mac の上の、Agent で進めるオープンな考古学。AI の Agent で公開のライダーの測量から塚・丘の砦などの土の遺構を探し、見つけた物を公開の記録と照らし、それぞれ何かを決めます。"
+  },
+  "project-1b9b81dae2ee6604e939b881ca831daf9448b7a94dec2ca75acbbc12188f4851": {
+   "summary": "Text-to-image and image+prompt with Z-Image-Turbo",
+   "ja": "Z-Image-Turbo で、文から画像と、画像と指示から画像を作ります。"
+  },
+  "project-1d2dd3f39b618a4b45c7077de35367ee34486944e685e269bca404b9bbfe606e": {
+   "summary": "Apple Health and Apple Watch data from local files: workouts with every interval and pool length, daily sleep, HRV and vitals, written as JSON by a free iPhone app into a folder you own. Also puts AI-written workout plans back on the Apple Watch.",
+   "ja": "手元のファイルからの Apple ヘルスケアと Apple Watch のデータ。間隔とプールの長さごとのワークアウト、毎日の睡眠、HRV と体の数値。無料の iPhone のアプリが、自分のフォルダーに JSON で書きます。AI が書いたワークアウトの計画を Apple Watch に戻すこともできます。"
+  },
+  "project-1d4d3789eec0836878cd763ada69aa5ff6671ebe9d417bdc53c5e9748b044de3": {
+   "summary": "Deterministic Layer-0 AST context firewall and zero-egress local stdio MCP gatekeeper for AI coding agents (-42.9% to -90.2% peripheral tokens via Tree-sitter, SARA indirect prompt-injection screen at 0.33ms P50, OWASP 2-2-5, Grade A Glama audit).",
+   "ja": "AI のコーディングの Agent のための、決まった動きの Layer-0 の AST の文脈のファイアウォールと、外へ送らない手元の stdio の MCP の門番（Tree-sitter で周りのトークンを 42.9%〜90.2% 減らし、間接のプロンプト注入を P50 で 0.33ms で検査、OWASP 2-2-5、Glama の監査で A）。"
+  },
+  "project-1e4cb104b75f863c39a07b84ac098e9797383035fbf25786101302a76b02e4c9": {
+   "summary": "51 read-only tools over a daily record of 37 million domain names: status, WHOIS record, nine registrars' prices, renewal traps, auctions and sales totals. Free, no key. Runs with npx or hosted at https://mcp.unique.domains/mcp.",
+   "ja": "毎日の 37 million 件のドメイン名の記録を読む、読むだけの道具 51 個。状態、WHOIS の記録、9 つの登録業者の値段、更新の落とし穴、競売と売買の合計。無料、キー不要。npx か https://mcp.unique.domains/mcp で動きます。"
+  },
+  "project-1fab5abf4e8c227c82d2f6a3a644b629a8fdad4c1d6de6b1f198a1cd24834da1": {
+   "summary": "Official Notify MCP: send transactional email, rehearse sends, verify sending domains (SPF/DKIM), and manage webhooks and logs. `npx -y notifycx-mcp`",
+   "ja": "公式の Notify の MCP。取引のメールを送り、送る前に試し、送るドメインを確かめ（SPF・DKIM）、Webhook と記録を管理します。`npx -y notifycx-mcp`"
+  },
+  "project-208a9b51a55b877d4cb2ecf854c1d44894a581f0769295f98d74c5c8872c84d9": {
+   "summary": "Widen or erase video regions with MiniMax-H3 + ReFrame LoRA",
+   "ja": "MiniMax-H3 と ReFrame の LoRA で、動画の範囲を広げたり消したりします。"
+  },
+  "project-21ab361ea4596752ea1bd340261fb6543544dc005843d962fe655753f698fedb": {
+   "summary": "Pay-per-call agent services (trust badges, security audits, cited research, dispute adjudication) settled in USDC over x402 on Base, each with a publicly verifiable settlement proof.",
+   "ja": "呼ぶたびに払う Agent のサービス（信頼の印・セキュリティの監査・引用付きの調べ・争いの裁き）。Base の上の x402 で USDC で決済し、どれも公に確かめられる決済の証明付き。"
+  },
+  "project-21b8811e1f4c9a4970fdf8d92198206c6a1a7f1d614609966d8df66e53079386": {
+   "summary": "Local-first workspace for Claude Code, Codex and OpenCode: versioned files, evidence-linked decisions, review and handoffs. Experimental preview.",
+   "ja": "Claude Code・Codex・OpenCode のための、手元で動く作業場。版付きのファイル、根拠につながった判断、確認と引き継ぎ。試しの版。"
+  },
+  "project-21df26545dc768726aa53e250a56390113b2288220e927d25f869a47d6aa6c24": {
+   "summary": "generate a video from an image with a text prompt",
+   "ja": "画像と文の指示から動画を作ります。"
+  },
+  "project-25c68f40b07702e26c18aae7cbad5c334708767c73bb662edde865aed6017eff": {
+   "summary": "Verse Engine: publish 3D scenes, walkthroughs and worlds, from a single product to a whole city, as links that open in any browser, with embed code, private share links and camera tours. Remote OAuth endpoint (https://verse.ctruh.com/mcp) or local stdio.",
+   "ja": "Verse Engine。3D のシーン・案内・世界（製品 1 つから街全体まで）を、どのブラウザでも開けるリンクとして公開します。埋め込みのコード、非公開の共有のリンク、カメラの巡回付き。リモートの OAuth の接続先（https://verse.ctruh.com/mcp）か手元の stdio。"
+  },
+  "project-28739aad68f91f20225fae2ecd88c39c75b4bd64eb4a01ee0016cc71f1b7d23b": {
+   "summary": "Oak MCP for Robinhood Chain: local wallet, MCP server and CLI for 39 projects on Robinhood Chain.",
+   "ja": "Robinhood Chain のための Oak の MCP。手元のウォレット、MCP サーバー、Robinhood Chain の 39 のプロジェクトの CLI。"
+  },
+  "project-2895277641f2d420c049db295d15bcefb8181b47dec58fe0361ae8688252c183": {
+   "summary": "Agentic ad video generation from a creative brief",
+   "ja": "制作の依頼書から、Agent が広告の動画を作ります。"
+  },
+  "project-2965449b98d2d09e52dc84970e04239e07b8e211ff9bf2df30b4e7a7f7c58565": {
+   "summary": "Google web search through Gemini's Grounding with Google Search: returns Gemini's answer, the cited sources with resolved URLs and the search queries Gemini ran. Optional `analyze_url` tool. Self-hosted via stdio or Streamable HTTP with bearer auth, multi-arch container image.",
+   "ja": "Gemini の Grounding with Google Search で Google を検索します。Gemini の答え、解決した URL 付きの引用元、Gemini が走らせた検索の語を返します。任意の `analyze_url` の道具。stdio か、bearer の認証付きの Streamable HTTP で自分で置け、複数のアーキテクチャのコンテナの画像があります。"
+  },
+  "project-2a8f5fe16dc0c0f733bad2dc485de91a86eb799bf007cd1968d039e5bb874850": {
+   "summary": "Drive Moho Pro 14.4 live on Windows (78 tools, 2 resources): vectors, Saved Styles and Brushes, bone rigging, Smart Warp/Quad/Curvers, Liquid Shapes, Vitruvian Bones, 360-degree Smart Bone Actions, Layer Comps, headless glTF 2.0 export, and CLI rendering.",
+   "ja": "Windows で Moho Pro 14.4 をその場で操作します（道具 78 個・資源 2 個）。ベクター、保存したスタイルとブラシ、ボーンのリグ、Smart Warp・Quad・Curvers、Liquid Shapes、Vitruvian Bones、360 度の Smart Bone Actions、Layer Comps、画面無しの glTF 2.0 の書き出し、CLI での描画。"
+  },
+  "project-2d70da7cd8a372a70e6ba2ac327fefef69be07db1c2921e015e5ea7c078890f5": {
+   "summary": "Hand-off 长会话交接与收尾 Skill：会话交接、任务收尾、项目记忆沉淀，适配 Codex / Trae 等多宿主",
+   "ja": "Hand-off。長い会話の引き継ぎと片付けのスキル。会話の引き継ぎ、仕事の締め、プロジェクトの記憶の積み上げ。Codex・Trae などの複数のホストに対応。"
+  },
+  "project-2f410a04104fa058b0812ea73b68c5798edac9e9c7cfc41c1eb5ef6af2254488": {
+   "summary": "High-performance toolkit for running AI tools (OpenClaw, Pi Agent, n8n, Ollama, Hermes) natively on Android via Termux.",
+   "ja": "Android の Termux の上で AI の道具（OpenClaw・Pi Agent・n8n・Ollama・Hermes）をそのまま動かす、速い道具の集まり。"
+  },
+  "project-30b225b1de0472a3b205132ca07e6ce4637575c23e365c5367bb0a99e3b10935": {
+   "summary": "MCP server for Roku device automation on LAN devices and Roku Cloud Emulator (RCE): deploy, ECP control, screenshots, debug console, runtime UI editing, BrightScript and Perfetto profiling, and stream diagnosis",
+   "ja": "LAN の Roku の機器と Roku Cloud Emulator（RCE）を自動で動かす MCP サーバー。配置、ECP での操作、画面の写し、デバッグの画面、動いている UI の編集、BrightScript と Perfetto での測定、配信の診断。"
+  },
+  "project-33c2a42f39f4e96924192b0a4974e7e889b199eab8438a4f5b97a5a189ec6acb": {
+   "summary": "Universal AI Agent Development Skills Hub & Cordis Plugin for Govard, Magento 2, Laravel. Works with Claude Code, Codex CLI, OpenCode, GitHub Copilot, DeepSeek Harness.",
+   "ja": "Govard・Magento 2・Laravel 向けの、AI の Agent の開発のスキル集と Cordis のプラグイン。Claude Code・Codex CLI・OpenCode・GitHub Copilot・DeepSeek Harness で使えます。"
+  },
+  "project-34a968888891812bc9153ea1f50f03ff09cf846555c92b1e29a924b6008b69ed": {
+   "summary": "Official VerbatimCV server: parse CVs and resumes (PDF or DOCX, local file or URL) into versioned JSON where every candidate preference carries the verbatim quote it came from, nothing is invented, and hidden prompt injection is removed and reported. Free API key, no card.",
+   "ja": "公式の VerbatimCV のサーバー。履歴書（PDF か DOCX、手元のファイルか URL）を版付きの JSON にし、候補者の希望にはそれぞれ元の引用が付き、何も作らず、隠れたプロンプトの注入は取り除いて報告します。無料の API のキー、カード不要。"
+  },
+  "project-359c7f622b0efc1d389c83a9c78ee9dac545f7aa2fe2a4c87e6a3e72cbfcdb9d": {
+   "summary": "Photoshop and GIMP MCP server for AI photo editing, layer by layer with real tools (Community Edition)",
+   "ja": "AI の写真の編集のための Photoshop と GIMP の MCP サーバー。本物の道具で、レイヤーごとに（Community Edition）。"
+  },
+  "project-36a461787bf94fa8d4459033906af9174857beb5f432cb3e0939c2c8e6bdaf44": {
+   "summary": "Local mail, a session roster and advisory file reservations for coding agents on one machine, with optional hooks that wake supported hosts when mail arrives.",
+   "ja": "1 台の機械の上のコーディングの Agent のための、手元のメール、作業の名簿、ファイルの予約の目安。メールが来た時に対応するホストを起こすフックも任意で。"
+  },
+  "project-38f19ff34365b196f08fbe3419fd3cabb747b4cd94ecc8453223fcf15f77739a": {
+   "summary": "OpenAI-compatible gateway for Chinese LLMs (DeepSeek, Kimi, Qwen, GLM…) as an MCP server for Claude/Cursor/Cline.",
+   "ja": "中国の LLM（DeepSeek・Kimi・Qwen・GLM…）への OpenAI 互換の関門を、Claude・Cursor・Cline 向けの MCP サーバーとして。"
+  },
+  "project-3955f02511e4435f80f051699896679a1800e941c4025243918676eefcb53fbf": {
+   "summary": "Fast, low-token web reader and focused crawler. Returns query-ranked passages instead of whole pages; reads PDFs and JavaScript pages (headless Chrome), no API key.",
+   "ja": "速くトークンの少ない Web の読み手と、的を絞った巡回。頁全体ではなく、質問に合う順の文を返します。PDF と JavaScript の頁も読めます（画面無しの Chrome）。API のキー不要。"
+  },
+  "project-3cd6a875f84acd9cc4dc7b51fd3d72021a55fcb400153ba2a91f5f5447d07e88": {
+   "summary": "Create, re-target, pause and delete Instagram comment-to-DM keyword automations in CommentKeyword, including one armed for the next post or reel. Ships with an agent skill that writes the \"comment X\" CTA and the DM.",
+   "ja": "CommentKeyword で、Instagram のコメントから DM への語の自動化を作り・対象を変え・止め・消します（次の投稿やリールに向けて待つ物も）。「X とコメントして」の呼びかけと DM を書く Agent のスキル付き。"
+  },
+  "project-3de4f9f7cae59f1165d5206468e4853a133fccbdb0bef13aeef880416e9ffdf0": {
+   "summary": "Local media downloader and library for macOS, Windows and Linux, with a browser extension and an MCP server for AI assistants",
+   "ja": "macOS・Windows・Linux 向けの手元のメディアのダウンロードと保管庫。ブラウザの拡張と、AI のアシスタント向けの MCP サーバー付き。"
+  },
+  "project-3f20ad50fbb7233af36519aa8ae8c0b03adc81c19af46985444b9425055e770c": {
+   "summary": "Security-hardened AI coding agent that runs 100% locally on Ollama. Terminal + VS Code. Sandboxed, approval-gated, prompt-injection aware.",
+   "ja": "Ollama の上で 100% 手元で動く、守りを固めた AI のコーディングの Agent。端末と VS Code。砂場の中で動き、承認の関門があり、プロンプト注入に気をつけます。"
+  },
+  "project-405681d7990ad0bf39e0b91af596618d6dd34369ded626f352e5a4716f25a18e": {
+   "summary": "Forensic red-flag detector for Indian IPO DRHPs",
+   "ja": "インドの IPO の目論見書の草案（DRHP）の危険信号を、鑑識のように見つけます。"
+  },
+  "project-40862d8416b61b4b7be528186f360b3d5f36fed534c6865b4638a340593f389b": {
+   "summary": "MCP server for Receiver.email: give AI agents real inboxes to receive sign-up, OTP and magic-link emails",
+   "ja": "Receiver.email の MCP サーバー。AI の Agent に本物の受信箱を持たせ、登録・OTP・マジックリンクのメールを受け取らせます。"
+  },
+  "project-4352bdbf5dd19e539ee97d25240d27d32d1c9458c3c9a74f3278c857636f12fc": {
+   "summary": "Desktop app for ServiceNow developers with a local read-only MCP server, letting AI models browse and query a ServiceNow instance via Table API calls, joins, grouping and a local response cache.",
+   "ja": "ServiceNow の開発者のためのデスクトップのアプリと、手元の読むだけの MCP サーバー。AI のモデルが Table API の呼び出し・結合・まとめ・手元の返事の写しで ServiceNow のインスタンスを見て問い合わせられます。"
+  },
+  "project-4355127d3e2d399078865b73846f829a98ceaea2d0ad001736f54e6bdd9dd4e6": {
+   "summary": "ИИ-агент проверки требований по ISO/IEC/IEEE 29148 и IEEE 830: нарезка, проверка, критик, закрытые вопросы автору, отчёт на русском. BCC-HUB × MNU Agent Challenge 2026, команда КБТУ",
+   "ja": "ISO/IEC/IEEE 29148 と IEEE 830 による要件の確かめの AI の Agent。切り分け・確かめ・批評・作者への閉じた質問・ロシア語の報告。BCC-HUB × MNU Agent Challenge 2026、КБТУ のチーム。"
+  },
+  "project-4375c46a03bbf40fa74b34da388bd027dcb0e0f84e2cd1fc787ba2357d7e8e7a": {
+   "summary": "MCP server that lets an AI agent pay x402 APIs (USDC, PREQ) from the user's own wallet on the user's machine, within limits and allowlists. With no configuration, every payment is refused.",
+   "ja": "AI の Agent が、利用者の機械の上の利用者自身のウォレットから、上限と許可の一覧の中で x402 の API（USDC・PREQ）を払える MCP サーバー。設定が無ければ、どの支払いも断ります。"
+  },
+  "project-43eb2c419bf5a0af65c29cff9db8dbca1b20392a0e0b1ef06a85575efe66f640": {
+   "summary": "Read, create, edit, run and test NI LabVIEW VIs through LabVIEW's ActiveX server; works with the free Community Edition.",
+   "ja": "LabVIEW の ActiveX サーバーを通して、NI LabVIEW の VI を読み・作り・直し・走らせ・試します。無料の Community Edition でも動きます。"
+  },
+  "project-454527b4079bd78d7537cb1b97d0506d593dca31f32336d5e3f7422cba6bfe92": {
+   "summary": "Cloud Linux + Chrome computer & free $2.50 MCP trial",
+   "ja": "クラウドの Linux と Chrome のコンピューターと、無料の $2.50 の MCP の試し。"
+  },
+  "project-475be6dbd71016e694236e785256735f81563cd78b12902a86c923bb0bd49fe3": {
+   "summary": "Typed decisions with Karpo Decision 27B-act",
+   "ja": "Karpo Decision 27B-act で、型の決まった判断。"
+  },
+  "project-475dfea2c0a2eb49c28717a0f606a6226fd09727721b90b711cf7b46ee3ab950": {
+   "summary": "Eight-platform full-stack AI operating system - unifies 176 LLMs via LangGraph + MCP + A2A. Multi-tenant RLS over 340 tables, RAG knowledge base, agent marketplace. Web/API/CLI/Desktop/Extension/Mobile/Miniapp. Apache 2.0.",
+   "ja": "8 つの基盤で動くフルスタックの AI の OS。LangGraph・MCP・A2A で 176 の LLM をまとめます。340 の表にまたがる複数テナントの RLS、RAG の知識の集まり、Agent の市場。Web・API・CLI・デスクトップ・拡張・モバイル・ミニアプリ。Apache 2.0。"
+  },
+  "project-484ae53b7d82336ce6a22bcf9664a2e0bf135fc541d323a8f0893a17141a46f4": {
+   "summary": "Security answers from the libraries actually installed in your interpreter: SecurityConfig validation that catches unknown keys pydantic silently drops, docs search over the vendored corpus, live detection through guard-core's real engine and verified setup guidance for FastAPI, Flask, Django, Expre",
+   "ja": "インタープリターに実際に入っているライブラリからの、セキュリティの答え。pydantic が黙って捨てる知らない鍵を見つける SecurityConfig の検査、同梱の資料の検索、guard-core の本物のエンジンでの検出、FastAPI・Flask・Django などの確かめた設定の手引き…"
+  },
+  "project-487a9860e932b303166fdab2b21a7fc078743c23d8f39efc35db4319e4dbef15": {
+   "summary": "FoldLens — An evidence-linked AI research workspace for protein structure analysis.",
+   "ja": "FoldLens。たんぱく質の構造の分析のための、根拠につながった AI の研究の作業場。"
+  },
+  "project-495182699f4781849f045278a1e30e4ab2a68a64d2c5bcabece1dd60397fc438": {
+   "summary": "Typed decisions with Karpo Decision 9B",
+   "ja": "Karpo Decision 9B で、型の決まった判断。"
+  },
+  "project-49c55096dc3464bde4c1abc519c6f62d763b8900f5f1fcbc0244709327b4799a": {
+   "summary": "Search 7,627 MCP servers, agent skills and 1,675 AI tools by what you are trying to do; read-only, every entry links back to its source.",
+   "ja": "7,627 の MCP サーバー・Agent のスキルと、1,675 の AI の道具を、したい事で探します。読むだけで、どの項目も出どころにつながります。"
+  },
+  "project-4a84276da8bfad1aed7daa141edf15e372367e5966b21914fcc679c41bbece2b": {
+   "summary": "Serial terminal with a GUI that AI assistants drive over MCP: read device logs and send commands in the window you are watching, with time-range reads, regex filtering and save-to-file.",
+   "ja": "AI のアシスタントが MCP で操作する、画面付きのシリアルの端末。見ている窓で機器の記録を読み、コマンドを送ります。時間の範囲での読み、正規表現の絞り込み、ファイルへの保存。"
+  },
+  "project-4b124422ada5efb7613fa1ace1918e9cc1cbf6a753f50096dcee5dc1e8b24ca3": {
+   "summary": "Live Google search via the Serper.live SERP API: organic results with positions for a country, language and device, a domain's rank for a keyword, and the open markets. Every search is fresh, usually 2–3 seconds per page.",
+   "ja": "Serper.live の SERP API での、今の Google 検索。国・言語・端末ごとの順位付きの検索結果、語に対するドメインの順位、開いている市場。どの検索も新しく、ふつう 1 頁 2〜3 秒。"
+  },
+  "project-4d74ac4ad284bf3f378aa7b1154ef7f100ddef04bcee90afdc2e6913f4e5ffa1": {
+   "summary": "Deterministic BigInt bank/payment statement and electronic invoice reconciliation (1:1, FX spread, N:1 subset-sum), multi-page PDF-to-XLSX table extraction, and CJK CSV mojibake/DDE sanitization via local stdio or hosted Streamable HTTP.",
+   "ja": "決まった動きの BigInt での、銀行・支払いの明細と電子請求書の突き合わせ（1:1・為替の差・N:1 の部分和）、複数頁の PDF から XLSX への表の取り出し、CJK の CSV の文字化けと DDE の無害化。手元の stdio か置いてある Streamable HTTP で。"
+  },
+  "project-4d9351a3b7cc7d8bee3ac84b5c2a7aedd84157c722507c103256280ea1341d5d": {
+   "summary": "Nexus AI Harness — local AI agent with full PC access: 27 tools, hooks on every action, MCP servers, any model from Ollama to cloud API. Локальный ИИ-агент с полным доступом к компьютеру.",
+   "ja": "Nexus AI Harness。パソコンのすべてに触れる手元の AI の Agent。27 の道具、すべての操作のフック、MCP サーバー、Ollama からクラウドの API までどのモデルでも。"
+  },
+  "project-50b109e3ec4aa9dacd1e1d52905af3833178c112db12dfde5176a0f0153cf86b": {
+   "summary": "Build Blender scenes through 4 tools and 338 tokens of fixed context: on-demand operation schemas, batches of up to 100 edits, preview captures and permission-gated Python.",
+   "ja": "4 つの道具と決まった 338 トークンの文脈で、Blender のシーンを作ります。必要な時だけの操作の形、最大 100 件の編集のまとめ、下見の画像、許可が要る Python。"
+  },
+  "project-513be8fa7c626716e7e6fe6b2d7a7e249dea2afda80cdd0187464c60fd77def2": {
+   "summary": "Edit-settle-verify loop for coding agents in Unity and Godot: waits for the editor to finish importing, confirms the change landed, returns the first real error with file and line. Also flaky-vs-real playtests and texture/audio import checks.",
+   "ja": "Unity と Godot のコーディングの Agent のための、直す・落ち着くのを待つ・確かめるのくり返し。エディターの取り込みの終わりを待ち、変更が入ったかを確かめ、最初の本当の誤りをファイルと行付きで返します。たまに落ちる試験の見分けと、テクスチャと音声の取り込みの確かめも。"
+  },
+  "project-52f57bb4b57c13aa99062158a0d0ca0d1b3c0e01b3adc502b649e4dfdca26cd2": {
+   "summary": "One MCP server, every form your agent needs: hot-reload your own MCP server (edit, reload(), call again, no client restart) and test any MCP server from 6 registries in seconds, caged in Docker when available.",
+   "ja": "Agent が要るあらゆる形になる MCP サーバー 1 つ。自分の MCP サーバーを直してすぐ読み込み直し（reload() して、もう一度呼ぶ。クライアントの再起動は不要）、6 つの台帳のどの MCP サーバーも数秒で試せます。Docker があればその中に閉じ込めます。"
+  },
+  "project-56f6e32caf539073e76d713b66b9c4f1a68c2f6505a946804d82d905b4d59309": {
+   "summary": "An open-source, adaptive and customizable personal decision-making framework for AI agents.",
+   "ja": "AI の Agent のための、オープンソースで、合わせて変えられる個人の判断の枠組み。"
+  },
+  "project-59326f4a9d1632a3367967b3d7d405d8643c7458cdb5c4f95bc21c7cbdd88614": {
+   "summary": "Shared Markdown vault for AI assistants with 23 tools for notes, projects, tasks, search, backlinks, and vault health; works with existing Obsidian vaults.",
+   "ja": "AI のアシスタントの共有の Markdown の保管庫。メモ・プロジェクト・仕事・検索・逆リンク・保管庫の健康の 23 の道具。今の Obsidian の保管庫でも使えます。"
+  },
+  "project-59e1f6b3f294240fb5770acb9f0321d6649dc7c6e25ef44ca0c947f59ede532a": {
+   "summary": "MCP tools for public social and business data via Apify",
+   "ja": "Apify を通した、公開の SNS と事業のデータの MCP の道具。"
+  },
+  "project-5ab56ce31c12f38136219afca2601f5971e82ec172ca38a64e6dbfd5f1a62982": {
+   "summary": "Market data for AI agents: crypto, US stocks, FX, macro, fund-by-fund Bitcoin and Ether spot ETF flows and a Bitcoin node on one UTC clock, with 280,675 no-look-ahead indicators. Refills missed bars and later corrections.",
+   "ja": "AI の Agent のための市場のデータ。暗号資産・米国株・為替・マクロ、ビットコインとイーサの現物 ETF の基金ごとの資金の流れ、ビットコインのノードを 1 つの UTC の時計で。先を見ない 280,675 の指標。抜けた足と後の訂正も埋めます。"
+  },
+  "project-5c7d331f8f1cc79272983ca7c16d71f4aad28f15077f01bbd43f01b6177a1fbd": {
+   "summary": "Browse 105+ restaurant-prepared meals across 6 cuisines, compare subscription plans, check shipping to 48 US states and get order links. Hosted SSE endpoint and npm package.",
+   "ja": "6 つの料理の、店で作った 105 以上の食事を見て、定期便のプランを比べ、米国 48 州への配送を確かめ、注文のリンクを取ります。置いてある SSE の接続先と npm のパッケージ。"
+  },
+  "project-602ae026edff9edff5fcedeef73fc921f5af960ae9a0241943e83a6861a2f47d": {
+   "summary": "Makes coding agents better at Godot 4: offline Godot 4.7 API, project map, headless checks, a scored GDScript review that flags Godot 3 code, safe renames and scene edits, tests, and 3D models built from code.",
+   "ja": "コーディングの Agent を Godot 4 に強くします。オフラインの Godot 4.7 の API、プロジェクトの地図、画面無しの確かめ、Godot 3 のコードに印を付ける採点付きの GDScript の確認、安全な名前の変更とシーンの編集、試験、コードから作る 3D モデル。"
+  },
+  "project-6112335b8ea39b3ef324153a2d97cd05d05faed7c022c9ed000cc7f35a956ef6": {
+   "summary": "Let your AI use a real iPhone: MCP server for the AutoViral Controller (see the screen, tap, type, open apps, run workflows)",
+   "ja": "AI に本物の iPhone を使わせます。AutoViral Controller の MCP サーバー（画面を見る・タップ・入力・アプリを開く・流れを走らせる）。"
+  },
+  "project-614281691d02459d043d805e4ef1d506f8ed3c36c1c72aec2a7acee231045673": {
+   "summary": "Fish Audio text-to-speech with preset and cloned voices through Ace Data Cloud. `uvx mcp-fish`",
+   "ja": "Ace Data Cloud を通した、用意された声と複製した声での Fish Audio の読み上げ。`uvx mcp-fish`"
+  },
+  "project-61bf10b5a6bf117fc878032c74ef787328c2e389ce43c14464356277f14589c2": {
+   "summary": "Per-project profile manager for Claude Code, Codex, and 8 other AI coding agents — scopes which skills and MCP servers load, per directory.",
+   "ja": "Claude Code・Codex ほか 8 つの AI のコーディングの Agent の、プロジェクトごとの設定の管理。どのスキルと MCP サーバーを読み込むかを、フォルダーごとに決めます。"
+  },
+  "project-620bfb8731bc89ef1101fd6ac9498eff1359af0d0dc875792dab6d5b7532c0cf": {
+   "summary": "Chat with Spectrida-RE, a reverse-engineering LLM",
+   "ja": "リバースエンジニアリングの LLM、Spectrida-RE と話します。"
+  },
+  "project-6306d148bb5aad039afb91a4d715bcd623a8c4f6a0093912ff8d5511e17f544f": {
+   "summary": "Elastic world-action model on LIBERO, any compute budget",
+   "ja": "LIBERO の上の、どんな計算の量でも使える、伸び縮みする世界と行動のモデル。"
+  },
+  "project-63bd632fb24580aa7e5908fe488f0d67626a7341a7315a02dc38bf82a72f9c00": {
+   "summary": "A small Telegram relay for your existing AI CLI, with a persistent Markdown mind and independent Docker plugins. Beta.",
+   "ja": "今使っている AI の CLI のための小さな Telegram の中継。消えない Markdown の頭と、別々の Docker のプラグイン。ベータ版。"
+  },
+  "project-63e94998d2872b85ecc4aa1616134d15ee47b15c52296d642bfacc0d562bc58b": {
+   "summary": "One terminal agent on top of every model and coding agent you already pay for: Claude Code, Codex, Gemini CLI, ACP agents, any OpenAI compatible API or a local model. Switches on plan limits, agent teams, always-on agents.",
+   "ja": "もう払っているすべてのモデルとコーディングの Agent（Claude Code・Codex・Gemini CLI・ACP の Agent・OpenAI 互換の API・手元のモデル）の上に乗る、1 つの端末の Agent。プランの上限で切り替え、Agent のチーム、常に動く Agent。"
+  },
+  "project-6496600d11ba175889b4f33c822501df27ab7f79362c67ac03e55168aeefd55f": {
+   "summary": "Turn links into QR artwork and check whether they scan",
+   "ja": "リンクを QR の絵にして、読み取れるかを確かめます。"
+  },
+  "project-64a0e78fb4ccff21ce9230da287c5e9315725809bbbc7321c29c8e1e3c29ce49": {
+   "summary": "The LinkedIn AI agent that learns what works for your brand",
+   "ja": "ブランドに何が効くかを学ぶ、LinkedIn の AI の Agent。"
+  },
+  "project-65a9603fd10604efab20c1cdd803d5303c73bc12a7b7737ed55ec18dfe2db301": {
+   "summary": "Capitaine — fork a repo, click Codespaces, the agent is alive. The repo IS the agent.",
+   "ja": "Capitaine。リポジトリを fork して Codespaces を押せば、Agent が動きます。リポジトリそのものが Agent。"
+  },
+  "project-672548c4e7e463a765cc71ddda978062f83580853ccc2563394bad1fdbdc02fa": {
+   "summary": "AI Coding Agent toolkit for Claude Code and OpenAI Codex with setup-configured tooling",
+   "ja": "Claude Code と OpenAI Codex のための、設定済みの道具付きの AI のコーディングの Agent の道具の集まり。"
+  },
+  "project-6eaab59adbeed17425879424c7e62af6fa1036172bdd8be2cce25b0389d38dd4": {
+   "summary": "Supoclip Gateway Whisper: Desktop Gateway and Whisper Transcription Engine",
+   "ja": "Supoclip Gateway Whisper。デスクトップの中継と、Whisper の書き起こしのエンジン。"
+  },
+  "project-7286a4df50c294046ae9d204ec6eab02c9ef03b25220ab27e952c7159f7fc099": {
+   "summary": "A mind-map kernel for people and agents. People view, edit and export maps in the browser; agents drive a JSON format through a CLI with explicit exit codes. TypeScript rewrite of jsMind.",
+   "ja": "人と Agent のためのマインドマップの中心。人はブラウザで地図を見て・直して・書き出し、Agent は終了コードがはっきりした CLI で JSON の形を操作します。jsMind を TypeScript で書き直した物。"
+  },
+  "project-728b4c64a1eb5d0af8e71faff1ec968c3018dde673def2230d952bf43d73eb08": {
+   "summary": "Read-only pet supply search, price lookup, and store availability across Super zoo storefronts in Slovakia, Czechia, and Poland.",
+   "ja": "スロバキア・チェコ・ポーランドの Super zoo の店をまたいだ、読むだけのペット用品の検索・値段・店の在庫。"
+  },
+  "project-7457108d583c7cd2c24ea789870201c02d83b7cf74de8552c99434a228fc1f04": {
+   "summary": "Detect AI-generated vs. real photos with ReMoT",
+   "ja": "ReMoT で、AI が作った写真と本物の写真を見分けます。"
+  },
+  "project-748aa40c2832c398bddd3e1c85d177540ad08dc8374a5895b4d08cd79cb0290f": {
+   "summary": "Check whether a CLI command name is already taken. Read-only lookup over a public dataset of executable names collected from npm, PyPI, crates.io, Go modules, RubyGems, Packagist, Debian/Ubuntu, Arch, Homebrew, ConanCenter, vcpkg and xmake-repo, with per-source coverage and provenance.",
+   "ja": "CLI のコマンドの名前がもう使われているかを確かめます。npm・PyPI・crates.io・Go のモジュール・RubyGems・Packagist・Debian/Ubuntu・Arch・Homebrew・ConanCenter・vcpkg・xmake-repo から集めた実行ファイルの名前の公開データを読むだけで、出どころごとの範囲と由来付き。"
+  },
+  "project-74992faaf2c2296dc4f29f094e4a12c3f5293fc2e4d4398c7617c68ea008e810": {
+   "summary": "Load and performance testing as release evidence: API test flows (or existing JMeter results) as load scenarios, per-endpoint p95/p99 and error-rate SLOs, regressions against a baseline only when statistically significant, k6 or builtin engine, and guardrails that refuse to load production.",
+   "ja": "リリースの根拠としての負荷と性能の試験。API の試験の流れ（か今の JMeter の結果）を負荷のシナリオに、接続先ごとの p95・p99 と誤りの率の目標、統計で意味がある時だけの基準からの後退、k6 か組み込みのエンジン、本番に負荷をかけるのを断る守り。"
+  },
+  "project-750220498c0b4f9c9547e0e676affe179e25741b19b1ee4daddc8172eb62e56e": {
+   "summary": "Rotaready API integration and MCP server for Claude, ChatGPT and any AI agent. Works in your own Rotaready account, no API key from Rotaready needed.",
+   "ja": "Claude・ChatGPT などの AI の Agent 向けの、Rotaready の API の連携と MCP サーバー。自分の Rotaready のアカウントで動き、Rotaready の API のキーは要りません。"
+  },
+  "project-75928746dcd01327b72fe5a494b99a9aa21fe5b8236da00e7ca7da89372f2cb5": {
+   "summary": "AnyPose pose still with a strong pose-reference lock",
+   "ja": "強いポーズの参照の固定で、AnyPose の静止画のポーズを作ります。"
+  },
+  "project-760935000b70c251214acd40e426dd63743fa4d73299b54abf87e83ae7e79344": {
+   "summary": "Typed decisions with Karpo Decision 0.8B",
+   "ja": "Karpo Decision 0.8B で、型の決まった判断。"
+  },
+  "project-767721df8c77ca5530d99da8d6ae9df4853cf401bc322621481804811ce4c7ed": {
+   "summary": "Reads a saved Figma .fig file offline: layout, text, variables, assets, renders and frame bundles for coding agents, with no Figma app, login or API rate limit.",
+   "ja": "保存した Figma の .fig ファイルをオフラインで読みます。レイアウト・文字・変数・素材・描画・フレームのまとめを、コーディングの Agent 向けに。Figma のアプリもログインも API の回数の制限も無し。"
+  },
+  "project-783b1a85f0afe6ce42af2f3a23b09c20b89b522937a072f4e95b31acbc61f4c7": {
+   "summary": "Unlimited computation for agents: bring your hardest problems. Free tryout; results depend on your equipment, GPU optional for even greater results. Matrix solves, matrix exponential, FFT, heat diffusion, blur and bit-exact operator compression run on your own machine and return with a verifiable ch",
+   "ja": "Agent のための限りない計算をうたう道具。難しい問題を持ってくるよう言います。無料で試せ、結果は手元の機器しだい（GPU は任意）。行列の解・行列の指数・FFT・熱の拡散・ぼかし・ビット単位で正確な作用素の圧縮を自分の機械で走らせ、確かめられる結果を返します…"
+  },
+  "project-7904b6f4d626e65da057a144c3a43df686ee3174e7ab18fc2986967a18b2c4eb": {
+   "summary": "Find the moments in a transcript worth cutting into shorts",
+   "ja": "書き起こしの中から、ショート動画に切り出す価値のある場面を見つけます。"
+  },
+  "project-7bb00e12689b2037726f55afec3135477983caeb6b6a50ba3f5712c063b55bf9": {
+   "summary": "Self-hosted Intervals.icu server: training analytics (plan vs. execution, load, intensity distribution, recovery, fueling, durability), all custom fields and streams, Garmin metrics via the Garmin Intervals Bridge; read-only by default, built-in OAuth for remote clients.",
+   "ja": "自分で置く Intervals.icu のサーバー。練習の分析（計画と実行・負荷・強度の分け方・回復・補給・持久）、すべての独自の項目と流れ、Garmin Intervals Bridge を通した Garmin の数値。既定は読むだけで、リモートのクライアント向けの OAuth を内蔵。"
+  },
+  "project-7bf34edc832a1571bddf09ea2ae626944bafa4b8ead146d695c920b9a444d9d8": {
+   "summary": "Generate, refine and import AI 3D models without leaving the Unity Editor, and build your game with the Zetta Agent: an AI game-development assistant that understands Unity and works in your scenes, scripts, prefabs and materials. Unity 2022.3 LTS and Unity 6.",
+   "ja": "Unity のエディターから出ずに AI で 3D モデルを作って直して取り込み、Zetta Agent とゲームを作ります。Unity を理解し、シーン・スクリプト・プレハブ・マテリアルの中で働く AI のゲーム開発のアシスタント。Unity 2022.3 LTS と Unity 6。"
+  },
+  "project-7ca8a9fddd2b1f0fcecf1c7a1a7d82264688e70e8180f7fbd7744c4e576c15ec": {
+   "summary": "YouTube transcripts (text, timestamped JSON or SRT, any caption language), video metadata, chapters, comments, channel videos and search, via the FetchTranscript API.",
+   "ja": "FetchTranscript の API を通して、YouTube の書き起こし（文・時刻付きの JSON・SRT、どの字幕の言語でも）、動画の情報、チャプター、コメント、チャンネルの動画、検索。"
+  },
+  "project-7e619fc092cc235510436324f72f6b4db15126631c9c3ccc91ff480447435c09": {
+   "summary": "DSH 远程终端插件:在 Web UI 直连 SSH,危险命令三级护栏,AI 命令须真人确认,密码加密存储、不进 AI 会话 | Remote SSH terminal plugin for DeepSeek Harness: 3-level command guard, human-approved AI commands, encrypted credentials",
+   "ja": "DeepSeek Harness（DSH）のリモート端末のプラグイン。Web の画面から直接 SSH し、危ないコマンドには 3 段の守り、AI のコマンドは人の確認が要り、パスワードは暗号化して AI の会話に入れません。"
+  },
+  "project-8037c1c03cc4d181d7431e6cf9f3a72ea482011b5ca8f52359d119573574346a": {
+   "summary": "Hashlock Markets — the settlement layer for the agent economy, as MCP tools. Non-custodial cross-chain OTC: sealed RFQ + price negotiation + HTLC atomic settlement (both legs settle or both refund; no custodian). BTC ↔ EVM / TRON / Solana. Live on mainnet",
+   "ja": "Hashlock Markets。Agent の経済の決済の層を MCP の道具として。預からないチェーンをまたいだ相対の取引: 封をした見積もりの依頼と値段の交渉と HTLC の原子的な決済（両方決まるか、両方返る。預かる人無し）。BTC と EVM・TRON・Solana。本番で稼働中…"
+  },
+  "project-810600ef698821b59516cbfeb0e0fba838bab2b2185f56248d663bcbb0e6c74e": {
+   "summary": "#1 open-weight text-to-image model for UI and design",
+   "ja": "UI とデザインのための、公開の重みの文から画像のモデルで 1 番をうたう物。"
+  },
+  "project-817237bcab883eb634e6e41d2a656d432ef49ee0b44a29dfdbecf7b45120bccc": {
+   "summary": "Malformed JSON healing, certified ReDoS-safe regex synthesis, and context compaction verifier.",
+   "ja": "壊れた JSON の修復、ReDoS に安全だと確かめた正規表現の合成、文脈の圧縮の確かめ。"
+  },
+  "project-8724c37aa36f4ddba4ddc874d19faf22c328e70904eb9897485332789b76651b": {
+   "summary": "One-Person On-Chain Finance Business Desk powered by SoSoValue OpenAPI v1 & Live SoDEX Mainnet/Testnet Orderbooks",
+   "ja": "SoSoValue の OpenAPI v1 と、SoDEX の本番・試験のネットワークの今の板で動く、1 人のためのチェーン上の金融の事業の机。"
+  },
+  "project-88bb58f5f7367aafad57cdb3dbf8d20ba6d6e2f3a7b58cc91d20796883dbdcd9": {
+   "summary": "Check if job postings are still open, with posted date and age in days",
+   "ja": "求人がまだ受け付けているかを、出た日と経った日数付きで確かめます。"
+  },
+  "project-899a1ec622de98eb989c588b81fdda42609a9e5e5bf24c66082221c422cea1e9": {
+   "summary": "Everyday chat and image questions with Qwen3.5-9B",
+   "ja": "Qwen3.5-9B で、日々の会話と画像の質問。"
+  },
+  "project-8a4eb893195133d5512d5aa54cf0424473643c556a2f94be43e2d21bde195ca2": {
+   "summary": "Unified MCP server (`npx -y @brunopompeo/brazil-ai-x402-mcp`) and 10 remote Streamable HTTP `/mcp` endpoints for Global, LATAM (7-country Tax ID & Bank KYC + 9-currency live FX), and Brazilian fiscal/financial workflows (NF-e 4.00 XML + IBS/CBS Tax Reform Auditor, DANFSe Nacional RTC, Boleto/DARF/PI",
+   "ja": "まとめた MCP サーバー（`npx -y @brunopompeo/brazil-ai-x402-mcp`）と、世界・中南米（7 か国の税の番号と銀行の本人確認、9 通貨の為替）・ブラジルの税と金融の仕事（NF-e 4.00 の XML と IBS/CBS の税制改革の監査、DANFSe Nacional RTC、Boleto・DARF…）向けの、10 個のリモートの Streamable HTTP の `/mcp` の接続先。"
+  },
+  "project-8b1c7ec39d8341ccd07a023f3fe7266ffde5dc9ccf45286eed434b5bb60e55a5": {
+   "summary": "Open source personal agent with its own computer. It chases invoices, preps your calls and cancels trials on real websites, and asks before it acts. Runs on your machine with the model you choose. By n8n.",
+   "ja": "自分のコンピューターを持つ、オープンソースの個人の Agent。請求書の催促、電話の準備、本物の Web サイトでの試用の解約をし、動く前に聞きます。選んだモデルで自分の機械の上で動きます。n8n 製。"
+  },
+  "project-8b53794e684fa3b31be0e04bb9ae637684d6f278a19a8c01d8cbf1cbad659816": {
+   "summary": "Mimi Seed MCP server — Firebase + AdMob + Google Play + App Store management for Claude Code / Codex / Cursor / any MCP client.",
+   "ja": "Mimi Seed の MCP サーバー。Claude Code・Codex・Cursor などの MCP のクライアントから、Firebase・AdMob・Google Play・App Store を管理します。"
+  },
+  "project-8c24c5f03deb337a2351e68dc7f78f1937fa2c06b4837a2843b2e1cf47e4437a": {
+   "summary": "Fast 4-8 step NVFP4 MiniMax-H3 video+audio (288p-768p)",
+   "ja": "速い 4〜8 段の NVFP4 の MiniMax-H3 の動画と音声（288p〜768p）。"
+  },
+  "project-8cbb6856c2a7803fa48624468e129964cbd2ae8852729158ef98c52512dc0332": {
+   "summary": "Magic: The Gathering and TCG marketplace tools via the Cardmarket API: product search, price guides, seller stock and price comparison, and read-only repricing suggestions, with bring-your-own API keys.",
+   "ja": "Cardmarket の API を通した、マジック：ザ・ギャザリングなどのトレカの市場の道具。商品の検索、値段の目安、売り手の在庫と値段の比べ、読むだけの値付けの提案。API のキーは自分の物を使います。"
+  },
+  "project-8dcbaf3f4c5c5a6ec0737c4dce9f5b3370d02164a9cf5243fba410d354e51e7c": {
+   "summary": "Faster Gaussian-Splatting than Dust3r",
+   "ja": "Dust3r より速いガウシアン・スプラッティング。"
+  },
+  "project-8ea0b49c5981974690483ccfb7e89fe474ef0e23e4fdef865da7c8e43aad0df9": {
+   "summary": "A persistent workspace for development work that self-improves and continues beyond one session.",
+   "ja": "開発の作業のための、自分で良くなり、1 回の作業を越えて続く作業場。"
+  },
+  "project-90b15746c6c6294bf4c9cc0512f587f0450f1b9309cae38551b902baa79619c2": {
+   "summary": "Self-hosted kanban board built for AI agents: built-in MCP with lean tool definitions, task claims so parallel agents never collide, stale-edit protection, project-scoped API tokens, and a web UI for the humans.",
+   "ja": "AI の Agent のために作った、自分で置くかんばんのボード。軽い道具の定義の MCP を内蔵、並んで動く Agent がぶつからない仕事の引き受け、古い編集からの保護、プロジェクトごとの API のトークン、人のための Web の画面。"
+  },
+  "project-923bfbe819e7264bfbfc5c238fdd86dbd02dd7c31a4f97b83d5eab65412111ae": {
+   "summary": "Let Codex and Antigravity focus on planning and review while DeepSeek Harness runs heavy coding and test loops in isolated Git worktrees — save 26%–52% flagship effective tokens with silent long waits, per-call approvals, and safe auto-sync back (Claude C",
+   "ja": "Codex と Antigravity は計画と確認に集中し、重いコーディングと試験のくり返しは DeepSeek Harness が別々の Git の worktree で走らせます。長い待ちは静かに、呼ぶたびの承認と安全な自動の同期で、最上位モデルの実質のトークンを 26〜52% 減らします…"
+  },
+  "project-92d7ec37d6fd1c207db0988cd49de6f06180977329f24115e206ccb6784881bc": {
+   "summary": "让 agent 像生命一样活着：无定时器，有生物钟与身体，灵魂在 git 里跨设备延续。Agentic life on an old phone: no timers, a body clock, one soul across devices.",
+   "ja": "Agent を生き物のように生かします。タイマーは無く、体内時計と体があり、魂は git の中で端末をまたいで続きます。古いスマホの上の Agent の暮らし。"
+  },
+  "project-9409f8c17c407ebef00b8cedaa2b93353026e1c5a58e77d7b1dd650fd1b0f42a": {
+   "summary": "DeepSeek Harness (DSH) —— DeepSeek AI 开源的 Agent 智能体框架，群晖 Synology DSM / 飞牛 fnOS NAS 原生打包（SPK/FPK），无需 Docker，开箱即用。Web UI 管理、多模型、内置反向代理与局域网安全限制。",
+   "ja": "DeepSeek Harness（DSH）。DeepSeek AI のオープンソースの Agent の枠組みを、Synology DSM・fnOS の NAS 向けにそのまま包んだ物（SPK・FPK）。Docker 不要で、すぐ使えます。Web の画面での管理、複数のモデル、内蔵のリバースプロキシと LAN の安全の制限。"
+  },
+  "project-96a3a2f086cf91caa1273ff2b064631ae6bb960ae59d6624a783aa01644dffa0": {
+   "summary": "Lets AI agents control a real iPhone over USB or Wi-Fi using its own XCTest runner: read the screen as text, tap, type, scroll, and replay recorded flows.",
+   "ja": "AI の Agent が、本物の iPhone を USB か Wi-Fi で、自分の XCTest の実行器で操作します。画面を文として読み、タップ・入力・スクロールし、記録した流れをくり返します。"
+  },
+  "project-96f8530e1a7a54ac051cc61348b389dd52a02b863f5cc15eaf284ec44545cc07": {
+   "summary": "🤖 🚀 Agent Runtimes — Managed AI Agents.",
+   "ja": "Agent Runtimes。管理付きの AI の Agent。"
+  },
+  "project-9a015e326b0f7914b82344987902d770f91a4a8d4ab9423c2410635013f28455": {
+   "summary": "Zero-dependency stdio firewall and JSONL flight recorder for Model Context Protocol (MCP) servers.",
+   "ja": "MCP サーバーのための、依存の無い stdio のファイアウォールと、JSONL の記録装置。"
+  },
+  "project-9a5b97acfeb6aa778e217079e422106ad7b1d86c037e50521b03f0966bd9cc44": {
+   "summary": "DeepSeek Harness 手机远程控制插件：扫码续聊、审批工具、预览 HTML 与文件。 | Remote control plugin for DeepSeek Harness (DSH): resume sessions, approve tools, and preview workspace files from any phone browser.",
+   "ja": "DeepSeek Harness（DSH）をスマホから操作するプラグイン。QR を読んで会話を続け、道具を承認し、HTML やファイルを下見します。どのスマホのブラウザからでも。"
+  },
+  "project-9a626c5631a820fb67469578e38c243ff9fee8c10452ee668f63ca805d15369a": {
+   "summary": "Self-hosted deploy platform in one Rust binary with a built-in MCP endpoint: agents with scoped API keys deploy, roll back, read logs and manage env, domains, databases and backups.",
+   "ja": "Rust の 1 つの実行ファイルで自分で置く配置の基盤。MCP の接続先を内蔵し、範囲を決めた API のキーを持つ Agent が、配置・巻き戻し・記録の読み取り・環境の値・ドメイン・データベース・バックアップの管理をします。"
+  },
+  "project-9a8407e49c2a17ce49d69258f1f11aa367dc95c21edab8b3130865e2cc5482d3": {
+   "summary": "Text-to-image and multi-image editing in 6 steps",
+   "ja": "6 段で、文から画像と、複数の画像の編集。"
+  },
+  "project-9b16404d714909a451d523090eedd89abf87f7118cf616ff5713090b213c756f": {
+   "summary": "MCP server and CLI for Google Flow: generate Veo 3.1 and Omni video and Nano Banana / Imagen images from Claude Code, Claude Desktop, Cursor, VS Code, Codex or the terminal. Free, MIT, on PyPI. 中文文档: README.zh-CN.md. Independent project, not affiliated with Google.",
+   "ja": "Google Flow の MCP サーバーと CLI。Claude Code・Claude Desktop・Cursor・VS Code・Codex・端末から、Veo 3.1 と Omni の動画、Nano Banana・Imagen の画像を作ります。無料、MIT、PyPI にあります。Google とは関係の無い独立したプロジェクト。"
+  },
+  "project-9baa49273f7f1cbefdb423a0a8759966af0ddfbe7bc3240c9e00fbbb3c47759f": {
+   "summary": "面向 AI Agent 的微信公众号创作与发布 CLI：Markdown 排版、AI 配图、预览与草稿创建；支持由浏览器 Agent 保存知乎、CSDN、头条未发布草稿。",
+   "ja": "AI の Agent 向けの、WeChat の公式アカウントの記事作りと公開の CLI。Markdown の組版、AI の挿絵、下見、下書きの作成。ブラウザの Agent で、知乎・CSDN・頭条のまだ出していない下書きの保存にも対応。"
+  },
+  "project-9da09f90611f12f4877e545ba4cca37e390cd228d4c2fb883dba0b8b2f9572e3": {
+   "summary": "Macaroon Bible Evidence: free, read-only Christian Scripture evidence over MCP -- exact Berean Standard Bible / World English Bible verse lookup, passage context, translation comparison, cross-references, keyword search and topic guides. Every response carries a source label, corpus version and dete",
+   "ja": "Macaroon Bible Evidence: MCP で読む、無料で読むだけのキリスト教の聖書の根拠。Berean Standard Bible・World English Bible の正確な節の引き、前後の文脈、訳の比べ、関連の節、語の検索、話題の手引き。どの答えにも出典の印と資料の版…"
+  },
+  "project-a04e7401de735af404da3982dd10aabcacc49566364a9f72cf870b5259ab4579": {
+   "summary": "Chinese-animation/CG finetune of LTX-2.5 with native audio",
+   "ja": "中国のアニメと CG 向けに LTX-2.5 を調整した、音付きの物。"
+  },
+  "project-a185a5ad75a70c90bc9d750c8ad09747e8a009174848c5cfe88708f2d1a9f672": {
+   "summary": "Hosted MCP server: 9 web data tools, 2 keyless",
+   "ja": "置いてある MCP サーバー。Web のデータの道具 9 つ、うち 2 つはキー不要。"
+  },
+  "project-a38cf22cea362a4304f32360b40650409bb38cd3c423f1650d39dc9b1fd44589": {
+   "summary": "YouTube Shorts with exact views, likes, comments, and publish dates.",
+   "ja": "YouTube ショートを、正確な再生数・いいね・コメント・公開日付きで。"
+  },
+  "project-a3b9a6917ddc6433a5a8536ccdb420c3ae35e1cc147fc1fa12dcefc195a4be23": {
+   "summary": "Generative 2x / 4x upscaling in FLUX.2 / Wan 2.1 VAE latents",
+   "ja": "FLUX.2・Wan 2.1 の VAE の潜在空間での、生成による 2 倍・4 倍の高画質化。"
+  },
+  "project-a4a420cbe157df6a8850bc78572834280fb9ad3db5f30e89c0cbb7fc51b1083e": {
+   "summary": "Deterministic database intelligence, AST SQL injection defense, breaking migration differ, and ORM model compiler.",
+   "ja": "決まった動きのデータベースの分析、AST での SQL インジェクションの防御、壊れる移行の差分、ORM のモデルの変換。"
+  },
+  "project-a600b22c06f703e43e40b043cea95c4ad989c3a22eaeb4319b417ea4f0efac5d": {
+   "summary": "fck_data_brokers.py is a free, open-source Python script that sends opt-out and deletion requests to data brokers on your behalf.",
+   "ja": "fck_data_brokers.py は、本人に代わってデータの仲介業者に拒否と削除の依頼を送る、無料でオープンソースの Python のスクリプトです。"
+  },
+  "project-a75d71d2fab6f6db7623105b992767da6cc8288dbcf7b46d921f4c9deacdbbe6": {
+   "summary": "Typed decisions with Karpo Decision 4B",
+   "ja": "Karpo Decision 4B で、型の決まった判断。"
+  },
+  "project-a836fdf0cbaaa308c0e959df21a93049c685b407fec0639d165b08d929ff1383": {
+   "summary": "Send and verify SMS, email and OTP login codes for Israeli apps (+972) via Otipi: free test mode with real delivery to your own phone, Next.js and Supabase snippets. Also hosted at https://otipi.co.il/mcp.",
+   "ja": "Otipi を通して、イスラエルのアプリ（+972）の SMS・メール・ログインの確認コードを送って確かめます。自分の電話に本当に届く無料の試しのモード、Next.js と Supabase のコードの例。https://otipi.co.il/mcp にも置いてあります。"
+  },
+  "project-aaa142129e2f1387afe299836a0a613dbd2658afb3f757731b7dd64a7e216b30": {
+   "summary": "MCP server for the SlabUI registry: lets AI editors and agents search, read and compare SlabUI components",
+   "ja": "SlabUI の台帳の MCP サーバー。AI のエディターや Agent が、SlabUI の部品を探し・読み・比べられます。"
+  },
+  "project-aaaa1dbfc070352784e302bc65faca32f8e7f54a09229f047d5d07fad01f521b": {
+   "summary": "Local harness for Codex, Claude Code, opencode and other coding agents: agents record pitfalls and design decisions as Markdown files reviewed in the same PR as the code, and route only task-related records to the next agent.",
+   "ja": "Codex・Claude Code・opencode などのコーディングの Agent の手元の土台。Agent が落とし穴と設計の判断を Markdown のファイルに残し、コードと同じ PR で確かめ、仕事に関係する記録だけを次の Agent に渡します。"
+  },
+  "project-ab4eb38f782e95f30f2325d8b98970f425f1368a83f298726c5d846834e6f5ca": {
+   "summary": "Writes what a coding agent learns about a repo into a removable marked block of AGENTS.md/CLAUDE.md, so Claude Code, Codex and opencode all read it; also keeps sub-agents across agents and a persistent Python kernel.",
+   "ja": "コーディングの Agent がリポジトリについて学んだ事を、AGENTS.md・CLAUDE.md の消せる印付きの塊に書き、Claude Code・Codex・opencode のどれもが読めるようにします。Agent をまたいだ子の Agent と、消えない Python のカーネルも保ちます。"
+  },
+  "project-adc841349a1075c51369f2924035771e7a806729c3ca69c765dafb59f4c137ee": {
+   "summary": "Find and run maintained REST APIs that return structured records (listings, products, jobs, articles, reviews, profiles) from public websites. Hosted at `https://api.cleanedweb.com/mcp` with OAuth, or run the stdio proxy with `npx -y @cleanedweb/mcp`.",
+   "ja": "公開の Web サイトから構造化した記録（出品・商品・求人・記事・口コミ・プロフィール）を返す、保守された REST API を探して動かします。`https://api.cleanedweb.com/mcp` に OAuth で置いてあり、`npx -y @cleanedweb/mcp` で stdio の中継も動かせます。"
+  },
+  "project-ae60efa56e004d6fb09c21bcc07f994244ff734d9d09e9e0f24ea1c57b84728c": {
+   "summary": "Typed decisions with probabilities, CPU only, no GPU",
+   "ja": "確率付きの、型の決まった判断。CPU だけで、GPU は不要。"
+  },
+  "project-ae9779c731d6dcb243cae40d7481d3f16a302b528c70c2cdd59a503da47e8df9": {
+   "summary": "Find the right model for each LLM call in your code, without sitting in your request path. Scout writes an eval from your code and finds cheaper models that pass it. Runs on your machine with your own keys and no OpenMerit account. OpenMerit Cloud at open",
+   "ja": "コードの LLM の呼び出しごとに合うモデルを、依頼の通り道に入らずに見つけます。Scout がコードから評価を書き、それに通るもっと安いモデルを探します。自分の鍵で自分の機械の上で動き、OpenMerit のアカウントは要りません。OpenMerit Cloud は…"
+  },
+  "project-b4f7eee1a7784feff9835bd79d415530423bbaeaf243c88f8fe75122b7e33274": {
+   "summary": "Turn an old Android phone into a customizable desk panel and touch control deck for Windows, Linux and macOS. 124 widgets and 30 templates for system stats, AI coding, media and automation, in 13 languages. USB or paired Wi-Fi. No cloud required.",
+   "ja": "古い Android のスマホを、Windows・Linux・macOS 用の自由に変えられる机のパネルとタッチの操作盤にします。システムの状態・AI のコーディング・メディア・自動化の 124 の部品と 30 のひな形、13 の言語。USB か組んだ Wi-Fi で、クラウドは不要。"
+  },
+  "project-b7eae16639fe8927c80219982425949fe6c985ae08bc2a6a55cf6369942070b2": {
+   "summary": "Rent GPUs by the minute from an agent (list GPUs with price and VRAM, start a rental over JupyterLab or SSH or with an app such as ComfyUI, stop it), and for GPU providers manage their own nodes, prices and earnings.",
+   "ja": "Agent から GPU を分単位で借ります（値段と VRAM 付きの GPU の一覧、JupyterLab・SSH・ComfyUI などのアプリでの貸し出しの開始と停止）。GPU を貸す側は、自分のノード・値段・稼ぎを管理します。"
+  },
+  "project-b9a30d2f2aacd95e503355896427a26183e1a140ef8adaee32a5f0a14b8ec898": {
+   "summary": "Indicative GPU rental reference prices (spot, on-demand, DePIN) in USD per GPU-hour, refreshed every 6 hours; every value carries a verify URL. Five read-only, key-free tools. `uvx flopsindex-mcp`",
+   "ja": "GPU の時間貸しの参考の値段（スポット・オンデマンド・DePIN）を、1 GPU 1 時間あたりの USD で。6 時間ごとに更新し、どの値にも確かめの URL 付き。読むだけでキー不要の道具 5 つ。`uvx flopsindex-mcp`"
+  },
+  "project-ba77593826b70ad65a2d89dd7a681aa8e4f15b3b1b84714781b03ef79306002d": {
+   "summary": "The fastest computer use for agents on macOS and Linux, and it runs in the background. Agents read any app as a short text outline and act on it in about 178 ms per round, without taking focus or moving your pointer.",
+   "ja": "macOS と Linux で Agent がいちばん速く使えるコンピューター操作で、裏で動きます。Agent はどのアプリも短い文の骨組みとして読み、1 回あたり約 178 ms で操作します。前面を奪わず、ポインターも動かしません。"
+  },
+  "project-bb101d4ba5a2fa59fbbaedb4d0374a9da5a4761d4a586452df2371f45ec093c3": {
+   "summary": "Text to speech with nine preset voices",
+   "ja": "9 つの声から選べる、文の読み上げ。"
+  },
+  "project-bd43111071467aacce7da9b7cbb3e1956af75218c4afec5daae4a6a2501a6d3c": {
+   "summary": "Free TTS/ASR/OCR, multi-voice dubbing and video-transcription API as standard MCP tools (stdio + Streamable HTTP); free daily quota and guest trial. 开放 TTS/ASR/OCR/配音/视频转写，MCP 标准工具，含免费额度与游客试用。",
+   "ja": "無料の読み上げ・音声認識・OCR・複数の声の吹き替え・動画の書き起こしの API を、標準の MCP の道具として（stdio と Streamable HTTP）。毎日の無料の枠と、ゲストの試しあり。"
+  },
+  "project-bfc0ccaf02f7f7732fbcb6781947bc77def43bd1e8584bfaaa151c04fec4cb2e": {
+   "summary": "Open-source multi-agent workspace for AI coding, agent collaboration, orchestration and automation across Codex, Claude Code, Antigravity, Gemini, DeepSeek, Hermes, OpenCode and Qwen Code. Powered by native agent integrations, MCP and ACP.",
+   "ja": "AI のコーディング、Agent の協働・連携・自動化のための、オープンソースの複数の Agent の作業場。Codex・Claude Code・Antigravity・Gemini・DeepSeek・Hermes・OpenCode・Qwen Code にまたがり、Agent との直接の連携・MCP・ACP で動きます。"
+  },
+  "project-c341847575f364289b9cfb3d9e0c52e6dc7c6929ec4f0ace7de83f744307044a": {
+   "summary": "个人 GitHub 主页：展示 AI agent 工具、设计系统、无障碍工程与创意工具项目。 / GitHub profile showcasing AI agent tooling, testable design systems, accessibility engineering, and creative tools.",
+   "ja": "個人の GitHub の頁。AI の Agent の道具、試せるデザインシステム、アクセシビリティの技術、創作の道具の作品を見せます。"
+  },
+  "project-c44c1acb087dac7edc93aba9bbd171b8d48f742d4a6eef850e24df37a588e47e": {
+   "summary": "Text/image to video with native audio, MiniMax-H3",
+   "ja": "文や画像から、音付きの動画を作ります（MiniMax-H3）。"
+  },
+  "project-c49481bf45ebfb1ce2049cd277ea4d02ee8ea3c32023a698dd69e21086bf272b": {
+   "summary": "Search proxy setup guides, generate version-pinned proxy configs for curl, Requests, HTTPX and Playwright, and diagnose proxy errors such as a 407 on CONNECT.",
+   "ja": "プロキシの設定の手引きを探し、curl・Requests・HTTPX・Playwright 向けの版を固定したプロキシの設定を作り、CONNECT での 407 のようなプロキシの誤りを診断します。"
+  },
+  "project-c6150146c92b274a0b03d7af71304e5edfc57c5037fb83a30c869cad54e29fd3": {
+   "summary": "Chatterbox TTS for LatAm Spanish (es-MX).",
+   "ja": "中南米のスペイン語（es-MX）の Chatterbox の読み上げ。"
+  },
+  "project-caa87783ab4cea5cecfed9437da71cfb7a9a90987c093289c6c1ed8f3e4faf0a": {
+   "summary": "Python SDK for Seedance and Flash: text/image-to-video, references, edit, extend, native 4K",
+   "ja": "Seedance と Flash の Python の SDK。文や画像から動画、参照、編集、延長、ネイティブの 4K。"
+  },
+  "project-cb74d379388159881469b0aa712fa0bb734f01b51d5790b8450c5bd2950bd6f0": {
+   "summary": "Turn PostgreSQL, MySQL, MariaDB, SQL Server, Oracle, SQLite or Snowflake into MCP tools and a REST API, with API keys and per-table role-based access.",
+   "ja": "PostgreSQL・MySQL・MariaDB・SQL Server・Oracle・SQLite・Snowflake を、API のキーと表ごとの役割の権限付きで、MCP の道具と REST API にします。"
+  },
+  "project-cbe70bed7c91780e4e876e78ab0e5402877fc418d960dccb66f43150503b9869": {
+   "summary": "Bench CAN for AI agents via CLI/MCP on python-can: send, receive, monitor and bounded periodic on authorized benches; local stdio, user-supplied drivers.",
+   "ja": "python-can の上で、CLI・MCP から AI の Agent が台の上の CAN を扱います。許可した台での送信・受信・見張り・回数を限った定期の送信。手元の stdio、ドライバーは利用者が用意。"
+  },
+  "project-cd0790c4e8f01e5e72ccc248f6140353b5f6ec65b849b2cd4f123f1867180ee4": {
+   "summary": "Multi-agent orchestration & visual review workbench for Google Antigravity — Codex CLI, Magpie & OpenAI-compatible providers with Diff rollback & Parallax dynamic routing",
+   "ja": "Google Antigravity 向けの、複数の Agent の連携と見た目での確認の作業台。Codex CLI・Magpie・OpenAI 互換の提供元、差分の巻き戻し、Parallax の動的な振り分け。"
+  },
+  "project-cdc6b171700a06a8266bd0f590fac0c2e3675aa01c740046ddbc4f6798ee6046": {
+   "summary": "Protein function prediction with reasoning + GO terms",
+   "ja": "推論と GO の用語付きの、たんぱく質の働きの予測。"
+  },
+  "project-ce3bf530c35576de8f3585f0c008a13eecb48d3729ccd3c339bc0c332a41ca34": {
+   "summary": "AutoClip｜The open-source OpusClip alternative — local-first AI clipping & MCP server, zero subscriptions. 一个链接，一键出片。开源 AI 视频剪辑桌面工具，将播客、访谈、课程等长视频自动剪成短视频，生成字幕、封面和发布文案，适配抖音、小红书、TikTok、Reels 与 YouTube Shorts。",
+   "ja": "AutoClip。OpusClip のオープンソースの代わり。手元で動く AI の切り抜きと MCP サーバーで、定額の支払いは無し。リンク 1 つで、ポッドキャスト・インタビュー・講座などの長い動画を自動で短い動画にし、字幕・表紙・投稿の文を作ります。抖音・小紅書・TikTok・Reels・YouTube Shorts に合わせます。"
+  },
+  "project-ce6766f5b9982092b8bd2d78e2634bdfc613747f105d592c7ea24a725cac5e17": {
+   "summary": "Feishu (Lark) WebSocket remote control plugin for Antigravity — CardKit 2.0 streaming, Docx/Wiki, proactive desktop session takeover, MCP server & completion hook",
+   "ja": "Antigravity を Feishu（Lark）の WebSocket で遠くから操作するプラグイン。CardKit 2.0 の流れる表示、Docx・Wiki、デスクトップの作業の引き継ぎ、MCP サーバーと終わりのフック。"
+  },
+  "project-d0f888c31907e1e3a8e0b2e5e4db9931bf8476071a6c16a2bb4efb26294d0d0f": {
+   "summary": "Typed decisions with Karpo Decision 12B",
+   "ja": "Karpo Decision 12B で、型の決まった判断。"
+  },
+  "project-d5a2967b12d997e1bb8854c4e496ae562f5b5341f76322b25fce6fa9bf8b40c4": {
+   "summary": "hipo work ai-agent recruitment mcp server",
+   "ja": "hipo の仕事の、AI の Agent の採用の MCP サーバー。"
+  },
+  "project-d715ae9cfbd576587f8cccb5bd1897323e07a92c2edddd3cff4d164f77858d6c": {
+   "summary": "Self-hosted PostgreSQL access for agents: read-only enforced natively by the database, writes gated by a dry-run-first preview and user consent, plus schema introspection, value search, cursors, EXPLAIN and schema diffs.",
+   "ja": "Agent 向けの、自分で置く PostgreSQL の利用。読むだけはデータベース自身が守り、書き込みは先に試しの下見と利用者の同意を通します。スキーマの読み取り、値の検索、カーソル、EXPLAIN、スキーマの差分も。"
+  },
+  "project-d732edc74a5c7bebd8de4b05e52150ddd342afe2ab2d748cf140aa31eae1910f": {
+   "summary": "Publish HTML and Markdown to end-to-end encrypted links. Includes the madal MCP server: npx -y @facets-cloud/madal mcp",
+   "ja": "HTML と Markdown を、端から端まで暗号化したリンクで公開します。madal の MCP サーバー付き: npx -y @facets-cloud/madal mcp"
+  },
+  "project-da0159ad9f7a39dde398668050f2177517247996b4741015ad32aa6e30014b8b": {
+   "summary": "Bookmaker odds from 100+ sportsbooks (AU, US, EU) via RapidOddsAPI: odds comparison, futures, arbitrage and value bet finders, live scores and player stats.",
+   "ja": "RapidOddsAPI を通した、100 以上のブックメーカー（AU・US・EU）のオッズ。オッズの比べ、先物、裁定とバリューベットの探し、試合の速報と選手の成績。"
+  },
+  "project-db040c889f326a181e6a2a825ba56c200945aabf51d394dec117954f029a01c5": {
+   "summary": "Unofficial, read-only access to the Somtoday parent portal (Dutch secondary schools): timetable, homework, grades, assignments, absence, messages and signed documents. You sign in on Somtoday's own login page; nothing is written.",
+   "ja": "Somtoday の保護者の画面（オランダの中等学校）への、非公式で読むだけの利用。時間割・宿題・成績・課題・欠席・メッセージ・署名した書類。サインインは Somtoday 自身のログインの頁で行い、何も書き込みません。"
+  },
+  "project-dca073d0157329a5a9cd9ed16e5f4ce4a96884b0abb9e923f6e4b658a391d2b5": {
+   "summary": "MCP server and CLI that lets AI agents like Claude Code, Codex and Cursor see and control Android and iOS phones. 6.9x fewer tokens than mobile-mcp, asks before it pays, no telemetry.",
+   "ja": "Claude Code・Codex・Cursor などの AI の Agent が、Android と iOS のスマホを見て操作できる MCP サーバーと CLI。mobile-mcp よりトークンが 6.9 分の 1、払う前に聞き、利用の記録は送りません。"
+  },
+  "project-dcb185e3f54fd3cd2d74a47f718c8a4e76201589a81db4a39944915d0ee60b35": {
+   "summary": "Fail-closed crypto spot-price consensus across Coinbase, Binance and OKX, with source provenance and explicit refusal when independent venue coverage is insufficient.",
+   "ja": "Coinbase・Binance・OKX にまたがる、失敗したら止まる暗号資産の現物の値段の合意。出どころの記録付きで、別々の取引所の数が足りない時ははっきり断ります。"
+  },
+  "project-dd0ff0960fd5b434b8654a10ffbb5c2ffed066c562088ef4dbb250a4bf95657b": {
+   "summary": "Self-hosted MCP server with human-approval gates",
+   "ja": "人の承認の関門が付いた、自分で置く MCP サーバー。"
+  },
+  "project-e0e35a51c5d330449fc15fafbe272827e590336860ce5e392ae2343adf945ec6": {
+   "summary": "Pay-per-call x402 tools on Base: web reader, FX and crypto rates, Argentine CUIT, address and regulation data, Spanish translation and summaries. Remote server or npx, free samples, and every settlement published with its transaction hash.",
+   "ja": "Base の上の x402 で呼ぶたびに払う道具。Web の読み取り、為替と暗号資産のレート、アルゼンチンの CUIT・住所・規制のデータ、スペイン語の翻訳と要約。リモートのサーバーか npx、無料の見本、すべての決済を取引の hash 付きで公開。"
+  },
+  "project-e1281830680badedc095d0e75caa58c9e1146b6a087c47f2a212181a350d2ab7": {
+   "summary": "Edit one record of an agent's log; the signature catches it.",
+   "ja": "Agent の記録を 1 つ書き換えると、署名がそれを見つけます。"
+  },
+  "project-e2a1983bb54421b247fb3b09d8e4daab93c3db97952f905d3e1d37a9cc055c67": {
+   "summary": "People search for AI agents, across 2B+ profiles",
+   "ja": "AI の Agent のための人探し。2B 以上のプロフィールから。"
+  },
+  "project-e43a6873ccf151bfc942d2b1d4b914d62c70c1efaca52ffc643fdef90b49fdb0": {
+   "summary": "Independent Oh My Pi distribution for terminal coding, with specialist subagents, role-based model fallback, and a reproducible host patch stack.",
+   "ja": "端末でのコーディングのための、独立した Oh My Pi の配布版。専門の子の Agent、役割ごとのモデルの代わり、くり返し作れるホストの修正の積み重ね。"
+  },
+  "project-e47ef2ecd4ddd3d925aa51b911f17de1e0b1c8bea196b30d7c51bcbb101f0b5b": {
+   "summary": "Search Sri Lanka's ikman.lk classifieds marketplace with true low-to-high price sorting, dummy-price spam filtering, category and location taxonomies, and full ad details with seller phone numbers.",
+   "ja": "スリランカの ikman.lk の売ります買いますの市場を探します。値段の本当の安い順の並べ替え、仮の値段の迷惑な出品の除外、分類と場所の体系、売り手の電話番号付きの広告の詳細のすべて。"
+  },
+  "project-e6f9e305a0c6391005ca6899251514fa01d8a0c8eaa66356b0d2388c765b00cd": {
+   "summary": "Zero-shot probabilistic time-series forecasting",
+   "ja": "学習なしで使える、確率での時系列の予測。"
+  },
+  "project-e7006ce16bbf0898db5136c4e26baee29eee958e93aeef1f642269237dc69e3d": {
+   "summary": "Rewrite prompts into MiniMax-H3 Ref2VA format",
+   "ja": "指示の文を、MiniMax-H3 の Ref2VA の形に書き直します。"
+  },
+  "project-e7d39bea0dbfd9b5591b3d62133c2f38bb897d816fc5ffba526a6b2d7a77c3ba": {
+   "summary": "Eight-future action-conditioned ViZDoom world model",
+   "ja": "8 つの未来を、行動を条件に予測する ViZDoom の世界のモデル。"
+  },
+  "project-ea5d13f6196fa8eccad1b015a32d7fae6285277c5ffbda007ef8927a15ed175e": {
+   "summary": "Autonomous PCB routing and native KiCad DRC verification MCP server for hardware engineers and vibe-coding agents (KiCad, Altium, Eagle, Specctra DSN).",
+   "ja": "ハードウェアの技術者とバイブコーディングの Agent のための、自動の PCB の配線と KiCad の DRC の確かめの MCP サーバー（KiCad・Altium・Eagle・Specctra DSN）。"
+  },
+  "project-eb9644f69ad445627e54d7d5c1958fa9b27c944dd9ef1d6f2f026bf6d3683e65": {
+   "summary": "A free coding agent in your terminal. It runs on the smartest free model that is up today.",
+   "ja": "端末の中の無料のコーディングの Agent。今日動いている無料のモデルでいちばん賢い物で動きます。"
+  },
+  "project-ecf5349830a13b97c4e90c3a11090e722d82f8aee5768241529b73d10af1ff45": {
+   "summary": "Single-image to PBR GLB 3D demo for TRELLIS.2-4B",
+   "ja": "TRELLIS.2-4B で、1 枚の画像から PBR の GLB の 3D を作る試し。"
+  },
+  "project-ed49c67c0d36fd4f523a3b48fc133292e6bb0d1afaeb40ebccbdea8be835d807": {
+   "summary": "Website and network tests from 30+ locations: page speed with Core Web Vitals and Lighthouse, ping, traceroute, DNS, web, mail and FTP servers, email blacklists and streaming, with a verdict per location. Hosted at `https://www.dotcom-tools.com/mcp` (OAuth or API key), or `npx -y @dotcom-tools/mcp`.",
+   "ja": "30 以上の場所からの Web サイトとネットワークの試験。Core Web Vitals と Lighthouse での頁の速さ、ping、traceroute、DNS、Web・メール・FTP のサーバー、メールのブラックリスト、配信。場所ごとの判断付き。`https://www.dotcom-tools.com/mcp`（OAuth か API のキー）か `npx -y @dotcom-tools/mcp`。"
+  },
+  "project-ee5ccdfa81d096d413a8272bdc0ebdcba3f332be72039742ea50c7f778f60f62": {
+   "summary": "The open-source CapCut alternative.",
+   "ja": "オープンソースの CapCut の代わり。"
+  },
+  "project-efe9116860b185f8a3ed5035295cc0b129374f6b22c394fa4a6f30c4762c5fb1": {
+   "summary": "Human-in-the-loop approval: a person approves the exact AI action with a passkey, and any service can check the signed approval offline.",
+   "ja": "人が確かめる承認。人が AI の行動そのものをパスキーで承認し、どのサービスもその署名付きの承認をオフラインで確かめられます。"
+  },
+  "project-f083ac5be51ca0b539be88e25ddc775a7a88f826e057cf2eb2079b749c7f10e5": {
+   "summary": "Local AI workbench for bug bounty hunting: agents, tools behind permissions, Caido, a knowledge base, and MCP. Runs on your machine.",
+   "ja": "バグ報奨金の調査のための、手元の AI の作業台。Agent、許可の後ろの道具、Caido、知識の集まり、MCP。自分の機械で動きます。"
+  },
+  "project-f37fc4204543ec59f577a0521fc1e7ff8a351d3933346a96f3c6dae292868946": {
+   "summary": "Shared memory for AI coding agents. A writer on every note (stamped by the server for token callers; a config label for local stdio apps), injection-linted writes, undo for replacements and edits. Self-hosted, MIT.",
+   "ja": "AI のコーディングの Agent の共有の記憶。メモごとに書いた人（トークンで呼ぶ人はサーバーが印を押し、手元の stdio のアプリは設定の名前）、注入の検査をした書き込み、置き換えと編集の取り消し。自分で置く、MIT。"
+  },
+  "project-f70d294f3e0028f6608a894ef7bde59cf5e6194732e2ca3352fc7332da9ff13e": {
+   "summary": "一个跑在 DSH 里的 AI 编码智能体：手搓 4KB 页 B+树、Socket RPC、多智能体编排，151 项测试全绿，本地小模型 + 云端协同。",
+   "ja": "DSH の中で動く AI のコーディングの Agent。手作りの 4KB 頁の B+ 木、Socket RPC、複数の Agent の連携。151 項目の試験がすべて通り、手元の小さいモデルとクラウドを組み合わせます。"
+  },
+  "project-f734c5b371d1aab7b9a6c04b613bc8c2cbaf10290ee3e8ac9b46bd92855a8946": {
+   "summary": "Agentic checkout for platforms. Search products, get live pricing with tax and shipping, and place orders on guest and login gated merchant sites worldwide. Pauses to ask the customer for verification codes or missing details, and pays through an agent wallet (Visa Intelligent Commerce, Mastercard A",
+   "ja": "基盤のための Agent の支払いの手続き。商品を探し、税と送料込みの今の値段を取り、世界のゲストやログインが要る店で注文します。確認コードや足りない情報は客に聞いて止まり、Agent のウォレット（Visa Intelligent Commerce・Mastercard A…）で払います。"
+  },
+  "project-f781ebed059749a314923c82f28863a2465c63ff6a16bb2cbdbb6e0d8a5b4a36": {
+   "summary": "Open weights for image editing, generation and layouts",
+   "ja": "画像の編集・生成・レイアウトのための公開の重み。"
+  },
+  "project-f79da18d7aae21aa84d22ba7752069c5aaded5b4606b699bec0d9285014859f2": {
+   "summary": "The funniest one-line AI agent confession — make.fun entry",
+   "ja": "いちばん面白い、1 行の AI の Agent の告白（make.fun への応募作）。"
+  },
+  "project-f886b353e8d6a1d0a65ea3a7955284c85a72ca4d6c9ea039e456c15c5e46122b": {
+   "summary": "Checks .docx and .pptx files after an agent edits them: lost comments, tracked changes and footnotes, broken references, slide text that overflows its box. Read-only, no network.",
+   "ja": "Agent が編集した .docx と .pptx を確かめます。消えたコメント・変更履歴・脚注、壊れた参照、枠からはみ出したスライドの文字。読むだけで、ネットワークを使いません。"
+  },
+  "project-f9829eabca8d0094995a9e65e522795afac3a7c2352db9113652ba7469503004": {
+   "summary": "A mcp ai voice generator agent",
+   "ja": "MCP の、AI の音声を作る Agent。"
+  },
+  "project-fb89575b05f0672dbb5a807a4e9d09121aba4186d9d44a19d48be2c04a5dc002": {
+   "summary": "20 AI testers on 20 different phones, in parallel, on GitHub's free runners: Claude Code agents on iOS Simulators and Android emulators that find broken flows, translation, layout and accessibility bugs",
+   "ja": "GitHub の無料の実行環境で、20 人の AI のテスターが 20 台の別々のスマホで並んで試します。iOS のシミュレーターと Android のエミュレーターの上の Claude Code の Agent が、壊れた流れ・翻訳・レイアウト・アクセシビリティの不具合を見つけます。"
+  },
+  "project-fc08589671123b66128dd59753009773dd3cae5c4a6dca53c5201bec9a16f3e4": {
+   "summary": "One local memory shared by every coding agent and model on your PC: every conversation saved verbatim with zero LLM calls, recalled as a ~3k-token evidence packet (91.8% on LongMemEval), searches your project docs too, secrets masked, shareable across your PCs.",
+   "ja": "パソコンのすべてのコーディングの Agent とモデルが共有する、手元の 1 つの記憶。会話はすべてそのまま保存し（LLM の呼び出しは 0）、約 3k トークンの根拠の束として思い出します（LongMemEval で 91.8%）。プロジェクトの資料も探し、秘密は伏せ、自分のパソコンの間で共有できます。"
+  },
+  "project-fd6d7a989f4e9d9fd3db7f6e052a602f07dc8dbd45842fba0b945b1604913354": {
+   "summary": "A second opinion on a decision or plan from a different AI company: an outside judge model argues the strongest case against it, names the cheapest test that would settle each challenge, and gives a verdict. Includes \"before you decide\" reflection and a look-back tool that scores your own decision r",
+   "ja": "判断や計画への、別の AI の会社からのセカンドオピニオン。外の審判のモデルがいちばん強い反論をし、それぞれの反論を決着させるいちばん安い試しを示し、判断を出します。「決める前に」の振り返りと、自分の判断を後で採点する道具付き…"
+  },
+  "project-ffcb3027f82085c47e1d984f3cf01450474675297b9b2494146c190edd2e98c7": {
+   "summary": "21-language speech recognition with dual RNN-T heads",
+   "ja": "2 つの RNN-T の頭を持つ、21 言語の音声認識。"
+  }
+ }
+}

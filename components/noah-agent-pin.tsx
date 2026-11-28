@@ -48,25 +48,28 @@ export function NoahAgentPinGrid({ children, compact = false }: { children: Reac
 type PinFaceProps = {
   id: string; name: string; href?: string; prefetch?: false; topic?: NoahPinTopic; shape?: 0 | 1 | 2;
   summary?: string; cover?: NoahCoverView; diagram?: NoahPinDiagramView; video?: NoahPinVideo; onSelect?: () => void; disabled?: boolean; pressed?: boolean;
+  /** カードに見せる説明（日本語の 1 行など）。無ければ summary。絵を選ぶのは、いつも summary（元の説明）。 */
+  caption?: string;
   /** 題名だけのカード（本人の指示 2026-11-25「文章いらない、題名だけ」）。説明の字を出さない（summary は絵を選ぶためだけに使う）。 */
   plain?: boolean;
 };
 
-export function NoahAgentPinFace({ id, name, href, prefetch, topic, shape, summary, cover, diagram, video, onSelect, disabled, pressed, plain }: PinFaceProps) {
+export function NoahAgentPinFace({ id, name, href, prefetch, topic, shape, summary, caption, cover, diagram, video, onSelect, disabled, pressed, plain }: PinFaceProps) {
   const openDetail = useContext(NoahDetailNavigation);
   const category = topic ?? noahPinTopic(name, summary ?? '');
   const attributes = { className: `${styles.face} ${pins.tone}`, 'data-shape': shape ?? noahPinShape(id), 'data-topic': category };
   const videoTitle = Boolean(video || cover?.type.startsWith('video/'));
+  const shown = caption || summary;
   const contents = <>
     <span className={`${pins.panel} ${videoTitle ? styles.videoPanel : ''}`}>
-      <NoahPinMotion id={id} name={name} summary={summary} cover={cover} diagram={diagram} video={video} />
-      {videoTitle && <span className={styles.videoTitle}><strong>{name}</strong>{summary && <span>{summary}</span>}</span>}
+      <NoahPinMotion id={id} name={name} summary={summary} caption={caption} cover={cover} diagram={diagram} video={video} />
+      {videoTitle && <span className={styles.videoTitle}><strong>{name}</strong>{shown && <span>{shown}</span>}</span>}
     </span>
     {!videoTitle && <strong className={styles.name}>{name}</strong>}
-    {summary && !plain && !videoTitle && <span className={styles.summary}>{summary}</span>}
+    {shown && !plain && !videoTitle && <span className={styles.summary}>{shown}</span>}
   </>;
   if (href) return <Link {...attributes} href={href} scroll={/^\/noah\?.*(?:package|model)=/.test(href) ? false : undefined} prefetch={noahDetailTarget(href) ? false : prefetch} onClick={event => {
-    const preview = { id, name, summary: summary ?? '' };
+    const preview = { id, name, summary: shown ?? '' };
     const record = noahDetailPreviewRecord(href, preview);
     if (record) try { window.sessionStorage.setItem(NOAH_DETAIL_PREVIEW_KEY, record); } catch { /* Browsing still works without storage. */ }
     if (record && !event.metaKey && !event.ctrlKey && !event.shiftKey && !event.altKey && event.button === 0) openDetail(href, preview);

@@ -942,6 +942,13 @@ Object.assign(NOAH_EXTRA_MESSAGES, {
     '{count} más (ver «Pasos y herramientas» abajo)',
     '{count} أخرى (انظر «الخطوات والأدوات» أدناه)',
   ],
+  '説明は自動翻訳です。提供者が書いた元の文は、下の「操作の流れと道具」にあります。': [
+    'Descriptions are machine-translated. The provider’s original text is under “Steps and tools” below.',
+    '说明为自动翻译。提供方的原文见下方“步骤与工具”。',
+    '설명은 자동 번역입니다. 제공자가 쓴 원문은 아래 “단계와 도구”에 있습니다.',
+    'Las descripciones son traducción automática. El texto original del proveedor está en «Pasos y herramientas» abajo.',
+    'الأوصاف مترجمة آليًا. النص الأصلي الذي كتبه المزوّد موجود في «الخطوات والأدوات» أدناه.',
+  ],
   '使い方': [
     'How to use it',
     '使用方法',

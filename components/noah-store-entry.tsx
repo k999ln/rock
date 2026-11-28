@@ -87,6 +87,7 @@ export default function NoahStoreEntry({ jobs, items }: { jobs?: (NoahFirstJob &
         </header>
         <NoahAgentPinGrid compact>{related.map(item =>
           <NoahAgentPin key={item.id} id={item.id} name={item.name} summary={item.summary || item.provider}
+            caption={locale === 'ja' ? item.summaryJa ?? undefined : undefined}
             href={hrefFor(item)} topic={item.topic} shape={item.shape} />
         )}</NoahAgentPinGrid>
       </section>}

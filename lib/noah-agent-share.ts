@@ -22,13 +22,16 @@ const clean = (value: string, limit: number) => Array.from(Array.from(value, cha
 export async function loadNoahShareAgent(value: unknown, deps: {
   publicListing: boolean;
   detail: (id: string, owner: null, reviewer: false) => Promise<{ id: string; name: string; summary: string; provider: string; listed: boolean }>;
+  /** 説明の日本語の 1 行（共有のカードは ja_JP）。無い時・英語の説明が変わった時は null で、英語のまま。 */
+  summaryJa?: (id: string, summary: string) => string | null;
 }): Promise<NoahShareAgent | null> {
   const id = noahShareId(value);
   if (!id || !deps.publicListing) return null;
   try {
     const item = await deps.detail(id, null, false);
     if (!item.listed || item.id !== id) return null;
-    return { id, name: clean(item.name, 100) || 'Agent', summary: clean(item.summary, 220), provider: clean(item.provider, 80) };
+    const summary = deps.summaryJa?.(id, item.summary) || item.summary;
+    return { id, name: clean(item.name, 100) || 'Agent', summary: clean(summary, 220), provider: clean(item.provider, 80) };
   } catch { return null; }
 }
 
@@ -37,7 +40,8 @@ export function noahAgentShareMetadata(agent: NoahShareAgent | null): Metadata {
   const title = `${agent.name} — Noah`;
   const description = agent.summary || `${agent.provider}が提供するAgent。Noahで詳細を確認できます。`;
   const url = noahAgentShareUrl(agent.id);
-  const image = { url: `${NOAH_PUBLIC_ORIGIN}/api/noah/share-image?${new URLSearchParams({ id: agent.id, v: '1' })}`, width: 1200, height: 630, alt: `${agent.name} — ${description}` };
+  // v は絵の中身が変わった時に上げる（SNS が古い絵を持ち続けないように）。2: 説明を日本語の 1 行に（2026-11-28）。
+  const image = { url: `${NOAH_PUBLIC_ORIGIN}/api/noah/share-image?${new URLSearchParams({ id: agent.id, v: '2' })}`, width: 1200, height: 630, alt: `${agent.name} — ${description}` };
   return {
     title, description, metadataBase: new URL(NOAH_PUBLIC_ORIGIN), alternates: { canonical: url },
     openGraph: { type: 'website', locale: 'ja_JP', siteName: 'Noah', title, description, url, images: [{ ...image, type: 'image/png' }] },
