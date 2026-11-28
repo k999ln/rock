@@ -450,6 +450,16 @@
    "branch": "production v269",
    "command": "launch/health-walk.mjs https://avoado.si (iPhone 15 Pro, 1280)",
    "result": "save, 1/28, export JSON, double-confirm erase; no record sent; overflow 0, small 0, errors 0"
+  },
+  {
+   "branch": "claude/ice2/noah-launch-ja",
+   "command": "node --experimental-strip-types --test <28 files touching directory/collection/summary-ja> (1aab806d)",
+   "result": "203 pass, 0 fail"
+  },
+  {
+   "branch": "claude/ice2/noah-launch-ja",
+   "command": "local production build + launch/jashots2.mjs (feed with project lines, iPhone 15 Pro, 1280)",
+   "result": "home + detail: overflow 0, small 0, errors 0; 58/59 cards Japanese"
   }
  ]
 }
