@@ -78,12 +78,14 @@ export function NoahAgentPinFace({ id, name, href, prefetch, topic, shape, summa
   return <div {...attributes}>{contents}</div>;
 }
 
-export function NoahAgentPin({ meta, actions, ...face }: PinFaceProps & { meta?: ReactNode; actions?: ReactNode }) {
+export function NoahAgentPin({ meta, actions, menu = false, ...face }: PinFaceProps & { meta?: ReactNode; actions?: ReactNode;
+  /** 保存と「その他」を、PC はマウスを乗せた時だけ絵の上に、スマホはカードの右下の「…」から出すカード（ホームの並び）。題名だけのカードも同じ。 */
+  menu?: boolean }) {
   const topic = face.topic ?? noahPinTopic(face.name, face.summary ?? '');
   const shape = face.shape ?? noahPinShape(face.id);
-  // 題名だけのカードでは、保存と「その他」を、PC はマウスを乗せた時だけ絵の上に、スマホは題名の右に小さく出す（本人の決定 2026-11-25「乗せた時だけ出す」）。
+  // 保存と「その他」を、PC はマウスを乗せた時だけ絵の上に、スマホは絵に重ねず右下の「…」から出す（本人の決定 2026-11-25「乗せた時だけ出す」）。
   return <li data-agent-pin-id={face.id} data-topic={topic} data-shape={shape}>
-    <article className={styles.card} aria-label={face.name} data-plain={face.plain ? '' : undefined}>
+    <article className={styles.card} aria-label={face.name} data-plain={face.plain ? '' : undefined} data-menu={menu || face.plain ? '' : undefined}>
       <NoahAgentPinFace {...face} topic={topic} shape={shape} />
       {meta && <div className={styles.meta}>{meta}</div>}
       {actions && <div className={styles.actions}>{actions}</div>}

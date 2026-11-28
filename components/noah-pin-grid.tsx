@@ -42,28 +42,21 @@ export default function NoahPinGrid({ items, signedIn, ownerScope, onChange, onH
         cover={item.marketplace?.cover}
         diagram={pin ? { scene: pin.scene, tone: index } : undefined} video={item.pinVideo}
         meta={item.marketplace ? <>{noahCardOrigin(item)} · {item.marketplace.label}</> : plain ? (item.notice ? <>{noahCardOrigin(item)}</> : undefined) : <>{noahCardOrigin(item)} · {runStatus}</>}
-        actions={plain ? <>
+        menu={!item.external}
+        actions={<>
           {tasks}
-          {/* PC: 保存はマウスを乗せた時だけ絵の上に。スマホ: 題名の右の「…」から保存と「表示しない」（本人の決定 2026-11-25「乗せた時だけ出す」）。 */}
+          {/* 保存と「その他」: PC はマウスを乗せた時（キーで選んだ時）だけ絵の上に。スマホは絵に何も重ねず、カードの右下の「…」から保存と「表示しない」
+              （本人の決定 2026-11-25「乗せた時だけ出す」。11-26 にカードを 1 つの並びにした後も、全部のカードで同じ。絵の題に重ねない）。 */}
           {!item.external && <button type="button" className={styles.save} data-saved={saved || undefined} onClick={() => setSaving(item)} aria-label={`${item.name}を${saved ? '保存済み' : '保存'}`}>
             {saved ? NOAH_PIN_TEXT.saved : NOAH_PIN_TEXT.save}
           </button>}
+          {!plain && <NoahAgentSourceRatings sources={item.sources} detailHref={`${noahProjectHref(item.feedbackId ?? item.id)}#ratings`} />}
           {!item.external && <details className={styles.more}>
             <summary aria-label="その他の操作"><MoreHorizontal size={18} /></summary>
             <div>
               <button type="button" data-touch="" onClick={(event) => { event.currentTarget.closest('details')?.removeAttribute('open'); setSaving(item); }}>{saved ? NOAH_PIN_TEXT.saved : NOAH_PIN_TEXT.save}</button>
               {signedIn && onHide && <button type="button" data-hide="" onClick={(event) => { event.currentTarget.closest('details')?.removeAttribute('open'); onHide(item.id); }}>{NOAH_PIN_TEXT.hide}</button>}
             </div>
-          </details>}
-        </> : <>
-          {tasks}
-          {!item.external && <button type="button" className={styles.save} data-saved={saved || undefined} onClick={() => setSaving(item)} aria-label={`${item.name}を${saved ? '保存済み' : '保存'}`}>
-            {saved ? NOAH_PIN_TEXT.saved : NOAH_PIN_TEXT.save}
-          </button>}
-          <NoahAgentSourceRatings sources={item.sources} detailHref={`${noahProjectHref(item.feedbackId ?? item.id)}#ratings`} />
-          {signedIn && !item.external && onHide && <details className={styles.more}>
-            <summary aria-label="その他の操作"><MoreHorizontal size={18} /></summary>
-            <button type="button" onClick={() => onHide(item.id)}>{NOAH_PIN_TEXT.hide}</button>
           </details>}
         </>} />;
     })}</NoahAgentPinGrid>
