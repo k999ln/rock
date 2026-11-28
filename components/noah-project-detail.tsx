@@ -31,7 +31,7 @@ function ProjectSources({ sources }: { sources: NoahAgentSource[] }) {
 }
 
 export default function NoahProjectDetail({ id, firstJob, initialDetail }: { id: string; firstJob?: string; initialDetail?: Detail }) {
-  const { t } = useNoahLocale();
+  const { t, locale } = useNoahLocale();
   const [detail, setDetail] = useState<Detail | null>(initialDetail ?? null), [error, setError] = useState(''), [attempt, setAttempt] = useState(0);
   const [opening, setOpening] = useState(false), [url, setUrl] = useState(''), [frameLoaded, setFrameLoaded] = useState(false), [slow, setSlow] = useState(false);
   useEffect(() => {
@@ -92,12 +92,16 @@ export default function NoahProjectDetail({ id, firstJob, initialDetail }: { id:
   }
   if (!detail) return !error ? <NoahDetailPending href={`/noah/discover/agent?${new URLSearchParams({ id })}`} /> : <main className={styles.page}><div role="alert" className={styles.error}><p>{error}</p><button onClick={() => { setError(''); setAttempt(n => n + 1); }}>読み直す</button></div></main>;
   const training = id === noahTrainingFilm.projectId;
-  return <NoahDetailTemplate id={id} name={detail.card.pin?.title ?? detail.card.name} provider={detail.card.provider} summary={detail.card.summary} pin={detail.card.pin}
+  // 見つかった物（GitHub など）の説明の日本語の 1 行（`data/noah-project-summary-ja.json`。ホームのカードと同じ物）。spec-74: 提供者が書いた元の説明は「自動翻訳 · 原文」で読める。
+  // 絵の場面は、カードと同じく元の説明で選び、絵の中の字だけを日本語にする（一覧と詳細で同じ絵）。
+  const translated = locale === 'ja' && detail.card.summaryJa && detail.card.summaryJa !== detail.card.summary ? detail.card.summaryJa : null;
+  return <NoahDetailTemplate id={id} name={detail.card.pin?.title ?? detail.card.name} provider={detail.card.provider} summary={translated ?? detail.card.summary} pin={detail.card.pin}
+    artSummary={translated ? detail.card.summary : undefined} original={translated ? detail.card.summary : undefined}
     intro={!training && detail.connection.kind === 'setup' ? <NoahRegistrationStatus key={id} id={id} /> : undefined}
     feedbackId={id} category={detail.card.topic ? `${t('カテゴリ')} · ${t(NOAH_PIN_TOPIC_LABELS[detail.card.topic])}` : undefined}
     action={training ? <NoahTrainingPlugin /> : undefined}>
       {training ? <ol>{noahTrainingFilm.scenes.map(scene => <li key={scene.caption}>{t(scene.detail)}</li>)}</ol> : <>
-        <p>{detail.card.summary}</p>
+        {!translated && <p>{detail.card.summary}</p>}
         <div id="noah-project-use" tabIndex={-1} className={styles.usage}>
           {detail.connection.kind === 'cloud' ? <NoahCloudAgent key={id} projectId={id} profile={detail.connection.profile} providerFamilyId={detail.connection.providerFamilyId} /> : <NoahProviderRunner key={id} projectId={id}/>}
         </div>
