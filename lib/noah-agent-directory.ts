@@ -93,8 +93,10 @@ export async function readNoahDirectory(deps: DirectoryDependencies, target?: { 
   for (const item of noahCollectionCards(selected)) {
     const url = item.url;
     const feedbackId = projectIds.get(url)!;
+    // 見つかった物の説明の日本語の 1 行（同梱の写し。説明が同じ時だけ）。
+    const projectJa = noahBundledSummaryJa(feedbackId, item.summary);
     const entry: DirectoryEntry = entries.get(feedbackId) ?? { families: [], observedAt: item.observedAt,
-      card: { ...base(feedbackId, item.name, item.summary, item.author, url), feedbackId, href: url, external: true } };
+      card: { ...base(feedbackId, item.name, item.summary, item.author, url), feedbackId, href: url, external: true, ...(projectJa ? { summaryJa: projectJa } : {}) } };
     const seen = new Set<string>();
     entry.card.sources = item.sources.filter((source: NoahAgentSource) => {
       if (seen.has(source.sourceUrl)) return false;

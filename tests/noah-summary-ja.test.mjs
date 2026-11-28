@@ -161,3 +161,35 @@ void test('体調ノートの頁は、共有した時のカード（og・twitter
   assert.match(share, /const \{ title, description \} = page \?\? NOAH_SHARE_TEXT;/);
   assert.match(share, /openGraph: \{[\s\S]*title,[\s\S]*description,[\s\S]*images/);
 });
+
+const projects = JSON.parse(readFileSync(new URL('../data/noah-project-summary-ja.json', import.meta.url), 'utf8'));
+
+void test('見つかった物（project-…）の説明の写しは、別のファイルで同じ決まり（説明が同じ時だけ・数を作らない・外す物は訳さない）', async () => {
+  const { noahCollectionBlocked } = await import('../lib/noah-collection.ts');
+  assert.equal(projects.schema, 'noah-project-summary-ja/1');
+  const rows = Object.entries(projects.projects);
+  assert.ok(rows.length >= 200, `${rows.length} 件`);
+  for (const [id, entry] of rows) {
+    assert.match(id, /^project-[0-9a-f]{64}$/, id);
+    assert.deepEqual(Object.keys(entry).sort(), ['ja', 'summary'], id);
+    assert.ok(entry.ja.trim() === entry.ja && entry.ja.length > 0, id);
+    assert.ok(Array.from(entry.ja).length <= 260, `${id}: ${Array.from(entry.ja).length} 字`);
+    assert.match(entry.ja, /[\p{Script=Hiragana}\p{Script=Katakana}\p{Script=Han}]/u, `${id}: 日本語`);
+    assert.equal(looksLikeNoahSecret(entry.ja), false, `${id}: 秘密に見える文`);
+    assert.equal(noahCollectionBlocked({ name: '', summary: entry.summary, url: '' }), false, `${id}: 紹介から外す物は訳さない`);
+    const original = new Set(numbers(entry.summary)), lower = entry.summary.toLowerCase();
+    const words = [...WORDS, 'eleven', 'twelve', 'thirteen', 'fourteen', 'fifteen', 'sixteen', 'seventeen', 'eighteen', 'nineteen', 'twenty'];
+    for (const n of numbers(entry.ja)) {
+      if (original.has(n)) continue;
+      const value = Number(n);
+      assert.ok(value === 1 || value === 2 || (value <= 20 && new RegExp(`\\b${words[value]}\\b`).test(lower)), `${id}: 「${n}」が元の説明「${entry.summary}」に無い`);
+    }
+  }
+  const [id, entry] = rows[0];
+  assert.equal(noahBundledSummaryJa(id, entry.summary), entry.ja);
+  assert.equal(noahBundledSummaryJa(id, `${entry.summary} `), null, '説明が変わった');
+  assert.equal(noahBundledSummaryJa(id.replace(/^project-/, 'mcp-registry:'), entry.summary), null, '掲載中の系列の写しからは引かない');
+  const directory = readFileSync(new URL('../lib/noah-agent-directory.ts', import.meta.url), 'utf8');
+  assert.match(directory, /const projectJa = noahBundledSummaryJa\(feedbackId, item\.summary\);/);
+  assert.match(directory, /\.\.\.\(projectJa \? \{ summaryJa: projectJa \} : \{\}\)/);
+});
