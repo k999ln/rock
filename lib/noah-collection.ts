@@ -19,7 +19,15 @@ export const NOAH_COLLECTION_LABELS: Record<NoahCollectionSource, string> = {
  * 決まった語の照合だけ（ML なし）。外した数は収集機の状態に残す。
  */
 export const NOAH_COLLECTION_BLOCKED = /\b(?:nsfw|uncensored|nude|nudity|naked|porn\w*|hentai|erotic\w*|sexy|undress\w*|deepfakes?|face[ -]?swap\w*|lewd|onlyfans|r18|18\+)(?![\w])/iu;
-export const noahCollectionBlocked = (item: { name: string; summary: string; url: string }) => NOAH_COLLECTION_BLOCKED.test(`${item.name} ${item.summary} ${item.url}`);
+/**
+ * 利用規約やライセンスをすり抜ける道具（試用のリセット・機械 ID の書き換え・クラック・キー生成）も紹介しない。
+ * 2026-11-28 に本番のホームの 59 枚目に「Claude Code Pro Trial Reset & Machine ID」が出ていた。本番の 1,200 枚と掲載中の 212 系列で、当たるのはその 1 件だけ。
+ */
+export const NOAH_COLLECTION_CIRCUMVENTION = /\b(?:trial[ -]?resets?|keygens?|cracked[ -]+(?:versions?|apps?|software|licen[cs]es?|pro|apks?)|license[ -]?(?:crack|bypass|reset)\w*|activation[ -]?(?:crack|bypass)\w*|machine[ -]?ids?[ -]?(?:reset|spoof|chang)\w*|(?:reset|spoof)\w*[ -]+(?:the[ -]+)?machine[ -]?ids?)(?![\w])|破解|无限试用|重置试用|试用重置/iu;
+export const noahCollectionBlocked = (item: { name: string; summary: string; url: string }) => {
+  const text = `${item.name} ${item.summary} ${item.url}`;
+  return NOAH_COLLECTION_BLOCKED.test(text) || NOAH_COLLECTION_CIRCUMVENTION.test(text);
+};
 /** 投稿（SNS）の出所。投稿の本文は転載せず、決まった説明文とリンク・数だけを載せる。 */
 export const NOAH_COLLECTION_SOCIAL = ['x', 'reddit', 'bluesky'] as const;
 export const NOAH_COLLECTION_SOCIAL_SUMMARY: Record<typeof NOAH_COLLECTION_SOCIAL[number], string> = {
