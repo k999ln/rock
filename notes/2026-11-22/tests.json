@@ -505,6 +505,11 @@
    "branch": "production (PR #132, main 6c147c33)",
    "command": "menu/prodmenu.mjs <repo> https://avoado.si (iPhone 15 Pro, 1280)",
    "result": "home 16/16 data-menu, controls over art 0 (was 16), … over text 0, hover shows save+…; search 1/1; project detail Japanese + toggle; installer absent in 600; overflow 0, small 0, errors 0"
+  },
+  {
+   "branch": "production (main 6c147c33)",
+   "command": "node --experimental-strip-types scripts/noah-prod-check.mjs all https://avoado.si",
+   "result": "ok: 300 page loads, overflow 0, small 0, errors 0; menus 11/11 diff 0; probe broken 0; failed API calls same as the PR #131 run"
   }
  ]
 }
