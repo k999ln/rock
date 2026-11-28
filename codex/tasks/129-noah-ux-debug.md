@@ -125,6 +125,7 @@
 
 - わかっている事: `k999ln/rock` の main には、移った後に #421（task 125・126 の指示書と収集の直し）と #425（task 125 の 3.7）が入った。`iceiceice999/rock` の main には無い。
 - やる事: 本人の許可の後で、同じ変更を `iceiceice999/rock` に PR で入れる（task 番号 125・126 は、こちらでも同じ番号にする）。
+- 済み（2026-11-28 に確かめた）: `iceiceice999/rock` の main に、#421 と同じ中身の 7ae9a04d（2026-11-22「Merge pull request #421: Noah が自分で探す（task 125・126 の指示書）」）と、#425 と同じ中身の 98904606 がある。#421 で変わった 14 ファイルのうち、コード・試験・指示書・`data/noah-scout-curators.json` の 9 ファイルは k999ln の merge（849b6007）と 1 バイトも違わず、`docs/services/noah-agent-collection.md` は最後の空行 1 つだけ違う（ほかの 4 ファイルのうち、CHANGELOG と 07 の行はそのまま、00-index の 125・126 の行と README の収集の段落は、その後に書き直された形で入っている）。#425 の `codex/tasks/125-noah-scout.md` も d5c1c16e と同じ。移す物は残っていない。
 
 ### 2026-11-26 ナビゲーションの重複撤去
 
