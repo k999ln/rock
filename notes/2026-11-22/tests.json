@@ -415,6 +415,26 @@
    "branch": "production avoado.si (Sites v269)",
    "command": "Playwright: Find and book a local service pro / Discond / AthenaHQ details at iPhone 15 Pro and 1280px",
    "result": "「こんな事を頼めます」 3/4/4 cards, 「要る情報」 short form, 「操作の流れと道具」 open, 使い方・安全のために shown; overflow 0, small 0, errors 0 on all 6."
+  },
+  {
+   "branch": "claude/ice2/noah-launch-ja",
+   "command": "npm test",
+   "result": "5742 tests, 5704 pass, 34 fail (same 7 files as main), 4 skipped"
+  },
+  {
+   "branch": "claude/ice2/noah-launch-ja",
+   "command": "node --experimental-strip-types --test tests/noah-summary-ja.test.mjs + 19 files touching detail/cards/share",
+   "result": "163 pass, 0 fail"
+  },
+  {
+   "branch": "claude/ice2/noah-launch-ja",
+   "command": "npm run build && typecheck && lint:product && private/project/repository/noah:screenless/version/release/design/baseline checks",
+   "result": "all exit 0"
+  },
+  {
+   "branch": "claude/ice2/noah-launch-ja",
+   "command": "local production build, launch/jashots.mjs + jatoggle.mjs (iPhone 15 Pro, 1280)",
+   "result": "home + detail + toggle: overflow 0, small 0, errors 0"
   }
  ]
 }

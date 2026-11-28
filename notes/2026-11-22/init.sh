@@ -105,3 +105,7 @@ git worktree add -q --detach ../plainwt origin/claude/ice2/noah-detail-plain 2>/
 # Refresh the bundled tool catalog (reads production's public API and the official registry; handshakes only, no tool calls):
 #   node --experimental-strip-types scripts/noah-tool-catalog-refresh.mjs            # dry run: agents with no tool list in production
 #   node --experimental-strip-types scripts/noah-tool-catalog-refresh.mjs --write    # writes data/noah-tool-catalog.json
+# Japanese descriptions (launch 11-28): branch claude/ice2/noah-launch-ja 9f87a244 (2 commits on ice/main a607a97b).
+git fetch -q origin claude/ice2/noah-launch-ja
+git worktree add -q --detach ../jawt origin/claude/ice2/noah-launch-ja 2>/dev/null || true
+( cd ../jawt && npm ci --ignore-scripts --no-audit --no-fund >/dev/null && node --experimental-strip-types --test tests/noah-summary-ja.test.mjs tests/noah-agent-share.test.mjs tests/noah-detail-plain.test.mjs && npm run -s typecheck )
