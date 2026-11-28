@@ -95,3 +95,13 @@ git worktree add -q --detach ../d6wt origin/claude/ice2/noah-final-d6 2>/dev/nul
 # Codex 2026-11-28: https://github.com/iceiceice999/rock/pull/127 https://github.com/iceiceice999/rock/pull/126
 # Sites v268; main 1bf5d961; restore point v267.
 # Sites v268: 75 routes checked at 390px and 1280px, signed out.
+# Detail redesign + tool catalog refresh: branch claude/ice2/noah-detail-plain 27833c6f (4 commits on ice/main 1bf5d961).
+git fetch -q origin claude/ice2/noah-detail-plain
+git worktree add -q --detach ../plainwt origin/claude/ice2/noah-detail-plain 2>/dev/null || true
+( cd ../plainwt && npm ci --ignore-scripts --no-audit --no-fund >/dev/null && \
+  node --experimental-strip-types --test tests/noah-tool-catalog-refresh.test.mjs tests/noah-tool-list-explanation.test.mjs tests/noah-agent-explanation.test.mjs \
+    tests/noah-detail-plain.test.mjs tests/noah-detail-open.test.mjs tests/noah-ready-ui.test.mjs && \
+  npm run -s typecheck && npm run -s lint:product )
+# Refresh the bundled tool catalog (reads production's public API and the official registry; handshakes only, no tool calls):
+#   node --experimental-strip-types scripts/noah-tool-catalog-refresh.mjs            # dry run: agents with no tool list in production
+#   node --experimental-strip-types scripts/noah-tool-catalog-refresh.mjs --write    # writes data/noah-tool-catalog.json

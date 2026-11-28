@@ -375,6 +375,31 @@
    "branch": "production avoado.si",
    "command": "node scripts/noah-prod-check.mjs unverified https://avoado.si --write --ids=<the 9 handshake failures> (2026-11-28 05:26 JST, ~6h10m after the first run)",
    "result": "9/9 broken-connect again (相手のサーバーが応答しません). All 9 still listed (list 212). Removal candidates under the patrol rule (2 consecutive failures)."
+  },
+  {
+   "branch": "claude/ice2/noah-detail-plain 27833c6f",
+   "command": "npm test (full)",
+   "result": "5,732 tests: 5,694 pass, 4 skipped, 34 fail = the 7 files that fail on main locally (migration-aliases 24, mcp-connector 3, mcp 2, noah-operation-packs 2, mr-pc-adapter 1, noah-mac-runner 1, undici-dependency-security 1; run alone: 78 tests, 34 fail)."
+  },
+  {
+   "branch": "claude/ice2/noah-detail-plain 27833c6f",
+   "command": "node --experimental-strip-types --test tests/noah-tool-catalog-refresh.test.mjs tests/noah-tool-list-explanation.test.mjs tests/noah-agent-explanation.test.mjs tests/noah-detail-plain.test.mjs tests/noah-ready-ui.test.mjs",
+   "result": "50/50 pass."
+  },
+  {
+   "branch": "claude/ice2/noah-detail-plain 27833c6f",
+   "command": "npm run build / typecheck / lint:product / release:check / release:web-bundle:check / release:web-assets:check / private:check / project:check / repository:check / noah:screenless:check / version:check / design:check / baseline:check",
+   "result": "all pass (lint:product once got SIGKILL while the full suite and a local server ran at the same time; passes alone)."
+  },
+  {
+   "branch": "claude/ice2/noah-detail-plain 27833c6f (local production build)",
+   "command": "16 production agents from recorded JSON at iPhone 15 Pro and 1280px; 5 agents with the explanation rebuilt from the new catalog",
+   "result": "overflow 0, small targets 0, page errors 0 on all 42 views."
+  },
+  {
+   "branch": "production avoado.si (read only)",
+   "command": "node --experimental-strip-types scripts/noah-tool-catalog-refresh.mjs --write (2026-11-28 ~10:40 JST)",
+   "result": "54 targets of 212: added 35, added with a different count 4, same copy 13, failed 2 (Avasis unreachable, dsght blocked)."
   }
  ]
 }
