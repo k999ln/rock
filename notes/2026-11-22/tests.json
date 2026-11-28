@@ -460,6 +460,46 @@
    "branch": "claude/ice2/noah-launch-ja",
    "command": "local production build + launch/jashots2.mjs (feed with project lines, iPhone 15 Pro, 1280)",
    "result": "home + detail: overflow 0, small 0, errors 0; 58/59 cards Japanese"
+  },
+  {
+   "branch": "production v270",
+   "command": "launch/prodja.mjs https://avoado.si + launch/prodshots.mjs (iPhone 15 Pro, 1280)",
+   "result": "Japanese 20/20, 96/100, 378/400; banned 0; Discond summaryJa + 4/4 noteJa; overflow 0, small 0, errors 0"
+  },
+  {
+   "branch": "production v270",
+   "command": "node --experimental-strip-types scripts/noah-prod-check.mjs all https://avoado.si (a2539a4c)",
+   "result": "ok: 300 page loads, overflow 0, small 0, errors 0; menus 11/11 diff 0; probe broken 0"
+  },
+  {
+   "branch": "claude/ice2/noah-card-menu",
+   "command": "node --experimental-strip-types --test tests/noah-card-menu.test.mjs tests/noah-project-detail-ja.test.mjs + 19 related files (86880a9f)",
+   "result": "123 pass, 0 fail"
+  },
+  {
+   "branch": "claude/ice2/noah-card-menu",
+   "command": "npm test (86880a9f)",
+   "result": "5756 tests, 5718 pass, 34 fail (same names as PR #131 / main), 4 skipped"
+  },
+  {
+   "branch": "claude/ice2/noah-card-menu",
+   "command": "node --experimental-strip-types --test tests/noah-collection-impersonation.test.mjs + 17 collection/directory files (b260779f)",
+   "result": "127 pass, 0 fail"
+  },
+  {
+   "branch": "claude/ice2/noah-card-menu",
+   "command": "npm run build && typecheck && lint:product && private/project/repository/noah:screenless/version/release/design/baseline/release:web-bundle/release:web-assets checks (b260779f)",
+   "result": "all exit 0"
+  },
+  {
+   "branch": "claude/ice2/noah-card-menu",
+   "command": "local production build + menu/menushots.mjs (today's production feed; iPhone 15 Pro, 1280; signed out/in) + menu/projshots.mjs (open-receipt)",
+   "result": "controls over art 0, … over text 0, overflow 0, small 0, errors 0; phone … opens 保存 (+表示しない); project detail Japanese lead + original toggle"
+  },
+  {
+   "branch": "claude/ice2/noah-card-menu",
+   "command": "npm test (b260779f)",
+   "result": "5759 tests, 5721 pass, 34 fail (same names as PR #131 / main), 4 skipped"
   }
  ]
 }

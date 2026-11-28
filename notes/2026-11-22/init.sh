@@ -110,3 +110,10 @@ git fetch -q origin claude/ice2/noah-launch-ja
 git worktree add -q --detach ../jawt origin/claude/ice2/noah-launch-ja 2>/dev/null || true
 ( cd ../jawt && npm ci --ignore-scripts --no-audit --no-fund >/dev/null && node --experimental-strip-types --test tests/noah-summary-ja.test.mjs tests/noah-agent-share.test.mjs tests/noah-detail-plain.test.mjs && npm run -s typecheck )
 # Branch now 40b81759 (4 commits). New tests: tests/noah-tool-summary-ja.test.mjs tests/noah-collection-circumvention.test.mjs
+# Sites v270 = PR #131 (main a2539a4c). Card menu + project detail Japanese + impersonating installers: branch claude/ice2/noah-card-menu b260779f (3 commits on ice/main a2539a4c).
+git fetch -q origin claude/ice2/noah-card-menu
+git worktree add -q --detach ../menuwt origin/claude/ice2/noah-card-menu 2>/dev/null || true
+( cd ../menuwt && npm ci --ignore-scripts --no-audit --no-fund >/dev/null && \
+  node --experimental-strip-types --test tests/noah-card-menu.test.mjs tests/noah-project-detail-ja.test.mjs tests/noah-collection-impersonation.test.mjs \
+    tests/noah-collection-circumvention.test.mjs tests/noah-summary-ja.test.mjs tests/noah-pins.test.mjs && \
+  npm run -s typecheck && npm run -s lint:product )
