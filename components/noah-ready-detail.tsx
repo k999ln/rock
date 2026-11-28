@@ -29,6 +29,8 @@ import NoahWorkList from './noah-work-list';
 import NoahConnectButton from './noah-connect-button';
 import NoahTrialReport from './noah-trial-report';
 import NoahPinExtras from './noah-pin-extras';
+import NoahDetailPlain from './noah-detail-plain';
+import { noahDetailActionNote } from '@/lib/noah-detail-plain';
 import { NoahExplanationSection, NoahPackageExplanation } from './noah-agent-explanation';
 import type { NoahExplanation } from '@/lib/noah-agent-explanation';
 import base from './noah-service.module.css';
@@ -162,7 +164,10 @@ export default function NoahReadyDetail({ id, tool = null, from = null, internal
   return <NoahDetailTemplate id={detail.id} mediaId={mediaId} name={detail.pin?.title ?? guide?.name ?? detail.name} provider={detail.provider || undefined}
     pin={detail.pin}
     summary={lead || t('（説明はありません）')} overviewTitle={pitch}
-    feedbackId={detail.listed ? feedbackId ?? detail.id : undefined} expanded={Boolean(live)}
+    feedbackId={detail.listed ? feedbackId ?? detail.id : undefined}
+    actionNote={detail.listed ? t(noahDetailActionNote({ signedIn, connected, typed: detail.connect.typed, need: detail.connect.need ?? null })) : undefined}
+    facts={<ul aria-label={t('つなぎ方')}>{facts.map((text) => <li key={text}>{t(text)}</li>)}</ul>}
+    explain={<NoahDetailPlain steps={detail.explanation?.steps} host={detail.host} provider={detail.provider} signedIn={signedIn} connected={connected} uses={!guide} />}
     detailsLabel={detail.explanation ? t('操作の流れと道具') : undefined}
     icon={guide ? <span className={pageStyles.phoneMark} aria-hidden="true"><PhoneCall size={26} strokeWidth={1.8} /></span>
       : <NoahAppIcon name={detail.name} topic={noahPinTopic(detail.name, detail.summary)} className={pageStyles.appMark} />}
@@ -214,7 +219,6 @@ export default function NoahReadyDetail({ id, tool = null, from = null, internal
       <summary>{t('Agentの詳細')}</summary>
       {detail.summary && detail.summary !== lead && <p className={styles.description}>{detail.summary}</p>}
       {!guide && <NoahAgentVisual name={detail.name} summary={detail.summary}/>}
-      <ul className={styles.facts} aria-label={t("つなぎ方")}>{facts.map((text, index) => <li key={text} className={index === 0 ? styles.badge : undefined}>{t(text)}</li>)}</ul>
       {checked && <p className={styles.quiet}>{t(checked)}</p>}
       {detail.website && <p className={styles.quiet}>{internalOnly ? <span>提供元: {detail.website}</span> : <a href={detail.website} target="_blank" rel="noopener noreferrer nofollow">{t("提供者のページ（")}{new URL(detail.website).hostname}）</a>}</p>}
       {detail.listed && <NoahAgentShare id={detail.id} name={detail.name} summary={detail.summary} />}

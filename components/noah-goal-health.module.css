@@ -24,3 +24,4 @@
 .history li { display: flex; flex-wrap: wrap; gap: 6px 14px; padding: 10px 0; border-top: 1px solid var(--noah-theme-line, #ece6f2); font-size: 14px; }
 .history li:first-child { border-top: 0; }
 .done { margin: 0; padding: 12px 14px; border-radius: 12px; background: #eaf7ee; color: #1f5131; font-weight: 650; }
+.saved { display: block; margin-top: 10px; color: var(--noah-theme-text, #493756); font-weight: 600; }

@@ -151,7 +151,8 @@
 
 .more { display:flex; justify-content:center; margin:26px 0 0; }
 .connectionOverlay { position:fixed; inset:0; z-index:1500; display:grid; place-items:center; background:var(--noah-theme-panel, rgba(255,255,255,.97)); pointer-events:none; }
-.source { margin-top:40px; padding-top:18px; border-top:1px solid var(--noah-theme-line, #ececef); color:var(--noah-theme-muted, #71717a); font-size:12px; line-height:1.9; }
+/* サイト全体の footer の決まり（白い背景・横の余白・横並び）を受けない（2026-11-28: ダークモードで白い箱に薄い字になっていた）。 */
+.source { display:block; margin-top:40px; padding:18px 0 0; border-top:1px solid var(--noah-theme-line, #ececef); background:transparent; color:var(--noah-theme-muted, #71717a); font-size:12px; line-height:1.9; }
 .source p { margin:0 0 6px; }
 .page .source a { color:var(--noah-theme-link, #a14206); text-decoration:underline; text-underline-offset:3px; display:inline-flex; align-items:center; min-height:44px; }
 

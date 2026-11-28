@@ -1,0 +1,21 @@
+/* Agent の詳細の、見ただけでやる事がわかる部分（components/noah-detail-plain.tsx）。色は Noah の表示モードの変数に合わせる。 */
+.section { min-width: 0; padding: 18px 0 8px; border-top: 1px solid var(--noah-theme-line, #e9e4df); }
+.section h2 { margin: 0 0 12px; font-size: 18px; line-height: 1.4; letter-spacing: -.02em; }
+.uses { display: grid; gap: 10px; }
+.use { min-width: 0; padding: 14px 16px; border: 1px solid var(--noah-theme-line, #e6deee); border-radius: 14px; background: var(--noah-theme-panel, #fff); }
+.use h3 { margin: 0 0 6px; font-size: 15px; line-height: 1.4; overflow-wrap: anywhere; }
+.use p { margin: 0; font-size: 14px; line-height: 1.6; color: var(--noah-theme-text, #2c2520); overflow-wrap: anywhere; }
+.use p.needs { margin-top: 8px; font-size: 12px; color: var(--noah-theme-muted, #71717a); }
+.more { display: inline-flex; align-items: center; min-height: 44px; margin-top: 4px; color: var(--noah-theme-link, #a14206); font-size: 14px; font-weight: 600; }
+.steps { display: grid; gap: 10px; margin: 0; padding: 0; list-style: none; counter-reset: step; }
+.steps li { counter-increment: step; display: grid; grid-template-columns: 30px minmax(0, 1fr); gap: 2px 10px; align-items: start; padding: 12px 14px; border-radius: 14px; background: var(--noah-theme-raised, #f6ebe1); }
+.steps li::before { content: counter(step); grid-row: span 2; display: grid; place-items: center; width: 28px; height: 28px; border-radius: 50%; background: #a14206; color: #fff; font-weight: 700; font-size: 14px; }
+.steps strong { font-size: 15px; line-height: 1.5; overflow-wrap: anywhere; }
+.steps span { font-size: 13px; line-height: 1.6; color: var(--noah-theme-muted, #71717a); overflow-wrap: anywhere; }
+.safety { display: grid; gap: 8px; margin: 0; padding: 0; list-style: none; }
+.safety li { position: relative; padding-inline-start: 24px; font-size: 14px; line-height: 1.6; overflow-wrap: anywhere; }
+.safety li::before { content: '✓'; position: absolute; inset-inline-start: 0; color: #2f9e5b; font-weight: 700; }
+@media (min-width: 760px) {
+  .uses { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .steps { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+}

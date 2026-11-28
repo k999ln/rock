@@ -116,3 +116,12 @@
 .templateMore:target { scroll-margin-top:12px; }
 .privateFeedback { border-top:1px solid var(--noah-theme-line,#e5e5e8); padding-top:16px; }
 .privateFeedback p { font-size:12px; color:var(--noah-theme-muted,#66666e); }
+/* 2026-11-28: 主な操作を押すと何が起きるかの 1 行と、その下の札（大手のストアの並び。components/noah-detail-template.tsx）。 */
+.actionNote { margin: -6px 0 10px; color: var(--noah-theme-muted, #66666e); font-size: 13px; line-height: 1.6; overflow-wrap: anywhere; }
+.templateFacts { margin: 0 0 6px; }
+.templateFacts ul { display: flex; flex-wrap: wrap; gap: 6px; margin: 0; padding: 0; list-style: none; }
+.templateFacts li { display: inline-flex; align-items: center; min-height: 28px; padding: 3px 11px; border: 1px solid var(--noah-theme-line, #ececef); border-radius: 999px; background: var(--noah-theme-panel, #f7f7f8); color: var(--noah-theme-text, #3a3a40); font-size: 12px; overflow-wrap: anywhere; }
+.templateFacts li:first-child { color: var(--noah-theme-link, #a14206); background: var(--noah-theme-raised, #fff1e2); font-weight: 650; }
+:global([data-theme="dark"]) .compactPage .actionNote { color: #aaa; }
+:global([data-theme="dark"]) .compactPage .templateFacts li { border-color: #333; background: #161616; color: #dedede; }
+:global([data-theme="dark"]) .compactPage .templateFacts li:first-child { color: #ffb27a; background: #2a1a0f; }

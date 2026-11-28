@@ -19,3 +19,4 @@
 ## 状態
 
 - 2026-11-27 Claude（枝 `claude/ice2/noah-final-d6`）: 作った。本番の確かめは公開の後。
+- 2026-11-28 本番（PR #126 の公開の後）で、iPhone の幅で開いて記録 → 振り返りを確かめた。保存の知らせがページの上（スマホでは画面の外）に出ていたので、押したボタンのすぐ下に出すように直した（`tests/noah-goal-health-notice.test.mjs`。枝 `claude/ice2/noah-detail-open`）。
