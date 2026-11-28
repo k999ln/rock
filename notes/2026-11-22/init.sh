@@ -109,3 +109,4 @@ git worktree add -q --detach ../plainwt origin/claude/ice2/noah-detail-plain 2>/
 git fetch -q origin claude/ice2/noah-launch-ja
 git worktree add -q --detach ../jawt origin/claude/ice2/noah-launch-ja 2>/dev/null || true
 ( cd ../jawt && npm ci --ignore-scripts --no-audit --no-fund >/dev/null && node --experimental-strip-types --test tests/noah-summary-ja.test.mjs tests/noah-agent-share.test.mjs tests/noah-detail-plain.test.mjs && npm run -s typecheck )
+# Branch now 40b81759 (4 commits). New tests: tests/noah-tool-summary-ja.test.mjs tests/noah-collection-circumvention.test.mjs

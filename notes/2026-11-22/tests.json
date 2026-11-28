@@ -435,6 +435,21 @@
    "branch": "claude/ice2/noah-launch-ja",
    "command": "local production build, launch/jashots.mjs + jatoggle.mjs (iPhone 15 Pro, 1280)",
    "result": "home + detail + toggle: overflow 0, small 0, errors 0"
+  },
+  {
+   "branch": "claude/ice2/noah-launch-ja",
+   "command": "npm test (d2b84aa7)",
+   "result": "5747 tests, 5709 pass, 34 fail (same 7 files as main), 4 skipped"
+  },
+  {
+   "branch": "claude/ice2/noah-launch-ja",
+   "command": "node --experimental-strip-types --test tests/noah-collection-circumvention.test.mjs tests/noah-tool-summary-ja.test.mjs tests/noah-summary-ja.test.mjs (40b81759)",
+   "result": "19 pass, 0 fail"
+  },
+  {
+   "branch": "production v269",
+   "command": "launch/health-walk.mjs https://avoado.si (iPhone 15 Pro, 1280)",
+   "result": "save, 1/28, export JSON, double-confirm erase; no record sent; overflow 0, small 0, errors 0"
   }
  ]
 }
