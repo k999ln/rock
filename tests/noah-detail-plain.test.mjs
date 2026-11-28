@@ -3,7 +3,7 @@
 // 上から: 名前と「接続」→ 押すと何が起きるか → 札 → 詳細 → こんな事を頼めます → 使い方 → 安全のために → 操作の流れと道具 → Agentの詳細。
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { noahDetailActionNote, noahPlainNeeds, noahPlainToolName, noahPlainUses } from '../lib/noah-detail-plain.ts';
+import { noahDetailActionNote, noahPlainNeeds, noahPlainNeedsLine, noahPlainToolName, noahPlainUses } from '../lib/noah-detail-plain.ts';
 import { renderNoahExplanationFixture } from './fixtures/noah/explanation-markup.mjs';
 
 const text = (html) => html.replace(/<[^>]+>/g, ' ').replace(/&quot;/g, '"').replace(/&amp;/g, '&').replace(/\s+/g, ' ');
@@ -64,4 +64,11 @@ void test('画面: サインインしていない人には、利用開始とパ�
 void test('画面: 英語でも同じ並び（訳がある）', async () => {
   const english = text(await renderNoahExplanationFixture('chain', { locale: 'en' }));
   assert.match(english, /Pressing it connects right away\..*What you can ask for.*How to use it.*Your safety.*Not made by Noah \(provided by UI fixture\)\./);
+});
+
+void test('カードの「要る情報」は、必須の物の名前と、任意の物の数（任意が並ぶと何が要るのか読めない）', () => {
+  assert.deepEqual(noahPlainNeedsLine(['zip', 'service（任意）', 'city（任意）']), { required: ['zip'], optional: 2 });
+  assert.deepEqual(noahPlainNeedsLine(['q（任意）', 'place（任意）']), { required: [], optional: 2 });
+  assert.deepEqual(noahPlainNeedsLine(['booking_id']), { required: ['booking_id'], optional: 0 });
+  assert.deepEqual(noahPlainNeedsLine(), { required: [], optional: 0 });
 });

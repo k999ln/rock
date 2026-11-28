@@ -18,6 +18,12 @@ export function noahPlainToolName(label: string): string {
   return /^[A-Za-z0-9_.:-]+$/.test(label) ? label.replace(/[_.:-]+/g, ' ').trim() : label;
 }
 
+/** カードに出す「要る情報」。必須の物は名前を並べ、任意の物は数だけにする（任意が 16 個並ぶと、何が要るのか読めない）。 */
+export function noahPlainNeedsLine(needs: readonly string[] = []): { required: string[]; optional: number } {
+  const required = needs.filter((need) => !need.endsWith('（任意）'));
+  return { required, optional: needs.length - required.length };
+}
+
 export type NoahPlainUse = { key: string; name: string; text: string; needs: string[] };
 
 /** 「こんな事を頼めます」に並べる物（道具の工程ごと）。道具の工程が無い時は空（説明は、上の「詳細」に出ているので繰り返さない）。 */

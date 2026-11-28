@@ -8,11 +8,19 @@
  */
 import { useId } from 'react';
 import type { NoahStep } from '@/lib/noah-steps';
-import { noahPlainUses } from '@/lib/noah-detail-plain';
+import { noahPlainNeedsLine, noahPlainUses } from '@/lib/noah-detail-plain';
 import { useNoahLocale } from './noah-locale';
 import styles from './noah-detail-plain.module.css';
 
 const SHOWN = 4;
+
+function Needs({ needs }: { needs: readonly string[] }) {
+  const { t } = useNoahLocale();
+  const { required, optional } = noahPlainNeedsLine(needs);
+  return <p className={styles.needs}>{t('要る情報')}: {required.length > 0
+    ? <>{required.join('・')}{optional > 0 && t('（ほかに任意 {count} 個）', { count: optional })}</>
+    : t('なし（任意 {count} 個）', { count: optional })}</p>;
+}
 
 export default function NoahDetailPlain({ steps, host, provider, signedIn, connected = false, uses: showUses = true }: {
   steps?: readonly NoahStep[]; host: string | null; provider: string; signedIn: boolean; connected?: boolean; uses?: boolean;
@@ -26,7 +34,7 @@ export default function NoahDetailPlain({ steps, host, provider, signedIn, conne
       <div className={styles.uses}>{uses.slice(0, SHOWN).map((use) => <article key={use.key} className={styles.use}>
         {use.name && <h3>{use.name}</h3>}
         {use.text && <p>{use.text}</p>}
-        {use.needs.length > 0 && <p className={styles.needs}>{t('要る情報')}: {use.needs.join('・')}</p>}
+        {use.needs.length > 0 && <Needs needs={use.needs} />}
       </article>)}</div>
       {uses.length > SHOWN && <a className={styles.more} href="#noah-detail-more">{t('ほかに {count} 個（下の「操作の流れと道具」）', { count: uses.length - SHOWN })}</a>}
     </section>}

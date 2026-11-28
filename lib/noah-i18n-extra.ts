@@ -921,6 +921,20 @@ Object.assign(NOAH_EXTRA_MESSAGES, {
     'Lo que necesitas dar',
     'المعلومات المطلوبة',
   ],
+  '（ほかに任意 {count} 個）': [
+    ' (+{count} optional)',
+    '（另有 {count} 项可选）',
+    ' (선택 항목 {count}개 더)',
+    ' (+{count} opcionales)',
+    ' (+{count} اختيارية)',
+  ],
+  'なし（任意 {count} 個）': [
+    'nothing required ({count} optional)',
+    '无必填项（{count} 项可选）',
+    '필수 없음 (선택 항목 {count}개)',
+    'nada obligatorio ({count} opcionales)',
+    'لا شيء إلزامي ({count} اختيارية)',
+  ],
   'ほかに {count} 個（下の「操作の流れと道具」）': [
     '{count} more (see “Steps and tools” below)',
     '还有 {count} 个（见下方“步骤与工具”）',
