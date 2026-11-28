@@ -43,6 +43,8 @@ export type NoahStep = {
   waitNote?: string;
   /** 工程名の下に出す1行の説明（道具なら提供者の説明の最初の1文）。 */
   note?: string;
+  /** note の日本語の 1 行（道具の説明の同梱の訳。lib/noah-tool-summary-ja.ts）。note は提供者の文のまま残す。 */
+  noteJa?: string;
   /** 受け渡す物に根拠がある時だけ記録する。after には設定などの前提も含められる。 */
   flow?: NoahStepFlow;
 };

@@ -25,17 +25,20 @@ function Needs({ needs }: { needs: readonly string[] }) {
 export default function NoahDetailPlain({ steps, host, provider, signedIn, connected = false, uses: showUses = true }: {
   steps?: readonly NoahStep[]; host: string | null; provider: string; signedIn: boolean; connected?: boolean; uses?: boolean;
 }) {
-  const { t } = useNoahLocale();
+  const { t, locale } = useNoahLocale();
   const id = useId();
   const uses = showUses ? noahPlainUses(steps) : [];
+  // 日本語の画面では、道具の説明の日本語の 1 行（同梱の訳）を出す。提供者の元の文は、下の「操作の流れと道具」にそのまま出る（spec-74）。
+  const shown = uses.slice(0, SHOWN), translated = locale === 'ja' && shown.some((use) => use.textJa);
   return <>
     {uses.length > 0 && <section className={styles.section} aria-labelledby={`${id}-uses`}>
       <h2 id={`${id}-uses`}>{t('こんな事を頼めます')}</h2>
-      <div className={styles.uses}>{uses.slice(0, SHOWN).map((use) => <article key={use.key} className={styles.use}>
+      <div className={styles.uses}>{shown.map((use) => <article key={use.key} className={styles.use}>
         {use.name && <h3>{use.name}</h3>}
-        {use.text && <p>{use.text}</p>}
+        {locale === 'ja' && use.textJa ? <p title={use.text}>{use.textJa}</p> : use.text && <p>{use.text}</p>}
         {use.needs.length > 0 && <Needs needs={use.needs} />}
       </article>)}</div>
+      {translated && <p className={styles.source}>{t('説明は自動翻訳です。提供者が書いた元の文は、下の「操作の流れと道具」にあります。')}</p>}
       {uses.length > SHOWN && <a className={styles.more} href="#noah-detail-more">{t('ほかに {count} 個（下の「操作の流れと道具」）', { count: uses.length - SHOWN })}</a>}
     </section>}
     {!connected && <section className={styles.section} aria-labelledby={`${id}-how`}>
