@@ -110,6 +110,10 @@
 .pinExchange { display:flex; align-items:center; flex-wrap:wrap; gap:6px 10px; margin:4px 0 0; font-size:14px; font-weight:650; }
 .pinExchange > span[aria-hidden="true"] { color:var(--noah-theme-muted,#77717e); }
 .templateSummary { display:-webkit-box; -webkit-box-orient:vertical; -webkit-line-clamp:2; overflow:hidden; }
+/* 説明が訳の時、提供者が書いた元の説明を開いて読める（spec-74）。押す所は 44px。 */
+.summarySource { margin:4px 0 0; color:var(--noah-theme-muted,#66666e); font-size:13px; }
+.summarySource > summary { min-height:44px; align-content:center; cursor:pointer; color:var(--noah-theme-info,#7546c8); }
+.summarySource > p { margin:0 0 4px; line-height:1.6; overflow-wrap:anywhere; }
 .templateMore { border-bottom:1px solid var(--noah-theme-line,#e5e5e8); }
 .templateMore > summary { min-height:44px; align-content:center; cursor:pointer; font-size:13px; }
 .templateMore > div { padding:12px 0 20px; }

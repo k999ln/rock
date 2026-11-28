@@ -9,6 +9,7 @@ import { ownerScopeFor, OWNER_SCOPE_HEADER } from './owner-intent.ts';
 import { NoahAgentError } from './noah-agent-upload.ts';
 import { boundedNoahBody } from './noah-agent-api.ts';
 import type { NoahExplanation } from './noah-agent-explanation.ts';
+import { noahBundledSummaryJa, noahWithSummaryJa } from './noah-summary-ja.ts';
 export type IntakeApiDependencies = IntakeDependencies & {
   authenticate: (request: Request) => Promise<string>; reviewers: string[]; flags: NoahFlags; wakeKey?: string;
   explainPublic?: boolean;
@@ -50,11 +51,16 @@ export function createIntakeApi(deps: IntakeApiDependencies) {
         }
         const showGeneratedPins = reviewer || await deps.generatedPinsPublic?.().catch(() => false) === true;
         const id = url.searchParams.get('id');
-        if (!id) return json({ ...await store.list(owner, url.searchParams, showGeneratedPins), ownerScope, accountSignedIn });
+        if (!id) {
+          const list = await store.list(owner, url.searchParams, showGeneratedPins);
+          return json({ ...list, items: list.items.map(noahWithSummaryJa), ownerScope, accountSignedIn });
+        }
         const detail = await store.detail(id, owner, reviewer, showGeneratedPins);
         const explain = reviewer || (detail.listed && deps.explainPublic);
         const extra = explain ? await deps.explainAgent?.({ id, owner, reviewer }).catch(() => null) : null;
-        return json({ ...detail, ...extra, ownerScope, accountSignedIn });
+        // 説明の日本語の 1 行: 取り込みが書いた物（extra.summaryJa）を先に、無ければ同梱の写し（英語の説明が同じ時だけ）。
+        const summaryJa = extra?.summaryJa ?? noahBundledSummaryJa(detail.id, detail.summary);
+        return json({ ...detail, ...extra, ...(summaryJa ? { summaryJa } : {}), ownerScope, accountSignedIn });
       }
       if (!reviewer || request.headers.get('origin') !== url.origin) return json({ error: '同じNoahから操作してください。' }, 403);
       if (request.headers.get(OWNER_SCOPE_HEADER) !== ownerScope) return json({ error: 'アカウントが変わりました。再読込してください。' }, 409);

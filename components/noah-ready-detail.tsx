@@ -163,7 +163,8 @@ export default function NoahReadyDetail({ id, tool = null, from = null, internal
 
   return <NoahDetailTemplate id={detail.id} mediaId={mediaId} name={detail.pin?.title ?? guide?.name ?? detail.name} provider={detail.provider || undefined}
     pin={detail.pin}
-    summary={lead || t('（説明はありません）')} overviewTitle={pitch}
+    summary={lead || t('（説明はありません）')} artSummary={detail.summary || undefined} overviewTitle={pitch}
+    original={translated && lead === translated ? detail.summary : undefined}
     feedbackId={detail.listed ? feedbackId ?? detail.id : undefined}
     actionNote={detail.listed ? t(noahDetailActionNote({ signedIn, connected, typed: detail.connect.typed, need: detail.connect.need ?? null })) : undefined}
     facts={<ul aria-label={t('つなぎ方')}>{facts.map((text) => <li key={text}>{t(text)}</li>)}</ul>}
@@ -221,7 +222,7 @@ export default function NoahReadyDetail({ id, tool = null, from = null, internal
       {!guide && <NoahAgentVisual name={detail.name} summary={detail.summary}/>}
       {checked && <p className={styles.quiet}>{t(checked)}</p>}
       {detail.website && <p className={styles.quiet}>{internalOnly ? <span>提供元: {detail.website}</span> : <a href={detail.website} target="_blank" rel="noopener noreferrer nofollow">{t("提供者のページ（")}{new URL(detail.website).hostname}）</a>}</p>}
-      {detail.listed && <NoahAgentShare id={detail.id} name={detail.name} summary={detail.summary} />}
+      {detail.listed && <NoahAgentShare id={detail.id} name={detail.name} summary={lead} />}
     </details>
     {detail.listed && <NoahPinExtras key={`pin:${detail.id}`} item={detail} ownerScope={detail.ownerScope} />}
     {/* 棚のカードから来た時: 試行の本人の報告と、5 人以上の報告の合計（切り替えが閉の間は、何も出ない）。頼んだ後に、入れられるかを読み直す。 */}

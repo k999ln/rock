@@ -24,7 +24,7 @@ export default function NoahPinGrid({ items, signedIn, ownerScope, onChange, onH
   items: NoahPinView[]; signedIn: boolean; ownerScope: string | null;
   onChange?: (id: string, savedIn: string[]) => void; onHide?: (id: string) => void;
 }) {
-  const { t } = useNoahLocale();
+  const { t, locale } = useNoahLocale();
   const params = useSearchParams();
   const [saving, setSaving] = useState<NoahPinView | null>(null);
   return <>
@@ -38,7 +38,7 @@ export default function NoahPinGrid({ items, signedIn, ownerScope, onChange, onH
       // 絵は、作者の表紙 → ピンの動画 → 図解 → 場面の絵の順（NoahPinMotion）。動画と図解は見えている間繰り返す。図解の色は並びの index 枚目で回す。
       const pin = item.pin, plain = Boolean(pin || item.pinVideo), saved = item.savedIn.length > 0;
       return <NoahAgentPin key={item.id} id={item.id} name={pin?.title ?? item.name} topic={item.topic} shape={item.shape}
-        summary={item.summary} href={noahCardHref(item, Object.fromEntries(params)) ?? noahReadyDetailHref(item.id)} plain={plain}
+        summary={item.summary} caption={locale === 'ja' ? item.summaryJa ?? undefined : undefined} href={noahCardHref(item, Object.fromEntries(params)) ?? noahReadyDetailHref(item.id)} plain={plain}
         cover={item.marketplace?.cover}
         diagram={pin ? { scene: pin.scene, tone: index } : undefined} video={item.pinVideo}
         meta={item.marketplace ? <>{noahCardOrigin(item)} · {item.marketplace.label}</> : plain ? (item.notice ? <>{noahCardOrigin(item)}</> : undefined) : <>{noahCardOrigin(item)} · {runStatus}</>}

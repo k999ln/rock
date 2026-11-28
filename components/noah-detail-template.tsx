@@ -33,10 +33,14 @@ function DetailFeedback({ id }: { id: string }) {
  * 「操作の流れと道具」（「使い方を読む」）は、最初から開いておく。開かないと、この Agent でできる事と使い方の流れが見えないため
  * （本人 2026-11-28「最初からトグル開いてるようにして」）。閉じるのは本人の自由。
  */
-export default function NoahDetailTemplate({ id, name, provider, summary, action, children, meta, feedbackId,
+export default function NoahDetailTemplate({ id, name, provider, summary, artSummary, original, action, children, meta, feedbackId,
   icon, overviewTitle, intro, requestForm, detailsLabel, actionNote, facts, explain,
   cover, pin, mediaId = id, category, privateAgent = false,
-}: { id: string; name: string; provider?: string; summary?: string; action?: ReactNode; children?: ReactNode;
+}: { id: string; name: string; provider?: string; summary?: string;
+  /** 頭の絵を選ぶ元の説明（一覧のカードと同じ英語の説明）。無ければ summary。絵の中の字は、いつも summary（見せる説明）。 */
+  artSummary?: string;
+  /** summary が訳の時の、提供者が書いた元の説明。「自動翻訳 · 原文」を開くと読める（spec-74: 提供者の文を、いつでも読めるように）。 */
+  original?: string; action?: ReactNode; children?: ReactNode;
   meta?: ReactNode; feedbackId?: string; cover?: NoahCoverView; pin?: NoahPin; mediaId?: string;
   category?: string; privateAgent?: boolean;
   icon?: ReactNode; overviewTitle?: string; intro?: ReactNode; requestForm?: ReactNode; detailsLabel?: string;
@@ -55,7 +59,7 @@ export default function NoahDetailTemplate({ id, name, provider, summary, action
       {film ? <video className={styles.screenVideo} autoPlay loop playsInline muted preload="auto" disablePictureInPicture
         aria-label={t(film.title)} poster={film.poster} src={film.video} />
         : cover?.type.startsWith('video/') ? <video className={styles.screenVideo} autoPlay loop playsInline muted preload="metadata" disablePictureInPicture src={cover.url} aria-label={name} />
-        : <div className={styles.screenArt}><NoahPinMotion id={id} name={name} summary={summary} cover={cover}
+        : <div className={styles.screenArt}><NoahPinMotion id={id} name={name} summary={artSummary ?? summary} caption={summary} cover={cover}
           diagram={pin ? { scene: pin.scene, tone: 0 } : undefined} /></div>}
     </section>
     <div className={`${styles.page} ${styles.compactPage}`} id="noah-project-details" tabIndex={-1}>
@@ -70,6 +74,9 @@ export default function NoahDetailTemplate({ id, name, provider, summary, action
         {category && <p className={styles.category}>{category}</p>}
         {pin && <p className={styles.pinExchange}><span>{pin.give}</span><span aria-hidden="true">→</span><span>{pin.get}</span></p>}
         {summary && <p className={`${styles.summary} ${styles.templateSummary}`} title={summary}>{summary}</p>}
+        {summary && original && original !== summary && <details className={styles.summarySource}>
+          <summary>{t('自動翻訳')} · {t('原文')}</summary><p>{original}</p>
+        </details>}
       </section>
       {intro}
       {requestForm}
