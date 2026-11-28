@@ -500,6 +500,11 @@
    "branch": "claude/ice2/noah-card-menu",
    "command": "npm test (b260779f)",
    "result": "5759 tests, 5721 pass, 34 fail (same names as PR #131 / main), 4 skipped"
+  },
+  {
+   "branch": "production (PR #132, main 6c147c33)",
+   "command": "menu/prodmenu.mjs <repo> https://avoado.si (iPhone 15 Pro, 1280)",
+   "result": "home 16/16 data-menu, controls over art 0 (was 16), … over text 0, hover shows save+…; search 1/1; project detail Japanese + toggle; installer absent in 600; overflow 0, small 0, errors 0"
   }
  ]
 }
