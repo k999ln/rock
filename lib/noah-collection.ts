@@ -25,9 +25,17 @@ export const NOAH_COLLECTION_BLOCKED = /\b(?:nsfw|uncensored|nude|nudity|naked|p
  * 本番の 1,200 枚と掲載中の 212 系列で当たるのは、その 2 件と、同じ種類の Roblox の実行器 2 件と、392 枚目の「Claude Pro/Max の契約を API に変える」中継 1 件だけ。
  */
 export const NOAH_COLLECTION_CIRCUMVENTION = /\b(?:trial[ -]?resets?|keygens?|cracked[ -]+(?:versions?|apps?|software|licen[cs]es?|pro|apks?)|license[ -]?(?:crack|bypass|reset)\w*|activation[ -]?(?:crack|bypass)\w*|machine[ -]?ids?[ -]?(?:reset|spoof|chang)\w*|(?:reset|spoof)\w*[ -]+(?:the[ -]+)?machine[ -]?ids?)(?![\w])|\b(?:roblox|fivem|fortnite|valorant|csgo|cs2)\b[\w -]{0,24}\b(?:executors?|exploits?|injectors?|cheats?|aimbots?)\b|\b(?:executors?|exploits?|injectors?)\b[\w -]{0,24}\broblox\b|\b(?:aimbots?|wallhacks?)\b|\b(?:claude|chatgpt|openai|codex|cursor|copilot)\b[\w /+-]{0,24}\b(?:pro|max|plus|team|subscriptions?|plans?)\b[\w /-]{0,24}\b(?:into|as) (?:an? )?[\w -]{0,30}\bapi\b|破解|无限试用|重置试用|试用重置/iu;
+/**
+ * 公式の製品を名乗る、作者の違うインストーラー（例: 「Claude Code CLI Windows Native Installer」）も紹介しない。
+ * 公式の配り方（npm・公式のサイト）でない「インストーラー」は、偽物を配ってマルウェアを入れさせる型としてよく使われる。
+ * 2026-11-28 に本番のホームの 145 枚目に、作者の違う「claude-code-cli-windows-native-installer」が出ていた（その日のうちに GitHub から読めなくなった）。
+ * 本番の 1,200 枚と掲載中の 212 系列で当たるのはその 1 件だけ。自分の物を入れる道具（「Sellable の MCP を Claude Code に入れる 1 行のインストーラー」）や、
+ * 道具の追加の手伝い（「Claude Code plugin installer」）は外さない。
+ */
+export const NOAH_COLLECTION_IMPERSONATION = /\b(?:claude(?:[ -]?code)?|anthropic|chatgpt|openai|codex|cursor|copilot|gemini)(?:[ -](?:cli|app|desktop|ai|ide))*[ -](?:(?:windows|win|mac(?:os)?|linux)[ -])?(?:native[ -])?installers?\b/iu;
 export const noahCollectionBlocked = (item: { name: string; summary: string; url: string }) => {
   const text = `${item.name} ${item.summary} ${item.url}`;
-  return NOAH_COLLECTION_BLOCKED.test(text) || NOAH_COLLECTION_CIRCUMVENTION.test(text);
+  return NOAH_COLLECTION_BLOCKED.test(text) || NOAH_COLLECTION_CIRCUMVENTION.test(text) || NOAH_COLLECTION_IMPERSONATION.test(text);
 };
 /** 投稿（SNS）の出所。投稿の本文は転載せず、決まった説明文とリンク・数だけを載せる。 */
 export const NOAH_COLLECTION_SOCIAL = ['x', 'reddit', 'bluesky'] as const;
