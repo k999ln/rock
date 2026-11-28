@@ -400,6 +400,21 @@
    "branch": "production avoado.si (read only)",
    "command": "node --experimental-strip-types scripts/noah-tool-catalog-refresh.mjs --write (2026-11-28 ~10:40 JST)",
    "result": "54 targets of 212: added 35, added with a different count 4, same copy 13, failed 2 (Avasis unreachable, dsght blocked)."
+  },
+  {
+   "branch": "production avoado.si (Sites v269, main a607a97b)",
+   "command": "npm run noah:prod:check -- https://avoado.si --out=<dir outside git>",
+   "result": "ok: pages 75 routes x 390/1280 x signed-out/browser: 200 67, 410 8, overflow 0, small 0, errors 0; devices ok (menu 11, no Mac/Linux difference); probe ok (broken 0, unconfigured 2 = commerce 503 by design)."
+  },
+  {
+   "branch": "production avoado.si (Sites v269)",
+   "command": "count agents whose detail shows tool steps (GET /api/noah/intake?id=… for all 212 listed)",
+   "result": "188 of 212 (before 158; +30 newly shown, 0 lost). Not yet: same copy 13 + added-not-matching 5 (production's stored hash older; next patrol check), count differs 4, failed 2."
+  },
+  {
+   "branch": "production avoado.si (Sites v269)",
+   "command": "Playwright: Find and book a local service pro / Discond / AthenaHQ details at iPhone 15 Pro and 1280px",
+   "result": "「こんな事を頼めます」 3/4/4 cards, 「要る情報」 short form, 「操作の流れと道具」 open, 使い方・安全のために shown; overflow 0, small 0, errors 0 on all 6."
   }
  ]
 }
